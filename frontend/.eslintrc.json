@@ -1,0 +1,90 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "18.3.1"
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react-refresh"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended",
+    "prettier",
+    "airbnb"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "react-refresh/only-export-components": ["error", { "allowConstantExport": false }],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }]
+  }
+}
+
+
+/* 
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": ["react", "@typescript-eslint", "import"],
+  "extends": [
+    "plugin:import/typescript",
+    "plugin:import/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
+    "no-non-null-assertion": "off",
+    "no-unused-vars": "off",
+    "no-nested-ternary": "error",
+    "eqeqeq": "error",
+    "no-console": "warn",
+    "import/named": "off",
+    "import/no-unresolved": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", ["parent", "sibling"], "index"],
+        "pathGroups": [
+          {
+            "pattern": "angular",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "newlines-between": "always"
+      }
+    ]
+  }
+}
+
+*/

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+
+    // bundler
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+
+    // lining
+    "strict": true,
+    "jsxImportSource": "@emotion/react"
+  },
+  "include": ["src/**/*", "cypress/**/*"],
+  "exclude": ["/node_modules/"]
+}
