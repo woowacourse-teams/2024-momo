@@ -1,0 +1,10 @@
+{
+  "stylelint.workingDirectories": ["./front"],
+  "eslint.workingDirectories": ["./front"],
+  "stylelint.configFile": ".stylelintrc.json",
+  "stylelint.packageManager": "npm",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  }
+}
