@@ -338,3 +338,5 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### BACKEND
+backend/src/main/resources/application.yml
