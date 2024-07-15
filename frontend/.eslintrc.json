@@ -6,6 +6,11 @@
   "settings": {
     "react": {
       "version": "18.3.1"
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
   "parser": "@typescript-eslint/parser",
@@ -15,76 +20,33 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
-    "plugin:prettier/recommended",
     "prettier",
     "airbnb"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "react-refresh/only-export-components": ["error", { "allowConstantExport": false }],
-    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react/react-in-jsx-scope": "off",
-    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }]
-  }
-}
-
-
-/* 
-{
-  "env": {
-    "browser": true,
-    "es2021": true
-  },
-  "plugins": ["react", "@typescript-eslint", "import"],
-  "extends": [
-    "plugin:import/typescript",
-    "plugin:import/recommended",
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+    "no-unused-vars": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "react/no-unknown-property": ["error", { "ignore": ["css"] }],
-    "no-non-null-assertion": "off",
-    "no-unused-vars": "off",
-    "no-nested-ternary": "error",
-    "eqeqeq": "error",
-    "no-console": "warn",
-    "import/named": "off",
-    "import/no-unresolved": "off",
-    "import/order": [
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "import/no-extraneous-dependencies": [
       "error",
       {
-        "groups": ["builtin", "external", ["parent", "sibling"], "index"],
-        "pathGroups": [
-          {
-            "pattern": "angular",
-            "group": "external",
-            "position": "before"
-          }
-        ],
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        },
-        "newlines-between": "always"
+        "devDependencies": ["**/webpack.*.js"]
       }
     ]
-  }
+  },
+  "ignorePatterns": ["dist/"]
 }
-
-*/
