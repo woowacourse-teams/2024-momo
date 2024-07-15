@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // rules
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+
+    // bundler
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+
+    // lining
+    "strict": true,
+    "jsxImportSource": "@emotion/react",
+    "removeComments": true
+  },
+  "include": ["./src"],
+  "exclude": ["/node_modules/"]
+}
