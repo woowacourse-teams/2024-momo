@@ -2,6 +2,7 @@ package com.woowacourse.momo.domain.meeting;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.guest.Guest;
+import com.woowacourse.momo.domain.timeslot.Timeslot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +33,14 @@ public class Meeting extends BaseEntity {
 
     @Column(nullable = false, length = 40)
     private String uuid;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_time_id", nullable = false)
+    private Timeslot startTime;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_time_id", nullable = false)
+    private Timeslot endTime;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id", nullable = false)
