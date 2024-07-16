@@ -66,4 +66,8 @@ public enum Timeslot {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타임슬롯입니다."));
     }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }
