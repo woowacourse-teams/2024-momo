@@ -4,7 +4,10 @@ import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.guest.Guest;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,8 +39,8 @@ public class Schedule {
     @JoinColumn(name = "guest_id", nullable = false)
     private Guest guest;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "timeslot_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
     private Timeslot timeslot;
 
     @ManyToOne(fetch = FetchType.LAZY)
