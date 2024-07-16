@@ -2,6 +2,7 @@ package com.woowacourse.momo.domain.guest;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,8 +24,9 @@ public class Guest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Embedded
     @Column(nullable = false, length = 20)
-    private String name;
+    private GuestName name;
 
     @Column(nullable = false)
     private String password;
