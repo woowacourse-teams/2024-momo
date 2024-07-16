@@ -1,6 +1,7 @@
 package com.woowacourse.momo.domain.timeslot;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public enum Timeslot {
 
@@ -57,5 +58,12 @@ public enum Timeslot {
 
     Timeslot(LocalTime time) {
         this.time = time;
+    }
+
+    public static Timeslot from(LocalTime localTime) {
+        return Arrays.stream(values())
+                .filter(timeslot -> timeslot.time.equals(localTime))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타임슬롯입니다."));
     }
 }

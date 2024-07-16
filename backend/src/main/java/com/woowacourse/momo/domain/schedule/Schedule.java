@@ -46,4 +46,11 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
+
+    public Schedule(Meeting meeting, Guest guest, Timeslot timeslot, AvailableDate availableDate) {
+        this.meeting = meeting;
+        this.guest = guest;
+        this.timeslot = timeslot;
+        this.availableDate = availableDate;
+    }
 }
