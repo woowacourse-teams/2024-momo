@@ -14,12 +14,12 @@ import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ScheduleService {
 
     private final MeetingRepository meetingRepository;
