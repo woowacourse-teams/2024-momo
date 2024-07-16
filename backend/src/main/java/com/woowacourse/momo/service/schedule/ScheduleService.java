@@ -36,8 +36,9 @@ public class ScheduleService {
         Guest guest = guestRepository.findByName(guestName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게스트입니다."));
 
-        List<Schedule> schedules = new ArrayList<>();
+        scheduleRepository.deleteAllByMeetingAndGuest(meeting, guest);
 
+        List<Schedule> schedules = new ArrayList<>();
         for (DateTimesCreateRequest dateTime : request.dateTimes()) {
             AvailableDate availableDate = availableDateRepository.findByMeetingAndDate(meeting, dateTime.date())
                     .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 시간을 선택할 수 없습니다."));
