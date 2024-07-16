@@ -1,5 +1,7 @@
-package com.woowacourse.momo.domain.meeting.dto;
+package com.woowacourse.momo.service.meeting.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.schedule.dto.ScheduleTimeResponse;
 import java.time.LocalDate;

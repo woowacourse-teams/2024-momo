@@ -7,7 +7,7 @@ import com.woowacourse.momo.domain.guest.GuestName;
 import com.woowacourse.momo.domain.guest.GuestRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
-import com.woowacourse.momo.domain.meeting.dto.MeetingResponse;
+import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
