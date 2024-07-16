@@ -10,8 +10,8 @@ import java.util.List;
 
 public record MeetingResponse(
         String meetingName,
-        LocalTime startTime,
-        LocalTime endTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
         List<LocalDate> availableDates,
         List<ScheduleTimeResponse> schedules
 ) {
