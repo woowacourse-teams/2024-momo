@@ -26,7 +26,8 @@
   "rules": {
     "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/react-in-jsx-scope": "off",
-    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
+    "@typescript-eslint/no-var-requires": "off"
   },
 
   "ignorePatterns": ["dist", ".eslintrc.cjs"]
