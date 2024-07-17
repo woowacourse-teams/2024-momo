@@ -1,4 +1,5 @@
-import { API_URL } from '../constants/api';
+import { API_URL } from '@constants/api';
+
 import { Schedules } from './getMeeting';
 
 const postSchedule = async (requestData: Schedules[]) => {

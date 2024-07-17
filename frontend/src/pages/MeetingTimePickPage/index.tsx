@@ -1,6 +1,9 @@
-import TimePicker from '../../components/TimePicker';
 import { useQuery } from '@tanstack/react-query';
-import getMeeting from '../../apis/getMeeting';
+
+import TimePicker from '@components/TimePicker';
+
+import getMeeting from '@apis/getMeeting';
+
 import { title } from './MeetingTimePickPage.styles';
 
 export default function MeetingTimePickPage() {

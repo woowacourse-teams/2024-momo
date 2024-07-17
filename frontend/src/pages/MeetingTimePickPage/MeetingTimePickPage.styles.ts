@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
-import theme from '../../styles/theme';
+
+import theme from '@styles/theme';
 
 export const title = css`
   width: 100%;

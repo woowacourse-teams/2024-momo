@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+
 import { styledButton } from './Button.styles';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

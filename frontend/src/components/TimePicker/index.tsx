@@ -1,10 +1,14 @@
-import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import useTimePick from '../../hooks/useTimePick/useTimePick';
-import Button from '../_common/Button';
-import postSchedule from '../../apis/postSchedule';
-import { convertToSchedule, generateScheduleMatrix } from './TimePicker.utils';
+import { useState } from 'react';
+
+import Button from '@components/_common/Button';
+
+import useTimePick from '@hooks/useTimePick/useTimePick';
+
+import postSchedule from '@apis/postSchedule';
+
 import { buttonContainer, styledTd, styledTh, table, tableTexture } from './TimePicker.styles';
+import { convertToSchedule, generateScheduleMatrix } from './TimePicker.utils';
 
 interface Schedules {
   date: string;

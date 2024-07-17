@@ -1,7 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import GlobalLayout from './layouts/GlobalLayout';
-import Join from './pages/MeetingTimePickPage';
+import GlobalLayout from '@layouts/GlobalLayout';
+
+import Join from '@pages/MeetingTimePickPage';
 
 const router = createBrowserRouter(
   [
