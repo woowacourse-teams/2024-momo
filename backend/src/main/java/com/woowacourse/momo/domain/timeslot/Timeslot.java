@@ -2,7 +2,9 @@ package com.woowacourse.momo.domain.timeslot;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum Timeslot {
 
     TIME_0000(LocalTime.of(0, 0)),
