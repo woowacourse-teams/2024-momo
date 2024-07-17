@@ -15,7 +15,24 @@
     // lining
     "strict": true,
     "jsxImportSource": "@emotion/react",
-    "removeComments": true
+    "removeComments": true,
+
+    //absolute path
+
+    "baseUrl": "./src",
+    "paths": {
+      "@apis/*": ["apis/*"],
+      "@assets/*": ["apis/*"],
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
+      "@hooks/*": ["hooks/*"],
+      "@layouts/*": ["layouts/*"],
+      "@mocks/*": ["mocks/*"],
+      "@pages/*": ["pages/*"],
+      "@styles/*": ["styles/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["./src"],
   "exclude": ["/node_modules/"]
