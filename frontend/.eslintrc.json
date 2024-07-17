@@ -14,39 +14,20 @@
     }
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react-refresh"],
+  "plugins": ["react-refresh"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
-    "prettier",
-    "airbnb"
+    "prettier"
   ],
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "react-refresh/only-export-components": ["error", { "allowConstantExport": false }],
+    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/react-in-jsx-scope": "off",
-    "no-unused-vars": "warn",
-    "@typescript-eslint/consistent-type-imports": "error",
-    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
-    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "import/no-extraneous-dependencies": [
-      "error",
-      {
-        "devDependencies": ["**/webpack.*.js"]
-      }
-    ]
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
   },
-  "ignorePatterns": ["dist/"]
+
+  "ignorePatterns": ["dist", ".eslintrc.cjs"]
 }
