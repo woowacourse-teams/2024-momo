@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const globalStyles = css`
+const globalStyles = css`
   html,
   body,
   div,
@@ -86,10 +86,25 @@ export const globalStyles = css`
     padding: 0;
 
     font: inherit;
-    font-size: 100%;
     vertical-align: baseline;
 
     border: 0;
+  }
+
+  html {
+    font-size: 62.5%;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 100vh;
+
+    font-size: 1.6rem;
+
+    background-color: #6b6666;
   }
 
   article,
@@ -145,3 +160,5 @@ export const globalStyles = css`
     background-color: red;
   }
 `;
+
+export default globalStyles;
