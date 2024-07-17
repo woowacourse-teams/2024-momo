@@ -77,7 +77,3 @@ export default function TimePicker({
     </div>
   );
 }
-
-export function Test() {
-  return <></>;
-}
