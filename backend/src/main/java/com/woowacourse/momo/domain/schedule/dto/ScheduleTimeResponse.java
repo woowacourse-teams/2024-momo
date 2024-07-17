@@ -8,13 +8,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-// TODO: 레코드 명 고민
 public record ScheduleTimeResponse(
         LocalDate date,
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") List<LocalTime> times
 ) {
 
-    // TODO: 디미터 법칙 지키기
     public static ScheduleTimeResponse from(List<Schedule> schedules) {
 
         LocalDate date = schedules.stream()

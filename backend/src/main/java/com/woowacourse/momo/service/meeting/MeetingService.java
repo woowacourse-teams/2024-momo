@@ -28,7 +28,6 @@ public class MeetingService {
 
     @Transactional(readOnly = true)
     public MeetingResponse findByUUID(String uuid) {
-        // TODO: 커스텀 예외 수정
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(IllegalArgumentException::new);
 
