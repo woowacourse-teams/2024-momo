@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+
 import { globalContainer } from './GlobalLayout.styles';
 
 export default function GlobalLayout() {

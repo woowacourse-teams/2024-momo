@@ -1,4 +1,4 @@
-import { API_URL } from '../constants/api';
+import { API_URL } from '@constants/api';
 
 const getSchedule = async () => {
   const url = `${API_URL}/api/v1/schedule}`;

@@ -1,4 +1,4 @@
-import { API_URL } from '../constants/api';
+import { API_URL } from '@constants/api';
 
 export interface Schedules {
   date: string;
