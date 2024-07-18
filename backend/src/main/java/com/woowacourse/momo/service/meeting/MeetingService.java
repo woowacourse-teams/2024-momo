@@ -1,6 +1,5 @@
 package com.woowacourse.momo.service.meeting;
 
-import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
@@ -37,8 +36,7 @@ public class MeetingService {
                 .map(AvailableDate::getDate)
                 .toList();
 
-        Attendee attendee = null;
-        List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
+        List<Schedule> schedules = scheduleRepository.findAll();
         Map<AvailableDate, List<Schedule>> collected = schedules.stream()
                 .collect(Collectors.groupingBy(Schedule::getAvailableDate));
         List<ScheduleTimeResponse> list = collected.entrySet().stream()
