@@ -21,8 +21,8 @@ public record MeetingResponse(
     ) {
         return new MeetingResponse(
                 meeting.getName(),
-                meeting.getStartTime().getTime(),
-                meeting.getEndTime().getTime(),
+                meeting.getFirstTimeslot().getTime(),
+                meeting.getLastTimeslot().getTime(),
                 availableDates,
                 schedules
         );
