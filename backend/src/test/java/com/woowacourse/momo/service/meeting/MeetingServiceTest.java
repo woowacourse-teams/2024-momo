@@ -1,16 +1,16 @@
 package com.woowacourse.momo.service.meeting;
 
+import com.woowacourse.momo.domain.attendee.Attendee;
+import com.woowacourse.momo.domain.attendee.AttendeeName;
+import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
-import com.woowacourse.momo.domain.guest.Guest;
-import com.woowacourse.momo.domain.guest.GuestName;
-import com.woowacourse.momo.domain.guest.GuestRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
-import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
+import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
@@ -37,14 +37,14 @@ class MeetingServiceTest {
     private ScheduleRepository scheduleRepository;
 
     @Autowired
-    private GuestRepository guestRepository;
+    private AttendeeRepository attendeeRepository;
 
     @BeforeEach
     void setup() {
         scheduleRepository.deleteAllInBatch();
         availableDateRepository.deleteAllInBatch();
         meetingRepository.deleteAllInBatch();
-        guestRepository.deleteAllInBatch();
+        attendeeRepository.deleteAllInBatch();
     }
 
     @DisplayName("UUID로 약속 정보를 조회한다.")
@@ -52,7 +52,7 @@ class MeetingServiceTest {
     void findByUUID() {
         // given
         String uuid = UUID.randomUUID().toString();
-        Guest host = guestRepository.save(new Guest(null, new GuestName("페드로"), ""));
+        Attendee host = attendeeRepository.save(new Attendee(null, new AttendeeName("페드로"), ""));
         String meetingName = "주먹 대결";
         Meeting boxingWithPedro = meetingRepository.save(
                 new Meeting(

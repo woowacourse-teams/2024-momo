@@ -1,8 +1,8 @@
 package com.woowacourse.momo.controller.meeting;
 
 import com.woowacourse.momo.controller.MomoApiResponse;
-import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.MeetingService;
+import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public record ScheduleCreateRequest(
         @NotNull Long meetingId,
-        @NotBlank String guestName,
+        @NotBlank String attendeeName,
         @NotNull List<DateTimesCreateRequest> dateTimes
 ) {
 }

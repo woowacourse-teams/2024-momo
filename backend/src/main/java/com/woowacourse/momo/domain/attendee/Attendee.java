@@ -1,4 +1,4 @@
-package com.woowacourse.momo.domain.guest;
+package com.woowacourse.momo.domain.attendee;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -13,12 +13,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "guest")
+@Table(name = "attendee")
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Guest extends BaseEntity {
+public class Attendee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Guest extends BaseEntity {
 
     @Embedded
     @Column(nullable = false, length = 20)
-    private GuestName name;
+    private AttendeeName name;
 
     @Column(nullable = false)
     private String password;
