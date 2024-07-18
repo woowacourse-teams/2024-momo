@@ -36,7 +36,7 @@ public class ScheduleService {
         Attendee attendee = attendeeRepository.findByName(attendeeName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게스트입니다."));
 
-        scheduleRepository.deleteAllByMeetingAndAttendee(meeting, attendee);
+        scheduleRepository.deleteAllByAttendee(attendee);
 
         List<Schedule> schedules = new ArrayList<>();
         for (DateTimesCreateRequest dateTime : request.dateTimes()) {
@@ -44,7 +44,7 @@ public class ScheduleService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 시간을 선택할 수 없습니다."));
 
             schedules.addAll(dateTime.times().stream()
-                    .map(time -> new Schedule(meeting, attendee, Timeslot.from(time), availableDate))
+                    .map(time -> new Schedule(attendee, Timeslot.from(time), availableDate))
                     .toList());
         }
         scheduleRepository.saveAll(schedules);

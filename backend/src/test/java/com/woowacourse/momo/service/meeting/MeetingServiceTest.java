@@ -63,12 +63,18 @@ class MeetingServiceTest {
                         Timeslot.TIME_0400
                 )
         );
+
         for (int i = 0; i < 7; i++) {
-            availableDateRepository.save(new AvailableDate(null, LocalDate.now().minusDays(i + 1), boxingWithPedro));
+            availableDateRepository.save(new AvailableDate(
+                    null,
+                    LocalDate.now().minusDays(i + 1),
+                    boxingWithPedro)
+            );
         }
+
         AvailableDate availableDate = availableDateRepository.findAll().get(0);
-        scheduleRepository.save(new Schedule(null, boxingWithPedro, attendee, Timeslot.TIME_0300, availableDate));
-        scheduleRepository.save(new Schedule(null, boxingWithPedro, attendee, Timeslot.TIME_0100, availableDate));
+        scheduleRepository.save(new Schedule(null, attendee, Timeslot.TIME_0300, availableDate));
+        scheduleRepository.save(new Schedule(null, attendee, Timeslot.TIME_0100, availableDate));
 
         // when
         MeetingResponse result = meetingService.findByUUID(uuid);

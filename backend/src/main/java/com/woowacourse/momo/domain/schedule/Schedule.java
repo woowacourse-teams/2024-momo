@@ -2,7 +2,6 @@ package com.woowacourse.momo.domain.schedule;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
-import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,10 +31,6 @@ public class Schedule {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id", nullable = false)
-    private Meeting meeting;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attendee_id", nullable = false)
     private Attendee attendee;
 
@@ -47,8 +42,7 @@ public class Schedule {
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
-    public Schedule(Meeting meeting, Attendee attendee, Timeslot timeslot, AvailableDate availableDate) {
-        this.meeting = meeting;
+    public Schedule(Attendee attendee, Timeslot timeslot, AvailableDate availableDate) {
         this.attendee = attendee;
         this.timeslot = timeslot;
         this.availableDate = availableDate;
