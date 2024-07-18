@@ -73,8 +73,8 @@ class MeetingServiceTest {
         }
 
         AvailableDate availableDate = availableDateRepository.findAll().get(0);
-        scheduleRepository.save(new Schedule(null, attendee, Timeslot.TIME_0300, availableDate));
-        scheduleRepository.save(new Schedule(null, attendee, Timeslot.TIME_0100, availableDate));
+        scheduleRepository.save(new Schedule(null, attendee, availableDate, Timeslot.TIME_0300, Timeslot.TIME_0300));
+        scheduleRepository.save(new Schedule(null, attendee, availableDate, Timeslot.TIME_0100, Timeslot.TIME_0300));
 
         // when
         MeetingResponse result = meetingService.findByUUID(uuid);

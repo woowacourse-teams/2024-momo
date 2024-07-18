@@ -44,7 +44,7 @@ public class ScheduleService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 시간을 선택할 수 없습니다."));
 
             schedules.addAll(dateTime.times().stream()
-                    .map(time -> new Schedule(attendee, Timeslot.from(time), availableDate))
+                    .map(time -> new Schedule(attendee, availableDate, Timeslot.from(time), Timeslot.from(time)))
                     .toList());
         }
         scheduleRepository.saveAll(schedules);

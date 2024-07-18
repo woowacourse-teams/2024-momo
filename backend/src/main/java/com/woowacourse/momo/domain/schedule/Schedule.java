@@ -34,17 +34,23 @@ public class Schedule {
     @JoinColumn(name = "attendee_id", nullable = false)
     private Attendee attendee;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot timeslot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
-    public Schedule(Attendee attendee, Timeslot timeslot, AvailableDate availableDate) {
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Timeslot firstTimeslot;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Timeslot lastTimeslot;
+
+    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
         this.attendee = attendee;
-        this.timeslot = timeslot;
         this.availableDate = availableDate;
+        this.firstTimeslot = firstTimeslot;
+        this.lastTimeslot = lastTimeslot;
     }
 }
