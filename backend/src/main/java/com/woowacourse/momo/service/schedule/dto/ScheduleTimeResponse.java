@@ -1,4 +1,4 @@
-package com.woowacourse.momo.domain.schedule.dto;
+package com.woowacourse.momo.service.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
