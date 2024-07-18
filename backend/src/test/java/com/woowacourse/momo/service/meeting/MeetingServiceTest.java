@@ -3,6 +3,7 @@ package com.woowacourse.momo.service.meeting;
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeName;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
+import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
@@ -52,7 +53,11 @@ class MeetingServiceTest {
     void findByUUID() {
         // given
         String uuid = UUID.randomUUID().toString();
-        Attendee attendee = attendeeRepository.save(new Attendee(null, new AttendeeName("페드로"), ""));
+        Attendee attendee = attendeeRepository.save(new Attendee(
+                null,
+                new AttendeeName("페드로"),
+                "",
+                Role.GUEST));
         String meetingName = "주먹 대결";
         Meeting boxingWithPedro = meetingRepository.save(
                 new Meeting(
