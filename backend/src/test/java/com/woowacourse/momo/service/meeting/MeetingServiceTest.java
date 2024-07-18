@@ -53,6 +53,7 @@ class MeetingServiceTest {
     void findByUUID() {
         // given
         String uuid = UUID.randomUUID().toString();
+
         String meetingName = "주먹 대결";
         Meeting boxingWithPedro = meetingRepository.save(
                 new Meeting(
@@ -63,6 +64,7 @@ class MeetingServiceTest {
                         Timeslot.TIME_0400
                 )
         );
+
         Attendee attendee = attendeeRepository.save(new Attendee(
                 null,
                 boxingWithPedro,
