@@ -32,7 +32,9 @@
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]
-    }
+    },
+    // test
+    "types": ["jest"]
   },
   "include": ["./src"],
   "exclude": ["/node_modules/"]
