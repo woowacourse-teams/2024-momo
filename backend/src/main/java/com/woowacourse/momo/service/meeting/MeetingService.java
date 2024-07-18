@@ -4,10 +4,10 @@ import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
-import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
-import com.woowacourse.momo.domain.schedule.dto.ScheduleTimeResponse;
+import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
+import com.woowacourse.momo.service.schedule.dto.ScheduleTimeResponse;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +36,7 @@ public class MeetingService {
                 .map(AvailableDate::getDate)
                 .toList();
 
-        List<Schedule> schedules = scheduleRepository.findAllByMeeting(meeting);
+        List<Schedule> schedules = scheduleRepository.findAll();
         Map<AvailableDate, List<Schedule>> collected = schedules.stream()
                 .collect(Collectors.groupingBy(Schedule::getAvailableDate));
         List<ScheduleTimeResponse> list = collected.entrySet().stream()

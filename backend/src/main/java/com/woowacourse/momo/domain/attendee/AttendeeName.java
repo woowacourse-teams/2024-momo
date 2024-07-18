@@ -1,4 +1,4 @@
-package com.woowacourse.momo.domain.guest;
+package com.woowacourse.momo.domain.attendee;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GuestName {
+public class AttendeeName {
 
     private String name;
 
-    public GuestName(String name) {
+    public AttendeeName(String name) {
         validateNameLength(name);
         this.name = name;
     }

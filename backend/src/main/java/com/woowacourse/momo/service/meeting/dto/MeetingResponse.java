@@ -3,7 +3,7 @@ package com.woowacourse.momo.service.meeting.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.woowacourse.momo.domain.meeting.Meeting;
-import com.woowacourse.momo.domain.schedule.dto.ScheduleTimeResponse;
+import com.woowacourse.momo.service.schedule.dto.ScheduleTimeResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,8 +21,8 @@ public record MeetingResponse(
     ) {
         return new MeetingResponse(
                 meeting.getName(),
-                meeting.getStartTime().getTime(),
-                meeting.getEndTime().getTime(),
+                meeting.getFirstTimeslot().getTime(),
+                meeting.getLastTimeslot().getTime(),
                 availableDates,
                 schedules
         );

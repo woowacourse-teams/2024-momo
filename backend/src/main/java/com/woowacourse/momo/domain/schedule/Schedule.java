@@ -1,8 +1,8 @@
 package com.woowacourse.momo.domain.schedule;
 
+import com.woowacourse.momo.domain.BaseEntity;
+import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
-import com.woowacourse.momo.domain.guest.Guest;
-import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,32 +25,33 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Schedule {
+public class Schedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id", nullable = false)
-    private Meeting meeting;
+    @JoinColumn(name = "attendee_id", nullable = false)
+    private Attendee attendee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guest_id", nullable = false)
-    private Guest guest;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot timeslot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
-    public Schedule(Meeting meeting, Guest guest, Timeslot timeslot, AvailableDate availableDate) {
-        this.meeting = meeting;
-        this.guest = guest;
-        this.timeslot = timeslot;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Timeslot firstTimeslot;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Timeslot lastTimeslot;
+
+    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+        this.attendee = attendee;
         this.availableDate = availableDate;
+        this.firstTimeslot = firstTimeslot;
+        this.lastTimeslot = lastTimeslot;
     }
 }

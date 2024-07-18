@@ -1,10 +1,10 @@
 package com.woowacourse.momo.service.schedule;
 
+import com.woowacourse.momo.domain.attendee.Attendee;
+import com.woowacourse.momo.domain.attendee.AttendeeName;
+import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
-import com.woowacourse.momo.domain.guest.Guest;
-import com.woowacourse.momo.domain.guest.GuestName;
-import com.woowacourse.momo.domain.guest.GuestRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.schedule.Schedule;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScheduleService {
 
     private final MeetingRepository meetingRepository;
-    private final GuestRepository guestRepository;
+    private final AttendeeRepository attendeeRepository;
     private final ScheduleRepository scheduleRepository;
     private final AvailableDateRepository availableDateRepository;
 
@@ -32,11 +32,11 @@ public class ScheduleService {
         Meeting meeting = meetingRepository.findById(request.meetingId())
                 .orElseThrow(() -> new IllegalArgumentException("유효한 약속 id가 아닙니다."));
 
-        GuestName guestName = new GuestName(request.guestName());
-        Guest guest = guestRepository.findByName(guestName)
+        AttendeeName attendeeName = new AttendeeName(request.attendeeName());
+        Attendee attendee = attendeeRepository.findByName(attendeeName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게스트입니다."));
 
-        scheduleRepository.deleteAllByMeetingAndGuest(meeting, guest);
+        scheduleRepository.deleteAllByAttendee(attendee);
 
         List<Schedule> schedules = new ArrayList<>();
         for (DateTimesCreateRequest dateTime : request.dateTimes()) {
@@ -44,7 +44,7 @@ public class ScheduleService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 시간을 선택할 수 없습니다."));
 
             schedules.addAll(dateTime.times().stream()
-                    .map(time -> new Schedule(meeting, guest, Timeslot.from(time), availableDate))
+                    .map(time -> new Schedule(attendee, availableDate, Timeslot.from(time), Timeslot.from(time)))
                     .toList());
         }
         scheduleRepository.saveAll(schedules);

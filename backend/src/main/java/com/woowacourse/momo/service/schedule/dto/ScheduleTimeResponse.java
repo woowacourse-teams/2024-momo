@@ -1,4 +1,4 @@
-package com.woowacourse.momo.domain.schedule.dto;
+package com.woowacourse.momo.service.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -21,7 +21,7 @@ public record ScheduleTimeResponse(
                 .orElseThrow(IllegalArgumentException::new);
 
         List<LocalTime> localTimes = schedules.stream()
-                .map(Schedule::getTimeslot)
+                .map(Schedule::getFirstTimeslot)
                 .map(Timeslot::getTime)
                 .sorted()
                 .toList();
