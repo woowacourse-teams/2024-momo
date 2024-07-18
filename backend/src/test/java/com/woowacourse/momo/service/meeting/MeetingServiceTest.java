@@ -52,7 +52,7 @@ class MeetingServiceTest {
     void findByUUID() {
         // given
         String uuid = UUID.randomUUID().toString();
-        Attendee host = attendeeRepository.save(new Attendee(null, new AttendeeName("페드로"), ""));
+        Attendee attendee = attendeeRepository.save(new Attendee(null, new AttendeeName("페드로"), ""));
         String meetingName = "주먹 대결";
         Meeting boxingWithPedro = meetingRepository.save(
                 new Meeting(
@@ -60,16 +60,15 @@ class MeetingServiceTest {
                         meetingName,
                         uuid,
                         Timeslot.TIME_0000,
-                        Timeslot.TIME_0400,
-                        host
+                        Timeslot.TIME_0400
                 )
         );
         for (int i = 0; i < 7; i++) {
             availableDateRepository.save(new AvailableDate(null, LocalDate.now().minusDays(i + 1), boxingWithPedro));
         }
         AvailableDate availableDate = availableDateRepository.findAll().get(0);
-        scheduleRepository.save(new Schedule(null, boxingWithPedro, host, Timeslot.TIME_0300, availableDate));
-        scheduleRepository.save(new Schedule(null, boxingWithPedro, host, Timeslot.TIME_0100, availableDate));
+        scheduleRepository.save(new Schedule(null, boxingWithPedro, attendee, Timeslot.TIME_0300, availableDate));
+        scheduleRepository.save(new Schedule(null, boxingWithPedro, attendee, Timeslot.TIME_0100, availableDate));
 
         // when
         MeetingResponse result = meetingService.findByUUID(uuid);
