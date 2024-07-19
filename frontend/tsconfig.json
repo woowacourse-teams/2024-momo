@@ -32,8 +32,10 @@
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]
-    }
+    },
+    // test
+    "types": ["jest"]
   },
-  "include": ["./src"],
+  "include": ["./src", "jest.setup.js"],
   "exclude": ["/node_modules/"]
 }
