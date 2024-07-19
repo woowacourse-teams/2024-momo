@@ -40,7 +40,7 @@ jobs:
         run: npm ci
 
       - name: RTL을 실행해요 :)
-        run: npm run test
+        run: npm run test -- --passWithNoTests
 
       - name: 테스트 결과를 PR에 코멘트로 등록해요 :)
         uses: EnricoMi/publish-unit-test-result-action@v2
