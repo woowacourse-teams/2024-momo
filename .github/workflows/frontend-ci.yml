@@ -1,0 +1,49 @@
+name: Frontend CI Test
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths: "frontend/**"
+defaults:
+  run:
+    working-directory: frontend
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 모모 레파지토리의 코드를 가져와요 :)
+        uses: actions/checkout@v4
+
+      - name: 노드 버젼을 설정해요 :)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: 이전 의존성을 저장해둔게 있나~? 확인해요 :)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: "frontend/node_modules"
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            ${{ runner.os }}
+
+      - name: package-lock.json을 활용해서 의존성을 깨끗하게 설치해요 :)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: RTL을 실행해요 :)
+        run: npm run test
+
+      - name: 테스트 결과를 PR에 코멘트로 등록해요 :)
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: frontend/test-results/results.xml
