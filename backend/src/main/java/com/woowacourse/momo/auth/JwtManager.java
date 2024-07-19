@@ -46,8 +46,7 @@ public class JwtManager {
     private DecodedJWT verifyToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .build();
+            JWTVerifier verifier = JWT.require(algorithm).build();
             return verifier.verify(token);
         } catch (InvalidClaimException e) {
             log.warn("토큰 내 클레임이 유효하지 않습니다. {} ", e.getMessage(), e);
