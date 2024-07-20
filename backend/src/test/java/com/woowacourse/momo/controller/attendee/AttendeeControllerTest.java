@@ -6,7 +6,6 @@ import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.fixture.MeetingFixture;
-import com.woowacourse.momo.service.attendee.AttendeeService;
 import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
 import io.restassured.RestAssured;
@@ -28,9 +27,6 @@ class AttendeeControllerTest {
     private int port;
 
     @Autowired
-    private AttendeeService attendeeService;
-
-    @Autowired
     private AttendeeRepository attendeeRepository;
 
     @Autowired
@@ -39,7 +35,6 @@ class AttendeeControllerTest {
     private Meeting meeting;
     private String name;
     private String password;
-    private String uuid;
 
     @BeforeEach
     void setUp() {
