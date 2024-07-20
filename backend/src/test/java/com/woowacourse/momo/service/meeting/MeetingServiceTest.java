@@ -1,7 +1,6 @@
 package com.woowacourse.momo.service.meeting;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
-import com.woowacourse.momo.domain.attendee.AttendeeName;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
@@ -55,7 +54,7 @@ class MeetingServiceTest {
         String uuid = UUID.randomUUID().toString();
 
         String meetingName = "주먹 대결";
-        Meeting boxingWithPedro = meetingRepository.save(
+        Meeting meeting = meetingRepository.save(
                 new Meeting(
                         null,
                         meetingName,
@@ -65,18 +64,13 @@ class MeetingServiceTest {
                 )
         );
 
-        Attendee attendee = attendeeRepository.save(new Attendee(
-                null,
-                boxingWithPedro,
-                new AttendeeName("페드로"),
-                "",
-                Role.GUEST));
+        Attendee attendee = attendeeRepository.save(new Attendee(meeting, "페드로", "1234", Role.GUEST));
 
         for (int i = 0; i < 7; i++) {
             availableDateRepository.save(new AvailableDate(
                     null,
                     LocalDate.now().minusDays(i + 1),
-                    boxingWithPedro)
+                    meeting)
             );
         }
 
