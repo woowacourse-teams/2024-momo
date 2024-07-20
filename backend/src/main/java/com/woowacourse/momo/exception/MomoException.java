@@ -9,6 +9,7 @@ public class MomoException extends RuntimeException {
     private final ErrorCodeType errorCodeType;
 
     public MomoException(ErrorCodeType errorCodeType) {
+        super(errorCodeType.message());
         this.errorCodeType = errorCodeType;
     }
 }
