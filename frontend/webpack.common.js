@@ -12,6 +12,13 @@ module.exports = () => ({
         use: 'babel-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][hash][ext][query]',
+        },
+      },
     ],
   },
   resolve: {
@@ -42,4 +49,9 @@ module.exports = () => ({
     new ForkTsCheckerWebpackPlugin(),
     new DotenvWebpackPlugin(),
   ],
+  performance: {
+    hints: false,
+    maxEntrypointSize: 400000,
+    maxAssetSize: 400000,
+  },
 });
