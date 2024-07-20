@@ -49,16 +49,16 @@ public class JwtManager {
             JWTVerifier verifier = JWT.require(algorithm).build();
             return verifier.verify(token);
         } catch (InvalidClaimException e) {
-            log.warn("토큰 내 클레임이 유효하지 않습니다. {} ", e.getMessage(), e);
+            log.warn("토큰 내 클레임이 유효하지 않습니다. {} ", e.getMessage());
             throw new MomoException(AuthErrorCode.INVALID_TOKEN);
         } catch (JWTDecodeException e) {
-            log.warn("JWT 토큰 구성이 올바르지 않습니다. {} ", e.getMessage(), e);
+            log.warn("JWT 토큰 구성이 올바르지 않습니다. {} ", e.getMessage());
             throw new MomoException(AuthErrorCode.INVALID_TOKEN);
         } catch (SignatureVerificationException e) {
-            log.warn("토큰의 서명이 알고리즘을 사용하여 검증했을 때 유효하지 않습니다. {} ", e.getMessage(), e);
+            log.warn("토큰의 서명이 알고리즘을 사용하여 검증했을 때 유효하지 않습니다. {} ", e.getMessage());
             throw new MomoException(AuthErrorCode.INVALID_TOKEN);
         } catch (JWTVerificationException e) {
-            log.warn("토큰 검증 과정에서 예기치 못한 에러가 발생하였습니다. {} ", e.getMessage(), e);
+            log.warn("토큰 검증 과정에서 예기치 못한 에러가 발생하였습니다. {} ", e.getMessage());
             throw new MomoException(AuthErrorCode.INVALID_TOKEN);
         }
     }
