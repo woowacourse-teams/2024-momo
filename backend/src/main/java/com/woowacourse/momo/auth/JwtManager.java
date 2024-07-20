@@ -32,7 +32,7 @@ public class JwtManager {
     public String generate(Attendee attendee) {
         return JWT.create()
                 .withClaim(CLAIM_ID, attendee.getId())
-                .withClaim(CLAIM_NICKNAME, attendee.getName().getName())
+                .withClaim(CLAIM_NICKNAME, attendee.name())
                 .sign(Algorithm.HMAC256(secretKey));
     }
 

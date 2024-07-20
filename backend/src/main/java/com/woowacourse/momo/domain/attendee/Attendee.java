@@ -64,4 +64,8 @@ public class Attendee extends BaseEntity {
             throw new MomoException(AttendeeErrorCode.NOT_MATCHES_PASSWORD);
         }
     }
+
+    public String name() {
+        return this.name.getName();
+    }
 }
