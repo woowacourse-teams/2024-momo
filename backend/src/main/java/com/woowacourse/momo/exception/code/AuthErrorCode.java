@@ -15,12 +15,17 @@ public enum AuthErrorCode implements ErrorCodeType {
     }
 
     @Override
+    public HttpStatus httpStatus() {
+        return httpStatus;
+    }
+
+    @Override
     public String message() {
         return message;
     }
 
     @Override
-    public HttpStatus httpStatus() {
-        return httpStatus;
+    public String errorCode() {
+        return name();
     }
 }
