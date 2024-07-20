@@ -39,4 +39,11 @@ public class Meeting extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private Timeslot lastTimeslot;
+
+    public Meeting(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+        this.name = name;
+        this.uuid = uuid;
+        this.firstTimeslot = firstTimeslot;
+        this.lastTimeslot = lastTimeslot;
+    }
 }
