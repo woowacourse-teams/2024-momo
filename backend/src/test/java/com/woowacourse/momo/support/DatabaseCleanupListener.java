@@ -7,7 +7,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 public class DatabaseCleanupListener extends AbstractTestExecutionListener {
 
-    private final String sql = """
+    private static final String SQL = """
             SELECT CONCAT('TRUNCATE TABLE ', TABLE_NAME, ' RESTART IDENTITY;')
             FROM INFORMATION_SCHEMA.TABLES
             WHERE TABLE_SCHEMA = 'PUBLIC';
@@ -25,7 +25,7 @@ public class DatabaseCleanupListener extends AbstractTestExecutionListener {
     }
 
     private List<String> getTruncateQueries(JdbcTemplate jdbcTemplate) {
-        return jdbcTemplate.queryForList(sql, String.class);
+        return jdbcTemplate.queryForList(SQL, String.class);
     }
 
     private void execute(List<String> queries, JdbcTemplate jdbcTemplate) {
