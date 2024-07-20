@@ -26,6 +26,10 @@ module.exports = () => ({
           filename: 'assets/fonts/[name][hash][ext][query]',
         },
       },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
     ],
   },
   resolve: {
