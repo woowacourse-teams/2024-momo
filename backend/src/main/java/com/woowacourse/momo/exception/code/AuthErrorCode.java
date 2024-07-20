@@ -13,4 +13,14 @@ public enum AuthErrorCode implements ErrorCodeType {
         this.httpStatus = httpStatus;
         this.message = message;
     }
+
+    @Override
+    public String message() {
+        return message;
+    }
+
+    @Override
+    public HttpStatus httpStatus() {
+        return httpStatus;
+    }
 }
