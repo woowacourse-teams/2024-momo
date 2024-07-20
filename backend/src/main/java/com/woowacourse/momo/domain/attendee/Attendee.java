@@ -61,7 +61,7 @@ public class Attendee extends BaseEntity {
 
     public void verifyPassword(AttendeePassword other) {
         if (!this.password.equals(other)) {
-            throw new MomoException(AttendeeErrorCode.NOT_MATCHES_PASSWORD);
+            throw new MomoException(AttendeeErrorCode.PASSWORD_MISMATCHED);
         }
     }
 
