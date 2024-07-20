@@ -2,8 +2,6 @@ package com.woowacourse.momo.domain.attendee;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.meeting.Meeting;
-import com.woowacourse.momo.exception.MomoException;
-import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -60,9 +58,7 @@ public class Attendee extends BaseEntity {
     }
 
     public void verifyPassword(AttendeePassword other) {
-        if (!this.password.equals(other)) {
-            throw new MomoException(AttendeeErrorCode.PASSWORD_MISMATCHED);
-        }
+        this.password.verifyPassword(other);
     }
 
     public String name() {
