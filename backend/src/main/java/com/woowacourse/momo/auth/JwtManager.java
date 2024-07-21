@@ -38,7 +38,7 @@ public class JwtManager {
 
     public TokenInfo extract(String token) {
         DecodedJWT decodedJWT = verifyToken(token);
-        Long id = decodedJWT.getClaim(CLAIM_ID).asLong();
+        long id = decodedJWT.getClaim(CLAIM_ID).asLong();
         String nickname = decodedJWT.getClaim(CLAIM_NICKNAME).asString();
         return new TokenInfo(id, nickname);
     }
