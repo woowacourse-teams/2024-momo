@@ -1,0 +1,11 @@
+{
+  "eslint.workingDirectories": ["./frontend"],
+  "stylelint.configFile": ".stylelintrc.json",
+  "stylelint.packageManager": "npm",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit",
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.prettier": "explicit"
+  },
+  "stylelint.validate": ["typescript", "typescriptreact"]
+}
