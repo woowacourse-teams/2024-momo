@@ -2,6 +2,7 @@ package com.woowacourse.momo.support;
 
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -14,7 +15,7 @@ public class DatabaseCleanupListener extends AbstractTestExecutionListener {
             """;
 
     @Override
-    public void afterTestMethod(TestContext testContext) {
+    public void afterTestMethod(@NonNull TestContext testContext) {
         JdbcTemplate jdbcTemplate = getJdbcTemplateBean(testContext);
         List<String> queries = getTruncateQueries(jdbcTemplate);
         execute(queries, jdbcTemplate);
