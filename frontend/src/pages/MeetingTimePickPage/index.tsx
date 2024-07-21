@@ -46,6 +46,7 @@ export default function MeetingTimePickPage() {
       <h1 css={title}>momo TimePicker</h1>
       {data && (
         <TimePicker
+          isUpdate={isUpdate}
           availableDates={data.availableDates}
           startTime={data.startTime}
           useTimePickReturn={[ref, value]}

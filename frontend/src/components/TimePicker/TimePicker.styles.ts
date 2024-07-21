@@ -29,21 +29,6 @@ export const table = css`
   width: 100%;
 `;
 
-export const styledTd = (isSelected: boolean) => css`
-  cursor: pointer;
-
-  padding: 0.4rem;
-
-  color: ${isSelected ? '#121010' : '#fff'};
-
-  background: ${isSelected ? theme.linear.selectedTime : '#ececec'};
-  border-radius: 0.4rem;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`;
-
 export const styledTh = css`
   display: flex;
   align-items: center;

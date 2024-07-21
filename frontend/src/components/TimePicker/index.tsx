@@ -1,14 +1,18 @@
+import TimeSlot from '@components/_common/TimeSlot';
+
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
-import { styledTd, styledTh, table, tableTexture } from './TimePicker.styles';
+import { styledTh, table, tableTexture } from './TimePicker.styles';
 
 export interface TimePickerProps {
+  isUpdate: boolean;
   availableDates: string[];
   startTime: string;
   useTimePickReturn: ReturnType<typeof useTimePick>;
 }
 
 export default function TimePicker({
+  isUpdate,
   availableDates,
   startTime,
   useTimePickReturn,
@@ -33,9 +37,10 @@ export default function TimePicker({
                 {String(rowIndex + Number(startTime.slice(0, 2)) + ':00')}
               </th>
               {row.map((_, columnIndex) => (
-                <td
+                <TimeSlot
                   key={rowIndex + columnIndex}
-                  css={[tableTexture, styledTd(value[rowIndex][columnIndex])]}
+                  isSelected={value[rowIndex][columnIndex]}
+                  isUpdate={isUpdate}
                 />
               ))}
             </tr>
