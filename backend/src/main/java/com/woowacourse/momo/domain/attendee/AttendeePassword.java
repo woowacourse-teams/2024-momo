@@ -23,7 +23,7 @@ public class AttendeePassword {
 
     private void validatePasswordLength(String password) {
         if (password.length() > 20) {
-            throw new IllegalArgumentException("비밀번호 길이는 20글자까지 가능합니다.");
+            throw new MomoException(AttendeeErrorCode.INVALID_PASSWORD_LENGTH);
         }
     }
 
