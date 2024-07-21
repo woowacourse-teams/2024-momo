@@ -1,5 +1,7 @@
 package com.woowacourse.momo.domain.attendee;
 
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +21,7 @@ public class AttendeeName {
 
     private void validateNameLength(String name) {
         if (name.length() > 20) {
-            throw new IllegalArgumentException("이름의 길이는 20글자까지 가능합니다.");
+            throw new MomoException(AttendeeErrorCode.INVALID_NAME_LENGTH);
         }
     }
 }
