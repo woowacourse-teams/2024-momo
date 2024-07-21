@@ -1,6 +1,7 @@
 package com.woowacourse.momo.auth;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.woowacourse.momo.auth.dto.TokenInfo;
 import com.woowacourse.momo.domain.attendee.Attendee;
@@ -10,7 +11,6 @@ import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AuthErrorCode;
 import com.woowacourse.momo.fixture.MeetingFixture;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,10 +41,10 @@ class JwtManagerTest {
         String token = jwtManager.generate(attendee);
         TokenInfo tokenInfo = jwtManager.extract(token);
 
-        SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(tokenInfo.id()).isEqualTo(attendeeId);
-        softAssertions.assertThat(tokenInfo.nickname()).isEqualTo(attendeeName);
-        softAssertions.assertAll();
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(tokenInfo.id()).isEqualTo(attendeeId);
+            softAssertions.assertThat(tokenInfo.nickname()).isEqualTo(attendeeName);
+        });
     }
 
     @DisplayName("토큰이 올바르지 않을 경우 예외를 발생시킨다.")
