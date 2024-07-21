@@ -50,13 +50,6 @@ export const styledTh = css`
   justify-content: center;
 `;
 
-export const buttonContainer = css`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 1rem;
-`;
-
 export const tableTexture = css`
   cursor: default;
   width: 4rem;
