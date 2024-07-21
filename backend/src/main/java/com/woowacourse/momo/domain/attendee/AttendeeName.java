@@ -2,6 +2,7 @@ package com.woowacourse.momo.domain.attendee;
 
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendeeName {
 
+    @Column(nullable = false, length = 20)
     private String name;
 
     public AttendeeName(String name) {

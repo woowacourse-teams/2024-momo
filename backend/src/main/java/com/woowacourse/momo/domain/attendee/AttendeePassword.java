@@ -2,6 +2,7 @@ package com.woowacourse.momo.domain.attendee;
 
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendeePassword {
 
+    @Column(nullable = false, length = 20)
     private String password;
 
     public AttendeePassword(String password) {
