@@ -33,16 +33,16 @@ public class AttendeeService {
         AttendeePassword password = new AttendeePassword(request.password());
 
         return attendeeRepository.findByMeetingAndName(meeting, name)
-                .map(attendee -> handleExistingAttendee(attendee, password))
-                .orElseGet(() -> handleNewAttendee(meeting, name, password));
+                .map(attendee -> verifyPassword(attendee, password))
+                .orElseGet(() -> signup(meeting, name, password));
     }
 
-    private TokenResponse handleExistingAttendee(Attendee attendee, AttendeePassword password) {
+    private TokenResponse verifyPassword(Attendee attendee, AttendeePassword password) {
         attendee.verifyPassword(password);
         return new TokenResponse(jwtManager.generate(attendee));
     }
 
-    private TokenResponse handleNewAttendee(Meeting meeting, AttendeeName name, AttendeePassword password) {
+    private TokenResponse signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
         return new TokenResponse(jwtManager.generate(attendee));
