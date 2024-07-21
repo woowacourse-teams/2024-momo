@@ -38,10 +38,30 @@ public class Attendee extends BaseEntity {
     @Column(nullable = false, length = 20)
     private AttendeeName name;
 
-    @Column(nullable = false)
-    private String password;
+    @Embedded
+    @Column(nullable = false, length = 20)
+    private AttendeePassword password;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private Role role;
+
+    public Attendee(Meeting meeting, AttendeeName name, AttendeePassword password, Role role) {
+        this.meeting = meeting;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+    }
+
+    public Attendee(Meeting meeting, String name, String password, Role role) {
+        this(meeting, new AttendeeName(name), new AttendeePassword(password), role);
+    }
+
+    public void verifyPassword(AttendeePassword other) {
+        this.password.verifyPassword(other);
+    }
+
+    public String name() {
+        return this.name.getName();
+    }
 }
