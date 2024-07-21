@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,8 @@ class AttendeeTest {
         AttendeePassword other = new AttendeePassword("1234");
 
         assertThatThrownBy(() -> attendee.verifyPassword(other))
-                .isInstanceOf(MomoException.class);
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.PASSWORD_MISMATCHED.message());
     }
 
     @DisplayName("참가자의 비밀번호가 일치하면 정상 기능한다.")
