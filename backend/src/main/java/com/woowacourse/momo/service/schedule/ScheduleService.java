@@ -16,8 +16,8 @@ import com.woowacourse.momo.exception.code.AvailableDateErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,14 +45,12 @@ public class ScheduleService {
     }
 
     private List<Schedule> generateSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {
-        List<Schedule> schedules = new ArrayList<>();
-        request.dateTimes().forEach(
-                datetime -> schedules.addAll(generateScheduleOfSpecificDay(datetime, meeting, attendee))
-        );
-        return schedules;
+        return request.dateTimes().stream()
+                .flatMap(datetime -> generateScheduleOfSpecificDay(datetime, meeting, attendee))
+                .toList();
     }
 
-    private List<Schedule> generateScheduleOfSpecificDay(
+    private Stream<Schedule> generateScheduleOfSpecificDay(
             DateTimesCreateRequest datetime, Meeting meeting, Attendee attendee
     ) {
         AvailableDate availableDate = availableDateRepository.findByMeetingAndDate(meeting, datetime.date())
@@ -60,8 +58,7 @@ public class ScheduleService {
 
         List<TimeslotInterval> intervals = TimeslotInterval.generate(datetime.times());
         return intervals.stream()
-                .map(interval -> createValidSchedule(availableDate, interval, meeting, attendee))
-                .toList();
+                .map(interval -> createValidSchedule(availableDate, interval, meeting, attendee));
     }
 
     private Schedule createValidSchedule(
