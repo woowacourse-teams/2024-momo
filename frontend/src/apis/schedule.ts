@@ -20,9 +20,6 @@ export const postSchedule = async (requestData: Schedules[]) => {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
-
-  const data = await response.json();
-  return data;
 };
 
 // 현재 쓰지 않는 API (schedule 수정 시 사용하는 API)
