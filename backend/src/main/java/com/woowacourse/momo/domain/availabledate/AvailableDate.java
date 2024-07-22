@@ -35,6 +35,11 @@ public class AvailableDate extends BaseEntity {
     @JoinColumn(name = "meeting_id", nullable = false)
     private Meeting meeting;
 
+    public AvailableDate(LocalDate date, Meeting meeting) {
+        this.date = date;
+        this.meeting = meeting;
+    }
+
     public boolean isSameDate(LocalDate other) {
         return this.date.equals(other);
     }

@@ -21,13 +21,18 @@ import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
+import com.woowacourse.momo.fixture.MeetingFixture;
+import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
+import com.woowacourse.momo.support.IsolateDatabase;
+import com.woowacourse.momo.support.IsolateDatabase;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,50 +53,31 @@ class MeetingServiceTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    private Meeting meeting;
+    private List<AvailableDate> availableDates;
 
-    @Autowired
-    private AttendeeRepository attendeeRepository;
+    @BeforeEach
+    void setup() {
+        meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
+        availableDates = List.of(
+                availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
+                availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
+        );
+    }
 
     @DisplayName("UUID로 약속 정보를 조회한다.")
     @Test
     void findByUUID() {
-        // given
-        String uuid = UUID.randomUUID().toString();
+        String uuid = meeting.getUuid();
 
-        String meetingName = "주먹 대결";
-        Meeting meeting = meetingRepository.save(
-                new Meeting(
-                        meetingName,
-                        uuid,
-                        Timeslot.TIME_0000,
-                        Timeslot.TIME_0400
-                )
-        );
+        MeetingResponse response = meetingService.findByUUID(uuid);
 
-        Attendee attendee = attendeeRepository.save(new Attendee(meeting, "페드로", "1234", Role.GUEST));
-
-        for (int i = 0; i < 7; i++) {
-            availableDateRepository.save(new AvailableDate(
-                    null,
-                    LocalDate.now().minusDays(i + 1),
-                    meeting)
-            );
-        }
-
-        AvailableDate availableDate = availableDateRepository.findAll().get(0);
-        scheduleRepository.save(new Schedule(attendee, availableDate, Timeslot.TIME_0300, Timeslot.TIME_0300));
-        scheduleRepository.save(new Schedule(attendee, availableDate, Timeslot.TIME_0100, Timeslot.TIME_0300));
-
-        // when
-        MeetingResponse result = meetingService.findByUUID(uuid);
-
-        // then
-        SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(result.meetingName()).isEqualTo(meetingName);
-        softAssertions.assertThat(result.availableDates().get(0)).isEqualTo(LocalDate.now().minusDays(1));
-        softAssertions.assertAll();
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.firstTimeslotTime());
+            softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.lastTimeslotTime());
+            softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());
+            softAssertions.assertThat(response.availableDates().size()).isEqualTo(availableDates.size());
+        });
     }
 
     @DisplayName("약속 정보와 참가자 정보를 통해 약속을 등록한다.")

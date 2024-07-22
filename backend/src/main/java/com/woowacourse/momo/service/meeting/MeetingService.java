@@ -4,10 +4,14 @@ import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
+import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDates;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
+import com.woowacourse.momo.domain.schedule.ScheduleRepository;
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.exception.MomoException;
@@ -40,23 +44,10 @@ public class MeetingService {
     @Transactional(readOnly = true)
     public MeetingResponse findByUUID(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
 
-        List<AvailableDate> availableDates = availableDateRepository.findAllByMeeting(meeting);
-        List<LocalDate> dates = availableDates.stream()
-                .map(AvailableDate::getDate)
-                .toList();
-
-        List<Schedule> schedules = scheduleRepository.findAll();
-        Map<AvailableDate, List<Schedule>> collected = schedules.stream()
-                .collect(Collectors.groupingBy(Schedule::getAvailableDate));
-        List<ScheduleTimeResponse> list = collected.entrySet().stream()
-                .sorted(Comparator.comparing(a -> a.getKey().getDate()))
-                .map(Entry::getValue)
-                .map(ScheduleTimeResponse::from)
-                .toList();
-
-        return MeetingResponse.from(meeting, dates, list);
+        return MeetingResponse.from(meeting, availableDates);
     }
 
     @Transactional

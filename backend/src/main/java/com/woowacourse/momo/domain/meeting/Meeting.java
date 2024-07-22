@@ -59,4 +59,12 @@ public class Meeting extends BaseEntity {
             throw new MomoException(MeetingErrorCode.INVALID_TIME_RANGE);
         }
     }
+
+    public LocalTime firstTimeslotTime() {
+        return timeslotInterval.getFirstTimeslot().getTime();
+    }
+
+    public LocalTime lastTimeslotTime() {
+        return timeslotInterval.getLastTimeslot().getTime();
+    }
 }
