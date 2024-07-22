@@ -1,5 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { usePostScheduleMutation } from 'stores/servers/meeting/mutations';
 
 import TimePicker from '@components/TimePicker';
 import Button from '@components/_common/Button';
@@ -7,29 +7,24 @@ import Button from '@components/_common/Button';
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
 import { getMeetingResponse } from '@apis/getMeeting';
-import postSchedule from '@apis/postSchedule';
 
 import responseData from '@mocks/data.json';
 
 import { buttonContainer, title } from './MeetingTimePickPage.styles';
 import { convertToSchedule, generateScheduleMatrix } from './MeetingTimePickPage.utils';
 
+// import { useGetMeetingQuery } from 'stores/servers/meeting/queries';
+
 export default function MeetingTimePickPage() {
   // TODO: 임시 데이터 설정, 추후에 msw로 연결 수정
-  // const { data } = useQuery({
-  //   queryKey: ['getMeeting'],
-  //   queryFn: () => getMeeting(),
-  //   retry: 1,
-  // });
+  // const { data } = useGetMeetingQuery();
 
   const data = responseData.data as getMeetingResponse;
   const initialValue = generateScheduleMatrix(data);
   const [isUpdate, setIsUpdate] = useState(false);
   const [ref, value] = useTimePick(isUpdate, initialValue);
 
-  const mutation = useMutation({
-    mutationFn: postSchedule,
-  });
+  const { mutate: postScheduleMutate } = usePostScheduleMutation();
 
   const onToggle = () => {
     setIsUpdate((prevIsUpdate) => !prevIsUpdate);
@@ -37,7 +32,7 @@ export default function MeetingTimePickPage() {
     if (isUpdate) {
       const convert = convertToSchedule(value, data.availableDates, data.startTime, data.endTime);
 
-      mutation.mutate(convert);
+      postScheduleMutate(convert);
     }
   };
 
