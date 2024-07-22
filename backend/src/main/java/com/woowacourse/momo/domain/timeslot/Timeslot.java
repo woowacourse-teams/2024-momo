@@ -72,4 +72,9 @@ public enum Timeslot {
     public boolean isNotBefore(Timeslot timeslot) {
         return !this.time.isBefore(timeslot.time);
     }
+
+    public boolean isNotPreviousSlot(Timeslot other) {
+        return this.time.plusMinutes(30) != other.time;
+//        return this.ordinal() + 1 != other.ordinal();
+    }
 }

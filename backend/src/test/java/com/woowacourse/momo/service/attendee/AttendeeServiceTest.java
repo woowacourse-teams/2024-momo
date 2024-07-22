@@ -10,7 +10,7 @@ import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.exception.MomoException;
-import com.woowacourse.momo.exception.code.AttendeeErrorCode;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
@@ -58,7 +58,7 @@ class AttendeeServiceTest {
 
         assertThatThrownBy(() -> attendeeService.login(uuid, request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AttendeeErrorCode.INVALID_UUID.message());
+                .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
 
     @DisplayName("로그인 시 동일한 이름이 저장되어있지 않으면 새로 참가자를 생성한다.")

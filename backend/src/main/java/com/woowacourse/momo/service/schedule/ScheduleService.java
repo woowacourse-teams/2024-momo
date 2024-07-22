@@ -9,7 +9,11 @@ import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
-import com.woowacourse.momo.domain.timeslot.Timeslot;
+import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.AttendeeErrorCode;
+import com.woowacourse.momo.exception.code.AvailableDateErrorCode;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import java.util.ArrayList;
@@ -30,23 +34,28 @@ public class ScheduleService {
     @Transactional
     public void create(ScheduleCreateRequest request) {
         Meeting meeting = meetingRepository.findById(request.meetingId())
-                .orElseThrow(() -> new IllegalArgumentException("유효한 약속 id가 아닙니다."));
-
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         AttendeeName attendeeName = new AttendeeName(request.attendeeName());
-        Attendee attendee = attendeeRepository.findByName(attendeeName)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게스트입니다."));
+
+        Attendee attendee = attendeeRepository.findByMeetingAndName(meeting, attendeeName)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         scheduleRepository.deleteAllByAttendee(attendee);
+        scheduleRepository.saveAll(generateSchedules(request, meeting, attendee));
+    }
 
+    private List<Schedule> generateSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {
         List<Schedule> schedules = new ArrayList<>();
         for (DateTimesCreateRequest dateTime : request.dateTimes()) {
             AvailableDate availableDate = availableDateRepository.findByMeetingAndDate(meeting, dateTime.date())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 시간을 선택할 수 없습니다."));
+                    .orElseThrow(() -> new MomoException(AvailableDateErrorCode.INVALID_AVAILABLE_DATE));
 
-            schedules.addAll(dateTime.times().stream()
-                    .map(time -> new Schedule(attendee, availableDate, Timeslot.from(time), Timeslot.from(time)))
-                    .toList());
+            List<TimeslotInterval> scheduleTimeslotIntervals = TimeslotInterval.generate(dateTime.times());
+            for (TimeslotInterval scheduleTimeslotInterval : scheduleTimeslotIntervals) {
+                meeting.validateTimeslotInterval(scheduleTimeslotInterval);
+                schedules.add(new Schedule(attendee, availableDate, scheduleTimeslotInterval));
+            }
         }
-        scheduleRepository.saveAll(schedules);
+        return schedules;
     }
 }

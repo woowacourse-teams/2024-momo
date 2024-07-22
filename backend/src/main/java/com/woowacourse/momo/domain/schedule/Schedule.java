@@ -4,10 +4,9 @@ import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
-import jakarta.persistence.Column;
+import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,23 +34,24 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "attendee_id", nullable = false)
     private Attendee attendee;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot firstTimeslot;
+    @Embedded
+    private TimeslotInterval timeslotInterval;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot lastTimeslot;
-
-    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+    public Schedule(Attendee attendee, AvailableDate availableDate, TimeslotInterval timeslotInterval) {
         this.attendee = attendee;
         this.availableDate = availableDate;
-        this.firstTimeslot = firstTimeslot;
-        this.lastTimeslot = lastTimeslot;
+        this.timeslotInterval = timeslotInterval;
+    }
+
+    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+        this(attendee, availableDate, new TimeslotInterval(firstTimeslot, lastTimeslot));
+    }
+
+    public Timeslot getFirstTimeslot() {
+        return timeslotInterval.getFirstTimeslot();
     }
 }

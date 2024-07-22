@@ -2,12 +2,12 @@ package com.woowacourse.momo.domain.meeting;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
+import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,20 +35,16 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false, length = 40)
     private String uuid;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot firstTimeslot;
+    @Embedded
+    private TimeslotInterval timeslotInterval;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot lastTimeslot;
+    public Meeting(String name, String uuid, TimeslotInterval timeslotInterval) {
 
     public Meeting(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
         validateTimeRange(firstTimeslot, lastTimeslot);
         this.name = name;
         this.uuid = uuid;
-        this.firstTimeslot = firstTimeslot;
-        this.lastTimeslot = lastTimeslot;
+        this.timeslotInterval = timeslotInterval;
     }
 
     public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
