@@ -31,7 +31,9 @@
       "@pages/*": ["pages/*"],
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@stores/*": ["stores/*"],
+      "@contexts/*": ["contexts/*"]
     },
     // test
     "types": ["jest"]
