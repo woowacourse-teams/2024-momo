@@ -1,5 +1,3 @@
-import { tableTexture } from '@components/TimePicker/TimePicker.styles';
-
 import { styledTd } from './TimeSlot.styles';
 
 interface TimeSlotProps {
@@ -8,5 +6,5 @@ interface TimeSlotProps {
 }
 
 export default function TimeSlot({ isSelected, isUpdate }: TimeSlotProps) {
-  return <td css={[tableTexture, styledTd(isSelected, isUpdate)]} />;
+  return <td css={styledTd(isSelected, isUpdate)} />;
 }
