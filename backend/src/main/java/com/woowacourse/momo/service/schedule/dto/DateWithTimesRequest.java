@@ -5,5 +5,5 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record DateTimesCreateRequest(@NotNull LocalDate date, @NotNull List<LocalTime> times) {
+public record DateWithTimesRequest(@NotNull LocalDate date, @NotNull List<LocalTime> times) {
 }

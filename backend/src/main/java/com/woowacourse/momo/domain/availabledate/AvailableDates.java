@@ -12,11 +12,18 @@ import lombok.Getter;
 @Getter
 public class AvailableDates {
 
-    private final List<AvailableDate> dates;
+    private final List<AvailableDate> availableDates;
+
+    public AvailableDate findByDate(LocalDate other) {
+        return availableDates.stream()
+                .filter(availableDate -> availableDate.isSameDate(other))
+                .findFirst()
+                .orElseThrow(() -> new MomoException(AvailableDateErrorCode.INVALID_AVAILABLE_DATE));
+    }
 
     public AvailableDates(List<LocalDate> dates, Meeting meeting) {
         validateDuplicatedDates(dates);
-        this.dates = dates.stream()
+        this.availableDates = dates.stream()
                 .map(date -> new AvailableDate(date, meeting))
                 .toList();
     }

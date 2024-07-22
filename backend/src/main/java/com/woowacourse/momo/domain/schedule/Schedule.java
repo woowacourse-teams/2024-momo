@@ -47,10 +47,6 @@ public class Schedule extends BaseEntity {
         this.timeslotInterval = timeslotInterval;
     }
 
-    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
-        this(attendee, availableDate, new TimeslotInterval(firstTimeslot, lastTimeslot));
-    }
-
     public Timeslot getFirstTimeslot() {
         return timeslotInterval.getFirstTimeslot();
     }
