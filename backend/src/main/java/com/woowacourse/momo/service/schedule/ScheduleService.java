@@ -46,16 +46,28 @@ public class ScheduleService {
 
     private List<Schedule> generateSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {
         List<Schedule> schedules = new ArrayList<>();
-        for (DateTimesCreateRequest dateTime : request.dateTimes()) {
-            AvailableDate availableDate = availableDateRepository.findByMeetingAndDate(meeting, dateTime.date())
-                    .orElseThrow(() -> new MomoException(AvailableDateErrorCode.INVALID_AVAILABLE_DATE));
-
-            List<TimeslotInterval> scheduleTimeslotIntervals = TimeslotInterval.generate(dateTime.times());
-            for (TimeslotInterval scheduleTimeslotInterval : scheduleTimeslotIntervals) {
-                meeting.validateTimeslotInterval(scheduleTimeslotInterval);
-                schedules.add(new Schedule(attendee, availableDate, scheduleTimeslotInterval));
-            }
-        }
+        request.dateTimes().forEach(
+                datetime -> schedules.addAll(generateScheduleOfSpecificDay(datetime, meeting, attendee))
+        );
         return schedules;
+    }
+
+    private List<Schedule> generateScheduleOfSpecificDay(
+            DateTimesCreateRequest datetime, Meeting meeting, Attendee attendee
+    ) {
+        AvailableDate availableDate = availableDateRepository.findByMeetingAndDate(meeting, datetime.date())
+                .orElseThrow(() -> new MomoException(AvailableDateErrorCode.INVALID_AVAILABLE_DATE));
+
+        List<TimeslotInterval> intervals = TimeslotInterval.generate(datetime.times());
+        return intervals.stream()
+                .map(interval -> createValidSchedule(availableDate, interval, meeting, attendee))
+                .toList();
+    }
+
+    private Schedule createValidSchedule(
+            AvailableDate availableDate, TimeslotInterval interval, Meeting meeting, Attendee attendee
+    ) {
+        meeting.validateTimeslotInterval(interval);
+        return new Schedule(attendee, availableDate, interval);
     }
 }
