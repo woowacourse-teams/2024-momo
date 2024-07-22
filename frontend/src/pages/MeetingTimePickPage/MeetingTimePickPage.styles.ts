@@ -14,10 +14,3 @@ export const title = css`
   background: ${theme.linear.selectedTime};
   background-clip: text;
 `;
-
-export const buttonContainer = css`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 1rem;
-`;

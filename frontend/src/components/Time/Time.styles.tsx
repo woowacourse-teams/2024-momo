@@ -40,3 +40,10 @@ export const tableTexture = css`
   width: 4rem;
   height: 4rem;
 `;
+
+export const buttonContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 1rem;
+`;
