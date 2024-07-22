@@ -5,39 +5,26 @@ import { UpdateStateContext } from '@contexts/updateStateProvider';
 import Button from '@components/_common/Button';
 import TimeSlot from '@components/_common/TimeSlot';
 
-import useTimePick from '@hooks/useTimePick/useTimePick';
-
 import { getMeetingResponse } from '@apis/getMeeting';
 
-import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
-
+import { generateScheduleMatrix } from '../Picker/TimePicker.util';
 import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';
-import { convertToSchedule, generateScheduleMatrix } from './TimePicker.util';
 
-export interface TimePickerProps {
+interface TimeViewerProps {
   data: getMeetingResponse;
 }
 
-export default function TimePicker({ data }: TimePickerProps) {
+export default function TimeViewer({ data }: TimeViewerProps) {
   const { getUpdateState, handleToggleIsUpdate } = useContext(UpdateStateContext);
+
   const isUpdate = getUpdateState();
-  const initialValue = generateScheduleMatrix(data);
-  const [ref, value] = useTimePick(isUpdate, initialValue);
 
-  const { mutate: postScheduleMutate } = usePostScheduleMutation();
-
-  const handleOnToggle = () => {
-    const convert = convertToSchedule(value, data.availableDates, data.startTime, data.endTime);
-
-    handleToggleIsUpdate();
-    postScheduleMutate(convert);
-  };
-
+  const schedules = generateScheduleMatrix(data);
   const formattedAvailableDates = ['', ...data.availableDates];
 
   return (
     <div>
-      <table css={table} ref={ref}>
+      <table css={table}>
         <thead>
           <tr>
             {formattedAvailableDates.map((date) => (
@@ -46,7 +33,7 @@ export default function TimePicker({ data }: TimePickerProps) {
           </tr>
         </thead>
         <tbody>
-          {value.map((row, rowIndex) => (
+          {schedules.map((row, rowIndex) => (
             <tr key={rowIndex}>
               <th css={[tableTexture, styledTh]}>
                 {String(rowIndex + Number(data.startTime.slice(0, 2)) + ':00')}
@@ -54,7 +41,7 @@ export default function TimePicker({ data }: TimePickerProps) {
               {row.map((_, columnIndex) => (
                 <TimeSlot
                   key={rowIndex + columnIndex}
-                  isSelected={value[rowIndex][columnIndex]}
+                  isSelected={schedules[rowIndex][columnIndex]}
                   isUpdate={isUpdate}
                 />
               ))}
@@ -64,7 +51,7 @@ export default function TimePicker({ data }: TimePickerProps) {
       </table>
 
       <div css={buttonContainer}>
-        <Button text="등록하기" onClick={handleOnToggle} />
+        <Button text="수정하기" onClick={handleToggleIsUpdate} />
       </div>
     </div>
   );

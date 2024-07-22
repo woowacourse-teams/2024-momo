@@ -1,27 +1,23 @@
-import { UpdateStateProvider } from '@contexts/updateStateProvider';
+import { useContext } from 'react';
+
+import { UpdateStateContext } from '@contexts/updateStateProvider';
 
 import TimePicker from '@components/Time/Picker';
+import TimeViewer from '@components/Time/Viewer';
 
-import { getMeetingResponse } from '@apis/getMeeting';
-
-import responseData from '@mocks/data.json';
+import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
 
 import { title } from './MeetingTimePickPage.styles';
 
-// import { useGetMeetingQuery } from 'stores/servers/meeting/queries';
-
 export default function MeetingTimePickPage() {
-  // TODO: 임시 데이터 설정, 추후에 msw로 연결 수정
-  // const { data } = useGetMeetingQuery();
-
-  const data = responseData.data as getMeetingResponse;
+  const { data } = useGetMeetingQuery();
+  const { getUpdateState } = useContext(UpdateStateContext);
 
   return (
-    <UpdateStateProvider>
-      <div>
-        <h1 css={title}>momo TimePicker</h1>
-        {data && <TimePicker data={data} />}
-      </div>
-    </UpdateStateProvider>
+    <div>
+      <h1 css={title}>momo TimePicker</h1>
+      {data && getUpdateState() && <TimePicker data={data} />}
+      {data && !getUpdateState() && <TimeViewer data={data} />}
+    </div>
   );
 }

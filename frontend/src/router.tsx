@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import GlobalLayout from '@layouts/GlobalLayout';
 
+import { UpdateStateProvider } from '@contexts/updateStateProvider';
+
 import Join from '@pages/MeetingTimePickPage';
 
 const router = createBrowserRouter(
@@ -12,7 +14,11 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <Join />,
+          element: (
+            <UpdateStateProvider>
+              <Join />
+            </UpdateStateProvider>
+          ),
         },
       ],
     },
