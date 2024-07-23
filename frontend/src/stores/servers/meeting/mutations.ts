@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { getMeetingResponse } from '@apis/getMeeting';
+import { GetMeetingResponse } from '@apis/getMeeting';
 import { postSchedule } from '@apis/schedule';
 
 import { QUERY_KEY } from '@constants/queryKeys';
@@ -15,7 +15,7 @@ export const usePostScheduleMutation = (onSettledCallback: () => void) => {
 
       const prevSchedules = queryClient.getQueryData([QUERY_KEY.meeting]);
 
-      queryClient.setQueryData([QUERY_KEY.meeting], (prevData: getMeetingResponse) => {
+      queryClient.setQueryData([QUERY_KEY.meeting], (prevData: GetMeetingResponse) => {
         const nextMeetingSchedules = {
           ...prevData,
           schedules: newSchedules,

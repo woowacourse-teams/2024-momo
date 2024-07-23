@@ -1,4 +1,4 @@
-import { getMeetingResponse } from '@apis/getMeeting';
+import { GetMeetingResponse } from '@apis/getMeeting';
 
 type TimeSlot = Record<string, number>;
 
@@ -19,7 +19,7 @@ export const generateScheduleMatrix = ({
   endTime,
   availableDates,
   schedules,
-}: getMeetingResponse) => {
+}: GetMeetingResponse) => {
   const timeSlots = generateTimeSlots(startTime, endTime);
   const timeSlotIndex = timeSlots.reduce((acc, slot, idx) => {
     acc[slot] = idx;

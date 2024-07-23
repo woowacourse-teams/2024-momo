@@ -5,7 +5,7 @@ export interface Schedules {
   times: string[];
 }
 
-export interface getMeetingResponse {
+export interface GetMeetingResponse {
   meetingName: string;
   startTime: string;
   endTime: string;
@@ -14,7 +14,7 @@ export interface getMeetingResponse {
 }
 
 // uuid 기본값은 임시 설정된 uuid
-const getMeeting = async (uuid = '550e8400'): Promise<getMeetingResponse> => {
+const getMeeting = async (uuid = '550e8400'): Promise<GetMeetingResponse> => {
   const url = `${API_URL}/api/v1/meeting/${uuid}`;
 
   const response = await fetch(url, {

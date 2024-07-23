@@ -7,7 +7,7 @@ import TimeSlot from '@components/_common/TimeSlot';
 
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
-import { getMeetingResponse } from '@apis/getMeeting';
+import { GetMeetingResponse } from '@apis/getMeeting';
 
 import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
 
@@ -15,7 +15,7 @@ import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';
 import { convertToSchedule, generateScheduleMatrix } from './TimePicker.util';
 
 export interface TimePickerProps {
-  data: getMeetingResponse;
+  data: GetMeetingResponse;
 }
 
 export default function TimePicker({ data }: TimePickerProps) {

@@ -5,13 +5,13 @@ import { UpdateStateContext } from '@contexts/updateStateProvider';
 import Button from '@components/_common/Button';
 import TimeSlot from '@components/_common/TimeSlot';
 
-import { getMeetingResponse } from '@apis/getMeeting';
+import { GetMeetingResponse } from '@apis/getMeeting';
 
 import { generateScheduleMatrix } from '../Picker/TimePicker.util';
 import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';
 
 interface TimeViewerProps {
-  data: getMeetingResponse;
+  data: GetMeetingResponse;
 }
 
 export default function TimeViewer({ data }: TimeViewerProps) {
