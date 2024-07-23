@@ -1,6 +1,10 @@
 import { css } from '@emotion/react';
 
+import { fontFaces } from './fonts';
+
 const globalStyles = css`
+  ${fontFaces}
+
   html,
   body,
   div,
@@ -102,6 +106,7 @@ const globalStyles = css`
     width: 100%;
     min-height: 100vh;
 
+    font-family: 'Spoqa Han Sans Neo', sans-serif;
     font-size: 1.6rem;
 
     background-color: #6b6666;
