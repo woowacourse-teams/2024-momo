@@ -58,6 +58,7 @@ public class MeetingService {
         return MeetingResponse.from(meeting, dates, list);
     }
 
+    @Transactional
     public String create(MeetingCreateRequest request) {
         String uuid = UUID.randomUUID().toString();
         Meeting meeting = new Meeting(
