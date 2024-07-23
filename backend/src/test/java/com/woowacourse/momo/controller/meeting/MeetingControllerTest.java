@@ -12,6 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -58,5 +62,26 @@ class MeetingControllerTest {
                 .when().get("/api/v1/meeting/{uuid}/sharing", "1234")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 생성하면 201 상태코드를 반환한다.")
+    @Test
+    void create() {
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                8,
+                List.of(LocalDate.of(2024, 7, 24), LocalDate.of(2024, 7, 25)),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0));
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meeting")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.CREATED.value());
     }
 }

@@ -1,6 +1,9 @@
 package com.woowacourse.momo.service.meeting;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.momo.domain.attendee.Attendee;
+import com.woowacourse.momo.domain.attendee.AttendeeName;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
@@ -14,13 +17,16 @@ import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
+import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +91,58 @@ class MeetingServiceTest {
         softAssertions.assertThat(result.meetingName()).isEqualTo(meetingName);
         softAssertions.assertThat(result.availableDates().get(0)).isEqualTo(LocalDate.now().minusDays(1));
         softAssertions.assertAll();
+    }
+
+    @DisplayName("약속 정보와 참가자 정보를 통해 약속을 등록한다.")
+    @Test
+    void create() {
+        //given
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                8,
+                List.of(LocalDate.of(2024, 7, 24), LocalDate.of(2024, 7, 25)),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0));
+
+        //when
+        meetingService.create(request);
+
+        //then
+        List<Meeting> meetings = meetingRepository.findAll();
+        List<Attendee> attendees = attendeeRepository.findAll();
+        List<AvailableDate> availableDates = availableDateRepository.findAll();
+
+        assertAll(
+                () -> Assertions.assertThat(meetings).hasSize(1),
+                () -> Assertions.assertThat(attendees).hasSize(1),
+                () -> Assertions.assertThat(availableDates).hasSize(2)
+        );
+    }
+
+    @DisplayName("약속을 생성한 참가자의 역할은 호스트이다.")
+    @Test
+    void createdMeetingByHost() {
+        //given
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                8,
+                List.of(LocalDate.of(2024, 7, 24), LocalDate.of(2024, 7, 25)),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0));
+
+        //when
+        meetingService.create(request);
+
+        //then
+        List<Meeting> meetings = meetingRepository.findAll();
+        Attendee attendee = attendeeRepository.findByMeetingAndName(meetings.get(0), new AttendeeName("momoHost"))
+                .orElseThrow();
+
+        Assertions.assertThat(attendee).extracting("role").isEqualTo(Role.HOST);
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
