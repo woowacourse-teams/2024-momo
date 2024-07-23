@@ -40,13 +40,23 @@ class MeetingControllerTest {
         attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
     }
 
-    @DisplayName("약속 완료 정보를 조회하면 200OK와 응답을 반환한다.")
+    @DisplayName("약속 공유 정보를 조회하면 200OK와 응답을 반환한다.")
     @Test
     void findMeetingSharing() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}/result", meeting.getUuid())
+                .when().get("/api/v1/meeting/{uuid}/sharing", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("약속 공유 정보 조회시 UUID가 유효하지 않으면 400 Bad Request를 반환한다.")
+    @Test
+    void findMeetingSharingFailedWithInvalidUUID() {
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}/sharing", "1234")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
