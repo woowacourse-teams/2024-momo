@@ -5,7 +5,7 @@ import { UpdateStateContext } from '@contexts/updateStateProvider';
 import Button from '@components/_common/Button';
 import TimeSlot from '@components/_common/TimeSlot';
 
-import { GetMeetingResponse } from '@apis/getMeeting';
+import type { GetMeetingResponse } from '@apis/getMeeting';
 
 import { generateScheduleMatrix } from '../Picker/TimePicker.util';
 import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';

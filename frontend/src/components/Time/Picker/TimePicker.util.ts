@@ -1,4 +1,4 @@
-import { GetMeetingResponse } from '@apis/getMeeting';
+import type { GetMeetingResponse } from '@apis/getMeeting';
 
 type TimeSlot = Record<string, number>;
 

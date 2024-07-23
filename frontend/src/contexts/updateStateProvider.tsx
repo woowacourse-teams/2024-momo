@@ -1,4 +1,5 @@
-import { PropsWithChildren, createContext, useCallback, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import { createContext, useCallback, useState } from 'react';
 
 interface UpdateStateContextProps {
   isUpdate: boolean;
