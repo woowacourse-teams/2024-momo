@@ -22,8 +22,8 @@ public class MeetingController {
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/result")
-    public MomoApiResponse<MeetingCompletedResponse> findCompleted(@PathVariable String uuid) {
-        MeetingCompletedResponse response = meetingService.findCompleted(uuid);
+    public MomoApiResponse<MeetingCompletedResponse> findCreatedResult(@PathVariable String uuid) {
+        MeetingCompletedResponse response = meetingService.findCreatedResult(uuid);
         return new MomoApiResponse<>(response);
     }
 }

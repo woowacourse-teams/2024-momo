@@ -42,7 +42,7 @@ class MeetingControllerTest {
 
     @DisplayName("약속 완료 정보를 조회하면 200OK와 응답을 반환한다.")
     @Test
-    void findCompleted() {
+    void findCreatedResult() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meeting/{uuid}/result", meeting.getUuid())

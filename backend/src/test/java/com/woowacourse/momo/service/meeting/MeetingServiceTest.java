@@ -91,21 +91,22 @@ class MeetingServiceTest {
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
     @Test
-    void findCompleted() {
+    void findCreatedResult() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
 
-        MeetingCompletedResponse result = meetingService.findCompleted(meeting.getUuid());
+        MeetingCompletedResponse result = meetingService.findCreatedResult(meeting.getUuid());
 
         assertThat(result.uuid()).isEqualTo(meeting.getUuid());
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회시 uuid가 일치하지 않으면 예외가 발생한다.")
     @Test
-    void doesNotFindCompletedMeetingIfUUIDNotExist() {
+    void doesNotFindCreatedResultMeetingIfUUIDNotExist() {
+        String invalidUUID = "1234";
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
         attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
 
-        assertThatThrownBy(() -> meetingService.findCompleted("1234"))
+        assertThatThrownBy(() -> meetingService.findCreatedResult(invalidUUID))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }

@@ -53,7 +53,7 @@ public class MeetingService {
         return MeetingResponse.from(meeting, dates, list);
     }
 
-    public MeetingCompletedResponse findCompleted(String uuid) {
+    public MeetingCompletedResponse findCreatedResult(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
