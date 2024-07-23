@@ -15,11 +15,10 @@ interface TimeViewerProps {
 }
 
 export default function TimeViewer({ data }: TimeViewerProps) {
-  const { getUpdateState, handleToggleIsUpdate } = useContext(UpdateStateContext);
-
-  const isUpdate = getUpdateState();
+  const { isUpdate, handleToggleIsUpdate } = useContext(UpdateStateContext);
 
   const schedules = generateScheduleMatrix(data);
+
   const formattedAvailableDates = ['', ...data.availableDates];
 
   return (
