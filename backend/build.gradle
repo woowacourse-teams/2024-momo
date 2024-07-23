@@ -44,3 +44,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+bootJar {
+    exclude('*.yml')
+}
