@@ -8,7 +8,7 @@ const generateTimeSlots = (start: string, end: string) => {
   const slots: string[] = [];
 
   for (let i = startHour; i <= endHour; i++) {
-    slots.push(`${i.toString().padStart(2, '0')}:00`);
+    slots.push(`${i.toString().padStart(2, '0') + ':00'}`);
   }
 
   return slots;
@@ -61,8 +61,8 @@ export const convertToSchedule = (
     matrix.forEach((row, rowIndex) => {
       if (row[colIndex]) {
         // 임시로 30분 단위도 추가되도록 설정
-        times.push(timeSlots[rowIndex] + ':00');
-        times.push(timeSlots[rowIndex].slice(0, 2) + ':30:00');
+        times.push(timeSlots[rowIndex]);
+        times.push(timeSlots[rowIndex].slice(0, 2) + ':30');
       }
     });
 
