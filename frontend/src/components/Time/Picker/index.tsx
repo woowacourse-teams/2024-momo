@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 
 import { UpdateStateContext } from '@contexts/updateStateProvider';
 
@@ -19,17 +19,16 @@ export interface TimePickerProps {
 }
 
 export default function TimePicker({ data }: TimePickerProps) {
-  const { getUpdateState, handleToggleIsUpdate } = useContext(UpdateStateContext);
-  const isUpdate = getUpdateState();
-  const initialValue = generateScheduleMatrix(data);
+  const { isUpdate, handleToggleIsUpdate } = useContext(UpdateStateContext);
+
+  const initialValue = useMemo(() => generateScheduleMatrix(data), [data]);
   const [ref, value] = useTimePick(isUpdate, initialValue);
 
-  const { mutate: postScheduleMutate } = usePostScheduleMutation();
+  const { mutate: postScheduleMutate } = usePostScheduleMutation(() => handleToggleIsUpdate());
 
   const handleOnToggle = () => {
     const convert = convertToSchedule(value, data.availableDates, data.startTime, data.endTime);
 
-    handleToggleIsUpdate();
     postScheduleMutate(convert);
   };
 
