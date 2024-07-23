@@ -2,20 +2,40 @@ name: Frontend CI Test
 
 on:
   pull_request:
-    branches:
-      - develop
-      - main
-    paths: "frontend/**"
-defaults:
-  run:
-    working-directory: frontend
+    branches: ["develop"]
+
 permissions:
   checks: write
   pull-requests: write
 
 jobs:
-  build:
+  detect-changes:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+          list-files: "csv"
+
+  fe-test:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend
+
     steps:
       - name: 모모 레파지토리의 코드를 가져와요 :)
         uses: actions/checkout@v4
