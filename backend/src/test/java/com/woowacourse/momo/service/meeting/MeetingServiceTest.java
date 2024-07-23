@@ -1,8 +1,5 @@
 package com.woowacourse.momo.service.meeting;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.attendee.Role;
@@ -23,6 +20,7 @@ import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
