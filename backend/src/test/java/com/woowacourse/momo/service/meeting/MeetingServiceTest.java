@@ -1,5 +1,8 @@
 package com.woowacourse.momo.service.meeting;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
@@ -14,6 +17,7 @@ import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
@@ -25,7 +29,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,9 +118,9 @@ class MeetingServiceTest {
         List<AvailableDate> availableDates = availableDateRepository.findAll();
 
         assertAll(
-                () -> Assertions.assertThat(meetings).hasSize(1),
-                () -> Assertions.assertThat(attendees).hasSize(1),
-                () -> Assertions.assertThat(availableDates).hasSize(2)
+                () -> assertThat(meetings).hasSize(1),
+                () -> assertThat(attendees).hasSize(1),
+                () -> assertThat(availableDates).hasSize(2)
         );
     }
 
@@ -143,6 +146,26 @@ class MeetingServiceTest {
                 .orElseThrow();
 
         Assertions.assertThat(attendee).extracting("role").isEqualTo(Role.HOST);
+    }
+
+    @DisplayName("약속을 생성할 때 같은 약속일을 2번 이상 보내면 예외가 발생합니다.")
+    @Test
+    void throwExceptionWhenDuplicatedDates() {
+        //given
+        LocalDate date = LocalDate.of(2024, 7, 24);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                8,
+                List.of(date, date),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0));
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> meetingService.create(request)).isInstanceOf(MomoException.class);
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
