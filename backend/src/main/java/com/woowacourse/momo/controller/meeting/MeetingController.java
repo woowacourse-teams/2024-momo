@@ -2,6 +2,7 @@ package com.woowacourse.momo.controller.meeting;
 
 import com.woowacourse.momo.controller.MomoApiResponse;
 import com.woowacourse.momo.service.meeting.MeetingService;
+import com.woowacourse.momo.service.meeting.dto.MeetingCompletedResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,5 +19,11 @@ public class MeetingController {
     public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
         MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
         return new MomoApiResponse<>(meetingResponse);
+    }
+
+    @GetMapping("/api/v1/meeting/{uuid}/result")
+    public MomoApiResponse<MeetingCompletedResponse> findCompleted(@PathVariable String uuid) {
+        MeetingCompletedResponse response = meetingService.findCompleted(uuid);
+        return new MomoApiResponse<>(response);
     }
 }

@@ -1,6 +1,5 @@
 package com.woowacourse.momo.service.meeting;
 
-import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
-    private final AttendeeRepository attendeeRepository;
     private final AvailableDateRepository availableDateRepository;
     private final ScheduleRepository scheduleRepository;
 
