@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+security:
+  jwt:
+    secret_key: 7JWI64WV7Jqw66as64qU66qo66qo64uk64uk7Jio7J6s7KaI67Cw7YKk7Y6Y65Oc66Gc66eI7YGs67mZ67SJ64KZ7YOA7ZW066as66CI7Lig6rOg7Jqw66as7J2Y66qp7KCB7J2A7IS46rOE7KCV67O17J2064ukYnRz7IaQ7Z2l66+867SJ7KSA7Zi4bW9tb+ugiOy4oOqzoA
