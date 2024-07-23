@@ -1,5 +1,8 @@
 package com.woowacourse.momo.controller.meeting;
 
+import static org.hamcrest.Matchers.containsString;
+
+import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
@@ -8,6 +11,9 @@ import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.support.IsolateDatabase;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +25,7 @@ import java.util.List;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 @IsolateDatabase
@@ -82,6 +89,7 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meeting")
                 .then().log().all()
                 .assertThat()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .header(HttpHeaders.LOCATION, containsString("/meeting/"));
     }
 }

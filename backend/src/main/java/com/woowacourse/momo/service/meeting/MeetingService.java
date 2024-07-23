@@ -58,10 +58,11 @@ public class MeetingService {
         return MeetingResponse.from(meeting, dates, list);
     }
 
-    public void create(MeetingCreateRequest request) {
+    public String create(MeetingCreateRequest request) {
+        String uuid = UUID.randomUUID().toString();
         Meeting meeting = new Meeting(
                 request.hostName(),
-                UUID.randomUUID().toString(),
+                uuid,
                 Timeslot.from(request.meetingStartTime()),
                 Timeslot.from(request.meetingEndTime())
         );
@@ -74,6 +75,7 @@ public class MeetingService {
         availableDateRepository.saveAll(availableDates);
 
         attendeeRepository.save(new Attendee(savedMeeting, request.hostName(), request.hostPassword(), Role.HOST));
+        return uuid;
     }
 
     public MeetingSharingResponse findMeetingSharing(String uuid) {

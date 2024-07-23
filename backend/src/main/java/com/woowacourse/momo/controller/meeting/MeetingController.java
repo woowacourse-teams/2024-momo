@@ -5,7 +5,9 @@ import com.woowacourse.momo.service.meeting.MeetingService;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,9 @@ public class MeetingController {
 
     @PostMapping("/api/v1/meeting")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody MeetingCreateRequest request) {
-        meetingService.create(request);
+    public void create(@RequestBody MeetingCreateRequest request, HttpServletResponse response) {
+        String uuid = meetingService.create(request);
+        response.addHeader(HttpHeaders.LOCATION, "/meeting/" + uuid);
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/sharing")
