@@ -8,8 +8,8 @@ import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
-import com.woowacourse.momo.service.meeting.dto.MeetingCompletedResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
+import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleTimeResponse;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -53,10 +53,9 @@ public class MeetingService {
         return MeetingResponse.from(meeting, dates, list);
     }
 
-    public MeetingCompletedResponse findCreatedResult(String uuid) {
+    public MeetingSharingResponse findMeetingSharing(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
-
-        return MeetingCompletedResponse.from(meeting);
+        return MeetingSharingResponse.from(meeting);
     }
 }

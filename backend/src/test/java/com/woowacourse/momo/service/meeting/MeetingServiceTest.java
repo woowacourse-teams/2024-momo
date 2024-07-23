@@ -17,8 +17,8 @@ import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
-import com.woowacourse.momo.service.meeting.dto.MeetingCompletedResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
+import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -91,22 +91,22 @@ class MeetingServiceTest {
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
     @Test
-    void findCreatedResult() {
+    void findMeetingSharing() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
 
-        MeetingCompletedResponse result = meetingService.findCreatedResult(meeting.getUuid());
+        MeetingSharingResponse result = meetingService.findMeetingSharing(meeting.getUuid());
 
         assertThat(result.uuid()).isEqualTo(meeting.getUuid());
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회시 uuid가 일치하지 않으면 예외가 발생한다.")
     @Test
-    void doesNotFindCreatedResultMeetingIfUUIDNotExist() {
+    void doesNotFindMeetingSharingMeetingIfUUIDNotExist() {
         String invalidUUID = "1234";
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
         attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
 
-        assertThatThrownBy(() -> meetingService.findCreatedResult(invalidUUID))
+        assertThatThrownBy(() -> meetingService.findMeetingSharing(invalidUUID))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }

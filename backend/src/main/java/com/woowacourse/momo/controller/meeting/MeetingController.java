@@ -2,8 +2,8 @@ package com.woowacourse.momo.controller.meeting;
 
 import com.woowacourse.momo.controller.MomoApiResponse;
 import com.woowacourse.momo.service.meeting.MeetingService;
-import com.woowacourse.momo.service.meeting.dto.MeetingCompletedResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
+import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +21,9 @@ public class MeetingController {
         return new MomoApiResponse<>(meetingResponse);
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/result")
-    public MomoApiResponse<MeetingCompletedResponse> findCreatedResult(@PathVariable String uuid) {
-        MeetingCompletedResponse response = meetingService.findCreatedResult(uuid);
+    @GetMapping("/api/v1/meeting/{uuid}/sharing")
+    public MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid) {
+        MeetingSharingResponse response = meetingService.findMeetingSharing(uuid);
         return new MomoApiResponse<>(response);
     }
 }
