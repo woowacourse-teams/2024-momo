@@ -1,4 +1,4 @@
-import { styledTd } from './TimeSlot.styles';
+import { tdStyle } from './TimeSlot.styles';
 
 interface TimeSlotProps {
   isSelected: boolean;
@@ -6,5 +6,5 @@ interface TimeSlotProps {
 }
 
 export default function TimeSlot({ isSelected, isUpdate }: TimeSlotProps) {
-  return <td css={styledTd(isSelected, isUpdate)} />;
+  return <td css={tdStyle(isSelected, isUpdate)} />;
 }

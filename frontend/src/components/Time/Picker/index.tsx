@@ -11,7 +11,7 @@ import type { GetMeetingResponse } from '@apis/getMeeting';
 
 import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
 
-import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';
+import { buttonContainer, cellStyle, tableStyle, thStyle } from '../Time.styles';
 import { convertToSchedule, generateScheduleMatrix } from './TimePicker.util';
 
 export interface TimePickerProps {
@@ -40,7 +40,7 @@ export default function TimePicker({ data }: TimePickerProps) {
 
   return (
     <div>
-      <table css={table} ref={ref}>
+      <table css={tableStyle} ref={ref}>
         <thead>
           <tr>
             {formattedAvailableDates.map((date) => (
@@ -51,7 +51,7 @@ export default function TimePicker({ data }: TimePickerProps) {
         <tbody>
           {value.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <th css={[tableTexture, styledTh]}>
+              <th css={[cellStyle, thStyle]}>
                 {String(rowIndex + Number(data.startTime.slice(0, 2)) + ':00')}
               </th>
               {row.map((_, columnIndex) => (

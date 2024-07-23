@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
-export const styledTd = (isSelected: boolean, isUpdate: boolean) => css`
+export const tdStyle = (isSelected: boolean, isUpdate: boolean) => css`
   cursor: pointer;
 
   width: 4rem;

@@ -7,7 +7,7 @@ import TimeViewer from '@components/Time/Viewer';
 
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
 
-import { title } from './MeetingTimePickPage.styles';
+import { titleStyle } from './MeetingTimePickPage.styles';
 
 export default function MeetingTimePickPage() {
   const { data } = useGetMeetingQuery();
@@ -15,7 +15,7 @@ export default function MeetingTimePickPage() {
 
   return (
     <div>
-      <h1 css={title}>momo TimePicker</h1>
+      <h1 css={titleStyle}>momo TimePicker</h1>
       {data && isTimePickerUpdate && <TimePicker data={data} />}
       {data && !isTimePickerUpdate && <TimeViewer data={data} />}
     </div>

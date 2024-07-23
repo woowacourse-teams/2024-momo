@@ -3,8 +3,14 @@ import { css } from '@emotion/react';
 import theme from '@styles/theme';
 
 export const tableStyle = css`
+  cursor: pointer;
   user-select: none;
+
+  border-spacing: 0.4rem 0.4rem;
   border-collapse: collapse;
+  border-collapse: separate;
+
+  width: 100%;
 `;
 
 export const tdStyle = css`
@@ -19,23 +25,13 @@ export const selectedStyle = css`
   background: ${theme.linear.selectedTime};
 `;
 
-export const table = css`
-  cursor: pointer;
-  user-select: none;
-
-  border-spacing: 0.4rem 0.4rem;
-  border-collapse: separate;
-
-  width: 100%;
-`;
-
-export const styledTh = css`
+export const thStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const tableTexture = css`
+export const cellStyle = css`
   cursor: default;
   width: 4rem;
   height: 4rem;

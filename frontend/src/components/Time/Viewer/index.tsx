@@ -8,7 +8,7 @@ import TimeSlot from '@components/_common/TimeSlot';
 import type { GetMeetingResponse } from '@apis/getMeeting';
 
 import { generateScheduleMatrix } from '../Picker/TimePicker.util';
-import { buttonContainer, styledTh, table, tableTexture } from '../Time.styles';
+import { buttonContainer, cellStyle, tableStyle, thStyle } from '../Time.styles';
 
 interface TimeViewerProps {
   data: GetMeetingResponse;
@@ -25,7 +25,7 @@ export default function TimeViewer({ data }: TimeViewerProps) {
 
   return (
     <div>
-      <table css={table}>
+      <table css={tableStyle}>
         <thead>
           <tr>
             {formattedAvailableDates.map((date) => (
@@ -36,7 +36,7 @@ export default function TimeViewer({ data }: TimeViewerProps) {
         <tbody>
           {schedules.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <th css={[tableTexture, styledTh]}>
+              <th css={[cellStyle, thStyle]}>
                 {String(rowIndex + Number(data.startTime.slice(0, 2)) + ':00')}
               </th>
               {row.map((_, columnIndex) => (
