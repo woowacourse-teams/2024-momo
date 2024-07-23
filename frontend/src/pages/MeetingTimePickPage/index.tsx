@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { UpdateStateContext } from '@contexts/updateStateProvider';
+import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import TimePicker from '@components/Time/Picker';
 import TimeViewer from '@components/Time/Viewer';
@@ -11,13 +11,13 @@ import { title } from './MeetingTimePickPage.styles';
 
 export default function MeetingTimePickPage() {
   const { data } = useGetMeetingQuery();
-  const { isUpdate } = useContext(UpdateStateContext);
+  const { isTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
   return (
     <div>
       <h1 css={title}>momo TimePicker</h1>
-      {data && isUpdate && <TimePicker data={data} />}
-      {data && !isUpdate && <TimeViewer data={data} />}
+      {data && isTimePickerUpdate && <TimePicker data={data} />}
+      {data && !isTimePickerUpdate && <TimeViewer data={data} />}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 
-import { UpdateStateContext } from '@contexts/updateStateProvider';
+import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import Button from '@components/_common/Button';
 import TimeSlot from '@components/_common/TimeSlot';
@@ -19,12 +19,16 @@ export interface TimePickerProps {
 }
 
 export default function TimePicker({ data }: TimePickerProps) {
-  const { isUpdate, handleToggleIsUpdate } = useContext(UpdateStateContext);
+  const { isTimePickerUpdate, handleToggleIsTimePickerUpdate } = useContext(
+    TimePickerUpdateStateContext,
+  );
 
   const initialValue = useMemo(() => generateScheduleMatrix(data), [data]);
-  const [ref, value] = useTimePick(isUpdate, initialValue);
+  const [ref, value] = useTimePick(isTimePickerUpdate, initialValue);
 
-  const { mutate: postScheduleMutate } = usePostScheduleMutation(() => handleToggleIsUpdate());
+  const { mutate: postScheduleMutate } = usePostScheduleMutation(() =>
+    handleToggleIsTimePickerUpdate(),
+  );
 
   const handleOnToggle = () => {
     const convert = convertToSchedule(value, data.availableDates, data.startTime, data.endTime);
@@ -54,7 +58,7 @@ export default function TimePicker({ data }: TimePickerProps) {
                 <TimeSlot
                   key={rowIndex + columnIndex}
                   isSelected={value[rowIndex][columnIndex]}
-                  isUpdate={isUpdate}
+                  isUpdate={isTimePickerUpdate}
                 />
               ))}
             </tr>

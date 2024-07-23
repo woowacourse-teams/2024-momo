@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { UpdateStateContext } from '@contexts/updateStateProvider';
+import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import Button from '@components/_common/Button';
 import TimeSlot from '@components/_common/TimeSlot';
@@ -15,7 +15,9 @@ interface TimeViewerProps {
 }
 
 export default function TimeViewer({ data }: TimeViewerProps) {
-  const { isUpdate, handleToggleIsUpdate } = useContext(UpdateStateContext);
+  const { isTimePickerUpdate, handleToggleIsTimePickerUpdate } = useContext(
+    TimePickerUpdateStateContext,
+  );
 
   const schedules = generateScheduleMatrix(data);
 
@@ -41,7 +43,7 @@ export default function TimeViewer({ data }: TimeViewerProps) {
                 <TimeSlot
                   key={rowIndex + columnIndex}
                   isSelected={schedules[rowIndex][columnIndex]}
-                  isUpdate={isUpdate}
+                  isUpdate={isTimePickerUpdate}
                 />
               ))}
             </tr>
@@ -50,7 +52,7 @@ export default function TimeViewer({ data }: TimeViewerProps) {
       </table>
 
       <div css={buttonContainer}>
-        <Button text="수정하기" onClick={handleToggleIsUpdate} />
+        <Button text="수정하기" onClick={handleToggleIsTimePickerUpdate} />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import GlobalLayout from '@layouts/GlobalLayout';
 
-import { UpdateStateProvider } from '@contexts/updateStateProvider';
+import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
 import Join from '@pages/MeetingTimePickPage';
 
@@ -15,9 +15,9 @@ const router = createBrowserRouter(
         {
           index: true,
           element: (
-            <UpdateStateProvider>
+            <TimePickerUpdateStateProvider>
               <Join />
-            </UpdateStateProvider>
+            </TimePickerUpdateStateProvider>
           ),
         },
       ],
