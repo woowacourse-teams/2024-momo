@@ -9,4 +9,6 @@ public interface AttendeeRepository extends JpaRepository<Attendee, Long> {
     Optional<Attendee> findByName(AttendeeName name);
 
     Optional<Attendee> findByMeetingAndName(Meeting meeting, AttendeeName name);
+
+    Optional<Attendee> findByMeetingAndRole(Meeting meeting, Role role);
 }
