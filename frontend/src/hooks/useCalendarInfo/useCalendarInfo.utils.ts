@@ -2,17 +2,17 @@ export function getYearMonthInfo(year: number, month: number) {
   const startDate = new Date(year, month - 1, 1);
 
   /* 
-   로직 설명(@해리)
+   로직 설명(@hwinkr)
    - 월요일을 index 0으로 변경하기 위해서 나머지 연산자를 활용한다.
    - 자바스크립트 Date 객체는 기본적으로 일요일이 인덱스가 0인데, 모모 달력은 월요일을 인덱스를 0으로 만들어줘야 한다.
    - 따라서, 특정 달의 시작 날짜에 대한 인덱스에 6을 더해주고 7로 나눈 나머지를 사용하는 것으로 구현했다.
   */
   const firstDayIndex = (startDate.getDay() + 6) % 7;
 
-  const endDate = new Date(year, month, 0);
-  const lastDate = endDate.getDate();
+  const lastDayOfMonthDate = new Date(year, month, 0);
+  const lastDayNumber = lastDayOfMonthDate.getDate();
 
-  const daySlotCount = firstDayIndex + lastDate;
+  const daySlotCount = firstDayIndex + lastDayNumber;
 
   return { year, month, firstDayIndex, daySlotCount } as const;
 }
