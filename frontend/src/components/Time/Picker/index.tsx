@@ -11,7 +11,7 @@ import type { GetMeetingResponse } from '@apis/getMeeting';
 
 import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
 
-import { buttonContainer, cellStyle, tableStyle, thStyle } from '../Time.styles';
+import { s_buttonContainer, s_cell, s_table, s_th } from '../Time.styles';
 import { convertToSchedule, generateScheduleMatrix } from './TimePicker.util';
 
 export interface TimePickerProps {
@@ -40,7 +40,7 @@ export default function TimePicker({ data }: TimePickerProps) {
 
   return (
     <div>
-      <table css={tableStyle} ref={ref}>
+      <table css={s_table} ref={ref}>
         <thead>
           <tr>
             {formattedAvailableDates.map((date) => (
@@ -51,7 +51,7 @@ export default function TimePicker({ data }: TimePickerProps) {
         <tbody>
           {value.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <th css={[cellStyle, thStyle]}>
+              <th css={[s_cell, s_th]}>
                 {String(rowIndex + Number(data.startTime.slice(0, 2)) + ':00')}
               </th>
               {row.map((_, columnIndex) => (
@@ -66,7 +66,7 @@ export default function TimePicker({ data }: TimePickerProps) {
         </tbody>
       </table>
 
-      <div css={buttonContainer}>
+      <div css={s_buttonContainer}>
         <Button text="등록하기" onClick={handleOnToggle} />
       </div>
     </div>
