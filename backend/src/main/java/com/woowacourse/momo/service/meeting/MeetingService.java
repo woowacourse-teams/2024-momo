@@ -17,6 +17,7 @@ import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleTimeResponse;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -60,21 +61,25 @@ public class MeetingService {
 
     @Transactional
     public String create(MeetingCreateRequest request) {
-        String uuid = UUID.randomUUID().toString();
-        Meeting meeting = new Meeting(
-                request.meetingName(),
-                uuid,
-                request.meetingStartTime(),
-                request.meetingEndTime()
-        );
-        Meeting savedMeeting = meetingRepository.save(meeting);
+        Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
+        saveAvailableDates(request.meetingAvailableDates(), meeting);
+        saveAttendee(meeting, request.hostName(), request.hostPassword(), Role.HOST);
+        return meeting.getUuid();
+    }
 
-        AvailableDates availableDates = new AvailableDates(request.meetingAvailableDates(), meeting);
+    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
+        Meeting meeting = new Meeting(meetingName, UUID.randomUUID().toString(), startTime, endTime);
+        return meetingRepository.save(meeting);
+    }
+
+    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting) {
+        AvailableDates availableDates = new AvailableDates(dates, meeting);
         availableDateRepository.saveAll(availableDates.getDates());
+    }
 
-        Attendee attendee = new Attendee(savedMeeting, request.hostName(), request.hostPassword(), Role.HOST);
+    private void saveAttendee(Meeting meeting, String hostName, String hostPassword, Role role) {
+        Attendee attendee = new Attendee(meeting, hostName, hostPassword, role);
         attendeeRepository.save(attendee);
-        return uuid;
     }
 
     public MeetingSharingResponse findMeetingSharing(String uuid) {
