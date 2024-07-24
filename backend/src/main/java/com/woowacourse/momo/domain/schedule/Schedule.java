@@ -4,9 +4,10 @@ import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
-import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,16 +39,13 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
-    @Embedded
-    private TimeslotInterval timeslotInterval;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Timeslot timeslot;
 
-    public Schedule(Attendee attendee, AvailableDate availableDate, TimeslotInterval timeslotInterval) {
+    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot timeslot) {
         this.attendee = attendee;
         this.availableDate = availableDate;
-        this.timeslotInterval = timeslotInterval;
-    }
-
-    public Timeslot getFirstTimeslot() {
-        return timeslotInterval.getFirstTimeslot();
+        this.timeslot = timeslot;
     }
 }
