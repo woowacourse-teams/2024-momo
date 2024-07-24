@@ -10,7 +10,7 @@ public record MeetingCreateRequest(
         @NotBlank String hostName,
         @NotBlank String hostPassword,
         @NotBlank String meetingName,
-        @NotBlank List<LocalDate> meetingAvailableDates,
+        @NotNull List<LocalDate> meetingAvailableDates,
         @NotNull LocalTime meetingStartTime,
         @NotNull LocalTime meetingEndTime
 ) {
