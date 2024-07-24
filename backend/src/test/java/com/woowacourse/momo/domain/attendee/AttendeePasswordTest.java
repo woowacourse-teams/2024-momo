@@ -24,4 +24,15 @@ class AttendeePasswordTest {
         assertThatNoException()
                 .isThrownBy(() -> new AttendeePassword("momo"));
     }
+
+    @DisplayName("비밀번호가 서로 다르면 예외를 발생시킨다.")
+    @Test
+    void throwsExceptionForMismatchedPasswords() {
+        AttendeePassword password = new AttendeePassword("1234");
+        AttendeePassword other = new AttendeePassword("123456");
+
+        assertThatThrownBy(() -> password.verifyPassword(other))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.PASSWORD_MISMATCHED.message());
+    }
 }
