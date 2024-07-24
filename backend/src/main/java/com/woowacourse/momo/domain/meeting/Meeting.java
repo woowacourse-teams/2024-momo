@@ -56,10 +56,10 @@ public class Meeting extends BaseEntity {
     }
 
     private void validateTimeRange(Timeslot firstTimeslot, Timeslot lastTimeslot) {
-        if (lastTimeslot == firstTimeslot) {
+        if (firstTimeslot == lastTimeslot) {
             return;
         }
-        if (!lastTimeslot.isAfter(firstTimeslot)) {
+        if (firstTimeslot.isNotBefore(lastTimeslot)) {
             throw new MomoException(MeetingErrorCode.INVALID_TIME_RANGE);
         }
     }
