@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { generateTimeOptions } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.utils';
+
 import Dropdown from '.';
 
 const meta = {
@@ -45,5 +47,11 @@ export const Default: Story = {
         label: '옵션 5',
       },
     ],
+  },
+};
+
+export const TimeDropdown: Story = {
+  args: {
+    options: generateTimeOptions(),
   },
 };
