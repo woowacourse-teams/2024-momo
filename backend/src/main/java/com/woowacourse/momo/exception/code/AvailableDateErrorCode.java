@@ -2,7 +2,7 @@ package com.woowacourse.momo.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-public enum AvailableDateErrorCode implements ErrorCodeType{
+public enum AvailableDateErrorCode implements ErrorCodeType {
 
     DUPLICATED_DATE(HttpStatus.BAD_REQUEST, "같은 날짜를 중복으로 선택할 수 없습니다.");
 
