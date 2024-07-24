@@ -27,7 +27,7 @@ export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
   return (
     <div css={s_calendarContainer} aria-label={`${year}년 ${month}월 달력`}>
       <header css={s_monthHeader}>
-        {/* TODO : 캘린더 헤더 버튼 스타일 수정 예정 (@해리) */}
+        {/* TODO : 캘린더 헤더 버튼 스타일 수정 예정(@해리) */}
         <button css={s_monthNavigation} onClick={handlePrevMonth}>
           {'<'}
         </button>
@@ -51,12 +51,12 @@ export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
           const { date, dateString, isDate, isToday, isHoliday } = handleGetDayInfo(index);
           const isSelectedDate = hasDate(dateString);
 
-          return (
+          return isDate ? (
             <button key={dateString} onClick={() => onDateClick(dateString)} css={s_daySlotButton}>
-              <span css={[s_daySlot(isHoliday), s_selectedDaySlot(isSelectedDate)]}>
-                {isDate ? date : ''}
-              </span>
+              <span css={[s_daySlot(isHoliday), s_selectedDaySlot(isSelectedDate)]}>{date}</span>
             </button>
+          ) : (
+            <div key={dateString} css={s_daySlotButton}></div>
           );
         })}
       </section>
