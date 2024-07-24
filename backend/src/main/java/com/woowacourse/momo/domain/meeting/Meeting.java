@@ -3,10 +3,6 @@ package com.woowacourse.momo.domain.meeting;
 import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
-import com.woowacourse.momo.exception.MomoException;
-import com.woowacourse.momo.exception.code.MeetingErrorCode;
-import com.woowacourse.momo.exception.MomoException;
-import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -38,30 +34,10 @@ public class Meeting extends BaseEntity {
     @Embedded
     private TimeslotInterval timeslotInterval;
 
-    public Meeting(String name, String uuid, TimeslotInterval timeslotInterval) {
-        this.name = name;
-        this.uuid = uuid;
-        this.timeslotInterval = timeslotInterval;
-    }
-
-    public Meeting(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
-        validateTimeRange(firstTimeslot, lastTimeslot);
-        this.name = name;
-        this.uuid = uuid;
-        this.timeslotInterval = new TimeslotInterval(firstTimeslot, lastTimeslot);
-    }
-
     public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
-        this(name, uuid, Timeslot.from(firstTime), Timeslot.from(lastTime.minusMinutes(30)));
-    }
-
-    private void validateTimeRange(Timeslot firstTimeslot, Timeslot lastTimeslot) {
-        if (firstTimeslot == lastTimeslot) {
-            return;
-        }
-        if (firstTimeslot.isNotBefore(lastTimeslot)) {
-            throw new MomoException(MeetingErrorCode.INVALID_TIME_RANGE);
-        }
+        this.name = name;
+        this.uuid = uuid;
+        this.timeslotInterval = new TimeslotInterval(firstTime, lastTime.minusMinutes(30));
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import java.time.LocalTime;
@@ -51,9 +50,9 @@ class MeetingTest {
                 .doesNotThrowAnyException();
     }
 
-    @DisplayName("자정 시간을 23시 30분 타임슬롯으로 변경한다")
+    @DisplayName("약속 생성 시 끝 시간을 사용자 입력 끝 시간에서 30분 감소시켜 저장한다.")
     @Test
-    void canConvertMidnight() {
+    void endTimeIsReducedBy30Minutes() {
         // given
         LocalTime startTime = LocalTime.of(10, 0);
         LocalTime endTime = LocalTime.of(0, 0);
@@ -61,7 +60,7 @@ class MeetingTest {
         // when
         Meeting meeting = new Meeting("momo", "momo", startTime, endTime);
 
-        // when then
-        assertThat(meeting.getLastTimeslot()).isEqualTo(Timeslot.TIME_2330);
+        // then
+        assertThat(meeting.endTimeslotTime()).isEqualTo(endTime.minusMinutes(30));
     }
 }

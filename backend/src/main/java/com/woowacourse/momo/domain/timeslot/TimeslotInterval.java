@@ -1,6 +1,7 @@
 package com.woowacourse.momo.domain.timeslot;
 
 import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.exception.code.ScheduleErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -27,6 +28,18 @@ public class TimeslotInterval {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private Timeslot endTimeslot;
+
+    public TimeslotInterval(LocalTime startTime, LocalTime lastTime) {
+        validateTimeRange(startTime, lastTime);
+        this.startTimeslot = Timeslot.from(startTime);
+        this.endTimeslot = Timeslot.from(lastTime);
+    }
+
+    private void validateTimeRange(LocalTime firstTime, LocalTime lastTime) {
+        if (firstTime.isAfter(lastTime)) {
+            throw new MomoException(MeetingErrorCode.INVALID_TIME_RANGE);
+        }
+    }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {
         if (isNotContainedWithin(other)) {

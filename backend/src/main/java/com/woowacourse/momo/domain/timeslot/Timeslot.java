@@ -78,12 +78,4 @@ public enum Timeslot {
     public boolean isBefore(LocalTime other) {
         return this.localTime.isBefore(other);
     }
-
-    public boolean isNotBefore(Timeslot timeslot) {
-        return !this.localTime.isBefore(timeslot.localTime);
-    }
-
-    public boolean isNotPreviousSlot(Timeslot other) {
-        return !this.localTime.plusMinutes(30).equals(other.localTime);
-    }
 }
