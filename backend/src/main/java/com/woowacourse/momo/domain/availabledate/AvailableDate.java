@@ -36,7 +36,6 @@ public class AvailableDate extends BaseEntity {
     private Meeting meeting;
 
     public AvailableDate(LocalDate date, Meeting meeting) {
-        this.date = date;
-        this.meeting = meeting;
+        this(null, date, meeting);
     }
 }
