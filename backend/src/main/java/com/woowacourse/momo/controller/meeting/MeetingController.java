@@ -4,11 +4,11 @@ import com.woowacourse.momo.controller.MomoApiResponse;
 import com.woowacourse.momo.service.meeting.MeetingService;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
+import java.net.URI;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +29,15 @@ public class MeetingController {
     }
 
     @PostMapping("/api/v1/meeting")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody MeetingCreateRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> create(@RequestBody MeetingCreateRequest request) {
         String uuid = meetingService.create(request);
-        response.addHeader(HttpHeaders.LOCATION, "/meeting/" + uuid);
+        return ResponseEntity.created(URI.create("/meeting/" + uuid)).build();
+    }
+
+    @GetMapping("/api/v1/meeting/{uuid}/sharing")
+    public MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid) {
+        MeetingSharingResponse response = meetingService.findMeetingSharing(uuid);
+        return new MomoApiResponse<>(response);
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/sharing")
