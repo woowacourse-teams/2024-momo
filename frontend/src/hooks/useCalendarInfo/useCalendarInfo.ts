@@ -14,7 +14,7 @@ export default function useCalendarInfo() {
   const { firstDayIndex, daySlotCount } = getYearMonthInfo(year, month);
 
   const handleGetDayInfo = (index: number) => {
-    return getDayInfo(year, month, firstDayIndex, index, currentDate);
+    return getDayInfo({ year, month, firstDayIndex, index, currentDate });
   };
 
   const handlePrevMonth = () => {
