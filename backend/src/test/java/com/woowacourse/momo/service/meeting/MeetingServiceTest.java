@@ -16,6 +16,7 @@ import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.AvailableDateErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
@@ -158,7 +159,9 @@ class MeetingServiceTest {
                 LocalTime.of(22, 0));
 
         //when //then
-        assertThatThrownBy(() -> meetingService.create(request)).isInstanceOf(MomoException.class);
+        assertThatThrownBy(() -> meetingService.create(request))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
