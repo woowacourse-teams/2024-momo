@@ -68,4 +68,8 @@ public enum Timeslot {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타임슬롯입니다."));
     }
+
+    public boolean isAfter(Timeslot timeslot) {
+        return this.time.isAfter(timeslot.time);
+    }
 }

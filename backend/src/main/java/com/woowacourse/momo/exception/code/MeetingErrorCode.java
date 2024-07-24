@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public enum MeetingErrorCode implements ErrorCodeType {
 
-    INVALID_UUID(HttpStatus.BAD_REQUEST, "유효하지 않은 UUID 입니다.");
+    INVALID_UUID(HttpStatus.BAD_REQUEST, "유효하지 않은 UUID 입니다."),
+    INVALID_TIME_RANGE(HttpStatus.BAD_REQUEST, "끝 시간은 시작 시간 이후가 되어야 합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
