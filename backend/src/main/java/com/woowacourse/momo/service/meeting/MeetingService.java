@@ -11,9 +11,9 @@ import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
-import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
+import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleTimeResponse;
@@ -83,12 +83,5 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         return MeetingSharingResponse.from(meeting);
-    }
-
-    private void validateDuplicatedDates(List<LocalDate> dates) {
-        Set<LocalDate> dateSet = new HashSet<>(dates);
-        if (dateSet.size() != dates.size()) {
-            throw new MomoException(AvailableDateErrorCode.DUPLICATED_DATE);
-        }
     }
 }

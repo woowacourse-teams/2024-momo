@@ -2,7 +2,6 @@ package com.woowacourse.momo.service.meeting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
@@ -16,7 +15,6 @@ import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
-import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
