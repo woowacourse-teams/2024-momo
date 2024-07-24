@@ -39,7 +39,6 @@ public class ScheduleService {
         scheduleRepository.deleteAllByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
         scheduleRepository.saveAll(schedules);
-
     }
 
     private Meeting findMeetingByUUID(String uuid) {

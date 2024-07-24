@@ -28,15 +28,6 @@ public class MeetingService {
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
 
-    @Transactional(readOnly = true)
-    public MeetingResponse findByUUID(String uuid) {
-        Meeting meeting = meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
-
-        return MeetingResponse.from(meeting, availableDates);
-    }
-
     @Transactional
     public String create(MeetingCreateRequest request) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
@@ -58,6 +49,15 @@ public class MeetingService {
     private void saveAttendee(Meeting meeting, String hostName, String hostPassword) {
         Attendee attendee = new Attendee(meeting, hostName, hostPassword, Role.HOST);
         attendeeRepository.save(attendee);
+    }
+
+    @Transactional(readOnly = true)
+    public MeetingResponse findByUUID(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
+
+        return MeetingResponse.from(meeting, availableDates);
     }
 
     @Transactional(readOnly = true)
