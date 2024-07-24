@@ -162,7 +162,6 @@ const globalStyles = css`
 
   button {
     cursor: pointer;
-    background-color: red;
   }
 `;
 
