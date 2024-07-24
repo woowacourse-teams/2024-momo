@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 
 export const s_field = css`
-  height: 6rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  height: 6rem;
 `;
 
 export const s_label = css`
@@ -12,6 +12,6 @@ export const s_label = css`
 `;
 
 export const s_description = css`
-  font-weight: 200;
   font-size: 0.75rem;
+  font-weight: 200;
 `;
