@@ -2,15 +2,14 @@ package com.woowacourse.momo.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-public enum MeetingErrorCode implements ErrorCodeType {
+public enum AvailableDateErrorCode implements ErrorCodeType {
 
-    INVALID_UUID(HttpStatus.BAD_REQUEST, "유효하지 않은 UUID 입니다."),
-    INVALID_TIME_RANGE(HttpStatus.BAD_REQUEST, "끝 시간은 시작 시간 이후가 되어야 합니다.");
+    DUPLICATED_DATE(HttpStatus.BAD_REQUEST, "같은 날짜를 중복으로 선택할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
 
-    MeetingErrorCode(HttpStatus httpStatus, String message) {
+    AvailableDateErrorCode(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
     }
