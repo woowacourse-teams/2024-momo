@@ -1,29 +1,29 @@
 package com.woowacourse.momo.fixture;
 
 import com.woowacourse.momo.domain.meeting.Meeting;
-import com.woowacourse.momo.domain.timeslot.Timeslot;
+import java.time.LocalTime;
 
 public enum MeetingFixture {
 
-    MOVIE("영화", "movie", Timeslot.TIME_0000, Timeslot.TIME_0600),
-    SPORTS("스포츠", "sports", Timeslot.TIME_0800, Timeslot.TIME_1200),
-    DINNER("저녁식사", "dinner", Timeslot.TIME_1800, Timeslot.TIME_2200),
-    COFFEE("커피", "coffee", Timeslot.TIME_1000, Timeslot.TIME_1400),
-    GAME("게임", "game", Timeslot.TIME_1800, Timeslot.TIME_2330);
+    MOVIE("영화", "movie", LocalTime.of(0, 0), LocalTime.of(6, 0)),
+    SPORTS("스포츠", "sports", LocalTime.of(8, 0), LocalTime.of(12, 0)),
+    DINNER("저녁식사", "dinner", LocalTime.of(18, 0), LocalTime.of(22, 0)),
+    COFFEE("커피", "coffee", LocalTime.of(10, 0), LocalTime.of(14, 0)),
+    GAME("게임", "game", LocalTime.of(18, 0), LocalTime.of(23, 30));
 
     private final String name;
     private final String uuid;
-    private final Timeslot firstTimeslot;
-    private final Timeslot lastTimeslot;
+    private final LocalTime firstTime;
+    private final LocalTime lastTime;
 
-    MeetingFixture(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+    MeetingFixture(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
         this.name = name;
         this.uuid = uuid;
-        this.firstTimeslot = firstTimeslot;
-        this.lastTimeslot = lastTimeslot;
+        this.firstTime = firstTime;
+        this.lastTime = lastTime;
     }
 
     public Meeting create() {
-        return new Meeting(name, uuid, firstTimeslot, lastTimeslot);
+        return new Meeting(name, uuid, firstTime, lastTime);
     }
 }
