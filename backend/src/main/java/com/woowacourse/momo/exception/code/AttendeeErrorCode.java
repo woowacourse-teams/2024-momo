@@ -6,8 +6,7 @@ public enum AttendeeErrorCode implements ErrorCodeType {
 
     INVALID_PASSWORD_LENGTH(HttpStatus.BAD_REQUEST, "비밀번호 길이는 최대 20글자까지 가능합니다."),
     INVALID_UUID(HttpStatus.BAD_REQUEST, "유효하지 않은 UUID 입니다."),
-    PASSWORD_MISMATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
-    INVALID_ACCESS(HttpStatus.BAD_REQUEST, "유효하지 않는 접근입니다. 관리자에게 문의해주세요.");
+    PASSWORD_MISMATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
