@@ -29,7 +29,8 @@ public class MeetingController {
     @PostMapping("/api/v1/meeting")
     public ResponseEntity<Void> create(@RequestBody MeetingCreateRequest request) {
         String uuid = meetingService.create(request);
-        return ResponseEntity.created(URI.create("/meeting/" + uuid)).build();
+        return ResponseEntity.created(URI.create("/meeting/" + uuid))
+                .build();
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/sharing")
