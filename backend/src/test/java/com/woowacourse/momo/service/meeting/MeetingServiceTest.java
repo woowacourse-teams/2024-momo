@@ -104,7 +104,6 @@ class MeetingServiceTest {
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                8,
                 List.of(LocalDate.of(2024, 7, 24), LocalDate.of(2024, 7, 25)),
                 LocalTime.of(8, 0),
                 LocalTime.of(22, 0));
@@ -132,7 +131,6 @@ class MeetingServiceTest {
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                8,
                 List.of(LocalDate.of(2024, 7, 24), LocalDate.of(2024, 7, 25)),
                 LocalTime.of(8, 0),
                 LocalTime.of(22, 0));
@@ -157,7 +155,6 @@ class MeetingServiceTest {
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                8,
                 List.of(date, date),
                 LocalTime.of(8, 0),
                 LocalTime.of(22, 0));
