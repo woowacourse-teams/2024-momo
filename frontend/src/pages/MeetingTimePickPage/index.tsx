@@ -1,22 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 
-import TimePicker from '@components/TimePicker';
+import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import getMeeting from '@apis/getMeeting';
+import TimePicker from '@components/Time/Picker';
+import TimeViewer from '@components/Time/Viewer';
 
-import { title } from './MeetingTimePickPage.styles';
+import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
+
+import { s_title } from './MeetingTimePickPage.styles';
 
 export default function MeetingTimePickPage() {
-  const { data } = useQuery({
-    queryKey: ['getMeeting'],
-    queryFn: () => getMeeting(),
-    retry: 1,
-  });
+  const { data } = useGetMeetingQuery();
+  const { isTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
+
+  if (!data) return null;
 
   return (
     <div>
-      <h1 css={title}>momo TimePicker</h1>
-      {data && <TimePicker {...data} />}
+      <h1 css={s_title}>momo TimePicker</h1>
+      {isTimePickerUpdate ? <TimePicker data={data} /> : <TimeViewer data={data} />}
     </div>
   );
 }

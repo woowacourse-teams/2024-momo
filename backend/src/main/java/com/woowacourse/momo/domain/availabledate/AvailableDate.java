@@ -34,4 +34,8 @@ public class AvailableDate extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id", nullable = false)
     private Meeting meeting;
+
+    public AvailableDate(LocalDate date, Meeting meeting) {
+        this(null, date, meeting);
+    }
 }

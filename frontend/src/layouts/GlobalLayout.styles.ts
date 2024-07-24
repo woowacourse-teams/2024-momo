@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const globalContainer = css`
+export const s_globalContainer = css`
   min-width: 39.3rem;
   max-width: 60rem;
   height: 100%;

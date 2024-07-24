@@ -26,6 +26,9 @@
     "plugin:storybook/recommended"
   ],
   "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
     "react-refresh/only-export-components": [
       "warn",
       {

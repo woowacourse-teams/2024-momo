@@ -13,10 +13,12 @@
 
   "importOrder": [
     "^@layouts/(.*)$",
+    "^@contexts/(.*)$",
     "^@pages/(.*)$",
     "^@components/(.*)$",
     "^@hooks/(.*)$",
     "^@apis/(.*)$",
+    "^@stores/(.*)$",
     "^@common/(.*)$",
     "^@utils/(.*)$",
     "^@assets/(.*)$",

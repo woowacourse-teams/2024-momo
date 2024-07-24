@@ -2,6 +2,8 @@ package com.woowacourse.momo.domain.meeting;
 
 import com.woowacourse.momo.domain.BaseEntity;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,9 +44,23 @@ public class Meeting extends BaseEntity {
     private Timeslot lastTimeslot;
 
     public Meeting(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+        validateTimeRange(firstTimeslot, lastTimeslot);
         this.name = name;
         this.uuid = uuid;
         this.firstTimeslot = firstTimeslot;
         this.lastTimeslot = lastTimeslot;
+    }
+
+    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
+        this(name, uuid, Timeslot.from(firstTime), Timeslot.from(lastTime.minusMinutes(30)));
+    }
+
+    private void validateTimeRange(Timeslot firstTimeslot, Timeslot lastTimeslot) {
+        if (firstTimeslot == lastTimeslot) {
+            return;
+        }
+        if (firstTimeslot.isNotBefore(lastTimeslot)) {
+            throw new MomoException(MeetingErrorCode.INVALID_TIME_RANGE);
+        }
     }
 }

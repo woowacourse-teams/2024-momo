@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
-export const styledButton = css`
+export const s_button = css`
   display: flex;
   align-items: center;
   justify-content: center;
