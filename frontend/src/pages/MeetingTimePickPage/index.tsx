@@ -13,11 +13,12 @@ export default function MeetingTimePickPage() {
   const { data } = useGetMeetingQuery();
   const { isTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
+  if (!data) return null;
+
   return (
     <div>
       <h1 css={titleStyle}>momo TimePicker</h1>
-      {data && isTimePickerUpdate && <TimePicker data={data} />}
-      {data && !isTimePickerUpdate && <TimeViewer data={data} />}
+      {isTimePickerUpdate ? <TimePicker data={data} /> : <TimeViewer data={data} />}
     </div>
   );
 }
