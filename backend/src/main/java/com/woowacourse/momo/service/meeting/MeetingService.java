@@ -80,7 +80,8 @@ public class MeetingService {
                 .toList();
         availableDateRepository.saveAll(availableDates);
 
-        attendeeRepository.save(new Attendee(savedMeeting, request.hostName(), request.hostPassword(), Role.HOST));
+        Attendee attendee = new Attendee(savedMeeting, request.hostName(), request.hostPassword(), Role.HOST);
+        attendeeRepository.save(attendee);
         return uuid;
     }
 
