@@ -15,7 +15,7 @@ export default function Field({ label, description = '', inputProps }: FieldProp
       <label css={s_label} htmlFor={label}>
         {label}
       </label>
-      <div css={s_description}>{description}</div>
+      {description && <div css={s_description}>{description}</div>}
       <Input id={label} {...inputProps} />
     </div>
   );
