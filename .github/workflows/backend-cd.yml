@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: ['develop']
+  pull_request:  # PR 액션 테스트용 임시 추가
+    branches: ['develop']
 
 jobs:
   detect-changes:
