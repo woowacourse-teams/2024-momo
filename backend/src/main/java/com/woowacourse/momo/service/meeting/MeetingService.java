@@ -10,7 +10,6 @@ import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
-import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
@@ -65,8 +64,8 @@ public class MeetingService {
         Meeting meeting = new Meeting(
                 request.meetingName(),
                 uuid,
-                Timeslot.from(request.meetingStartTime()),
-                Timeslot.from(request.meetingEndTime())
+                request.meetingStartTime(),
+                request.meetingEndTime()
         );
         Meeting savedMeeting = meetingRepository.save(meeting);
 

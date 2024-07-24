@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,10 @@ public class Meeting extends BaseEntity {
         this.uuid = uuid;
         this.firstTimeslot = firstTimeslot;
         this.lastTimeslot = lastTimeslot;
+    }
+
+    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
+        this(name, uuid, Timeslot.from(firstTime), Timeslot.from(lastTime.minusMinutes(30)));
     }
 
     private void validateTimeRange(Timeslot firstTimeslot, Timeslot lastTimeslot) {
