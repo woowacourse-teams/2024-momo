@@ -143,7 +143,7 @@ class MeetingServiceTest {
         Attendee attendee = attendeeRepository.findByMeetingAndName(meetings.get(0), new AttendeeName("momoHost"))
                 .orElseThrow();
 
-        Assertions.assertThat(attendee).extracting("role").isEqualTo(Role.HOST);
+        assertThat(attendee.getRole()).isEqualTo(Role.HOST);
     }
 
     @DisplayName("약속을 생성할 때 같은 약속일을 2번 이상 보내면 예외가 발생합니다.")
@@ -159,9 +159,7 @@ class MeetingServiceTest {
                 LocalTime.of(8, 0),
                 LocalTime.of(22, 0));
 
-        //when
-
-        //then
+        //when //then
         assertThatThrownBy(() -> meetingService.create(request)).isInstanceOf(MomoException.class);
     }
 
