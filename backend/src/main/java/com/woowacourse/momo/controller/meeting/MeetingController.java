@@ -5,6 +5,7 @@ import com.woowacourse.momo.service.meeting.MeetingService;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.service.meeting.dto.MeetingResponse;
 import com.woowacourse.momo.service.meeting.dto.MeetingSharingResponse;
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class MeetingController {
     }
 
     @PostMapping("/api/v1/meeting")
-    public ResponseEntity<Void> create(@RequestBody MeetingCreateRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid MeetingCreateRequest request) {
         String uuid = meetingService.create(request);
         return ResponseEntity.created(URI.create("/meeting/" + uuid))
                 .build();
