@@ -1,59 +1,41 @@
 package com.woowacourse.momo.domain.timeslot;
 
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.ScheduleErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = {"startTimeslot", "endTimeslot"})
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimeslotInterval {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
-    private Timeslot firstTimeslot;
+    private Timeslot startTimeslot;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
-    private Timeslot lastTimeslot;
+    private Timeslot endTimeslot;
 
-    public static List<TimeslotInterval> generate(List<LocalTime> times) {
-        List<TimeslotInterval> intervals = new ArrayList<>();
-
-        Timeslot firstTimeSlot = Timeslot.from(times.get(0));
-        Timeslot lastTimeSlot = firstTimeSlot;
-
-        int timesCount = times.size();
-        for (int i = 1; i < timesCount; i++) {
-            Timeslot currentTimeSlot = Timeslot.from(times.get(i));
-            if (lastTimeSlot.isNotPreviousSlot(currentTimeSlot)) {
-                intervals.add(new TimeslotInterval(firstTimeSlot, lastTimeSlot));
-                firstTimeSlot = currentTimeSlot;
-            }
-            lastTimeSlot = currentTimeSlot;
-        }
-        intervals.add(new TimeslotInterval(firstTimeSlot, lastTimeSlot));
-
-        return intervals;
-    }
-
-    public void validateOverlap(TimeslotInterval other) {
+    public Timeslot getValidatedTimeslot(LocalTime other) {
         if (isNotContainedWithin(other)) {
-            throw new IllegalArgumentException("선택할 수 없는 시간이다...");
+            throw new MomoException(ScheduleErrorCode.INVALID_SCHEDULE_TIMESLOT);
         }
+        return Timeslot.from(other);
     }
 
-    private boolean isNotContainedWithin(TimeslotInterval other) {
-        return (this.getFirstTimeslot().compareTo(other.getFirstTimeslot()) > 0 ||
-                this.getLastTimeslot().compareTo(other.getLastTimeslot()) < 0);
+    private boolean isNotContainedWithin(LocalTime other) {
+        return this.startTimeslot.isAfter(other) || this.endTimeslot.isBefore(other);
     }
 }
