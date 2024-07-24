@@ -4,7 +4,7 @@ import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
-import Join from '@pages/MeetingTimePickPage';
+import MeetingTimePickPage from '@pages/MeetingTimePickPage';
 
 const router = createBrowserRouter(
   [
@@ -16,7 +16,7 @@ const router = createBrowserRouter(
           index: true,
           element: (
             <TimePickerUpdateStateProvider>
-              <Join />
+              <MeetingTimePickPage />
             </TimePickerUpdateStateProvider>
           ),
         },
