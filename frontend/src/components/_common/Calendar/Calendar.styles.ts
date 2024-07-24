@@ -8,7 +8,7 @@ export const s_calendarContainer = css`
 
 export const s_calendarContent = css`
   display: grid;
-  grid-auto-rows: 40px;
+  grid-auto-rows: 4rem;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
 `;
@@ -23,9 +23,9 @@ export const s_dayOfWeek = css`
   justify-content: center;
 
   width: 100%;
-  min-width: 40px;
-  height: 40px;
-  min-height: 40px;
+  min-width: 4rem;
+  height: 4rem;
+  min-height: 4rem;
 
   font-size: 1.2rem;
   font-weight: normal;
@@ -38,8 +38,8 @@ export const s_monthHeader = css`
   justify-content: space-between;
 
   width: 100%;
-  margin-bottom: 20px;
-  padding: 0 10px;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
 
   font-size: 1.5rem;
   font-weight: bold;
@@ -55,8 +55,8 @@ export const s_daySlotButton = css`
   justify-content: center;
 
   width: 100%;
-  min-width: 36px;
-  height: 36px;
+  min-width: 3.6rem;
+  height: 3.6rem;
 
   background-color: transparent;
   border: none;
@@ -75,8 +75,8 @@ export const s_selectedDaySlot = (isSelected: boolean) => css`
   align-items: center;
   justify-content: center;
 
-  width: 36px;
-  height: 36px;
+  width: 3.6rem;
+  height: 3.6rem;
 
   ${isSelected &&
   css`
