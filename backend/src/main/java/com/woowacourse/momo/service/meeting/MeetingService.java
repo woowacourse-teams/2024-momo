@@ -66,7 +66,7 @@ public class MeetingService {
     public String create(MeetingCreateRequest request) {
         String uuid = UUID.randomUUID().toString();
         Meeting meeting = new Meeting(
-                request.hostName(),
+                request.meetingName(),
                 uuid,
                 Timeslot.from(request.meetingStartTime()),
                 Timeslot.from(request.meetingEndTime())
