@@ -10,5 +10,5 @@ export const s_globalContainer = css`
 `;
 
 export const s_content = css`
-  padding: 1.6rem;
+  padding: 0 1.6rem;
 `;
