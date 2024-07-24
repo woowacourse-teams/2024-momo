@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
-export const title = css`
+export const s_title = css`
   width: 100%;
   margin-bottom: 1rem;
 

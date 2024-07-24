@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom';
 
-import { globalContainer } from './GlobalLayout.styles';
+import { s_globalContainer } from './GlobalLayout.styles';
 
 export default function GlobalLayout() {
   return (
-    <div css={globalContainer}>
+    <div css={s_globalContainer}>
       <Outlet />
     </div>
   );
