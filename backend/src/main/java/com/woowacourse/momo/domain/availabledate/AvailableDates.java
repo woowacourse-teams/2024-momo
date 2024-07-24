@@ -7,14 +7,18 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
 
+@Getter
 public class AvailableDates {
 
-    private final List<LocalDate> dates;
+    private final List<AvailableDate> dates;
 
-    public AvailableDates(List<LocalDate> dates) {
+    public AvailableDates(List<LocalDate> dates, Meeting meeting) {
         validateDuplicatedDates(dates);
-        this.dates = dates;
+        this.dates = dates.stream()
+                .map(date -> new AvailableDate(date, meeting))
+                .toList();
     }
 
     private void validateDuplicatedDates(List<LocalDate> dates) {
@@ -22,11 +26,5 @@ public class AvailableDates {
         if (dateSet.size() != dates.size()) {
             throw new MomoException(AvailableDateErrorCode.DUPLICATED_DATE);
         }
-    }
-
-    public List<AvailableDate> assignMeeting(Meeting meeting) {
-        return dates.stream()
-                .map(date -> new AvailableDate(date, meeting))
-                .toList();
     }
 }

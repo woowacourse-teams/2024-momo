@@ -70,9 +70,8 @@ public class MeetingService {
         );
         Meeting savedMeeting = meetingRepository.save(meeting);
 
-        AvailableDates dates = new AvailableDates(request.meetingAvailableDates());
-        List<AvailableDate> availableDates = dates.assignMeeting(savedMeeting);
-        availableDateRepository.saveAll(availableDates);
+        AvailableDates availableDates = new AvailableDates(request.meetingAvailableDates(), meeting);
+        availableDateRepository.saveAll(availableDates.getDates());
 
         Attendee attendee = new Attendee(savedMeeting, request.hostName(), request.hostPassword(), Role.HOST);
         attendeeRepository.save(attendee);
