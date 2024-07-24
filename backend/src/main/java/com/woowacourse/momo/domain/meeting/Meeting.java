@@ -5,6 +5,8 @@ import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.domain.timeslot.TimeslotInterval;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -14,14 +16,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalTime;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "meeting")
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Meeting extends BaseEntity {
 
@@ -39,12 +39,16 @@ public class Meeting extends BaseEntity {
     private TimeslotInterval timeslotInterval;
 
     public Meeting(String name, String uuid, TimeslotInterval timeslotInterval) {
+        this.name = name;
+        this.uuid = uuid;
+        this.timeslotInterval = timeslotInterval;
+    }
 
     public Meeting(String name, String uuid, Timeslot firstTimeslot, Timeslot lastTimeslot) {
         validateTimeRange(firstTimeslot, lastTimeslot);
         this.name = name;
         this.uuid = uuid;
-        this.timeslotInterval = timeslotInterval;
+        this.timeslotInterval = new TimeslotInterval(firstTimeslot, lastTimeslot);
     }
 
     public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
@@ -60,11 +64,15 @@ public class Meeting extends BaseEntity {
         }
     }
 
-    public LocalTime firstTimeslotTime() {
-        return timeslotInterval.getFirstTimeslot().getTime();
+    public Timeslot getValidatedTimeslot(LocalTime other) {
+        return this.timeslotInterval.getValidatedTimeslot(other);
     }
 
-    public LocalTime lastTimeslotTime() {
-        return timeslotInterval.getLastTimeslot().getTime();
+    public LocalTime startTimeslotTime() {
+        return this.timeslotInterval.getStartTimeslot().getLocalTime();
+    }
+
+    public LocalTime endTimeslotTime() {
+        return this.timeslotInterval.getEndTimeslot().getLocalTime();
     }
 }

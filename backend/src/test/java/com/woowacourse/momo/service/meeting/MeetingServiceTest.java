@@ -73,8 +73,8 @@ class MeetingServiceTest {
         MeetingResponse response = meetingService.findByUUID(uuid);
 
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.firstTimeslotTime());
-            softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.lastTimeslotTime());
+            softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime());
+            softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime());
             softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());
             softAssertions.assertThat(response.availableDates().size()).isEqualTo(availableDates.size());
         });

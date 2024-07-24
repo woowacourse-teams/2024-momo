@@ -24,8 +24,8 @@ public record MeetingResponse(
 
         return new MeetingResponse(
                 meeting.getName(),
-                meeting.firstTimeslotTime(),
-                meeting.lastTimeslotTime(),
+                meeting.startTimeslotTime(),
+                meeting.endTimeslotTime(),
                 dates
         );
     }

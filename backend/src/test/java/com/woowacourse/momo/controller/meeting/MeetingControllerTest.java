@@ -77,8 +77,8 @@ class MeetingControllerTest {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             softAssertions.assertThat(meetingName).isEqualTo(meeting.getName());
-            softAssertions.assertThat(firstTime).isEqualTo(meeting.firstTimeslotTime().toString());
-            softAssertions.assertThat(lastTime).isEqualTo(meeting.lastTimeslotTime().toString());
+            softAssertions.assertThat(firstTime).isEqualTo(meeting.startTimeslotTime().toString());
+            softAssertions.assertThat(lastTime).isEqualTo(meeting.endTimeslotTime().toString());
             softAssertions.assertThat(availableDatesList).containsExactlyElementsOf(dates);
         });
     }
