@@ -5,6 +5,7 @@ import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
+import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
@@ -32,25 +33,19 @@ class AttendeeControllerTest {
     @Autowired
     private MeetingRepository meetingRepository;
 
-    private Meeting meeting;
-    private String name;
-    private String password;
-
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-
-        meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-
-        name = "attendee";
-        password = "momo";
-        attendeeRepository.save(new Attendee(meeting, name, password, Role.GUEST));
     }
 
     @DisplayName("로그인에 성공하면 200 상태 코드와 토큰을 응답한다.")
     @Test
     void login() {
-        AttendeeLoginRequest request = new AttendeeLoginRequest(name, password);
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+        Attendee attendee = AttendeeFixture.HOST_JAZZ.create(meeting);
+        attendeeRepository.save(new Attendee(meeting, attendee.name(), attendee.password(), Role.GUEST));
+
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

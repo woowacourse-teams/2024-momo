@@ -16,7 +16,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,30 +42,25 @@ class ScheduleControllerTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
-    private Meeting meeting;
-    private Attendee attendee;
-    private List<DateWithTimesRequest> dateWithTimes;
-
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-
-        meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(new Attendee(meeting, "name", "password", Role.GUEST));
-        AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
-        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-
-        List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-
-        dateWithTimes = new ArrayList<>(List.of(
-                new DateWithTimesRequest(today.getDate(), times),
-                new DateWithTimesRequest(tomorrow.getDate(), times)
-        ));
     }
 
     @DisplayName("참가자가 스케줄을 생성하는데 성공하면 200 상태 코드를 응답한다.")
     @Test
     void create() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
+        Attendee attendee = attendeeRepository.save(new Attendee(meeting, "name", "password", Role.GUEST));
+        AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+
+        List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
+        List<DateWithTimesRequest> dateWithTimes = List.of(
+                new DateWithTimesRequest(today.getDate(), times),
+                new DateWithTimesRequest(tomorrow.getDate(), times)
+        );
+
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateWithTimes);
 
         RestAssured.given().log().all()

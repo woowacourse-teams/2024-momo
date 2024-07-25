@@ -62,4 +62,8 @@ public class Attendee extends BaseEntity {
     public String name() {
         return this.name.getName();
     }
+
+    public String password() {
+        return this.password.getPassword();
+    }
 }

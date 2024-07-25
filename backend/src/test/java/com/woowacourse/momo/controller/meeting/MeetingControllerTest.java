@@ -39,27 +39,19 @@ class MeetingControllerTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
-    private Meeting meeting;
-    private List<String> dates;
-
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-
-        meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        List<AvailableDate> availableDates = List.of(
-                availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
-                availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
-        );
-        dates = availableDates.stream()
-                .map(AvailableDate::getDate)
-                .map(LocalDate::toString)
-                .toList();
     }
 
     @DisplayName("UUID로 약속 정보를 조회하는데 성공하면 200 상태 코드를 응답한다.")
     @Test
     void find() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        List<String> dates = List.of(today.getDate().toString(), tomorrow.getDate().toString());
+
         Response response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meeting/{uuid}", meeting.getUuid());
@@ -81,6 +73,8 @@ class MeetingControllerTest {
     @DisplayName("약속 공유 정보를 조회하면 200OK와 응답을 반환한다.")
     @Test
     void findMeetingSharing() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meeting/{uuid}/sharing", meeting.getUuid())
