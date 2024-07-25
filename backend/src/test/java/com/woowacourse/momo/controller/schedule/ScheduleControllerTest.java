@@ -83,7 +83,7 @@ class ScheduleControllerTest {
 
     @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200 상태 코드를 응답한다.")
     @Test
-    void findSingleSchedule() {
+    void findSchedulesOfAttendee() {
         List<Schedule> schedules = new ArrayList<>();
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));

@@ -24,7 +24,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/schedule")
-    public MomoApiResponse<ScheduleOneAttendeeResponse> findSingleSchedule(@PathVariable String uuid, String attendeeName) {
+    public MomoApiResponse<ScheduleOneAttendeeResponse> findSchedulesOfAttendee(@PathVariable String uuid, String attendeeName) {
         ScheduleOneAttendeeResponse response = scheduleService.findSingleSchedule(uuid, attendeeName);
         return new MomoApiResponse<>(response);
     }
