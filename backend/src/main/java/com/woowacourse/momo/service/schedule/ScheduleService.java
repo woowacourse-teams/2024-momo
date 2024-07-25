@@ -18,6 +18,7 @@ import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,18 +56,16 @@ public class ScheduleService {
     private List<Schedule> createSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {
         AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
         return request.dateTimes().stream()
-                .map(dateTimeRequest -> createSchedulesForDate(meeting, attendee, availableDates, dateTimeRequest))
-                .flatMap(List::stream)
+                .flatMap(dateTimeRequest -> createSchedulesForDate(meeting, attendee, availableDates, dateTimeRequest))
                 .toList();
     }
 
-    private List<Schedule> createSchedulesForDate(
+    private Stream<Schedule> createSchedulesForDate(
             Meeting meeting, Attendee attendee, AvailableDates availableDates, DateWithTimesRequest request
     ) {
         AvailableDate date = availableDates.findByDate(request.date());
         return request.times().stream()
-                .map(time -> createSchedule(meeting, attendee, date, time))
-                .toList();
+                .map(time -> createSchedule(meeting, attendee, date, time));
     }
 
     private Schedule createSchedule(Meeting meeting, Attendee attendee, AvailableDate availableDate, LocalTime time) {
