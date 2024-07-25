@@ -2,15 +2,14 @@ package com.woowacourse.momo.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-public enum AvailableDateErrorCode implements ErrorCodeType {
+public enum TimeslotErrorCode implements ErrorCodeType {
 
-    INVALID_AVAILABLE_DATE(HttpStatus.BAD_REQUEST, "약속 가능한 날짜가 아닙니다. 다른 날짜를 선택해 주세요."),
-    DUPLICATED_DATE(HttpStatus.BAD_REQUEST, "같은 날짜를 중복으로 선택할 수 없습니다.");
+    INVALID_TIMESLOT(HttpStatus.BAD_REQUEST, "유효한 시간이 아닙니다. 선택한 시간을 사용할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
 
-    AvailableDateErrorCode(HttpStatus httpStatus, String message) {
+    TimeslotErrorCode(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
     }

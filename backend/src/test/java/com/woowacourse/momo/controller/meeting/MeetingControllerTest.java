@@ -1,16 +1,18 @@
 package com.woowacourse.momo.controller.meeting;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 
-import com.woowacourse.momo.domain.attendee.AttendeeRepository;
+import com.woowacourse.momo.domain.availabledate.AvailableDate;
+import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
-import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -32,24 +34,47 @@ class MeetingControllerTest {
     private int port;
 
     @Autowired
-    private AttendeeRepository attendeeRepository;
-
-    @Autowired
     private MeetingRepository meetingRepository;
 
-    private Meeting meeting;
+    @Autowired
+    private AvailableDateRepository availableDateRepository;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+    }
 
-        meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+    @DisplayName("UUID로 약속 정보를 조회하는데 성공하면 200 상태 코드를 응답한다.")
+    @Test
+    void find() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        List<String> dates = List.of(today.getDate().toString(), tomorrow.getDate().toString());
+
+        Response response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}", meeting.getUuid());
+
+        String meetingName = response.jsonPath().getString("data.meetingName");
+        String firstTime = response.jsonPath().getString("data.firstTime");
+        String lastTime = response.jsonPath().getString("data.lastTime");
+        List<String> availableDatesList = response.jsonPath().getList("data.availableDates", String.class);
+
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(meetingName).isEqualTo(meeting.getName());
+            softAssertions.assertThat(firstTime).isEqualTo(meeting.startTimeslotTime().toString());
+            softAssertions.assertThat(lastTime).isEqualTo(meeting.endTimeslotTime().toString());
+            softAssertions.assertThat(availableDatesList).containsExactlyElementsOf(dates);
+        });
     }
 
     @DisplayName("약속 공유 정보를 조회하면 200OK와 응답을 반환한다.")
     @Test
     void findMeetingSharing() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meeting/{uuid}/sharing", meeting.getUuid())

@@ -1,5 +1,7 @@
 package com.woowacourse.momo.domain.timeslot;
 
+import com.woowacourse.momo.exception.MomoException;
+import com.woowacourse.momo.exception.code.TimeslotErrorCode;
 import java.time.LocalTime;
 import java.util.Arrays;
 import lombok.Getter;
@@ -56,20 +58,24 @@ public enum Timeslot {
     TIME_2300(LocalTime.of(23, 0)),
     TIME_2330(LocalTime.of(23, 30));
 
-    private final LocalTime time;
+    private final LocalTime localTime;
 
-    Timeslot(LocalTime time) {
-        this.time = time;
+    Timeslot(LocalTime localTime) {
+        this.localTime = localTime;
     }
 
     public static Timeslot from(LocalTime localTime) {
         return Arrays.stream(values())
-                .filter(timeslot -> timeslot.time.equals(localTime))
+                .filter(timeslot -> timeslot.localTime.equals(localTime))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타임슬롯입니다."));
+                .orElseThrow(() -> new MomoException(TimeslotErrorCode.INVALID_TIMESLOT));
     }
 
-    public boolean isNotBefore(Timeslot timeslot) {
-        return !this.time.isBefore(timeslot.time);
+    public boolean isAfter(LocalTime other) {
+        return this.localTime.isAfter(other);
+    }
+
+    public boolean isBefore(LocalTime other) {
+        return this.localTime.isBefore(other);
     }
 }

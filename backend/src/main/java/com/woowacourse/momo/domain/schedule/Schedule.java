@@ -35,23 +35,17 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "attendee_id", nullable = false)
     private Attendee attendee;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "available_date_id", nullable = false)
     private AvailableDate availableDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot firstTimeslot;
+    @Column(nullable = false, length = 10)
+    private Timeslot timeslot;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Timeslot lastTimeslot;
-
-    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot firstTimeslot, Timeslot lastTimeslot) {
+    public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot timeslot) {
         this.attendee = attendee;
         this.availableDate = availableDate;
-        this.firstTimeslot = firstTimeslot;
-        this.lastTimeslot = lastTimeslot;
+        this.timeslot = timeslot;
     }
 }

@@ -36,6 +36,11 @@ public class AvailableDate extends BaseEntity {
     private Meeting meeting;
 
     public AvailableDate(LocalDate date, Meeting meeting) {
-        this(null, date, meeting);
+        this.date = date;
+        this.meeting = meeting;
+    }
+
+    public boolean isSameDate(LocalDate other) {
+        return this.date.equals(other);
     }
 }

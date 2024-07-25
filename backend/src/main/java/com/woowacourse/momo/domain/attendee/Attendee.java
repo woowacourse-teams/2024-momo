@@ -35,15 +35,13 @@ public class Attendee extends BaseEntity {
     private Meeting meeting;
 
     @Embedded
-    @Column(nullable = false, length = 20)
     private AttendeeName name;
 
     @Embedded
-    @Column(nullable = false, length = 20)
     private AttendeePassword password;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private Role role;
 
     public Attendee(Meeting meeting, AttendeeName name, AttendeePassword password, Role role) {
@@ -63,5 +61,9 @@ public class Attendee extends BaseEntity {
 
     public String name() {
         return this.name.getName();
+    }
+
+    public String password() {
+        return this.password.getPassword();
     }
 }

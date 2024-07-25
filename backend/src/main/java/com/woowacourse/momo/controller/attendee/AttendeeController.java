@@ -19,7 +19,7 @@ public class AttendeeController {
 
     @PostMapping("/api/v1/login/{uuid}")
     public MomoApiResponse<TokenResponse> login(
-            @PathVariable String uuid, @Valid @RequestBody AttendeeLoginRequest request
+            @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
     ) {
         return new MomoApiResponse<>(attendeeService.login(uuid, request));
     }

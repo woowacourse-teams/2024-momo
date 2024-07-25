@@ -9,7 +9,7 @@ import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.exception.MomoException;
-import com.woowacourse.momo.exception.code.AttendeeErrorCode;
+import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.service.attendee.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class AttendeeService {
     @Transactional
     public TokenResponse login(String uuid, AttendeeLoginRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_UUID));
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
         AttendeeName name = new AttendeeName(request.name());
         AttendeePassword password = new AttendeePassword(request.password());
