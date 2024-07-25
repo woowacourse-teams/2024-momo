@@ -81,7 +81,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
         Attendee attendee = attendeeRepository.findByMeetingAndName(meeting, new AttendeeName(attendeeName))
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
         return ScheduleOneAttendeeResponse.of(attendee, ScheduleOneAttendeeDateTimesResponse.from(schedules));

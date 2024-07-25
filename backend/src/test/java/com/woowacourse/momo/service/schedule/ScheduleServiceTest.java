@@ -149,7 +149,7 @@ class ScheduleServiceTest {
 
         assertThatThrownBy(() -> scheduleService.findSingleSchedule(uuid, givenAttendeeName))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
+                .hasMessage(AttendeeErrorCode.NOT_FOUND_ATTENDEE.message());
     }
 
     private void setOneAttendeeSchedule() {
