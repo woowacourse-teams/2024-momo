@@ -28,10 +28,12 @@ public class MeetingController {
     }
 
     @PostMapping("/api/v1/meeting")
-    public ResponseEntity<Void> create(@RequestBody @Valid MeetingCreateRequest request) {
-        String uuid = meetingService.create(request);
-        return ResponseEntity.created(URI.create("/meeting/" + uuid))
-                .build();
+    public ResponseEntity<MomoApiResponse<MeetingSharingResponse>> create(
+            @RequestBody @Valid MeetingCreateRequest request
+    ) {
+        MeetingSharingResponse response = meetingService.create(request);
+        return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
+                .body(new MomoApiResponse<>(response));
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/sharing")
