@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 public class TimeslotInterval {
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private Timeslot startTimeslot;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private Timeslot endTimeslot;
 
     public TimeslotInterval(LocalTime startTime, LocalTime lastTime) {

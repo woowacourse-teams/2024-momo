@@ -40,7 +40,7 @@ public class Schedule extends BaseEntity {
     private AvailableDate availableDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private Timeslot timeslot;
 
     public Schedule(Attendee attendee, AvailableDate availableDate, Timeslot timeslot) {
