@@ -2,10 +2,8 @@ package com.woowacourse.momo.domain.availabledate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AvailableDateErrorCode;

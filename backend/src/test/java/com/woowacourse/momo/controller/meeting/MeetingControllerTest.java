@@ -5,10 +5,8 @@ import static org.hamcrest.Matchers.containsString;
 
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
-import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
-import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
@@ -37,9 +35,6 @@ class MeetingControllerTest {
 
     @Autowired
     private MeetingRepository meetingRepository;
-
-    @Autowired
-    private AttendeeRepository attendeeRepository;
 
     @Autowired
     private AvailableDateRepository availableDateRepository;
