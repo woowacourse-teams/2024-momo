@@ -8,4 +8,5 @@ module.exports = {
     customExportConditions: [''],
   },
   setupFiles: ['./jest.polyfills.js'],
+  reporters: ['default', ['jest-junit', { outputDirectory: 'reports', outputName: 'report.xml' }]],
 };
