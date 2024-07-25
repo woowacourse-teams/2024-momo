@@ -3,10 +3,13 @@ package com.woowacourse.momo.controller.meeting;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 
+import com.woowacourse.momo.domain.attendee.Attendee;
+import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
+import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.meeting.dto.MeetingCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
@@ -37,6 +40,9 @@ class MeetingControllerTest {
     private MeetingRepository meetingRepository;
 
     @Autowired
+    private AttendeeRepository attendeeRepository;
+
+    @Autowired
     private AvailableDateRepository availableDateRepository;
 
     @BeforeEach
@@ -48,9 +54,11 @@ class MeetingControllerTest {
     @Test
     void find() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         List<String> dates = List.of(today.getDate().toString(), tomorrow.getDate().toString());
+        List<String> attendeeNames = List.of(attendee.name());
 
         Response response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -60,6 +68,7 @@ class MeetingControllerTest {
         String firstTime = response.jsonPath().getString("data.firstTime");
         String lastTime = response.jsonPath().getString("data.lastTime");
         List<String> availableDatesList = response.jsonPath().getList("data.availableDates", String.class);
+        List<String> attendeeNamesList = response.jsonPath().getList("data.attendeeNames", String.class);
 
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -67,6 +76,7 @@ class MeetingControllerTest {
             softAssertions.assertThat(firstTime).isEqualTo(meeting.startTimeslotTime().toString());
             softAssertions.assertThat(lastTime).isEqualTo(meeting.endTimeslotTime().toString());
             softAssertions.assertThat(availableDatesList).containsExactlyElementsOf(dates);
+            softAssertions.assertThat(attendeeNamesList).containsExactlyElementsOf(attendeeNames);
         });
     }
 

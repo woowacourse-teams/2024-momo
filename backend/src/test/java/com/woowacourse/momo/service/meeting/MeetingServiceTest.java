@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
@@ -47,6 +48,7 @@ class MeetingServiceTest {
     @Test
     void findByUUID() {
         Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         List<AvailableDate> availableDates = List.of(
                 availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
                 availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
@@ -59,6 +61,7 @@ class MeetingServiceTest {
             softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime());
             softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());
             softAssertions.assertThat(response.availableDates().size()).isEqualTo(availableDates.size());
+            softAssertions.assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()));
         });
     }
 
