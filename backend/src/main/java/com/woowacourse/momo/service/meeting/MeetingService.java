@@ -29,11 +29,11 @@ public class MeetingService {
     private final AttendeeRepository attendeeRepository;
 
     @Transactional
-    public String create(MeetingCreateRequest request) {
+    public MeetingSharingResponse create(MeetingCreateRequest request) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
         saveAvailableDates(request.meetingAvailableDates(), meeting);
         saveHostAttendee(meeting, request.hostName(), request.hostPassword());
-        return meeting.getUuid();
+        return MeetingSharingResponse.from(meeting);
     }
 
     private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {

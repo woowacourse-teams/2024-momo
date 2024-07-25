@@ -1,8 +1,8 @@
-name: Frontend CI Test
+name: Frontend CI
 
 on:
   pull_request:
-    branches: ["develop"]
+    branches: ['develop']
 
 permissions:
   checks: write
@@ -25,7 +25,7 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-          list-files: "csv"
+          list-files: 'csv'
 
   fe-test:
     needs: detect-changes
@@ -43,13 +43,13 @@ jobs:
       - name: 노드 버젼을 설정해요 :)
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
 
       - name: 이전 의존성을 저장해둔게 있나~? 확인해요 :)
         id: cache
         uses: actions/cache@v4
         with:
-          path: "frontend/node_modules"
+          path: 'frontend/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -66,4 +66,4 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: frontend/test-results/results.xml
+          files: frontend/reports/**/*.xml
