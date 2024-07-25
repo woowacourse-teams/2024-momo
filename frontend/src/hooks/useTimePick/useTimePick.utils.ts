@@ -6,7 +6,7 @@ export function isMouseEvent(event: Event): event is MouseEvent {
   return event instanceof MouseEvent;
 }
 
-const decideDragEventTarget = (event: Event) => {
+export function decideDragEventTarget(event: Event) {
   let target;
 
   if (isTouchEvent(event) && event.touches) {
@@ -17,7 +17,7 @@ const decideDragEventTarget = (event: Event) => {
   }
 
   return target;
-};
+}
 
 export function getTableCellElement(event: Event): HTMLTableCellElement | null {
   const targetElement = decideDragEventTarget(event);
