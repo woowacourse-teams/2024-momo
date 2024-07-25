@@ -14,7 +14,7 @@ import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
-import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
+import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
@@ -64,7 +64,7 @@ public class ScheduleService {
     }
 
     private Stream<Schedule> createSchedulesForDate(
-            Meeting meeting, Attendee attendee, AvailableDates availableDates, DateWithTimesRequest request
+            Meeting meeting, Attendee attendee, AvailableDates availableDates, DateTimesCreateRequest request
     ) {
         AvailableDate date = availableDates.findByDate(request.date());
         return request.times().stream()

@@ -19,7 +19,7 @@ import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.schedule.dto.AttendeesScheduleResponse;
-import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
+import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
@@ -59,7 +59,7 @@ class ScheduleServiceTest {
     private Attendee attendee;
     private AvailableDate today;
     private AvailableDate tomorrow;
-    private List<DateWithTimesRequest> dateTimes;
+    private List<DateTimesCreateRequest> dateTimes;
 
     @BeforeEach
     void setUp() {
@@ -71,8 +71,8 @@ class ScheduleServiceTest {
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
         dateTimes = List.of(
-                new DateWithTimesRequest(today.getDate(), times),
-                new DateWithTimesRequest(tomorrow.getDate(), times)
+                new DateTimesCreateRequest(today.getDate(), times),
+                new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
     }
 
