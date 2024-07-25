@@ -81,15 +81,9 @@ public class ScheduleService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
-        List<Schedule> schedules = findAllSchedules(attendees);
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
 
         return SchedulesResponse.from(schedules);
-    }
-
-    private List<Schedule> findAllSchedules(List<Attendee> attendees) {
-        return attendees.stream()
-                .flatMap(attendee -> scheduleRepository.findAllByAttendee(attendee).stream())
-                .toList();
     }
 
     @Transactional(readOnly = true)

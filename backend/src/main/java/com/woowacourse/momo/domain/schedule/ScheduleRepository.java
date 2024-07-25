@@ -8,5 +8,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findAllByAttendee(Attendee attendee);
 
+    List<Schedule> findAllByAttendeeIn(List<Attendee> attendees);
+
     void deleteAllByAttendee(Attendee attendee);
 }
