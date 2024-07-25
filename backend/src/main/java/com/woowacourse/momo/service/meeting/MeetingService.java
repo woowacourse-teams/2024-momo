@@ -32,7 +32,7 @@ public class MeetingService {
     public String create(MeetingCreateRequest request) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
         saveAvailableDates(request.meetingAvailableDates(), meeting);
-        saveAttendee(meeting, request.hostName(), request.hostPassword());
+        saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         return meeting.getUuid();
     }
 
@@ -46,7 +46,7 @@ public class MeetingService {
         availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
-    private void saveAttendee(Meeting meeting, String hostName, String hostPassword) {
+    private void saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
         Attendee attendee = new Attendee(meeting, hostName, hostPassword, Role.HOST);
         attendeeRepository.save(attendee);
     }
