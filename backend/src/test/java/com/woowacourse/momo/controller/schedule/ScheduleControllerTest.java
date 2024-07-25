@@ -101,4 +101,14 @@ class ScheduleControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
+
+    @DisplayName("전체 스케줄을 조회하는데 성공하면 200 상태 코드를 응답한다.")
+    @Test
+    void findAllSchedules() {
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}/schedules", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
 }

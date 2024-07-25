@@ -14,12 +14,17 @@ import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
+import com.woowacourse.momo.service.schedule.dto.AttendeesScheduleResponse;
 import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,6 +78,43 @@ public class ScheduleService {
     private Schedule createSchedule(Meeting meeting, Attendee attendee, AvailableDate availableDate, LocalTime time) {
         Timeslot timeslot = meeting.getValidatedTimeslot(time);
         return new Schedule(attendee, availableDate, timeslot);
+    }
+
+    @Transactional(readOnly = true)
+    public SchedulesResponse findAllSchedules(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+        List<Schedule> schedules = findAllSchedules(attendees);
+        Map<LocalDateTime, List<String>> attendeesOfSchedules = groupingAttendeeByMeetingDateTime(schedules);
+        List<AttendeesScheduleResponse> scheduleResponses = convertToAttendeesResponses(attendeesOfSchedules);
+        return SchedulesResponse.from(scheduleResponses);
+    }
+
+    private List<Schedule> findAllSchedules(List<Attendee> attendees) {
+        return attendees.stream()
+                .flatMap(attendee -> scheduleRepository.findAllByAttendee(attendee).stream())
+                .toList();
+    }
+
+    private Map<LocalDateTime, List<String>> groupingAttendeeByMeetingDateTime(List<Schedule> schedules) {
+        return schedules.stream()
+                .collect(Collectors.groupingBy(
+                        Schedule::getDateTime,
+                        Collectors.mapping(schedule -> schedule.getAttendee().name(), Collectors.toList())
+                ));
+    }
+
+    private List<AttendeesScheduleResponse> convertToAttendeesResponses(
+            Map<LocalDateTime, List<String>> attendeesOfSchedules
+    ) {
+        return attendeesOfSchedules.entrySet().stream()
+                .map(attendeesOfSchedule -> new AttendeesScheduleResponse(
+                        attendeesOfSchedule.getKey().toLocalDate(),
+                        attendeesOfSchedule.getKey().toLocalTime(),
+                        attendeesOfSchedule.getValue()
+                ))
+                .toList();
     }
 
     @Transactional(readOnly = true)

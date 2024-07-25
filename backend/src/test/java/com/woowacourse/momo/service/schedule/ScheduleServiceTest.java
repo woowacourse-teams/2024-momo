@@ -18,10 +18,12 @@ import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
+import com.woowacourse.momo.service.schedule.dto.AttendeesScheduleResponse;
 import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -111,6 +113,41 @@ class ScheduleServiceTest {
         long scheduleCount = scheduleRepository.count();
 
         assertThat(scheduleCount).isEqualTo(4);
+    }
+
+    /** dummy data table
+     *         today     tomorrow
+     * 01:00   baeky     name
+     *         name
+     *
+     * 01:30   baeky
+     */
+    @DisplayName("해당하는 UUID의 미팅에 속한 참가자들의 모든 스케줄을 조회한다.")
+    @Test
+    void findAllSchedulesInMeetingByUuid() {
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting));
+        Schedule schedule1 = new Schedule(attendee, today, Timeslot.TIME_0100);
+        Schedule schedule2 = new Schedule(attendee, tomorrow, Timeslot.TIME_0100);
+        Schedule schedule3 = new Schedule(attendee2, today, Timeslot.TIME_0100);
+        Schedule schedule4 = new Schedule(attendee2, today, Timeslot.TIME_0130);
+        scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3, schedule4));
+
+        SchedulesResponse response = scheduleService.findAllSchedules(meeting.getUuid());
+
+        assertThat(response.schedules()).containsExactlyInAnyOrder(
+                new AttendeesScheduleResponse(
+                        today.getDate(),
+                        Timeslot.TIME_0100.getLocalTime(),
+                        List.of(attendee.name(), attendee2.name())),
+                new AttendeesScheduleResponse(
+                        today.getDate(),
+                        Timeslot.TIME_0130.getLocalTime(),
+                        List.of(attendee2.name())),
+                new AttendeesScheduleResponse(
+                        tomorrow.getDate(),
+                        Timeslot.TIME_0100.getLocalTime(),
+                        List.of(attendee.name()))
+        );
     }
 
     @DisplayName("참가자 이름과 약속 UUID로 스케줄을 조회한다.")
