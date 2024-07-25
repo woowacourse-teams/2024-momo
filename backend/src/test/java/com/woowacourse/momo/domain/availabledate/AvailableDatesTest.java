@@ -10,29 +10,22 @@ import com.woowacourse.momo.exception.code.AvailableDateErrorCode;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AvailableDatesTest {
 
-    private AvailableDates availableDates;
-    private LocalDate tomorrow;
-
-    @BeforeEach
-    void setUp() {
-        LocalDate today = LocalDate.now();
-        tomorrow = today.plusDays(1);
-
-        availableDates = new AvailableDates(
-                List.of(new AvailableDate(today, MeetingFixture.GAME.create()),
-                        new AvailableDate(tomorrow, MeetingFixture.GAME.create()))
-        );
-    }
-
     @DisplayName("주어진 날짜와 일치하는 가능 날짜를 찾고, 없으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionIfDateNotFound() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+
+        AvailableDates availableDates = new AvailableDates(List.of(
+                new AvailableDate(today, MeetingFixture.GAME.create()),
+                new AvailableDate(tomorrow, MeetingFixture.GAME.create())
+        ));
+
         LocalDate other = tomorrow.plusDays(1);
 
         assertThatThrownBy(() -> availableDates.findByDate(other))
@@ -43,6 +36,14 @@ class AvailableDatesTest {
     @DisplayName("주어진 날짜와 일치하는 가능 날짜를 찾고, 존재하면 가능 날짜 객체를 반환한다.")
     @Test
     void successfulWhenDateIsFound() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+
+        AvailableDates availableDates = new AvailableDates(List.of(
+                new AvailableDate(today, MeetingFixture.GAME.create()),
+                new AvailableDate(tomorrow, MeetingFixture.GAME.create())
+        ));
+
         AvailableDate availableDate = availableDates.findByDate(tomorrow);
 
         assertThat(availableDate.getDate()).isEqualTo(tomorrow);

@@ -2,6 +2,7 @@ package com.woowacourse.momo.service.meeting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
@@ -20,8 +21,6 @@ import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,26 +43,18 @@ class MeetingServiceTest {
     @Autowired
     private AttendeeRepository attendeeRepository;
 
-    private Meeting meeting;
-    private List<AvailableDate> availableDates;
-
-    @BeforeEach
-    void setup() {
-        meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        availableDates = List.of(
-                availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
-                availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
-        );
-    }
-
     @DisplayName("UUID로 약속 정보를 조회한다.")
     @Test
     void findByUUID() {
-        String uuid = meeting.getUuid();
+        Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
+        List<AvailableDate> availableDates = List.of(
+                availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
+                availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
+        );
 
-        MeetingResponse response = meetingService.findByUUID(uuid);
+        MeetingResponse response = meetingService.findByUUID(meeting.getUuid());
 
-        SoftAssertions.assertSoftly(softAssertions -> {
+        assertSoftly(softAssertions -> {
             softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime());
             softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime());
             softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());

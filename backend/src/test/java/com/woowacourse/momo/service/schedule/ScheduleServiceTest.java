@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
-import com.woowacourse.momo.domain.attendee.Role;
 import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
@@ -16,6 +15,7 @@ import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
+import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
@@ -59,7 +59,7 @@ class ScheduleServiceTest {
     @BeforeEach
     void setUp() {
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(new Attendee(meeting, "name", "password", Role.GUEST));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
 
