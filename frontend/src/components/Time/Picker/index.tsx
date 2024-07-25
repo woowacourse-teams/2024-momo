@@ -7,7 +7,7 @@ import TimeSlot from '@components/_common/TimeSlot';
 
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
-import type { GetMeetingResponse } from '@apis/getMeeting';
+import type { GetMeetingResponse } from '@apis/meetings';
 
 import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
 

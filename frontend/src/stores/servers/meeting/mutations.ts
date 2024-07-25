@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { GetMeetingResponse } from '@apis/getMeeting';
+import type { GetMeetingResponse } from '@apis/meetings';
 import { postSchedule } from '@apis/schedule';
 
 import { QUERY_KEY } from '@constants/queryKeys';
