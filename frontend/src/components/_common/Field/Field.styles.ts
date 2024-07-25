@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 export const s_field = css`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.8rem;
 `;
 
 export const s_label = css`
