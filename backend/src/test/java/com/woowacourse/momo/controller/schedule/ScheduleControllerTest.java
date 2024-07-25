@@ -74,9 +74,10 @@ class ScheduleControllerTest {
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
         RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/schedule/{uuid}", meeting.getUuid())
+                .when().post("/api/v1/schedule/{uuid}")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -94,7 +95,9 @@ class ScheduleControllerTest {
         scheduleRepository.saveAll(schedules);
 
         RestAssured.given().log().all()
-                .when().get("/api/v1/meeting/{uuid}/schedule?attendeeName=" + attendee.name(), meeting.getUuid())
+                .pathParam("uuid", meeting.getUuid())
+                .queryParam("attendeeName", attendee.name())
+                .when().get("/api/v1/meeting/{uuid}/schedule")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
