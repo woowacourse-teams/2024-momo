@@ -4,6 +4,7 @@ import com.woowacourse.momo.controller.MomoApiResponse;
 import com.woowacourse.momo.service.schedule.ScheduleService;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,13 @@ public class ScheduleController {
         scheduleService.create(uuid, request);
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/schedule")
+    @GetMapping("/api/v1/meeting/{uuid}/schedules")
+    public MomoApiResponse<SchedulesResponse> findAllSchedules(@PathVariable String uuid) {
+        SchedulesResponse response = scheduleService.findAllSchedules(uuid);
+        return new MomoApiResponse<>(response);
+    }
+
+    @GetMapping(path = "/api/v1/meeting/{uuid}/schedules", params = "attendeeName")
     public MomoApiResponse<ScheduleOneAttendeeResponse> findSchedulesOfAttendee(
             @PathVariable String uuid, String attendeeName
     ) {

@@ -62,7 +62,7 @@ class ScheduleControllerTest {
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
     }
 
-    @DisplayName("참가자가 스케줄을 생성하는데 성공하면 200 상태 코드를 응답한다.")
+    @DisplayName("참가자가 스케줄을 생성하는데 성공하면 201 상태 코드를 응답한다.")
     @Test
     void create() {
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
@@ -97,7 +97,17 @@ class ScheduleControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParam("attendeeName", attendee.name())
-                .when().get("/api/v1/meeting/{uuid}/schedule")
+                .when().get("/api/v1/meeting/{uuid}/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("전체 스케줄을 조회하는데 성공하면 200 상태 코드를 응답한다.")
+    @Test
+    void findAllSchedules() {
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}/schedules", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
