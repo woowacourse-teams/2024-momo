@@ -79,7 +79,7 @@ class ScheduleControllerTest {
                 .body(request)
                 .when().post("/api/v1/schedule/{uuid}")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200 상태 코드를 응답한다.")
