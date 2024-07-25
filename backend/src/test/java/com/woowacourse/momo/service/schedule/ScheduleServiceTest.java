@@ -20,7 +20,7 @@ import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
-import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeDateTimesResponse;
+import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
@@ -119,11 +119,11 @@ class ScheduleServiceTest {
         setOneAttendeeSchedule();
 
         ScheduleOneAttendeeResponse result = scheduleService.findSingleSchedule(meeting.getUuid(), attendee.name());
-        ScheduleOneAttendeeDateTimesResponse firstTimeResponse = result.dateTimes().get(0);
+        ScheduleDateTimesResponse firstTimeResponse = result.schedules().get(0);
 
         assertAll(
                 () -> assertThat(result.attendeeName()).isEqualTo(attendee.name()),
-                () -> assertThat(result.dateTimes()).hasSize(2),
+                () -> assertThat(result.schedules()).hasSize(2),
                 () -> assertThat(firstTimeResponse.times()).hasSize(3)
         );
     }

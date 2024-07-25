@@ -80,7 +80,7 @@ class ScheduleControllerTest {
 
     @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200OK를 반환한다.")
     @Test
-    void findEach() {
+    void findSingleSchedule() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
         attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting));

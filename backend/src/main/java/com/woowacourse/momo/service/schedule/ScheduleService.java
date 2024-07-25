@@ -16,7 +16,7 @@ import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
-import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeDateTimesResponse;
+import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import java.time.LocalTime;
 import java.util.List;
@@ -84,6 +84,6 @@ public class ScheduleService {
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
-        return ScheduleOneAttendeeResponse.of(attendee, ScheduleOneAttendeeDateTimesResponse.from(schedules));
+        return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
     }
 }
