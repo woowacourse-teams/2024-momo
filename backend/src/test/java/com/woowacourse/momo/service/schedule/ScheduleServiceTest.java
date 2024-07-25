@@ -2,6 +2,7 @@ package com.woowacourse.momo.service.schedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeRepository;
@@ -19,9 +20,12 @@ import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
+import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeDateTimesResponse;
+import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,9 +78,10 @@ class ScheduleServiceTest {
     @Test
     void throwsExceptionWhenInvalidUUID() {
         Meeting other = MeetingFixture.DINNER.create();
+        String uuid = other.getUuid();
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(other.getUuid(), request))
+        assertThatThrownBy(() -> scheduleService.create(uuid, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
@@ -85,9 +90,10 @@ class ScheduleServiceTest {
     @Test
     void throwsExceptionWhenInvalidAttendee() {
         String invalidAttendee = "invalidAttendee";
+        String uuid = meeting.getUuid();
         ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendee, dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(meeting.getUuid(), request))
+        assertThatThrownBy(() -> scheduleService.create(uuid, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
@@ -105,5 +111,55 @@ class ScheduleServiceTest {
         long scheduleCount = scheduleRepository.count();
 
         assertThat(scheduleCount).isEqualTo(4);
+    }
+
+    @DisplayName("참가자 이름과 약속 UUID로 스케줄을 조회한다.")
+    @Test
+    void findSingleSchedule() {
+        setOneAttendeeSchedule();
+
+        ScheduleOneAttendeeResponse result = scheduleService.findSingleSchedule(meeting.getUuid(), attendee.name());
+        ScheduleOneAttendeeDateTimesResponse firstTimeResponse = result.dateTimes().get(0);
+
+        assertAll(
+                () -> assertThat(result.attendeeName()).isEqualTo(attendee.name()),
+                () -> assertThat(result.dateTimes()).hasSize(2),
+                () -> assertThat(firstTimeResponse.times()).hasSize(3)
+        );
+    }
+
+    @DisplayName("참가자 스케줄시 약속이 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void throwsIfNoAppointmentInParticipantSchedule() {
+        setOneAttendeeSchedule();
+        String givenUUID = "1234";
+        String name = attendee.name();
+
+        assertThatThrownBy(() -> scheduleService.findSingleSchedule(givenUUID, name))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_FOUND_MEETING.message());
+    }
+
+    @DisplayName("참가자 스케줄시 참가자가 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void throwsIfNoAttendeeInParticipantSchedule() {
+        setOneAttendeeSchedule();
+        String uuid = meeting.getUuid();
+        String givenAttendeeName = "NOTHING";
+
+        assertThatThrownBy(() -> scheduleService.findSingleSchedule(uuid, givenAttendeeName))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
+    }
+
+    private void setOneAttendeeSchedule() {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
+        scheduleRepository.saveAll(schedules);
     }
 }
