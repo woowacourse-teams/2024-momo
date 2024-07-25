@@ -7,6 +7,8 @@ import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +22,10 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/api/v1/schedule/{uuid}")
-    public void create(@PathVariable String uuid, @RequestBody @Valid ScheduleCreateRequest request) {
+    public ResponseEntity<Void> create(@PathVariable String uuid, @RequestBody @Valid ScheduleCreateRequest request) {
         scheduleService.create(uuid, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/schedules")
