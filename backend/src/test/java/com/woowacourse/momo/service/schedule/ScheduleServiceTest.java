@@ -115,7 +115,7 @@ class ScheduleServiceTest {
         assertThat(scheduleCount).isEqualTo(4);
     }
 
-    /** dummy data table
+    /* dummy data table
      *         today     tomorrow
      * 01:00   baeky     name
      *         name

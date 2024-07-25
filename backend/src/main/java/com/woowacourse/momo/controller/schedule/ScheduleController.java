@@ -28,7 +28,7 @@ public class ScheduleController {
                 .build();
     }
 
-    @GetMapping( "/api/v1/meeting/{uuid}/schedules")
+    @GetMapping("/api/v1/meeting/{uuid}/schedules")
     public MomoApiResponse<SchedulesResponse> findAllSchedules(@PathVariable String uuid) {
 
         SchedulesResponse response = scheduleService.findAllSchedules(uuid);
