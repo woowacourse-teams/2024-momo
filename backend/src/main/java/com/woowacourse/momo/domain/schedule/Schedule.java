@@ -63,4 +63,8 @@ public class Schedule extends BaseEntity {
     public LocalTime time() {
         return timeslot.getLocalTime();
     }
+
+    public String attendeeName() {
+        return attendee.name();
+    }
 }

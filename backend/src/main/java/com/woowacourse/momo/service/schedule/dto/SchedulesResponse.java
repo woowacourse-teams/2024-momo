@@ -18,18 +18,18 @@ public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
         return schedules.stream()
                 .collect(Collectors.groupingBy(
                         Schedule::getDateTime,
-                        Collectors.mapping(schedule -> schedule.getAttendee().name(), Collectors.toList())
+                        Collectors.mapping(Schedule::attendeeName, Collectors.toList())
                 ));
     }
 
     private static List<AttendeesScheduleResponse> convertToAttendeesResponses(
             Map<LocalDateTime, List<String>> attendeesOfSchedules
     ) {
-        return attendeesOfSchedules.entrySet().stream()
-                .map(attendeesOfSchedule -> new AttendeesScheduleResponse(
-                        attendeesOfSchedule.getKey().toLocalDate(),
-                        attendeesOfSchedule.getKey().toLocalTime(),
-                        attendeesOfSchedule.getValue()
+        return attendeesOfSchedules.keySet().stream()
+                .map(dataTime -> new AttendeesScheduleResponse(
+                        dataTime.toLocalDate(),
+                        dataTime.toLocalTime(),
+                        attendeesOfSchedules.get(dataTime)
                 ))
                 .toList();
     }
