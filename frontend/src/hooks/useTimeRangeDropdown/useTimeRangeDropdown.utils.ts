@@ -6,7 +6,10 @@ const MAXIMUM_TIME = 23;
 
 // label에 보여줄 이름을 변환해주는 함수
 function formatHours(hour: number) {
-  return hour >= 12 ? `오후 ${hour - 12}` : `오전 ${hour}`;
+  if (hour === 12) return '오후 12';
+  if (hour === 24) return '오전 12';
+
+  return hour > 12 ? `오후 ${hour - 12}` : `오전 ${hour}`;
 }
 
 // 0시 ~ 23시 30분까지 30분 단위로 시간 선택 옵션 배열 생성 함수(@낙타)
