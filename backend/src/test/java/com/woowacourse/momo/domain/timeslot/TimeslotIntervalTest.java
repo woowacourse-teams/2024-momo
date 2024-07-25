@@ -1,6 +1,7 @@
 package com.woowacourse.momo.domain.timeslot;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.woowacourse.momo.exception.MomoException;
@@ -31,5 +32,12 @@ class TimeslotIntervalTest {
         Timeslot timeslot = timeslotInterval.getValidatedTimeslot(other);
 
         assertThat(timeslot.getLocalTime()).isEqualTo(other);
+    }
+
+    @DisplayName("시작 끝이 같은 시간에 대한 시간슬롯 인터벌을 생성할 수 있다.")
+    @Test
+    public void successfulCreationForSameStartAndEndTime() {
+        assertThatNoException()
+                .isThrownBy(() -> new TimeslotInterval(LocalTime.of(23, 30), LocalTime.of(23, 30)));
     }
 }
