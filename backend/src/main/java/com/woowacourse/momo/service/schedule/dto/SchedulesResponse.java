@@ -1,10 +1,13 @@
 package com.woowacourse.momo.service.schedule.dto;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
 import com.woowacourse.momo.domain.schedule.Schedule;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
 
@@ -16,10 +19,7 @@ public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
 
     private static Map<LocalDateTime, List<String>> groupingAttendeeByMeetingDateTime(List<Schedule> schedules) {
         return schedules.stream()
-                .collect(Collectors.groupingBy(
-                        Schedule::getDateTime,
-                        Collectors.mapping(Schedule::attendeeName, Collectors.toList())
-                ));
+                .collect(groupingBy(Schedule::getDateTime, mapping(Schedule::attendeeName, toList())));
     }
 
     private static List<AttendeesScheduleResponse> convertToAttendeesResponses(
