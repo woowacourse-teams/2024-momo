@@ -18,7 +18,7 @@ export function generateStartTimeOptions(endTime: string) {
   for (let i = MINIMUM_TIME; i < endHours; i++) {
     const label = formatHours(i);
 
-    times.push({ value: `${i}:00`, label: label + ':00' });
+    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;
@@ -30,9 +30,9 @@ export function generateEndTimeOptions(startTime: string) {
   const startHours = Number(startTime.split(':')[0]);
 
   for (let i = startHours + 1; i <= MAXIMUM_TIME; i++) {
-    const label = formatHours(i);
+    const label = formatHours(i).padStart(2, '0');
 
-    times.push({ value: `${i}:00`, label: label + ':00' });
+    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;

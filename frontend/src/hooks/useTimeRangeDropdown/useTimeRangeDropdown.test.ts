@@ -13,11 +13,11 @@ describe('useTimeRangeDropdown', () => {
   });
 
   it('선택한 시작 시간(startTime)이 끝 시간(endTime)보다 느리다면 선택한 시간값으로 변경되지 않는다.', () => {
-    const CHANGE_TIME = '1:00';
+    const CHANGE_TIME = '01:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onEndTimeChange('0:00');
+      result.current.onEndTimeChange('00:00');
     });
 
     act(() => {
@@ -28,7 +28,7 @@ describe('useTimeRangeDropdown', () => {
   });
 
   it('선택한 시작 시간(startTime)이 끝 시간(endTime)보다 빠르다면 값이 선택한 시간값으로 변경된다.', () => {
-    const CHANGE_TIME = '1:00';
+    const CHANGE_TIME = '01:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
@@ -43,7 +43,7 @@ describe('useTimeRangeDropdown', () => {
   });
 
   it('선택한 끝 시간(endTime)이 시작 시간(startTime)보다 빠르다면 선택한 시간값으로 변경되지 않는다.', () => {
-    const CHANGE_TIME = '1:00';
+    const CHANGE_TIME = '01:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
@@ -62,7 +62,7 @@ describe('useTimeRangeDropdown', () => {
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onStartTimeChange('0:00');
+      result.current.onStartTimeChange('00:00');
     });
 
     act(() => {
