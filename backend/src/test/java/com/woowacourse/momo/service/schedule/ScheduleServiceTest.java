@@ -17,7 +17,7 @@ import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.MeetingFixture;
-import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
+import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
@@ -54,7 +54,7 @@ class ScheduleServiceTest {
     private Attendee attendee;
     private AvailableDate today;
     private AvailableDate tomorrow;
-    private List<DateWithTimesRequest> dateWithTimes;
+    private List<DateTimesCreateRequest> dateWithTimes;
 
     @BeforeEach
     void setUp() {
@@ -66,8 +66,8 @@ class ScheduleServiceTest {
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
         dateWithTimes = new ArrayList<>(List.of(
-                new DateWithTimesRequest(today.getDate(), times),
-                new DateWithTimesRequest(tomorrow.getDate(), times)
+                new DateTimesCreateRequest(today.getDate(), times),
+                new DateTimesCreateRequest(tomorrow.getDate(), times)
         ));
     }
 

@@ -9,7 +9,7 @@ import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.fixture.MeetingFixture;
-import com.woowacourse.momo.service.schedule.dto.DateWithTimesRequest;
+import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
 import io.restassured.RestAssured;
@@ -56,9 +56,9 @@ class ScheduleControllerTest {
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
 
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-        List<DateWithTimesRequest> dateWithTimes = List.of(
-                new DateWithTimesRequest(today.getDate(), times),
-                new DateWithTimesRequest(tomorrow.getDate(), times)
+        List<DateTimesCreateRequest> dateWithTimes = List.of(
+                new DateTimesCreateRequest(today.getDate(), times),
+                new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
 
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateWithTimes);
