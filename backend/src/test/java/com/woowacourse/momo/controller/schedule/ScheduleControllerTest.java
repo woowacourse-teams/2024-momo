@@ -7,7 +7,10 @@ import com.woowacourse.momo.domain.availabledate.AvailableDate;
 import com.woowacourse.momo.domain.availabledate.AvailableDateRepository;
 import com.woowacourse.momo.domain.meeting.Meeting;
 import com.woowacourse.momo.domain.meeting.MeetingRepository;
+import com.woowacourse.momo.domain.schedule.Schedule;
+import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
+import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
@@ -16,6 +19,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +46,9 @@ class ScheduleControllerTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
@@ -67,6 +74,31 @@ class ScheduleControllerTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/schedule/{uuid}", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200OK를 반환한다.")
+    @Test
+    void findEach() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting));
+        LocalDate now = LocalDate.now();
+        AvailableDate today = availableDateRepository.save(new AvailableDate(null, now, meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(null, now.plusDays(1), meeting));
+        availableDateRepository.save(new AvailableDate(null, now.plusDays(2), meeting));
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
+        scheduleRepository.saveAll(schedules);
+
+        RestAssured.given().log().all()
+                .when().get("/api/v1/meeting/{uuid}/schedule?attendeeName=" + attendee.name(), meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
