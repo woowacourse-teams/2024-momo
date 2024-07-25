@@ -1,14 +1,15 @@
 import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 
+import { INITIAL_END_TIME, INITIAL_START_TIME } from './constants';
 import useTimeRangeDropdown from './useTimeRangeDropdown';
 
 describe('useTimeRangeDropdown', () => {
-  it('초기 시작 시간(startTime)은 0:00, 끝 시간(emdTime)은 23:00으로 설정된다.', () => {
+  it(`초기 시작 시간(startTime)은 ${INITIAL_START_TIME}, 끝 시간(emdTime)은 ${INITIAL_END_TIME}으로 설정된다.`, () => {
     const { result } = renderHook(() => useTimeRangeDropdown());
 
-    expect(result.current.startTime).toBe('0:00');
-    expect(result.current.endTime).toBe('23:00');
+    expect(result.current.startTime).toBe(INITIAL_START_TIME);
+    expect(result.current.endTime).toBe(INITIAL_END_TIME);
   });
 
   it('선택한 시작 시간(startTime)이 끝 시간(endTime)보다 느리다면 선택한 시간값으로 변경되지 않는다.', () => {

@@ -1,8 +1,6 @@
 import type { Option } from '@components/_common/Dropdown';
 
-const MINIMUM_TIME = 0;
-const MAXIMUM_TIME = 23;
-
+import { MAXIMUM_TIME, MINIMUM_TIME } from './constants';
 
 // label에 보여줄 이름을 변환해주는 함수
 function formatHours(hour: number) {
@@ -41,12 +39,12 @@ export function generateEndTimeOptions(startTime: string) {
 }
 
 // 만약 시작 시간보다 끝 시간이 빠르다면 false를 반환하는 함수(@낙타)
-export function compareTimes(startTime: string, endTime: string) {
+export function isTimeSelectable(startTime: string, endTime: string) {
   const [startHours, startMinutes] = startTime.split(':');
   const [endHours, endMinutes] = endTime.split(':');
 
   if (endHours < startHours) return false;
-  else if (endHours === startHours && endMinutes < startMinutes) return false;
+  if (endHours === startHours && endMinutes < startMinutes) return false;
 
   return true;
 }
