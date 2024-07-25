@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { generateTimeOptions } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.utils';
+import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
+import {
+  generateEndTimeOptions,
+  generateStartTimeOptions,
+} from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.utils';
 
 import Dropdown from '.';
 
@@ -50,8 +54,14 @@ export const Default: Story = {
   },
 };
 
-export const TimeDropdown: Story = {
+export const StartTime: Story = {
   args: {
-    options: generateTimeOptions(),
+    options: generateStartTimeOptions(INITIAL_END_TIME),
+  },
+};
+
+export const EndTime: Story = {
+  args: {
+    options: generateEndTimeOptions(INITIAL_START_TIME),
   },
 };
