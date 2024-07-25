@@ -97,7 +97,7 @@ class ScheduleControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParam("attendeeName", attendee.name())
-                .when().get("/api/v1/meeting/{uuid}/schedule")
+                .when().get("/api/v1/meeting/{uuid}/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }

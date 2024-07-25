@@ -28,13 +28,14 @@ public class ScheduleController {
                 .build();
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/schedules")
+    @GetMapping( "/api/v1/meeting/{uuid}/schedules")
     public MomoApiResponse<SchedulesResponse> findAllSchedules(@PathVariable String uuid) {
+
         SchedulesResponse response = scheduleService.findAllSchedules(uuid);
         return new MomoApiResponse<>(response);
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/schedule")
+    @GetMapping(path = "/api/v1/meeting/{uuid}/schedules", params = "attendeeName")
     public MomoApiResponse<ScheduleOneAttendeeResponse> findSchedulesOfAttendee(
             @PathVariable String uuid, String attendeeName
     ) {
