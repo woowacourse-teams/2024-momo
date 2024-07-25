@@ -22,7 +22,6 @@ import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +53,7 @@ class ScheduleServiceTest {
     private Attendee attendee;
     private AvailableDate today;
     private AvailableDate tomorrow;
-    private List<DateTimesCreateRequest> dateWithTimes;
+    private List<DateTimesCreateRequest> dateTimes;
 
     @BeforeEach
     void setUp() {
@@ -65,17 +64,17 @@ class ScheduleServiceTest {
 
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
-        dateWithTimes = new ArrayList<>(List.of(
+        dateTimes = List.of(
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
-        ));
+        );
     }
 
     @DisplayName("스케줄 생성 요청의 UUID가 존재하지 않으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionWhenInvalidUUID() {
         Meeting other = MeetingFixture.DINNER.create();
-        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateWithTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
         assertThatThrownBy(() -> scheduleService.create(other.getUuid(), request))
                 .isInstanceOf(MomoException.class)
@@ -86,7 +85,7 @@ class ScheduleServiceTest {
     @Test
     void throwsExceptionWhenInvalidAttendee() {
         String invalidAttendee = "invalidAttendee";
-        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendee, dateWithTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendee, dateTimes);
 
         assertThatThrownBy(() -> scheduleService.create(meeting.getUuid(), request))
                 .isInstanceOf(MomoException.class)
@@ -96,7 +95,7 @@ class ScheduleServiceTest {
     @DisplayName("스케줄 생성 시 사용자의 기존 스케줄들을 모두 삭제하고 새로운 스케줄을 저장한다.")
     @Test
     void createSchedulesReplacesOldSchedules() {
-        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateWithTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
         scheduleRepository.saveAll(List.of(
                 new Schedule(attendee, today, Timeslot.TIME_0130),
                 new Schedule(attendee, tomorrow, Timeslot.TIME_0130)

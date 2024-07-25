@@ -56,12 +56,12 @@ class ScheduleControllerTest {
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
 
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-        List<DateTimesCreateRequest> dateWithTimes = List.of(
+        List<DateTimesCreateRequest> dateTimes = List.of(
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
 
-        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateWithTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
