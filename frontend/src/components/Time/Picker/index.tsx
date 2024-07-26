@@ -7,9 +7,9 @@ import TimeSlot from '@components/_common/TimeSlot';
 
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
-import type { GetMeetingResponse } from '@apis/getMeeting';
+import type { GetMeetingResponse } from '@apis/meetings';
 
-import { usePostScheduleMutation } from '@stores/servers/meeting/mutations';
+import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
 
 import { s_buttonContainer, s_cell, s_table, s_th } from '../Time.styles';
 import { convertToSchedule, generateScheduleMatrix } from './TimePicker.util';

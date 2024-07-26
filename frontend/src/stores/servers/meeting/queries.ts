@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import getMeeting from '@apis/getMeeting';
+import getMeeting from '@apis/meetings';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
-export const useGetMeetingQuery = () =>
+export const useGetMeetingQuery = (uuid: string) =>
   useQuery({
     queryKey: [QUERY_KEY.meeting],
-    queryFn: () => getMeeting(),
+    queryFn: () => getMeeting(uuid),
     retry: 1,
   });

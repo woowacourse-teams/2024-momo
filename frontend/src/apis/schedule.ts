@@ -1,6 +1,6 @@
 import { API_URL } from '@constants/api';
 
-import type { Schedules } from './getMeeting';
+import type { Schedules } from './meetings';
 
 export const postSchedule = async (requestData: Schedules[]) => {
   const url = `${API_URL}/api/v1/schedule`;
