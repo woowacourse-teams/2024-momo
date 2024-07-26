@@ -22,8 +22,12 @@ export interface MeetingRequest {
   meetingEndTime: string;
 }
 
+export interface PostMeetingResponse {
+  uuid: string;
+}
+
 // uuid 기본값은 임시 설정된 uuid
-const getMeeting = async (uuid = '550e8400'): Promise<GetMeetingResponse> => {
+const getMeeting = async (uuid: string): Promise<GetMeetingResponse> => {
   const url = `${API_URL}/api/v1/meeting/${uuid}`;
 
   const response = await fetch(url, {
@@ -44,7 +48,7 @@ const getMeeting = async (uuid = '550e8400'): Promise<GetMeetingResponse> => {
 
 export default getMeeting;
 
-export const postMeeting = async (request: MeetingRequest) => {
+export const postMeeting = async (request: MeetingRequest): Promise<PostMeetingResponse> => {
   const url = `${API_URL}/api/v1/meeting`;
 
   const response = await fetch(url, {
