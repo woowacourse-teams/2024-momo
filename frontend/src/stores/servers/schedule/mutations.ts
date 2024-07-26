@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { GetMeetingResponse } from '@apis/meetings';
-import { postSchedule } from '@apis/schedule';
+import { postSchedule } from '@apis/postSchedule';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
@@ -10,25 +9,17 @@ export const usePostScheduleMutation = (onSettledCallback: () => void) => {
 
   return useMutation({
     mutationFn: postSchedule,
-    onMutate: async (newSchedules) => {
-      await queryClient.cancelQueries({ queryKey: [QUERY_KEY.meeting] });
+    // onMutate: async (newSchedules) => {
+    //   await queryClient.cancelQueries({ queryKey: [QUERY_KEY.meeting, ''] });
 
-      const prevSchedules = queryClient.getQueryData([QUERY_KEY.meeting]);
+    //   const prevSchedules = queryClient.getQueryData([QUERY_KEY.meeting, '']);
 
-      queryClient.setQueryData([QUERY_KEY.meeting], (prevData: GetMeetingResponse) => {
-        const nextMeetingSchedules = {
-          ...prevData,
-          schedules: newSchedules,
-        };
-
-        return nextMeetingSchedules;
-      });
-
-      return { prevSchedules };
-    },
+    //   return { prevSchedules };
+    // },
     onSettled: () => {
       onSettledCallback();
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meeting] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meeting, ''] });
+      ``;
     },
   });
 };
