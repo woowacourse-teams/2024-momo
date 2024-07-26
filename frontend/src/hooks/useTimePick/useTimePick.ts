@@ -7,18 +7,19 @@ interface TimePickTableIndex {
   colIndex: number;
 }
 
-export default function useTimePick(isUpdate: boolean, initialTableValue?: boolean[][]) {
+export default function useTimePick(isUpdate: boolean, initialTableValue: number[][]) {
   const startIndex = useRef<TimePickTableIndex | null>(null);
   const currentIndex = useRef<TimePickTableIndex | null>(null);
-  const initialTable = useRef<boolean[][]>([]);
-  const mode = useRef(false);
+  const initialTable = useRef<number[][]>([]);
+  const mode = useRef<number>(0);
 
   const tableRef = useRef<HTMLTableElement | null>(null);
-  const [tableValue, setTableValue] = useState<boolean[][]>(initialTableValue ?? []);
+  const [tableValue, setTableValue] = useState<number[][]>(initialTableValue);
 
   const handleTimePickStart = useCallback(
     (event: Event) => {
       const index = getTableCellIndex(event);
+
       if (!index) return;
 
       if (isTouchEvent(event) && event.cancelable) {
@@ -32,8 +33,8 @@ export default function useTimePick(isUpdate: boolean, initialTableValue?: boole
 
       const newTableValues = [...tableValue];
 
-      mode.current = !tableValue[rowIndex][colIndex];
-      newTableValues[rowIndex][colIndex] = mode.current;
+      mode.current = tableValue[rowIndex][colIndex];
+      newTableValues[rowIndex][colIndex] = mode.current === 0 ? 1 : 0;
 
       setTableValue(newTableValues);
     },
@@ -65,7 +66,7 @@ export default function useTimePick(isUpdate: boolean, initialTableValue?: boole
           if (i < minRow || i > maxRow || j < minCol || j > maxCol) {
             nextTableValue[i][j] = initialTable.current[i][j];
           } else {
-            nextTableValue[i][j] = mode.current;
+            nextTableValue[i][j] = mode.current === 0 ? 1 : 0;
           }
         });
       });
