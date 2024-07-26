@@ -1,4 +1,4 @@
-package com.woowacourse.momo.auth;
+package com.woowacourse.momo.service.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -8,8 +8,6 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.woowacourse.momo.auth.dto.TokenInfo;
-import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.AuthErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtManager {
 
-    private static final String CLAIM_ID = "attendee_id";
-    private static final String CLAIM_NICKNAME = "attendee_nickname";
+    private static final String CLAIM_ID = "id";
 
     private final String secretKey;
 
@@ -29,18 +26,15 @@ public class JwtManager {
         this.secretKey = secretKey;
     }
 
-    public String generate(Attendee attendee) {
+    public String generate(long id) {
         return JWT.create()
-                .withClaim(CLAIM_ID, attendee.getId())
-                .withClaim(CLAIM_NICKNAME, attendee.name())
+                .withClaim(CLAIM_ID, id)
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
-    public TokenInfo extract(String token) {
+    public long extract(String token) {
         DecodedJWT decodedJWT = verifyToken(token);
-        long id = decodedJWT.getClaim(CLAIM_ID).asLong();
-        String nickname = decodedJWT.getClaim(CLAIM_NICKNAME).asString();
-        return new TokenInfo(id, nickname);
+        return decodedJWT.getClaim(CLAIM_ID).asLong();
     }
 
     private DecodedJWT verifyToken(String token) {
