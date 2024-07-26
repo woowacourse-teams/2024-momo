@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Calendar from '@components/_common/Calendar';
 import Dropdown from '@components/_common/Dropdown';
@@ -12,6 +13,8 @@ import {
   generateStartTimeOptions,
 } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.utils';
 
+import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
+
 import {
   s_confirm,
   s_confirmContainer,
@@ -20,6 +23,8 @@ import {
 } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
+  const navigate = useNavigate();
+  const { uuid, mutation: postMeetingMutation } = usePostMeetingMutation();
   const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
   const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
   const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
@@ -38,6 +43,27 @@ export default function CreateMeetingPage() {
       hasDate(date) ? prevDates.filter((d) => d !== date) : [...prevDates, date],
     );
   };
+
+  const handleSubmit = () => {
+    postMeetingMutation.mutate({
+      hostName: hostName,
+      hostPassword: hostPassword,
+      meetingName: meetingName,
+      meetingAvailableDates: selectedDates,
+      meetingStartTime: startTime,
+      meetingEndTime: endTime,
+    });
+  };
+
+  useEffect(() => {
+    if (uuid !== '') {
+      navigate('/meeting/complete', {
+        state: {
+          uuid: uuid,
+        },
+      });
+    }
+  }, [uuid, navigate]);
 
   return (
     <div>
@@ -98,7 +124,9 @@ export default function CreateMeetingPage() {
           </div>
         </Field>
         <div css={s_confirmContainer}>
-          <button css={s_confirm}>약속 생성하기</button>
+          <button css={s_confirm} onClick={handleSubmit}>
+            약속 생성하기
+          </button>
         </div>
       </div>
     </div>
