@@ -154,7 +154,7 @@ class ScheduleServiceTest {
     @DisplayName("참가자 이름과 약속 UUID로 스케줄을 조회한다.")
     @Test
     void findSingleSchedule() {
-        setOneAttendeeSchedule();
+        createAttendeeSchedule(attendee);
 
         ScheduleOneAttendeeResponse result = scheduleService.findSingleSchedule(meeting.getUuid(), attendee.name());
         ScheduleDateTimesResponse firstTimeResponse = result.schedules().get(0);
@@ -169,7 +169,7 @@ class ScheduleServiceTest {
     @DisplayName("참가자 스케줄시 약속이 존재하지 않으면 예외가 발생한다.")
     @Test
     void throwsIfNoAppointmentInParticipantSchedule() {
-        setOneAttendeeSchedule();
+        createAttendeeSchedule(attendee);
         String givenUUID = "1234";
         String name = attendee.name();
 
@@ -181,7 +181,7 @@ class ScheduleServiceTest {
     @DisplayName("참가자 스케줄시 참가자가 존재하지 않으면 예외가 발생한다.")
     @Test
     void throwsIfNoAttendeeInParticipantSchedule() {
-        setOneAttendeeSchedule();
+        createAttendeeSchedule(attendee);
         String uuid = meeting.getUuid();
         String givenAttendeeName = "NOTHING";
 
@@ -190,7 +190,22 @@ class ScheduleServiceTest {
                 .hasMessage(AttendeeErrorCode.NOT_FOUND_ATTENDEE.message());
     }
 
-    private void setOneAttendeeSchedule() {
+    @DisplayName("UUID와 참가자 ID로 자신의 스케줄을 조회한다.")
+    @Test
+    void findMySchedule() {
+        createAttendeeSchedule(attendee);
+
+        ScheduleOneAttendeeResponse result = scheduleService.findMySchedule(meeting.getUuid(), attendee.getId());
+        ScheduleDateTimesResponse firstTimeResponse = result.schedules().get(0);
+
+        assertAll(
+                () -> assertThat(result.attendeeName()).isEqualTo(attendee.name()),
+                () -> assertThat(result.schedules()).hasSize(2),
+                () -> assertThat(firstTimeResponse.times()).hasSize(3)
+        );
+    }
+
+    private void createAttendeeSchedule(Attendee attendee) {
         List<Schedule> schedules = new ArrayList<>();
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
