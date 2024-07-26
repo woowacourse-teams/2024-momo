@@ -1,0 +1,36 @@
+{
+  "data": {
+    "schedules": [
+      {
+        "date": "2024-07-24",
+        "time": "13:00",
+        "attendeeNames": ["마크", "배키", "다온"]
+      },
+      {
+        "date": "2024-07-24",
+        "time": "14:00",
+        "attendeeNames": ["배키", "다온"]
+      },
+      {
+        "date": "2024-07-25",
+        "time": "14:00",
+        "attendeeNames": ["마크", "다온"]
+      },
+      {
+        "date": "2024-07-25",
+        "time": "15:00",
+        "attendeeNames": ["마크", "배키"]
+      },
+      {
+        "date": "2024-07-26",
+        "time": "16:00",
+        "attendeeNames": ["마크"]
+      },
+      {
+        "date": "2024-07-26",
+        "time": "17:00",
+        "attendeeNames": ["다온"]
+      }
+    ]
+  }
+}
