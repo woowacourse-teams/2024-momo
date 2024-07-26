@@ -36,24 +36,15 @@ public class ScheduleService {
     private final AvailableDateRepository availableDateRepository;
 
     @Transactional
-    public void create(String uuid, ScheduleCreateRequest request) {
-        Meeting meeting = findMeetingByUUID(uuid);
-        Attendee attendee = findAttendeeByMeetingAndName(meeting, request.attendeeName());
+    public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        Attendee attendee = attendeeRepository.findById(attendeeId)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         scheduleRepository.deleteAllByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
         scheduleRepository.saveAll(schedules);
-    }
-
-    private Meeting findMeetingByUUID(String uuid) {
-        return meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
-    }
-
-    private Attendee findAttendeeByMeetingAndName(Meeting meeting, String attendeeName) {
-        AttendeeName name = new AttendeeName(attendeeName);
-        return attendeeRepository.findByMeetingAndName(meeting, name)
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
     }
 
     private List<Schedule> createSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {

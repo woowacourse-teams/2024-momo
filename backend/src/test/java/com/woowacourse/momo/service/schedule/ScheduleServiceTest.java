@@ -80,10 +80,10 @@ class ScheduleServiceTest {
     @Test
     void throwsExceptionWhenInvalidUUID() {
         Meeting other = MeetingFixture.DINNER.create();
-        String uuid = other.getUuid();
+        long attendeeId = attendee.getId();
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(uuid, request))
+        assertThatThrownBy(() -> scheduleService.create(other.getUuid(), attendeeId, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
@@ -91,11 +91,12 @@ class ScheduleServiceTest {
     @DisplayName("약속에 참가자 정보가 존재하지 않으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionWhenInvalidAttendee() {
-        String invalidAttendee = "invalidAttendee";
+        long invalidAttendeeId = 2L;
+        String invalidAttendeeName = "invalidAttendeeName";
         String uuid = meeting.getUuid();
-        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendee, dateTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendeeName, dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(uuid, request))
+        assertThatThrownBy(() -> scheduleService.create(uuid, invalidAttendeeId, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
@@ -109,7 +110,7 @@ class ScheduleServiceTest {
                 new Schedule(attendee, tomorrow, Timeslot.TIME_0130)
         ));
 
-        scheduleService.create(meeting.getUuid(), request);
+        scheduleService.create(meeting.getUuid(), attendee.getId(), request);
         long scheduleCount = scheduleRepository.count();
 
         assertThat(scheduleCount).isEqualTo(4);
