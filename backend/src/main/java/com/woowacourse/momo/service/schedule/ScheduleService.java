@@ -39,7 +39,7 @@ public class ScheduleService {
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
-        Attendee attendee = attendeeRepository.findById(attendeeId)
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         scheduleRepository.deleteAllByAttendee(attendee);
