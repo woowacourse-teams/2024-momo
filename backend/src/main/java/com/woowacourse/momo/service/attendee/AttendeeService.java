@@ -1,6 +1,5 @@
 package com.woowacourse.momo.service.attendee;
 
-import com.woowacourse.momo.auth.JwtManager;
 import com.woowacourse.momo.domain.attendee.Attendee;
 import com.woowacourse.momo.domain.attendee.AttendeeName;
 import com.woowacourse.momo.domain.attendee.AttendeePassword;
@@ -12,6 +11,7 @@ import com.woowacourse.momo.exception.MomoException;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.service.attendee.dto.TokenResponse;
+import com.woowacourse.momo.service.auth.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,12 +39,12 @@ public class AttendeeService {
 
     private TokenResponse verifyPassword(Attendee attendee, AttendeePassword password) {
         attendee.verifyPassword(password);
-        return new TokenResponse(jwtManager.generate(attendee));
+        return new TokenResponse(jwtManager.generate(attendee.getId()));
     }
 
     private TokenResponse signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
-        return new TokenResponse(jwtManager.generate(attendee));
+        return new TokenResponse(jwtManager.generate(attendee.getId()));
     }
 }

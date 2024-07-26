@@ -1,6 +1,7 @@
 package com.woowacourse.momo.controller.schedule;
 
 import com.woowacourse.momo.controller.MomoApiResponse;
+import com.woowacourse.momo.controller.auth.AuthAttendee;
 import com.woowacourse.momo.service.schedule.ScheduleService;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
@@ -20,8 +21,10 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/api/v1/schedule/{uuid}")
-    public void create(@PathVariable String uuid, @RequestBody @Valid ScheduleCreateRequest request) {
-        scheduleService.create(uuid, request);
+    public void create(
+            @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid ScheduleCreateRequest request
+    ) {
+        scheduleService.create(uuid, id, request);
     }
 
     @GetMapping("/api/v1/meeting/{uuid}/schedules")

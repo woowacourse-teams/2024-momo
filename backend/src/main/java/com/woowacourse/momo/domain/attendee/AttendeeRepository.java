@@ -10,4 +10,6 @@ public interface AttendeeRepository extends JpaRepository<Attendee, Long> {
     Optional<Attendee> findByMeetingAndName(Meeting meeting, AttendeeName name);
 
     List<Attendee> findAllByMeeting(Meeting meeting);
+
+    Optional<Attendee> findByIdAndMeeting(long id, Meeting meeting);
 }
