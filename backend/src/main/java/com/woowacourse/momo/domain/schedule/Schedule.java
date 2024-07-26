@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -51,11 +52,19 @@ public class Schedule extends BaseEntity {
         this.timeslot = timeslot;
     }
 
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.of(availableDate.getDate(), timeslot.getLocalTime());
+    }
+
     public LocalDate date() {
         return availableDate.getDate();
     }
 
     public LocalTime time() {
         return timeslot.getLocalTime();
+    }
+
+    public String attendeeName() {
+        return attendee.name();
     }
 }

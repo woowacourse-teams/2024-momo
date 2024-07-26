@@ -18,6 +18,7 @@ import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -35,24 +36,15 @@ public class ScheduleService {
     private final AvailableDateRepository availableDateRepository;
 
     @Transactional
-    public void create(String uuid, ScheduleCreateRequest request) {
-        Meeting meeting = findMeetingByUUID(uuid);
-        Attendee attendee = findAttendeeByMeetingAndName(meeting, request.attendeeName());
+    public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         scheduleRepository.deleteAllByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
         scheduleRepository.saveAll(schedules);
-    }
-
-    private Meeting findMeetingByUUID(String uuid) {
-        return meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
-    }
-
-    private Attendee findAttendeeByMeetingAndName(Meeting meeting, String attendeeName) {
-        AttendeeName name = new AttendeeName(attendeeName);
-        return attendeeRepository.findByMeetingAndName(meeting, name)
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
     }
 
     private List<Schedule> createSchedules(ScheduleCreateRequest request, Meeting meeting, Attendee attendee) {
@@ -73,6 +65,16 @@ public class ScheduleService {
     private Schedule createSchedule(Meeting meeting, Attendee attendee, AvailableDate availableDate, LocalTime time) {
         Timeslot timeslot = meeting.getValidatedTimeslot(time);
         return new Schedule(attendee, availableDate, timeslot);
+    }
+
+    @Transactional(readOnly = true)
+    public SchedulesResponse findAllSchedules(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
+
+        return SchedulesResponse.from(schedules);
     }
 
     @Transactional(readOnly = true)

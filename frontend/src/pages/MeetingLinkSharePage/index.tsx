@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 import { copyToClipboard } from '@utils/clipboard';
 
 import LogoSunglass from '@assets/images/logoSunglass.svg';
@@ -11,8 +13,8 @@ import {
 } from './MeetingLinkSharePage.styles';
 
 export default function MeetingLinkSharePage() {
-  // TODO: LINK를 실제 prop / useLocation에서 보내주는 값으로 교체하기 (@Yoonkyoungme)
-  const LINK = '🔮🍀🐫 생성된 링크 🔮🍀🐫';
+  const location = useLocation();
+  const LINK = `${window.location.host}/meeting/${location.state.uuid}`;
 
   return (
     <div css={s_container}>

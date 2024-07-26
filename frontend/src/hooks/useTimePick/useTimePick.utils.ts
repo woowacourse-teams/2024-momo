@@ -52,5 +52,5 @@ export function getTableCellIndex(event: Event) {
     return null;
   }
 
-  return { rowIndex, colIndex };
+  return { rowIndex, colIndex: colIndex - 1 };
 }

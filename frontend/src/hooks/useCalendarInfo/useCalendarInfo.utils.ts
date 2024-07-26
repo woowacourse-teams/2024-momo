@@ -32,9 +32,11 @@ export function getDayInfo({
 }) {
   const date = index - firstDayIndex + 1;
   const isDate = index >= firstDayIndex;
+  // TODO: 추후에 padStart 사용하는 곳이 많다 보니, util 함수로 분리 필요 (@낙타)
+  const formattedMonth = String(month).padStart(2, '0');
 
-  const dateString = `${year}-${month}-${date}`;
-  const todayString = `${year}-${month}-${currentDate.getDate()}`;
+  const dateString = `${year}-${formattedMonth}-${String(date).padStart(2, '0')}`;
+  const todayString = `${year}-${formattedMonth}-${String(currentDate.getDate()).padStart(2, '0')}`;
   const isToday = dateString === todayString;
   // TODO : 일단은 일요일만 isHolday로 설정되도록 구현, 추후에 진짜 공휴일도 포함할 것인지 논의 필요, 찾아보니 라이브러리가 있더라구요.(@해리)
   // TODO : 매직넘버 의미있는 상수화 필요(@해리)

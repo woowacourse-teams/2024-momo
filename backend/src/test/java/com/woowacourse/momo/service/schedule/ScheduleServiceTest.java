@@ -18,10 +18,12 @@ import com.woowacourse.momo.exception.code.AttendeeErrorCode;
 import com.woowacourse.momo.exception.code.MeetingErrorCode;
 import com.woowacourse.momo.fixture.AttendeeFixture;
 import com.woowacourse.momo.fixture.MeetingFixture;
+import com.woowacourse.momo.service.schedule.dto.AttendeesScheduleResponse;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import com.woowacourse.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import com.woowacourse.momo.service.schedule.dto.SchedulesResponse;
 import com.woowacourse.momo.support.IsolateDatabase;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -78,10 +80,10 @@ class ScheduleServiceTest {
     @Test
     void throwsExceptionWhenInvalidUUID() {
         Meeting other = MeetingFixture.DINNER.create();
-        String uuid = other.getUuid();
+        long attendeeId = attendee.getId();
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(uuid, request))
+        assertThatThrownBy(() -> scheduleService.create(other.getUuid(), attendeeId, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
@@ -89,11 +91,12 @@ class ScheduleServiceTest {
     @DisplayName("약속에 참가자 정보가 존재하지 않으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionWhenInvalidAttendee() {
-        String invalidAttendee = "invalidAttendee";
+        long invalidAttendeeId = 2L;
+        String invalidAttendeeName = "invalidAttendeeName";
         String uuid = meeting.getUuid();
-        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendee, dateTimes);
+        ScheduleCreateRequest request = new ScheduleCreateRequest(invalidAttendeeName, dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(uuid, request))
+        assertThatThrownBy(() -> scheduleService.create(uuid, invalidAttendeeId, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
@@ -107,10 +110,45 @@ class ScheduleServiceTest {
                 new Schedule(attendee, tomorrow, Timeslot.TIME_0130)
         ));
 
-        scheduleService.create(meeting.getUuid(), request);
+        scheduleService.create(meeting.getUuid(), attendee.getId(), request);
         long scheduleCount = scheduleRepository.count();
 
         assertThat(scheduleCount).isEqualTo(4);
+    }
+
+    /* dummy data table
+     *         today     tomorrow
+     * 01:00   baeky     name
+     *         name
+     *
+     * 01:30   baeky
+     */
+    @DisplayName("해당하는 UUID의 미팅에 속한 참가자들의 모든 스케줄을 조회한다.")
+    @Test
+    void findAllSchedulesInMeetingByUuid() {
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting));
+        Schedule schedule1 = new Schedule(attendee, today, Timeslot.TIME_0100);
+        Schedule schedule2 = new Schedule(attendee, tomorrow, Timeslot.TIME_0100);
+        Schedule schedule3 = new Schedule(attendee2, today, Timeslot.TIME_0100);
+        Schedule schedule4 = new Schedule(attendee2, today, Timeslot.TIME_0130);
+        scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3, schedule4));
+
+        SchedulesResponse response = scheduleService.findAllSchedules(meeting.getUuid());
+
+        assertThat(response.schedules()).containsExactlyInAnyOrder(
+                new AttendeesScheduleResponse(
+                        today.getDate(),
+                        Timeslot.TIME_0100.getLocalTime(),
+                        List.of(attendee.name(), attendee2.name())),
+                new AttendeesScheduleResponse(
+                        today.getDate(),
+                        Timeslot.TIME_0130.getLocalTime(),
+                        List.of(attendee2.name())),
+                new AttendeesScheduleResponse(
+                        tomorrow.getDate(),
+                        Timeslot.TIME_0100.getLocalTime(),
+                        List.of(attendee.name()))
+        );
     }
 
     @DisplayName("참가자 이름과 약속 UUID로 스케줄을 조회한다.")

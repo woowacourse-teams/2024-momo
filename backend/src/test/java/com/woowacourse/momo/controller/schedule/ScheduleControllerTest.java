@@ -11,6 +11,7 @@ import com.woowacourse.momo.domain.schedule.Schedule;
 import com.woowacourse.momo.domain.schedule.ScheduleRepository;
 import com.woowacourse.momo.domain.timeslot.Timeslot;
 import com.woowacourse.momo.fixture.MeetingFixture;
+import com.woowacourse.momo.service.attendee.dto.AttendeeLoginRequest;
 import com.woowacourse.momo.service.schedule.dto.DateTimesCreateRequest;
 import com.woowacourse.momo.service.schedule.dto.ScheduleCreateRequest;
 import com.woowacourse.momo.support.IsolateDatabase;
@@ -65,22 +66,34 @@ class ScheduleControllerTest {
     @DisplayName("참가자가 스케줄을 생성하는데 성공하면 200 상태 코드를 응답한다.")
     @Test
     void create() {
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when().post("/api/v1/login/{uuid}", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
         List<DateTimesCreateRequest> dateTimes = List.of(
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
 
-        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
+        ScheduleCreateRequest scheduleCreateRequest = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
         RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .body(request)
+                .body(scheduleCreateRequest)
                 .when().post("/api/v1/schedule/{uuid}")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
+
 
     @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200 상태 코드를 응답한다.")
     @Test
@@ -97,7 +110,17 @@ class ScheduleControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParam("attendeeName", attendee.name())
-                .when().get("/api/v1/meeting/{uuid}/schedule")
+                .when().get("/api/v1/meeting/{uuid}/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("전체 스케줄을 조회하는데 성공하면 200 상태 코드를 응답한다.")
+    @Test
+    void findAllSchedules() {
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}/schedules", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }

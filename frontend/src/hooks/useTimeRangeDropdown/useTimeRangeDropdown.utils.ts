@@ -18,7 +18,7 @@ export function generateStartTimeOptions(endTime: string) {
   for (let i = MINIMUM_TIME; i < endHours; i++) {
     const label = formatHours(i);
 
-    times.push({ value: `${i}:00`, label: label + ':00' });
+    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;
@@ -30,9 +30,9 @@ export function generateEndTimeOptions(startTime: string) {
   const startHours = Number(startTime.split(':')[0]);
 
   for (let i = startHours + 1; i <= MAXIMUM_TIME; i++) {
-    const label = formatHours(i);
+    const label = formatHours(i).padStart(2, '0');
 
-    times.push({ value: `${i}:00`, label: label + ':00' });
+    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;
@@ -40,8 +40,8 @@ export function generateEndTimeOptions(startTime: string) {
 
 // 만약 시작 시간보다 끝 시간이 빠르다면 false를 반환하는 함수(@낙타)
 export function isTimeSelectable(startTime: string, endTime: string) {
-  const [startHours, startMinutes] = startTime.split(':');
-  const [endHours, endMinutes] = endTime.split(':');
+  const [startHours, startMinutes] = startTime.split(':').map(Number);
+  const [endHours, endMinutes] = endTime.split(':').map(Number);
 
   if (endHours < startHours) return false;
   if (endHours === startHours && endMinutes < startMinutes) return false;
