@@ -94,18 +94,10 @@ class ScheduleControllerTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-
     @DisplayName("약속 uuid와 참가자 이름으로 스케줄 조회를 요쳥하면 200 상태 코드를 응답한다.")
     @Test
     void findSchedulesOfAttendee() {
-        List<Schedule> schedules = new ArrayList<>();
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
-        scheduleRepository.saveAll(schedules);
+        createAttendeeSchedule(attendee);
 
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
@@ -123,5 +115,40 @@ class ScheduleControllerTest {
                 .when().get("/api/v1/meeting/{uuid}/schedules", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("UUID와 참가자 ID로 자신의 스케줄을 조회한다.")
+    @Test
+    void findMySchedule() {
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        createAttendeeSchedule(attendee);
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when().post("/api/v1/login/{uuid}", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
+        RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meeting/{uuid}/my-schedule")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    private void createAttendeeSchedule(Attendee attendee) {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
+        scheduleRepository.saveAll(schedules);
     }
 }

@@ -88,4 +88,16 @@ public class ScheduleService {
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
         return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
     }
+
+    @Transactional(readOnly = true)
+    public ScheduleOneAttendeeResponse findMySchedule(String uuid, long attendeeId) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
+
+        List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
+        return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
+    }
 }
