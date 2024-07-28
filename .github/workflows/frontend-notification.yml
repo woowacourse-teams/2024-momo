@@ -1,15 +1,18 @@
 name: Frontend Discord Notification
 
-on: ['pull_request', 'issues']
+on:
+  pull_request:
+    types: [opened, reopened]
+  issues:
+    types: [opened, reopened]
 
 jobs:
-  PR:
+  PR-Notification:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./frontend
+    if: github.event.pull_request.title.startsWith('[FE]') || github.event.issue.title.startsWith('['FE_DISCORD_WEBHOOK_URL']')
     steps:
-      - run: >
-          curl -X
-          POST -H 'Content-type:application/json'
-          -d '{"content":"Hello, World!"}'
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+      - name: Send Discord Notification for Frontend
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"content\":\"A new PR/Issue for Frontend: ${{ github.event.pull_request.title || github.event.issue.title }}\"}" \
+          ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
