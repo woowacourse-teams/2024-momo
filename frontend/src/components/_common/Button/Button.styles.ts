@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
+// 주석 추가
 export const s_button = css`
   display: flex;
   align-items: center;
