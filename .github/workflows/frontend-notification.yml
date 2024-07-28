@@ -1,0 +1,15 @@
+name: Frontend Discord Notification
+
+on: ['pull_request', 'issues']
+
+jobs:
+  PR:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./frontend
+    steps:
+      - run: >
+          curl -X
+          POST -H 'Content-type:application/json'
+          -d '{"content":"Hello, World!"}'
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
