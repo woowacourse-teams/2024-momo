@@ -62,7 +62,7 @@ class MeetingControllerTest {
 
         Response response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}", meeting.getUuid());
+                .when().get("/api/v1/meetings/{uuid}", meeting.getUuid());
 
         String meetingName = response.jsonPath().getString("data.meetingName");
         String firstTime = response.jsonPath().getString("data.firstTime");
@@ -87,7 +87,7 @@ class MeetingControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}/sharing", meeting.getUuid())
+                .when().get("/api/v1/meetings/{uuid}/sharing", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -97,7 +97,7 @@ class MeetingControllerTest {
     void findMeetingSharingFailedWithInvalidUUID() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}/sharing", "1234")
+                .when().get("/api/v1/meetings/{uuid}/sharing", "1234")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -116,7 +116,7 @@ class MeetingControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meeting")
+                .when().post("/api/v1/meetings")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
@@ -138,7 +138,7 @@ class MeetingControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meeting")
+                .when().post("/api/v1/meetings")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
