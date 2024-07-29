@@ -31,8 +31,9 @@ export default function AttendeeLoginPage() {
       });
 
       setCookie('token', response.data.token, { path: '/', maxAge: 604800 });
+      setCookie('attendeeName', name);
 
-      navigate('/meeting-time-pick'); // TODO: meeting 조회/수정 페이지로 이동
+      navigate(`/meeting/${uuid}`);
     } catch (error) {
       console.error('Login failed:', error);
     }

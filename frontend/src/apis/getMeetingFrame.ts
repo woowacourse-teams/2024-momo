@@ -9,13 +9,11 @@ export interface Schedules {
 
 interface MeetingFrameSeverResponse {
   data: {
-    meeting: {
-      name: string;
-      firstTime: string;
-      lastTime: string;
-      availableDates: string[];
-    };
-    attendees: string[];
+    meetingName: string;
+    firstTime: string;
+    lastTime: string;
+    availableDates: string[];
+    attendeeNames: string[];
   };
 }
 
@@ -37,13 +35,14 @@ const getMeetingFrame = async (uuid: string): Promise<MeetingFrame | undefined> 
   });
 
   if (response) {
-    const { name, firstTime, lastTime, availableDates } = response.data.meeting;
+    const { meetingName, firstTime, lastTime, availableDates } = response.data;
+
     return {
-      meetingName: name,
+      meetingName,
       firstTime,
       lastTime,
       availableDates,
-      attendees: response.data.attendees,
+      attendees: response.data.attendeeNames,
     };
   }
 };

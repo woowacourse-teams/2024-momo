@@ -17,7 +17,6 @@ export const s_inputContainer = css`
   gap: 1rem;
 
   width: 90%;
-  height: 16rem;
   padding: 1.6rem;
 
   background-color: #f7dacb;

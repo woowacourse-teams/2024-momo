@@ -19,6 +19,7 @@ export const usePostScheduleMutation = (onSettledCallback: () => void) => {
     onSettled: () => {
       onSettledCallback();
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meeting, ''] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meetingMySchedule] });
       ``;
     },
   });

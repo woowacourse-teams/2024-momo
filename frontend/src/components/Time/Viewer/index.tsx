@@ -1,13 +1,15 @@
 import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import Button from '@components/_common/Button';
 
 import { handleGetMeetingSchedules } from '@apis/getMeetingSchedules';
+
+import { getCookie } from '@utils/cookies';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
@@ -50,6 +52,8 @@ export default function TimeViewer({
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
+  const navigate = useNavigate();
+
   const { data: meetingSchedules } = useQuery({
     queryKey: [QUERY_KEY.meetingSchedules, selectedAttendee],
     queryFn: () => handleGetMeetingSchedules({ uuid, attendeeName: selectedAttendee }),
@@ -62,6 +66,18 @@ export default function TimeViewer({
     availableDates,
     meetingSchedules,
   });
+
+  const handleScheduleUpdate = () => {
+    // TODO : 쿠키에 토큰 있는지 확인 해야 함.
+    const savedToken = getCookie('token');
+
+    if (!savedToken) {
+      alert('로그인 해주세요');
+      navigate(`/meeting/${uuid}/login`);
+      return;
+    }
+    handleToggleIsTimePickerUpdate();
+  };
 
   return (
     <div>
@@ -103,7 +119,7 @@ export default function TimeViewer({
       </table>
 
       <div css={s_buttonContainer}>
-        <Button text="수정하기" onClick={handleToggleIsTimePickerUpdate} />
+        <Button text="수정하기" onClick={handleScheduleUpdate} />
       </div>
     </div>
   );
