@@ -21,13 +21,7 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
-    @GetMapping("/api/v1/meeting/{uuid}")
-    public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
-        MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
-        return new MomoApiResponse<>(meetingResponse);
-    }
-
-    @PostMapping("/api/v1/meeting")
+    @PostMapping("/api/v1/meetings")
     public ResponseEntity<MomoApiResponse<MeetingSharingResponse>> create(
             @RequestBody @Valid MeetingCreateRequest request
     ) {
@@ -36,7 +30,13 @@ public class MeetingController {
                 .body(new MomoApiResponse<>(response));
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/sharing")
+    @GetMapping("/api/v1/meetings/{uuid}")
+    public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
+        MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
+        return new MomoApiResponse<>(meetingResponse);
+    }
+
+    @GetMapping("/api/v1/meetings/{uuid}/sharing")
     public MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid) {
         MeetingSharingResponse response = meetingService.findMeetingSharing(uuid);
         return new MomoApiResponse<>(response);

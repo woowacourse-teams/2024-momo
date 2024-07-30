@@ -17,7 +17,7 @@ public class AttendeeController {
 
     private final AttendeeService attendeeService;
 
-    @PostMapping("/api/v1/login/{uuid}")
+    @PostMapping("/api/v1/meetings/{uuid}/login")
     public MomoApiResponse<TokenResponse> login(
             @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
     ) {

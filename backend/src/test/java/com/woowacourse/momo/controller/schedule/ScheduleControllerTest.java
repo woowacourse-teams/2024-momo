@@ -71,7 +71,7 @@ class ScheduleControllerTest {
         String token = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(loginRequest)
-                .when().post("/api/v1/login/{uuid}", meeting.getUuid())
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath().getString("data.token");
@@ -89,7 +89,7 @@ class ScheduleControllerTest {
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(scheduleCreateRequest)
-                .when().post("/api/v1/schedule/{uuid}")
+                .when().post("/api/v1/meetings/{uuid}/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -102,7 +102,7 @@ class ScheduleControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParam("attendeeName", attendee.name())
-                .when().get("/api/v1/meeting/{uuid}/schedules")
+                .when().get("/api/v1/meetings/{uuid}/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -112,7 +112,7 @@ class ScheduleControllerTest {
     void findAllSchedules() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}/schedules", meeting.getUuid())
+                .when().get("/api/v1/meetings/{uuid}/schedules", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -127,7 +127,7 @@ class ScheduleControllerTest {
         String token = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(loginRequest)
-                .when().post("/api/v1/login/{uuid}", meeting.getUuid())
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath().getString("data.token");
@@ -136,7 +136,7 @@ class ScheduleControllerTest {
                 .header("Authorization", "Bearer " + token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meeting/{uuid}/my-schedule")
+                .when().get("/api/v1/meetings/{uuid}/attendees/me/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }

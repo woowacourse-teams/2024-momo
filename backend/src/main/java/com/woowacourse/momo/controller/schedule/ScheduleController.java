@@ -20,20 +20,20 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @PostMapping("/api/v1/schedule/{uuid}")
+    @PostMapping("/api/v1/meetings/{uuid}/schedules")
     public void create(
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid ScheduleCreateRequest request
     ) {
         scheduleService.create(uuid, id, request);
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/schedules")
+    @GetMapping("/api/v1/meetings/{uuid}/schedules")
     public MomoApiResponse<SchedulesResponse> findAllSchedules(@PathVariable String uuid) {
         SchedulesResponse response = scheduleService.findAllSchedules(uuid);
         return new MomoApiResponse<>(response);
     }
 
-    @GetMapping(path = "/api/v1/meeting/{uuid}/schedules", params = "attendeeName")
+    @GetMapping(path = "/api/v1/meetings/{uuid}/schedules", params = "attendeeName")
     public MomoApiResponse<ScheduleOneAttendeeResponse> findSchedulesOfAttendee(
             @PathVariable String uuid, String attendeeName
     ) {
@@ -41,7 +41,7 @@ public class ScheduleController {
         return new MomoApiResponse<>(response);
     }
 
-    @GetMapping("/api/v1/meeting/{uuid}/my-schedule")
+    @GetMapping("/api/v1/meetings/{uuid}/attendees/me/schedules")
     public MomoApiResponse<ScheduleOneAttendeeResponse> findMySchedule(
             @PathVariable String uuid, @AuthAttendee long id
     ) {

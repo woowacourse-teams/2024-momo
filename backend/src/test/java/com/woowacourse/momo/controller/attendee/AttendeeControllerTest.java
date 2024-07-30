@@ -50,7 +50,7 @@ class AttendeeControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/login/{uuid}", meeting.getUuid())
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
