@@ -21,6 +21,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 모든 팀원이 확인해야 하는 PR에 리뷰가 등록되면 FE, BE 두 채널 모두 디스코드 알림을 보낸다.
+        if: github.event_name == 'pull_request_review' && contains(github.event.pull_request.title, '[ALL]')
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          REVIEWER=$(jq -r '.review.user.login' < $GITHUB_EVENT_PATH)
+          REVIEWER_MENTION=$(printenv $REVIEWER)
+          if [ -z "$REVIEWER_MENTION" ]; then
+            REVIEWER_MENTION=$REVIEWER
+          fi
+          REVIEWER_LINK="[${REVIEWER_MENTION}](https://github.com/${REVIEWER})"
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"💬 ${REVIEWER_LINK}님이 새로운 리뷰를 남겼어요! 리뷰를 반영해 주세요.\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"💬 ${REVIEWER_LINK}님이 새로운 리뷰를 남겼어요! 리뷰를 반영해 주세요.\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
+
       - name: 새로운 프론트엔드 리뷰가 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
         if: github.event_name == 'pull_request_review' && contains(github.event.pull_request.title, '[FE]')
         env:
@@ -55,6 +74,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 모든 팀원이 확인해야 하는 PR에 코멘트가 등록되면 FE, BE 두 채널 모두 디스코드 알림을 보낸다.
+        if: github.event.issue.pull_request && contains(github.event.issue.title, '[ALL]')
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          COMMENTER=$(jq -r '.comment.user.login' < $GITHUB_EVENT_PATH)
+          COMMENTER_MENTION=$(printenv $COMMENTER)
+          if [ -z "$COMMENTER_MENTION" ]; then
+            COMMENTER_MENTION=$COMMENTER
+          fi
+          COMMENTER_LINK="[${COMMENTER_MENTION}](https://github.com/${COMMENTER})"
+          COMMENT=$(jq -r '.comment.body' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"💬 ${COMMENTER_LINK}님이 새로운 코멘트를 남겼어요!\n\n🔗 [PR 링크](${{ github.event.issue.pull_request.html_url }})\n📄 **제목**: ${{ github.event.issue.title }}\n🗣️ **코멘트 내용**: ${COMMENT}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"💬 ${COMMENTER_LINK}님이 새로운 코멘트를 남겼어요!\n\n🔗 [PR 링크](${{ github.event.issue.pull_request.html_url }})\n📄 **제목**: ${{ github.event.issue.title }}\n🗣️ **코멘트 내용**: ${COMMENT}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
+
       - name: 프론트엔드 PR에 코멘트가 등록되면 디스코드 프론트엔드 채널에 알림을 보낸다.
         if: github.event.issue.pull_request && contains(github.event.issue.title, '[FE]')
         env:
