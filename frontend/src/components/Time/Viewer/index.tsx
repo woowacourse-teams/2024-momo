@@ -11,6 +11,7 @@ import { handleGetMeetingSchedules } from '@apis/getMeetingSchedules';
 
 import { getCookie } from '@utils/cookies';
 
+import { COOKIE_KEYS } from '@constants/cookies';
 import { QUERY_KEY } from '@constants/queryKeys';
 
 import { generateScheduleMatrix } from '../Picker/TimePicker.util';
@@ -69,7 +70,7 @@ export default function TimeViewer({
 
   const handleScheduleUpdate = () => {
     // TODO : 쿠키에 토큰 있는지 확인 해야 함.
-    const savedToken = getCookie('token');
+    const savedToken = getCookie(COOKIE_KEYS.token);
 
     if (!savedToken) {
       alert('로그인 해주세요');
