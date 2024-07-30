@@ -14,8 +14,11 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 @Configuration
 public class SwaggerConfig {
 
-    @Value("${apiVersion}")
-    private static String apiVersion;
+    private final String apiVersion;
+
+    public SwaggerConfig(@Value("${apiVersion}") String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
 
     @Bean
     ForwardedHeaderFilter forwardedHeaderFilter() {
