@@ -27,8 +27,6 @@ export default function TimePickerContainer({
     staleTime: 0,
   });
 
-  console.log(meetingSchedules);
-
   return meetingSchedules ? (
     <TimePicker
       firstTime={firstTime}
