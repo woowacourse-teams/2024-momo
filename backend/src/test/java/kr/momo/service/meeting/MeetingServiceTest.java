@@ -2,7 +2,7 @@ package kr.momo.service.meeting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -57,13 +57,14 @@ class MeetingServiceTest {
 
         MeetingResponse response = meetingService.findByUUID(meeting.getUuid());
 
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime());
-            softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime());
-            softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());
-            softAssertions.assertThat(response.availableDates().size()).isEqualTo(availableDates.size());
-            softAssertions.assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()));
-        });
+        assertAll(
+                () -> assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime()),
+                () -> assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime()),
+                () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
+                () -> assertThat(response.isLocked()).isFalse(),
+                () -> assertThat(response.availableDates()).hasSize(availableDates.size()),
+                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()))
+        );
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
