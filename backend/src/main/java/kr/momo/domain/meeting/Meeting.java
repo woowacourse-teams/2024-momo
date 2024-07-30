@@ -11,6 +11,8 @@ import java.time.LocalTime;
 import kr.momo.domain.BaseEntity;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.domain.timeslot.TimeslotInterval;
+import kr.momo.exception.MomoException;
+import kr.momo.exception.code.MeetingErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,9 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false, length = 40)
     private String uuid;
 
+    @Column(nullable = false)
+    private boolean isLocked;
+
     @Embedded
     private TimeslotInterval timeslotInterval;
 
@@ -38,6 +43,14 @@ public class Meeting extends BaseEntity {
         this.name = name;
         this.uuid = uuid;
         this.timeslotInterval = new TimeslotInterval(firstTime, lastTime.minusMinutes(30));
+        this.isLocked = false;
+    }
+
+    public void lock() {
+        if (this.isLocked) {
+            throw new MomoException(MeetingErrorCode.ALREADY_LOCKED);
+        }
+        this.isLocked = true;
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {

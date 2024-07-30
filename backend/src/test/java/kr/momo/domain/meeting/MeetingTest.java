@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalTime;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.MeetingErrorCode;
+import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -62,5 +63,26 @@ class MeetingTest {
 
         // then
         assertThat(meeting.endTimeslotTime()).isEqualTo(endTime.minusMinutes(30));
+    }
+
+    @DisplayName("약속을 잠근다.")
+    @Test
+    void lock() {
+        Meeting meeting = MeetingFixture.DINNER.create();
+
+        meeting.lock();
+
+        assertThat(meeting.isLocked()).isTrue();
+    }
+
+    @DisplayName("약속이 잠겨있는데 잠금을 요청하면 예외가 발생한다.")
+    @Test
+    void throwExceptionWhenLocked() {
+        Meeting meeting = MeetingFixture.DINNER.create();
+        meeting.lock();
+
+        assertThatThrownBy(meeting::lock)
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.ALREADY_LOCKED.message());
     }
 }
