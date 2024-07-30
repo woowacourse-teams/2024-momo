@@ -21,12 +21,12 @@ public class SwaggerConfig {
     }
 
     @Bean
-    ForwardedHeaderFilter forwardedHeaderFilter() {
+    protected ForwardedHeaderFilter forwardedHeaderFilter() {
         return new ForwardedHeaderFilter();
     }
 
     @Bean
-    public OpenAPI openAPI() {
+    protected OpenAPI openAPI() {
         Components authComponent = new Components().addSecuritySchemes("Bearer Token", apiAuth());
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Token");
 
