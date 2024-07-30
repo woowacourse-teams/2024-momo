@@ -6,18 +6,20 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 public class SwaggerConfig {
 
-    @Value("${apiVersion}")
-    private static String apiVersion;
+    @Bean
+    protected ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
+    }
 
     @Bean
-    public OpenAPI openAPI() {
+    protected OpenAPI openAPI() {
         Components authComponent = new Components().addSecuritySchemes("Bearer Token", apiAuth());
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Token");
 
@@ -36,7 +38,6 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("momo API")
-                .description("momo API 입니다.")
-                .version(apiVersion);
+                .description("momo API 입니다.");
     }
 }
