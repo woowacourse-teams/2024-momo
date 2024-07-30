@@ -17,6 +17,7 @@ import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -141,6 +142,111 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meetings")
                 .then().log().all()
                 .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 잠그면 200 OK를 반환한다.")
+    @Test
+    void lock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .header("Authorization", "Bearer " + token)
+                .when().post("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("약속을 잠글 때 만남이 존재하지 않으면 404를 반환한다.")
+    @Test
+    void lockWithInvalidUUID() {
+        String invalidUUID = "INVALID_UUID";
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", invalidUUID)
+                .header("Authorization", "Bearer " + token)
+                .when().post("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("약속을 잠글 때 호스트 권한이 없다면 403을 반환한다.")
+    @Test
+    void lockWithNoPermission() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .header("Authorization", "Bearer " + token)
+                .when().post("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @DisplayName("약속을 중복으로 잠그면 400을 반환한다.")
+    @Test
+    void lockWithDuplicatedRequest() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .header("Authorization", "Bearer " + token)
+                .when().post("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .header("Authorization", "Bearer " + token)
+                .when().post("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

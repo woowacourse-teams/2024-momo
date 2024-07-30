@@ -3,6 +3,7 @@ package kr.momo.controller.meeting;
 import jakarta.validation.Valid;
 import java.net.URI;
 import kr.momo.controller.MomoApiResponse;
+import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingService;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -40,5 +41,10 @@ public class MeetingController {
     public MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid) {
         MeetingSharingResponse response = meetingService.findMeetingSharing(uuid);
         return new MomoApiResponse<>(response);
+    }
+
+    @PostMapping("/api/v1/meetings/{uuid}/lock")
+    public void lock(@PathVariable String uuid, @AuthAttendee long id) {
+        meetingService.lock(uuid, id);
     }
 }
