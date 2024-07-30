@@ -1,0 +1,61 @@
+name: 깃허브 PR 생성 시, 디스코드 알림
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+
+env:
+  hwinkr: "@해리"
+  Yoonkyoungme: "@빙봉"
+  hw0603: "@페드로"
+  ikjo39: "@다온"
+  ehBeak: "@배키"
+  seokmyungham: "@재즈"
+  Largopie: "@낙타"
+  seunghye218: "@마크"
+
+jobs:
+  notify_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 새로운 프론트엔드 PR이 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && contains(github.event.pull_request.title, '[FE]')
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+        run: |
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🚀 **새로운 프론트엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🏷️ **라벨**: ${LABELS}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+
+      - name: 새로운 백엔드 PR이 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && contains(github.event.pull_request.title, '[BE]')
+        env:
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🚀 **새로운 백엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🏷️ **라벨**: ${LABELS}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
+
+  notify_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: PR이 머지되면 FE, BE 두 채널 모두 디스코드 알림을 보낸다.
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n📜 🕺 **담당 크루**: ${ASSIGNEES}\n🏷️ **라벨**: ${LABELS}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n📜 🕺 **담당 크루**: ${ASSIGNEES}\n🏷️ **라벨**: ${LABELS}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
