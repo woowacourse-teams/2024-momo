@@ -76,14 +76,30 @@ class ScheduleServiceTest {
         );
     }
 
+    @DisplayName("스케줄 생성 시 사용자의 기존 스케줄들을 모두 삭제하고 새로운 스케줄을 저장한다.")
+    @Test
+    void createSchedulesReplacesOldSchedules() {
+        ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
+        scheduleRepository.saveAll(List.of(
+                new Schedule(attendee, today, Timeslot.TIME_0130),
+                new Schedule(attendee, tomorrow, Timeslot.TIME_0130)
+        ));
+
+        scheduleService.create(meeting.getUuid(), attendee.getId(), request);
+        long scheduleCount = scheduleRepository.count();
+
+        assertThat(scheduleCount).isEqualTo(4);
+    }
+
     @DisplayName("스케줄 생성 요청의 UUID가 존재하지 않으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionWhenInvalidUUID() {
         Meeting other = MeetingFixture.DINNER.create();
+        String invalidUUID = other.getUuid();
         long attendeeId = attendee.getId();
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
-        assertThatThrownBy(() -> scheduleService.create(other.getUuid(), attendeeId, request))
+        assertThatThrownBy(() -> scheduleService.create(invalidUUID, attendeeId, request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
@@ -101,19 +117,19 @@ class ScheduleServiceTest {
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
 
-    @DisplayName("스케줄 생성 시 사용자의 기존 스케줄들을 모두 삭제하고 새로운 스케줄을 저장한다.")
+    @DisplayName("스케줄 생성시 약속이 잠겨있다면 예외를 발생시킨다.")
     @Test
-    void createSchedulesReplacesOldSchedules() {
+    void throwsExceptionWhenMeetingLocked() {
+        Meeting game = MeetingFixture.GAME.create();
+        game.lock();
+        Meeting lockedMeeting = meetingRepository.save(game);
         ScheduleCreateRequest request = new ScheduleCreateRequest(attendee.name(), dateTimes);
-        scheduleRepository.saveAll(List.of(
-                new Schedule(attendee, today, Timeslot.TIME_0130),
-                new Schedule(attendee, tomorrow, Timeslot.TIME_0130)
-        ));
+        String givenUUID = lockedMeeting.getUuid();
+        Long givenAttendeeId = attendee.getId();
 
-        scheduleService.create(meeting.getUuid(), attendee.getId(), request);
-        long scheduleCount = scheduleRepository.count();
-
-        assertThat(scheduleCount).isEqualTo(4);
+        assertThatThrownBy(() -> scheduleService.create(givenUUID, givenAttendeeId, request))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.MEETING_LOCKED.message());
     }
 
     /* dummy data table

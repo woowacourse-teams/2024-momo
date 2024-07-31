@@ -31,6 +31,9 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false, length = 40)
     private String uuid;
 
+    @Column(nullable = false)
+    private boolean isLocked;
+
     @Embedded
     private TimeslotInterval timeslotInterval;
 
@@ -38,6 +41,11 @@ public class Meeting extends BaseEntity {
         this.name = name;
         this.uuid = uuid;
         this.timeslotInterval = new TimeslotInterval(firstTime, lastTime.minusMinutes(30));
+        this.isLocked = false;
+    }
+
+    public void lock() {
+        this.isLocked = true;
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {
