@@ -169,7 +169,7 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    @DisplayName("약속을 잠글 때 만남이 존재하지 않으면 404를 반환한다.")
+    @DisplayName("존재하지 않는 약속을 잠금 시도하면 404 Not Found를 반환한다.")
     @Test
     void lockWithInvalidUUID() {
         String invalidUUID = "INVALID_UUID";
