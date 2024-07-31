@@ -75,12 +75,12 @@ public class MeetingService {
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         Attendee attendee = attendeeRepository.findByIdAndMeeting(id, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
-        validateAttendeePermission(attendee);
+        validateHostPermission(attendee);
         meeting.lock();
     }
 
-    private void validateAttendeePermission(Attendee attendee) {
-        if (!attendee.hasPermission()) {
+    private void validateHostPermission(Attendee attendee) {
+        if (!attendee.isHost()) {
             throw new MomoException(AttendeeErrorCode.ACCESS_DENIED);
         }
     }

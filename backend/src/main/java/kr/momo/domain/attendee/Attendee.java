@@ -55,7 +55,7 @@ public class Attendee extends BaseEntity {
         this(meeting, new AttendeeName(name), new AttendeePassword(password), role);
     }
 
-    public boolean hasPermission() {
+    public boolean isHost() {
         return role.isHost();
     }
 
