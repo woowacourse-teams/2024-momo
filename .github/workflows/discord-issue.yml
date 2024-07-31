@@ -1,0 +1,61 @@
+name: 깃허브 이슈 생성 시, 디스코드 알림
+
+on:
+  issues:
+    types: [opened, reopened]
+
+env:
+  hwinkr: "@해리"
+  Yoonkyoungme: "@빙봉"
+  hw0603: "@페드로"
+  ikjo39: "@다온"
+  ehBeak: "@배키"
+  seokmyungham: "@재즈"
+  Largopie: "@낙타"
+  seunghye218: "@마크"
+
+jobs:
+  notify_issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 전체 이슈가 등록되면 FE, BE 두 채널 모두 디스코드 알림을 보낸다.
+        if: github.event.issue && contains(github.event.issue.title, '[ALL]')
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          LABELS=$(jq -r '.issue.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_LINKS=$(jq -r '.issue.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTIONS=$(jq -r '.issue.assignees | map(env[.login] // .login) | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTION_LINKS=$(jq -r '.issue.assignees | map("[\((env[.login] // .login))](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🍀 **새로운 전체 이슈가 등록되었어요!** 🧚: ${{ github.event.issue.html_url }}\n📂 **제목**: ${{ github.event.issue.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTION_LINKS}\n🗝️ **업무 키워드**: ${LABELS}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🍀 **새로운 전체 이슈가 등록되었어요!** 🧚: ${{ github.event.issue.html_url }}\n📂 **제목**: ${{ github.event.issue.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTION_LINKS}\n🗝️ **업무 키워드**: ${LABELS}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
+
+      - name: 새로운 프론트엔드 이슈가 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
+        if: github.event.issue && contains(github.event.issue.title, '[FE]')
+        env:
+          FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
+        run: |
+          LABELS=$(jq -r '.issue.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_LINKS=$(jq -r '.issue.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTIONS=$(jq -r '.issue.assignees | map(env[.login] // .login) | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTION_LINKS=$(jq -r '.issue.assignees | map("[\((env[.login] // .login))](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🍀 **새로운 이슈가 등록되었어요!** 🧚: ${{ github.event.issue.html_url }}\n📂 **제목**: ${{ github.event.issue.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTION_LINKS}\n🗝️ **업무 키워드**: ${LABELS}\"}" \
+          $FE_DISCORD_WEBHOOK_URL
+
+      - name: 새로운 백엔드 이슈가 등록되면 백엔드 채널에 디스코드 알림을 보낸다.
+        if: github.event.issue && contains(github.event.issue.title, '[BE]')
+        env:
+          BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
+        run: |
+          LABELS=$(jq -r '.issue.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_LINKS=$(jq -r '.issue.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"🍀 **새로운 이슈가 등록되었어요!** 🧚: ${{ github.event.issue.html_url }}\n📂 **제목**: ${{ github.event.issue.title }}\n🕺 **담당 크루**: ${ASSIGNEE_LINKS}\n🗝️ **업무 키워드**: ${LABELS}\"}" \
+          $BE_DISCORD_WEBHOOK_URL
