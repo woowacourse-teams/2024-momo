@@ -4,13 +4,15 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
@@ -112,16 +114,45 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleRecommendResponse> recommendSchedules(String uuid) {
+    public List<ScheduleRecommendResponse> recommendSchedules(String uuid, List<String> names, String recommendType) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
 
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+        List<Attendee> filteredAttendees = attendees.stream()
+                .filter(attendee -> names.contains(attendee.name()))
+                .toList();
+
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees);
+        List<ScheduleRecommendResponse> responses = groupingScheduleByAttendees(schedules);
+
+        if (recommendType.equals("longTerm")) {
+            return responses.stream()
+                    .sorted(Comparator
+                            .comparingInt((ScheduleRecommendResponse r) -> r.attendeeNames().size()).reversed()
+                            .thenComparing((r1, r2) -> {
+                                Duration duration1 = Duration.between(r1.startTime(), r1.endTime());
+                                Duration duration2 = Duration.between(r2.startTime(), r2.endTime());
+                                return duration2.compareTo(duration1);
+                            }))
+                    .toList();
+        }
+
+        if (recommendType.equals("fastest")) {
+            return responses.stream()
+                    .sorted(Comparator
+                            .comparingInt((ScheduleRecommendResponse s) -> s.attendeeNames().size()).reversed()
+                            .thenComparing(response -> LocalDateTime.of(response.date(), response.startTime())))
+                    .toList();
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {
         Map<LocalDateTime, List<String>> map = schedules.stream()
                 .collect(groupingBy(Schedule::dateTime, mapping(Schedule::attendeeName, toList())));
         List<LocalDateTime> localDateTimes = map.keySet().stream().sorted().toList();
-
 
         List<ScheduleRecommendResponse> responses = new ArrayList<>();
         LocalDateTime startTime = localDateTimes.get(0);
@@ -141,13 +172,13 @@ public class ScheduleService {
             nowNames = nextNames;
         }
         responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
-
         return responses;
     }
 
     private boolean isSameNames(List<String> names1, List<String> names2) {
-        Set<String> collect = names1.stream().collect(Collectors.toSet());
-        Set<String> collect1 = names2.stream().collect(Collectors.toSet());
+        Set<String> collect = new HashSet<>(names1);
+        Set<String> collect1 = new HashSet<>(names2);
         return collect.equals(collect1);
     }
+
 }
