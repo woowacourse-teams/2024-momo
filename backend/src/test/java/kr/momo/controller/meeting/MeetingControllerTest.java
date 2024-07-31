@@ -153,9 +153,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", meeting.getUuid())
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/lock")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
@@ -170,9 +170,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", invalidUUID)
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/lock")
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
@@ -186,9 +186,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", meeting.getUuid())
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/lock")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
@@ -202,9 +202,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", meeting.getUuid())
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/unlock")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
@@ -219,9 +219,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", invalidUUID)
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/unlock")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -235,9 +235,9 @@ class MeetingControllerTest {
         String token = getToken(attendee, meeting);
 
         RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
                 .contentType(ContentType.JSON)
                 .pathParam("uuid", meeting.getUuid())
-                .header("Authorization", "Bearer " + token)
                 .when().patch("/api/v1/meetings/{uuid}/unlock")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
@@ -252,6 +252,6 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+                .extract().cookie("ACCESS_TOKEN");
     }
 }
