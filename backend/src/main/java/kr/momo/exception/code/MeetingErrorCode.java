@@ -7,7 +7,7 @@ public enum MeetingErrorCode implements ErrorCodeType {
     INVALID_UUID(HttpStatus.BAD_REQUEST, "유효하지 않은 UUID 입니다."),
     NOT_FOUND_MEETING(HttpStatus.NOT_FOUND, "존재하지 않는 약속 정보 입니다."),
     INVALID_TIME_RANGE(HttpStatus.BAD_REQUEST, "끝 시간은 시작 시간 이후가 되어야 합니다."),
-    ALREADY_LOCKED(HttpStatus.BAD_REQUEST, "이미 잠겨있는 약속입니다.");
+    MEETING_LOCKED(HttpStatus.BAD_REQUEST, "약속이 잠겨있어 수행할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

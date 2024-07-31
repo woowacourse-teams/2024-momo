@@ -51,7 +51,7 @@ public class ScheduleService {
 
     private void validateMeetingLocked(Meeting meeting) {
         if (meeting.isLocked()) {
-            throw new MomoException(MeetingErrorCode.ALREADY_LOCKED);
+            throw new MomoException(MeetingErrorCode.MEETING_LOCKED);
         }
     }
 

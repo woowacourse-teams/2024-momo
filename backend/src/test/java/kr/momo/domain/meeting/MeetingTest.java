@@ -83,6 +83,6 @@ class MeetingTest {
 
         assertThatThrownBy(meeting::lock)
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.ALREADY_LOCKED.message());
+                .hasMessage(MeetingErrorCode.MEETING_LOCKED.message());
     }
 }

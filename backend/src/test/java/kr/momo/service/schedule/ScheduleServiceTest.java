@@ -129,7 +129,7 @@ class ScheduleServiceTest {
 
         assertThatThrownBy(() -> scheduleService.create(givenUUID, givenAttendeeId, request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.ALREADY_LOCKED.message());
+                .hasMessage(MeetingErrorCode.MEETING_LOCKED.message());
     }
 
     /* dummy data table
