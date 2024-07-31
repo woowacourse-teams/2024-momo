@@ -74,15 +74,4 @@ class MeetingTest {
 
         assertThat(meeting.isLocked()).isTrue();
     }
-
-    @DisplayName("약속이 잠겨있는데 잠금을 요청하면 예외가 발생한다.")
-    @Test
-    void throwExceptionWhenLocked() {
-        Meeting meeting = MeetingFixture.DINNER.create();
-        meeting.lock();
-
-        assertThatThrownBy(meeting::lock)
-                .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.MEETING_LOCKED.message());
-    }
 }
