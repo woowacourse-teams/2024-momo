@@ -25,52 +25,95 @@ jobs:
           FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
           BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
         run: |
-          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map(.login) | join(" ")' < $GITHUB_EVENT_PATH)
+
+          ASSIGNEE_MENTIONS=""
+          for ASSIGNEE in $ASSIGNEES; do
+            MENTION=$(printenv $ASSIGNEE)
+            if [ -z "$MENTION" ]; then
+              MENTION=$ASSIGNEE
+            fi
+            ASSIGNEE_MENTIONS="${ASSIGNEE_MENTIONS}[${MENTION}](https://github.com/${ASSIGNEE}) "
+          done
+
           LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"🚀 **새로운 전체 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"🚀 **새로운 전체 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $FE_DISCORD_WEBHOOK_URL
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"🚀 **새로운 전체 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"🚀 **새로운 전체 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $BE_DISCORD_WEBHOOK_URL
 
       - name: 새로운 프론트엔드 PR이 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
-        if: github.event_name == 'pull_request' && github.event.action == 'opened' && contains(github.event.pull_request.title, '[FE]')
+        if: contains(github.event.pull_request.title, '[FE]')
         env:
           FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
         run: |
-          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map(.login) | join(" ")' < $GITHUB_EVENT_PATH)
+
+          ASSIGNEE_MENTIONS=""
+          for ASSIGNEE in $ASSIGNEES; do
+            MENTION=$(printenv $ASSIGNEE)
+            if [ -z "$MENTION" ]; then
+              MENTION=$ASSIGNEE
+            fi
+            ASSIGNEE_MENTIONS="${ASSIGNEE_MENTIONS}[${MENTION}](https://github.com/${ASSIGNEE}) "
+          done
+
           LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"🚀 **새로운 프론트엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"🚀 **새로운 프론트엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n🔗 [**PR 링크**](${{ github.event.pull_request.html_url }})\n📂 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $FE_DISCORD_WEBHOOK_URL
 
       - name: 새로운 백엔드 PR이 등록되면 프론트엔드 채널에 디스코드 알림을 보낸다.
-        if: github.event_name == 'pull_request' && github.event.action == 'opened' && contains(github.event.pull_request.title, '[BE]')
+        if: contains(github.event.pull_request.title, '[BE]')
         env:
           BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
         run: |
-          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map(.login) | join(" ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTIONS=""
+          for ASSIGNEE in $ASSIGNEES; do
+            MENTION=$(printenv $ASSIGNEE)
+            if [ -z "$MENTION" ]; then
+              MENTION=$ASSIGNEE
+            fi
+            ASSIGNEE_MENTIONS="${ASSIGNEE_MENTIONS}[${MENTION}](https://github.com/${ASSIGNEE}) "
+          done
+
           LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"🚀 **새로운 백엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"🚀 **새로운 백엔드 PR이 등록되었어요!** 리뷰하러 가볼까요~?\n🔗 [**PR 링크**](${{ github.event.pull_request.html_url }})\n📂 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $BE_DISCORD_WEBHOOK_URL
 
   notify_merge:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
 
     steps:
       - name: PR이 머지되면 FE, BE 두 채널 모두 디스코드 알림을 보낸다.
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         env:
           FE_DISCORD_WEBHOOK_URL: ${{ secrets.FE_DISCORD_WEBHOOK_URL }}
           BE_DISCORD_WEBHOOK_URL: ${{ secrets.BE_DISCORD_WEBHOOK_URL }}
         run: |
-          ASSIGNEES=$(jq -r '.pull_request.assignees | map("[\(.login)](https://github.com/\(.login))") | join(", ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEES=$(jq -r '.pull_request.assignees | map(.login) | join(" ")' < $GITHUB_EVENT_PATH)
+          ASSIGNEE_MENTIONS=""
+          for ASSIGNEE in $ASSIGNEES; do
+            MENTION=$(printenv $ASSIGNEE)
+            if [ -z "$MENTION" ]; then
+              MENTION=$ASSIGNEE
+            fi
+            ASSIGNEE_MENTIONS="${ASSIGNEE_MENTIONS}[${MENTION}](https://github.com/${ASSIGNEE}) "
+          done
+
           LABELS=$(jq -r '.pull_request.labels | map(.name) | join(", ")' < $GITHUB_EVENT_PATH)
+
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n📜 🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n🔗 [**PR 링크**](${{ github.event.pull_request.html_url }})\n📂 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $FE_DISCORD_WEBHOOK_URL
           curl -H "Content-Type: application/json" \
-          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n\n🔗 [PR 링크](${{ github.event.pull_request.html_url }})\n📄 **제목**: ${{ github.event.pull_request.title }}\n📜 🕺 **담당 크루**: ${ASSIGNEES}\n🔑 **업무 키워드**: ${LABELS}\"}" \
+          -d "{\"content\": \"✅ **PR이 머지되었어요!** 축하합니다~ 👏\n🔗 [**PR 링크**](${{ github.event.pull_request.html_url }})\n📂 **제목**: ${{ github.event.pull_request.title }}\n🕺 **담당 크루**: ${ASSIGNEE_MENTIONS}\n🔑 **업무 키워드**: ${LABELS}\"}" \
           $BE_DISCORD_WEBHOOK_URL
