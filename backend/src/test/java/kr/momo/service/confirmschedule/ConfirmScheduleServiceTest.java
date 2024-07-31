@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -25,7 +23,6 @@ import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.exception.code.ScheduleErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
-import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleConfirmRequest;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,22 +57,12 @@ class ConfirmScheduleServiceTest {
     private Meeting meeting;
     private Attendee attendee;
     private AvailableDate today;
-    private AvailableDate tomorrow;
-    private List<DateTimesCreateRequest> dateTimes;
 
     @BeforeEach
     void setUp() {
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
-        tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-
-        List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-
-        dateTimes = List.of(
-                new DateTimesCreateRequest(today.getDate(), times),
-                new DateTimesCreateRequest(tomorrow.getDate(), times)
-        );
     }
 
     @DisplayName("주최자가 잠겨있는 약속의 일정을 확정한다.")
@@ -121,7 +108,7 @@ class ConfirmScheduleServiceTest {
         meetingRepository.save(meeting);
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
                 today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-        Long InvalidAttendeeId = 9999L;
+        long InvalidAttendeeId = 9999L;
 
         assertThatThrownBy(() -> confirmSchedule.confirmSchedule(meeting.getUuid(), InvalidAttendeeId, request))
                 .isInstanceOf(MomoException.class)
