@@ -48,4 +48,9 @@ public class MeetingController {
     public void lock(@PathVariable String uuid, @AuthAttendee long id) {
         meetingService.lock(uuid, id);
     }
+
+    @PatchMapping("/api/v1/meetings/{uuid}/unlock")
+    public void unlock(@PathVariable String uuid, @AuthAttendee long id) {
+        meetingService.unlock(uuid, id);
+    }
 }
