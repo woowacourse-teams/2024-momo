@@ -39,7 +39,7 @@ public class ScheduleService {
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
-        validateMeetingLocked(meeting);
+        validateMeetingUnLocked(meeting);
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
@@ -49,7 +49,7 @@ public class ScheduleService {
         scheduleRepository.saveAll(schedules);
     }
 
-    private void validateMeetingLocked(Meeting meeting) {
+    private void validateMeetingUnLocked(Meeting meeting) {
         if (meeting.isLocked()) {
             throw new MomoException(MeetingErrorCode.MEETING_LOCKED);
         }
