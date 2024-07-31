@@ -208,42 +208,29 @@ class ScheduleServiceTest {
         );
     }
 
+    private void createAttendeeSchedule(Attendee attendee) {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
+        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
+        scheduleRepository.saveAll(schedules);
+    }
+
+    @DisplayName("오래볼 수 있는 순으로 추천해준다.")
     @Test
     void recommendLongTermSchedules() {
         Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
         AvailableDate date2 = availableDateRepository.save(
-                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting));
+                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
+        );
         Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
         Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
 
-        List<Schedule> schedules = new ArrayList<>();
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0330));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0400));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0430));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0500));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0530));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0600));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0630));
-
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0100));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0130));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0330));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0400));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0500));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0530));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0600));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0630));
-
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0130));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0200));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0230));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0500));
-
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0130));
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0200));
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0230));
-
+        List<Schedule> schedules = addSchedule(a, b, date1, date2);
         scheduleRepository.saveAll(schedules);
 
         List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(
@@ -284,53 +271,18 @@ class ScheduleServiceTest {
         );
     }
 
-    private void createAttendeeSchedule(Attendee attendee) {
-        List<Schedule> schedules = new ArrayList<>();
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0400));
-        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0500));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1600));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1700));
-        schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
-        scheduleRepository.saveAll(schedules);
-    }
-
+    @DisplayName("빨리 볼 수 있는 순으로 추천해준다.")
     @Test
     void recommendFastestSchedules() {
         Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
         AvailableDate date2 = availableDateRepository.save(
-                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting));
+                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
+        );
         Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
         Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
 
-        List<Schedule> schedules = new ArrayList<>();
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0330));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0400));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0430));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0500));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0530));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0600));
-        schedules.add(new Schedule(a, date1, Timeslot.TIME_0630));
-
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0100));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0130));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0330));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0400));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0500));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0530));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0600));
-        schedules.add(new Schedule(b, date1, Timeslot.TIME_0630));
-
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0130));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0200));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0230));
-        schedules.add(new Schedule(a, date2, Timeslot.TIME_0500));
-
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0130));
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0200));
-        schedules.add(new Schedule(b, date2, Timeslot.TIME_0230));
-
+        List<Schedule> schedules = addSchedule(a, b, date1, date2);
         scheduleRepository.saveAll(schedules);
 
         List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(
@@ -371,4 +323,49 @@ class ScheduleServiceTest {
         );
     }
 
+    /* dummy data
+     *
+     * date1
+     * 1:00-2:00 : attendee1
+     * 3:30-4:30 : attendee1, attendee2
+     * 4:30-5:00 : attendee1
+     * 5:00-7:00 : attendee1, attendee2
+     *
+     * date2
+     * 1:30-3:00 : attendee1, attendee2
+     * 5:00-5:30 : attendee1
+     */
+
+    private List<Schedule> addSchedule(
+            Attendee attendee1, Attendee attendee2, AvailableDate date1, AvailableDate date2
+    ) {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0330));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0430));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0530));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0600));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_0630));
+
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0100));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0130));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0330));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0500));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0530));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0600));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0630));
+
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0130));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0200));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0230));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0500));
+
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0130));
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0200));
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0230));
+
+        return schedules;
+    }
 }
