@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import { useParams } from 'react-router-dom';
 
-import { handleGetMeetingSchedules } from '@apis/getMeetingSchedules';
+import { getMeetingMySchedule } from '@apis/getMeetingSchedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
 import TimePicker from '.';
-
-const TEST_UUID = '550e8400';
 
 interface TimePickerContainerProps {
   firstTime: string;
@@ -20,16 +18,15 @@ export default function TimePickerContainer({
   lastTime,
   availableDates,
 }: TimePickerContainerProps) {
-  const attendeeName = localStorage.getItem('meetingAttendee');
+  const params = useParams<{ uuid: string }>();
+  const uuid = params.uuid!;
   const { data: meetingSchedules } = useQuery({
-    queryKey: [QUERY_KEY.meetingSchedules, attendeeName],
-    queryFn: () =>
-      handleGetMeetingSchedules({ uuid: TEST_UUID, attendeeName: attendeeName as string }),
+    queryKey: [QUERY_KEY.meetingMySchedule],
+    queryFn: () => getMeetingMySchedule(uuid),
     staleTime: 0,
   });
 
-  if (!meetingSchedules) return <></>;
-  if (!('attendeeName' in meetingSchedules)) return <></>;
+  if (!meetingSchedules) return null;
 
   return (
     <TimePicker

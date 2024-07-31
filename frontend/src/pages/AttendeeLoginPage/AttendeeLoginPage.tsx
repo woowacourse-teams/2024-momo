@@ -9,6 +9,8 @@ import postAttendeeLogin from '@apis/attendee';
 
 import { setCookie } from '@utils/cookies';
 
+import { COOKIE_KEYS } from '@constants/cookies';
+
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
@@ -30,9 +32,10 @@ export default function AttendeeLoginPage() {
         request: { name, password },
       });
 
-      setCookie('token', response.data.token, { path: '/', maxAge: 604800 });
+      setCookie(COOKIE_KEYS.token, response.data.token, { path: '/', maxAge: 604800 });
+      setCookie(COOKIE_KEYS.attendeeName, name); // TODO: name을 cookie에 저장하지 않고, navigate 두 번째 인자로 넘기는 방향 (@Yoonkyoungme)
 
-      navigate('/meeting-time-pick'); // TODO: meeting 조회/수정 페이지로 이동
+      navigate(`/meeting/${uuid}`);
     } catch (error) {
       console.error('Login failed:', error);
     }
