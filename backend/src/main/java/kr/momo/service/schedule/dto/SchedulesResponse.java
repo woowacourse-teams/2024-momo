@@ -19,7 +19,7 @@ public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
 
     private static Map<LocalDateTime, List<String>> groupingAttendeeByMeetingDateTime(List<Schedule> schedules) {
         return schedules.stream()
-                .collect(groupingBy(Schedule::getDateTime, mapping(Schedule::attendeeName, toList())));
+                .collect(groupingBy(Schedule::dateTime, mapping(Schedule::attendeeName, toList())));
     }
 
     private static List<AttendeesScheduleResponse> convertToAttendeesResponses(
