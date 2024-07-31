@@ -48,6 +48,10 @@ public class Meeting extends BaseEntity {
         this.isLocked = true;
     }
 
+    public void unlock() {
+        this.isLocked = false;
+    }
+
     public Timeslot getValidatedTimeslot(LocalTime other) {
         return this.timeslotInterval.getValidatedTimeslot(other);
     }
