@@ -11,8 +11,6 @@ import java.time.LocalTime;
 import kr.momo.domain.BaseEntity;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.domain.timeslot.TimeslotInterval;
-import kr.momo.exception.MomoException;
-import kr.momo.exception.code.MeetingErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,9 +45,6 @@ public class Meeting extends BaseEntity {
     }
 
     public void lock() {
-        if (this.isLocked) {
-            throw new MomoException(MeetingErrorCode.ALREADY_LOCKED);
-        }
         this.isLocked = true;
     }
 
