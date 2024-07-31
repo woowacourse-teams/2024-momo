@@ -13,16 +13,16 @@ export const s_button = css`
   padding: 0.4rem 3rem;
 
   font-weight: 700;
-  color: ${theme.color.primary};
+  color: ${theme.colors.primary};
 
   background: #fff;
-  border: 1px solid ${theme.color.primary};
+  border: 1px solid ${theme.colors.primary};
   border-radius: 8px;
   box-shadow: 0 3px 6px rgb(0 0 0 / 20%);
 
   &:hover {
     color: #fff;
-    background: ${theme.color.primary};
+    background: ${theme.colors.primary};
     border: none;
   }
 `;

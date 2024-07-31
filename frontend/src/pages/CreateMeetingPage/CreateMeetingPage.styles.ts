@@ -29,13 +29,13 @@ export const s_confirm = css`
   font-weight: 800;
   color: #fff;
 
-  background: ${theme.color.primary};
+  background: ${theme.colors.primary};
   border: none;
   border-radius: 8px;
 
   &:hover {
-    color: ${theme.color.primary};
+    color: ${theme.colors.primary};
     background: #fff;
-    border: 1px solid ${theme.color.primary};
+    border: 1px solid ${theme.colors.primary};
   }
 `;
