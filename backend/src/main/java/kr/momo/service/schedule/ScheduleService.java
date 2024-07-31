@@ -1,7 +1,16 @@
 package kr.momo.service.schedule;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
@@ -21,6 +30,7 @@ import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -107,5 +117,45 @@ public class ScheduleService {
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
         return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleRecommendResponse> recommendSchedules(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
+
+        Map<LocalDateTime, List<String>> map = schedules.stream()
+                .collect(groupingBy(Schedule::dateTime, mapping(Schedule::attendeeName, toList())));
+        List<LocalDateTime> localDateTimes = map.keySet().stream().sorted().toList();
+
+
+        List<ScheduleRecommendResponse> responses = new ArrayList<>();
+        LocalDateTime startTime = localDateTimes.get(0);
+        List<String> startNames = map.get(startTime);
+
+        LocalDateTime now = startTime;
+        List<String> nowNames = startNames;
+        for (int i = 1; i < localDateTimes.size(); i++) {
+            LocalDateTime next = localDateTimes.get(i);
+            List<String> nextNames = map.get(next);
+            if (!(now.plusMinutes(30).equals(next) && isSameNames(nowNames, nextNames))) {
+                responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
+                startTime = next;
+                startNames = nextNames;
+            }
+            now = next;
+            nowNames = nextNames;
+        }
+        responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
+
+        return responses;
+    }
+
+    private boolean isSameNames(List<String> names1, List<String> names2) {
+        Set<String> collect = names1.stream().collect(Collectors.toSet());
+        Set<String> collect1 = names2.stream().collect(Collectors.toSet());
+        return collect.equals(collect1);
     }
 }

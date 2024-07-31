@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,10 @@ import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
+import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -208,6 +211,79 @@ class ScheduleServiceTest {
         );
     }
 
+    @Test
+    void recommendByAttendeeCount() {
+        Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
+        AvailableDate date2 = availableDateRepository.save(
+                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting));
+        Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
+        Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0330));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0400));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0430));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0500));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0530));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0600));
+        schedules.add(new Schedule(a, date1, Timeslot.TIME_0630));
+
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0100));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0130));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0330));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0400));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0500));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0530));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0600));
+        schedules.add(new Schedule(b, date1, Timeslot.TIME_0630));
+
+        schedules.add(new Schedule(a, date2, Timeslot.TIME_0130));
+        schedules.add(new Schedule(a, date2, Timeslot.TIME_0200));
+        schedules.add(new Schedule(a, date2, Timeslot.TIME_0230));
+        schedules.add(new Schedule(a, date2, Timeslot.TIME_0500));
+
+        schedules.add(new Schedule(b, date2, Timeslot.TIME_0130));
+        schedules.add(new Schedule(b, date2, Timeslot.TIME_0200));
+        schedules.add(new Schedule(b, date2, Timeslot.TIME_0230));
+
+        scheduleRepository.saveAll(schedules);
+
+        List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(movieMeeting.getUuid());
+        Assertions.assertThat(responses).containsExactly(
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        List.of(b.name())
+                ),
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        List.of(a.name(), b.name())
+                ),
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
+                        List.of(a.name())
+                ),
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        List.of(a.name(), b.name())
+                ),
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        List.of(a.name(), b.name())
+                ),
+                ScheduleRecommendResponse.from(
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        List.of(a.name())
+                )
+        );
+    }
+
     private void createAttendeeSchedule(Attendee attendee) {
         List<Schedule> schedules = new ArrayList<>();
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
@@ -218,4 +294,5 @@ class ScheduleServiceTest {
         schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_1300));
         scheduleRepository.saveAll(schedules);
     }
+
 }
