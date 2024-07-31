@@ -11,6 +11,7 @@ import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +44,7 @@ public class MeetingController {
         return new MomoApiResponse<>(response);
     }
 
-    @PostMapping("/api/v1/meetings/{uuid}/lock")
+    @PatchMapping("/api/v1/meetings/{uuid}/lock")
     public void lock(@PathVariable String uuid, @AuthAttendee long id) {
         meetingService.lock(uuid, id);
     }
