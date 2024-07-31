@@ -4,11 +4,9 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -134,27 +132,9 @@ public class ScheduleService {
         List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees);
         List<ScheduleRecommendResponse> responses = groupingScheduleByAttendees(schedules);
 
-        if (recommendType.equals("longTerm")) {
-            return responses.stream()
-                    .sorted(Comparator
-                            .comparingInt((ScheduleRecommendResponse r) -> r.attendeeNames().size()).reversed()
-                            .thenComparing((r1, r2) -> {
-                                Duration duration1 = Duration.between(r1.startTime(), r1.endTime());
-                                Duration duration2 = Duration.between(r2.startTime(), r2.endTime());
-                                return duration2.compareTo(duration1);
-                            }))
-                    .toList();
-        }
-
-        if (recommendType.equals("fastest")) {
-            return responses.stream()
-                    .sorted(Comparator
-                            .comparingInt((ScheduleRecommendResponse s) -> s.attendeeNames().size()).reversed()
-                            .thenComparing(response -> LocalDateTime.of(response.date(), response.startTime())))
-                    .toList();
-        }
-
-        throw new IllegalArgumentException();
+        return responses.stream()
+                .sorted(ScheduleRecommender.from(recommendType).getComparator())
+                .toList();
     }
 
     private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {

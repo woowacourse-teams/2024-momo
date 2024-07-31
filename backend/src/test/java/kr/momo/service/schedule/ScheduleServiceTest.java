@@ -337,7 +337,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), List.of(a.name(), b.name()), "fastest"
+                movieMeeting.getUuid(), List.of(a.name(), b.name()), "earliest"
         );
 
         Assertions.assertThat(responses).containsExactly(
