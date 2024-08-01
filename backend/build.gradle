@@ -48,5 +48,5 @@ test {
 }
 
 bootJar {
-    exclude('*.yml')
+    exclude('security/**')
 }
