@@ -23,6 +23,6 @@ public class ConfirmScheduleController {
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid ScheduleConfirmRequest request
     ) {
         confirmScheduleService.create(uuid, id, request);
-        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirm")).build();
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed-schedule")).build();
     }
 }
