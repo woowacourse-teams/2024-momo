@@ -29,7 +29,7 @@ public class ConfirmScheduleService {
     private final ConfirmedScheduleRepository confirmedScheduleRepository;
 
     @Transactional
-    public void confirmSchedule(String uuid, long attendeeId, @Valid ScheduleConfirmRequest request) {
+    public void confirmSchedule(String uuid, long attendeeId, ScheduleConfirmRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
@@ -42,8 +42,7 @@ public class ConfirmScheduleService {
         AvailableDate date = getValidateAvailableDate(meeting, request.date());
         meeting.validateContainedTimes(request.startTime(), request.endTime());
 
-        confirmedScheduleRepository.save(
-                new ConfirmedSchedule(meeting, date, request.startTime(), request.endTime()));
+        confirmedScheduleRepository.save(new ConfirmedSchedule(meeting, date, request.startTime(), request.endTime()));
     }
 
     private void validateHostPermission(Attendee attendee) {

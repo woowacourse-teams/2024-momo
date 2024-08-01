@@ -49,7 +49,7 @@ class ConfirmScheduleControllerTest {
 
     private AvailableDate tomorrow;
     private Meeting meeting;
-    Attendee host;
+    private Attendee host;
 
     @BeforeEach
     void setUp() {
@@ -68,7 +68,7 @@ class ConfirmScheduleControllerTest {
         schedules.add(new Schedule(attendee, tomorrow, Timeslot.TIME_0400));
         scheduleRepository.saveAll(schedules);
     }
-    
+
     @DisplayName("주최자가 잠겨있는 약속 일정을 확정하면 201 상태 코드를 응답한다.")
     @Test
     void confirmSchedule() {
@@ -97,7 +97,7 @@ class ConfirmScheduleControllerTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed-schedule");
     }
-    
+
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
     @Test
     void confirmScheduleNotHost() {
