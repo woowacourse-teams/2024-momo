@@ -45,22 +45,22 @@ public class Meeting extends BaseEntity {
     }
 
     public void lock() {
-        this.isLocked = true;
+        isLocked = true;
     }
 
     public void unlock() {
-        this.isLocked = false;
+        isLocked = false;
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {
-        return this.timeslotInterval.getValidatedTimeslot(other);
+        return timeslotInterval.getValidatedTimeslot(other);
     }
 
     public LocalTime startTimeslotTime() {
-        return this.timeslotInterval.getStartTimeslot().getLocalTime();
+        return timeslotInterval.getStartTimeslot().getLocalTime();
     }
 
     public LocalTime endTimeslotTime() {
-        return this.timeslotInterval.getEndTimeslot().getLocalTime();
+        return timeslotInterval.getEndTimeslot().getLocalTime();
     }
 }
