@@ -125,12 +125,10 @@ public class ScheduleService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
-        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
-        List<Attendee> filteredAttendees = attendees.stream()
-                .filter(attendee -> names.contains(attendee.name()))
-                .toList();
+        Attendees attendees = new Attendees(attendeeRepository.findAllByMeeting(meeting));
+        Attendees filteredAttendees = attendees.filterAttendeesByName(names);
 
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees);
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees.getAttendees());
         List<ScheduleRecommendResponse> recommendResponse = groupingScheduleByAttendees(schedules)
                 .stream()
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())

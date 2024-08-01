@@ -38,4 +38,12 @@ public class Attendees {
                 .collect(Collectors.toSet());
         return attendeeNames.equals(otherNames);
     }
+
+    public Attendees filterAttendeesByName(List<String> names) {
+        List<Attendee> filteredAttendee = attendees.stream()
+                .filter(attendee -> names.contains(attendee.name()))
+                .toList();
+        return new Attendees(filteredAttendee);
+    }
+
 }
