@@ -1,17 +1,17 @@
 import { HttpResponse, http } from 'msw';
 
-import { API_URL } from '@constants/api';
+import { BASE_URL } from '@constants/api';
 
 import meetingAllSchedules from './data/meetingAllSchedules.json';
 import meetingTableFrame from './data/meetingTableFrame.json';
 import oneAttendeeSchedules from './data/oneAttendeeSchedule.json';
 
 const meetingHandlers = [
-  http.get(`${API_URL}/api/v1/meeting/550e8400`, () => {
+  http.get(`${BASE_URL}/550e8400`, () => {
     return HttpResponse.json(meetingTableFrame, { status: 200 });
   }),
 
-  http.get(`${API_URL}/api/v1/meeting/*/schedules`, ({ request }) => {
+  http.get(`${BASE_URL}/*/schedules`, ({ request }) => {
     const url = new URL(request.url);
     const attendeeName = url.searchParams.get('attendeeName') || 'all';
 
