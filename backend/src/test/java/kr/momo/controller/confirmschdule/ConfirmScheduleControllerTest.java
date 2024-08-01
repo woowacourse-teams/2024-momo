@@ -74,15 +74,8 @@ class ConfirmScheduleControllerTest {
     void confirmSchedule() {
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(host.name(), host.password());
 
-        String token = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(loginRequest)
-                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+        String token = getToken(host, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
                 tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
@@ -103,16 +96,9 @@ class ConfirmScheduleControllerTest {
     void confirmScheduleNotHost() {
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        Attendee guest = attendeeRepository.save(new Attendee(meeting, "guest", "password", Role.GUEST));
 
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(guest.name(), guest.password());
-        String token = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(loginRequest)
-                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+        Attendee guest = attendeeRepository.save(new Attendee(meeting, "guest", "password", Role.GUEST));
+        String token = getToken(guest, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
                 tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
@@ -130,14 +116,7 @@ class ConfirmScheduleControllerTest {
     @DisplayName("주최자가 잠겨있지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
     @Test
     void confirmScheduleUnlock() {
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(host.name(), host.password());
-        String token = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(loginRequest)
-                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+        String token = getToken(host, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
                 tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
@@ -150,5 +129,17 @@ class ConfirmScheduleControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/confirmed-schedule")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private String getToken(Attendee attendee, Meeting meeting) {
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getString("data.token");
     }
 }

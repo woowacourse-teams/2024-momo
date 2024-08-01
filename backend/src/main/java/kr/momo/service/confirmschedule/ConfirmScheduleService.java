@@ -1,6 +1,5 @@
 package kr.momo.service.confirmschedule;
 
-import jakarta.validation.Valid;
 import java.time.LocalDate;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
