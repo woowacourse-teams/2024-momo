@@ -27,7 +27,7 @@ public record ScheduleRecommendResponse(
                 startTime.toLocalDate(),
                 startTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
                 startTime.toLocalTime(),
-                endTime.toLocalTime(),
+                endTime.toLocalTime().plusMinutes(30),
                 attendeeNames
         );
     }
