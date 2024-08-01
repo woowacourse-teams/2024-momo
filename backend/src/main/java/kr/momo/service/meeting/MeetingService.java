@@ -84,4 +84,14 @@ public class MeetingService {
             throw new MomoException(AttendeeErrorCode.ACCESS_DENIED);
         }
     }
+
+    @Transactional
+    public void unlock(String uuid, long id) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(id, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
+        validateHostPermission(attendee);
+        meeting.unlock();
+    }
 }

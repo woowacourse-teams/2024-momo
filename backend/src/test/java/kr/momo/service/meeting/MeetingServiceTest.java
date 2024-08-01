@@ -157,4 +157,54 @@ class MeetingServiceTest {
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
     }
+
+    @DisplayName("약속 잠금을 해제하면 잠금 상태가 변경된다.")
+    @Test
+    void unlock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+
+        meetingService.unlock(meeting.getUuid(), attendee.getId());
+        Meeting changedMeeting = meetingRepository.findById(meeting.getId()).orElseThrow();
+
+        assertThat(changedMeeting.isLocked()).isFalse();
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 약속을 조회할 수 없다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockNoMeeting() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = "";
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.INVALID_UUID.message());
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 참가자가 존재하지 않다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockNoAttendee() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        String uuid = meeting.getUuid();
+        long id = 1L;
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 로그인된 참가자가 호스트가 아니면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockAttendeeGuest() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = meeting.getUuid();
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
 }
