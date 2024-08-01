@@ -339,5 +339,4 @@ gradle-app.setting
 *.hprof
 
 ### BACKEND
-backend/src/main/resources/application.yml
 **/.idea
