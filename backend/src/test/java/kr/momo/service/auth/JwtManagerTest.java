@@ -12,6 +12,9 @@ import kr.momo.exception.code.AuthErrorCode;
 import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class JwtManagerTest {
 
@@ -30,11 +33,11 @@ class JwtManagerTest {
         assertThat(attendeeId).isEqualTo(attendee.getId());
     }
 
-    @DisplayName("토큰이 올바르지 않을 경우 예외를 발생시킨다.")
-    @Test
-    void throwExceptionForInvalidToken() {
-        String token = "invalidToken";
-
+    @DisplayName("토큰이 null이거나 올바르지 않을 경우 예외를 발생시킨다.")
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    void throwExceptionForInvalidToken(String token) {
         assertThatThrownBy(() -> jwtManager.extract(token))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AuthErrorCode.INVALID_TOKEN.message());

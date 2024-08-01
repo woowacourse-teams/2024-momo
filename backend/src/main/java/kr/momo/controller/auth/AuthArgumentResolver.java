@@ -1,7 +1,9 @@
 package kr.momo.controller.auth;
 
-import kr.momo.exception.MomoException;
-import kr.momo.exception.code.AuthErrorCode;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Optional;
 import kr.momo.service.auth.JwtManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
+    private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
     private final JwtManager jwtManager;
 
@@ -34,15 +35,21 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
             @NonNull NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
-        String token = getToken(webRequest);
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        Cookie[] cookies = request.getCookies();
+        String token = getCookieValue(cookies).orElse("");
+
         return jwtManager.extract(token);
     }
 
-    private String getToken(NativeWebRequest webRequest) {
-        String header = webRequest.getHeader(AUTHORIZATION);
-        if (header == null) {
-            throw new MomoException(AuthErrorCode.NOT_FOUND_TOKEN);
+    private Optional<String> getCookieValue(Cookie[] cookies) {
+        if (cookies == null) {
+            return Optional.empty();
         }
-        return header.replaceFirst(BEARER, "");
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> ACCESS_TOKEN.equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst();
     }
 }
