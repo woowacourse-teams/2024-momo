@@ -81,14 +81,14 @@ class ConfirmScheduleControllerTest {
                 tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
 
         RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
+                .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed-schedule");
     }
 
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
@@ -104,7 +104,7 @@ class ConfirmScheduleControllerTest {
                 tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
 
         RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
+                .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
@@ -140,6 +140,6 @@ class ConfirmScheduleControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+                .extract().cookie("ACCESS_TOKEN");
     }
 }
