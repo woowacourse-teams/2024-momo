@@ -12,6 +12,7 @@ import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
+import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.schedule.dto.ScheduleConfirmRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,11 @@ public class ConfirmScheduleService {
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         validateHostPermission(attendee);
+
+        confirmedScheduleRepository.findByMeeting(meeting).ifPresent(ignore -> {
+            throw new MomoException(ConfirmedScheduleErrorCode.CONFIRMED_SCHEDULE_EXISTS);
+        });
+
         validateMeetingLocked(meeting);
 
         AvailableDate date = getValidateAvailableDate(meeting, request.date());

@@ -19,6 +19,7 @@ import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.AvailableDateErrorCode;
+import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.exception.code.ScheduleErrorCode;
 import kr.momo.fixture.AttendeeFixture;
@@ -140,6 +141,21 @@ class ConfirmScheduleServiceTest {
         assertThatThrownBy(() -> confirmSchedule.confirmSchedule(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.MEETING_UNLOCKED.message());
+    }
+
+    @DisplayName("이미 약속이 확정되었을 때 약속 일정을 확정할 때 예외가 발생한다.")
+    @Test
+    void confirmScheduleThrowsExceptionWhen_AlreadyConfirmed() {
+        scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
+        meeting.lock();
+        meetingRepository.save(meeting);
+        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
+                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
+        confirmSchedule.confirmSchedule(meeting.getUuid(), attendee.getId(), request);
+
+        assertThatThrownBy(() -> confirmSchedule.confirmSchedule(meeting.getUuid(), attendee.getId(), request))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(ConfirmedScheduleErrorCode.CONFIRMED_SCHEDULE_EXISTS.message());
     }
 
     @DisplayName("약속애 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")
