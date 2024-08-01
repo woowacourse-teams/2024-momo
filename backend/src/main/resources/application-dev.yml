@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate.on-profile: dev
+    import:
+      - ${SECURITY_PATH:classpath:security}/datasource-dev.yml
+      - ${SECURITY_PATH:classpath:security}/jwt.yml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true

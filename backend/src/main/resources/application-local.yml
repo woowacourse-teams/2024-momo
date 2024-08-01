@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate.on-profile: local
+    import:
+      - classpath:datasource.yml
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+security:
+  jwt:
+    secret_key: ${random.value}"
