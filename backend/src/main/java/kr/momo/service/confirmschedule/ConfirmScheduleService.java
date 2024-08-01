@@ -52,7 +52,7 @@ public class ConfirmScheduleService {
     }
 
     private void validateHostPermission(Attendee attendee) {
-        if (!attendee.isHost()) {
+        if (attendee.isNotHost()) {
             throw new MomoException(AttendeeErrorCode.ACCESS_DENIED);
         }
     }
