@@ -29,6 +29,7 @@ import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
+import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
 import org.assertj.core.api.Assertions;
@@ -233,11 +234,11 @@ class ScheduleServiceTest {
         List<Schedule> schedules = addSchedule(a, b, date1, date2);
         scheduleRepository.saveAll(schedules);
 
-        List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), List.of(a.name(), b.name()), "longTerm"
+        SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
+                movieMeeting.getUuid(), "longTerm", List.of(a.name(), b.name())
         );
 
-        Assertions.assertThat(responses).containsExactly(
+        Assertions.assertThat(responses.recommendSchedules()).containsExactly(
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
@@ -285,11 +286,11 @@ class ScheduleServiceTest {
         List<Schedule> schedules = addSchedule(a, b, date1, date2);
         scheduleRepository.saveAll(schedules);
 
-        List<ScheduleRecommendResponse> responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), List.of(a.name(), b.name()), "earliest"
+        SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
+                movieMeeting.getUuid(), "earliest", List.of(a.name(), b.name())
         );
 
-        Assertions.assertThat(responses).containsExactly(
+        Assertions.assertThat(responses.recommendSchedules()).containsExactly(
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),

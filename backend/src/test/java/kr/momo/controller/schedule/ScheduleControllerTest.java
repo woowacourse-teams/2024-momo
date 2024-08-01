@@ -141,6 +141,19 @@ class ScheduleControllerTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
+    @DisplayName("추천 타입과 참가자에 맞춰 추천 약속을 조회한다.")
+    @Test
+    void recommendSchedules() {
+
+        RestAssured.given().log().all()
+                .pathParams("uuid", meeting.getUuid(), "recommendType", "earliest")
+                .queryParam("attendeeNames", attendee.name())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/recommend-schedules/{recommendType}")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
     private void createAttendeeSchedule(Attendee attendee) {
         List<Schedule> schedules = new ArrayList<>();
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0300));
