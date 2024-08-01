@@ -1,4 +1,6 @@
-import { API_URL } from '@constants/api';
+import { BASE_URL } from '@constants/api';
+
+import { fetchClient } from './_common/fetchClient';
 
 interface PostAttendeeLoginRequest {
   uuid: string;
@@ -9,32 +11,27 @@ interface PostAttendeeLoginRequest {
 }
 
 interface PostAttendeeLoginResponse {
-  data: {
-    token: string;
-  };
+  token: string;
 }
 
-const postAttendeeLogin = async (
-  props: PostAttendeeLoginRequest,
-): Promise<PostAttendeeLoginResponse> => {
-  const { uuid, request } = props;
-  const url = `${API_URL}/api/v1/login/${uuid}`;
+interface AttendeeLogin {
+  token: string;
+}
 
-  const response = await fetch(url, {
+const postAttendeeLogin = async (props: PostAttendeeLoginRequest): Promise<AttendeeLogin> => {
+  const { uuid, request } = props;
+  const url = `${BASE_URL}/${uuid}/login`;
+
+  const data = await fetchClient<PostAttendeeLoginResponse>({
+    url,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    errorMessage: '로그인 정보를 요청하는 중 문제가 발생했어요 :(',
+    body: request,
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data;
+  return {
+    token: data?.token,
+  };
 };
 
 export default postAttendeeLogin;
