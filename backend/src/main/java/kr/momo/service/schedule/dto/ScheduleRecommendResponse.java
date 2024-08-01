@@ -1,5 +1,7 @@
 package kr.momo.service.schedule.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,8 +14,8 @@ import kr.momo.domain.attendee.Attendees;
 public record ScheduleRecommendResponse(
         LocalDate date,
         String dayOfWeek,
-        LocalTime startTime,
-        LocalTime endTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
         List<String> attendeeNames) {
 
     public static ScheduleRecommendResponse from(
