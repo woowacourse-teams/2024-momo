@@ -31,6 +31,7 @@ import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
+import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -120,7 +121,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleRecommendResponse> recommendSchedules(String uuid, List<String> names, String recommendType) {
+    public SchedulesRecommendResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
@@ -130,11 +131,12 @@ public class ScheduleService {
                 .toList();
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees);
-        List<ScheduleRecommendResponse> responses = groupingScheduleByAttendees(schedules);
-
-        return responses.stream()
+        List<ScheduleRecommendResponse> recommendResponse = groupingScheduleByAttendees(schedules)
+                .stream()
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
+
+        return SchedulesRecommendResponse.from(attendees, recommendResponse);
     }
 
     private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {
