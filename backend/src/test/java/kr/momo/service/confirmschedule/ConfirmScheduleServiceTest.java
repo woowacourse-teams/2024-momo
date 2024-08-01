@@ -97,7 +97,7 @@ class ConfirmScheduleServiceTest {
         String invalidUuid = "invalidUuid";
         assertThatThrownBy(() -> confirmSchedule.confirmSchedule(invalidUuid, attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.NOT_FOUND_MEETING.message());
+                .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
 
     @DisplayName("존재하지 않은 참가자가 잠겨있는 약속 일정을 확정 시 예외가 발생한다.")
@@ -112,7 +112,7 @@ class ConfirmScheduleServiceTest {
 
         assertThatThrownBy(() -> confirmSchedule.confirmSchedule(meeting.getUuid(), InvalidAttendeeId, request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AttendeeErrorCode.NOT_FOUND_ATTENDEE.message());
+                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
 
     @DisplayName("주최자가 아닌 참가자가 잠겨있는 약속 일정을 확정 시 예외가 발생한다.")

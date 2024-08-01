@@ -30,10 +30,10 @@ public class ConfirmScheduleService {
     @Transactional
     public void confirmSchedule(String uuid, long attendeeId, ScheduleConfirmRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
         validateHostPermission(attendee);
         validateMeetingLocked(meeting);
