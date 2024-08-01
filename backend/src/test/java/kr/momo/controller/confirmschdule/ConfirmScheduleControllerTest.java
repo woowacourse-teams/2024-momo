@@ -85,10 +85,10 @@ class ConfirmScheduleControllerTest {
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meetings/{uuid}/confirmed-schedule")
+                .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed-schedule");
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
     }
 
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
@@ -108,7 +108,7 @@ class ConfirmScheduleControllerTest {
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meetings/{uuid}/confirmed-schedule")
+                .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -126,7 +126,7 @@ class ConfirmScheduleControllerTest {
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meetings/{uuid}/confirmed-schedule")
+                .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }

@@ -18,11 +18,11 @@ public class ConfirmScheduleController {
 
     private final ConfirmScheduleService confirmScheduleService;
 
-    @PostMapping("/api/v1/meetings/{uuid}/confirmed-schedule")
+    @PostMapping("/api/v1/meetings/{uuid}/confirm")
     public ResponseEntity<Void> confirmSchedule(
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid ScheduleConfirmRequest request
     ) {
         confirmScheduleService.create(uuid, id, request);
-        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed-schedule")).build();
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirm")).build();
     }
 }
