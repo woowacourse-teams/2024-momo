@@ -21,7 +21,7 @@ export const s_button = css`
   box-shadow: 0 3px 6px rgb(0 0 0 / 20%);
 
   &:hover {
-    color: #fff;
+    color: ${theme.colors.white};
     background: ${theme.colors.primary};
     border: none;
   }
