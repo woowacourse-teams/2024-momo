@@ -27,7 +27,7 @@ export default function MeetingTimePickPage() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
-  const { data: meetingFrame } = useGetMeetingQuery(uuid);
+  const { data: meetingBase } = useGetMeetingQuery(uuid);
 
   const { isTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
@@ -48,7 +48,7 @@ export default function MeetingTimePickPage() {
         <button css={s_tabButton(true)} onClick={() => handleAttendeeChange('')}>
           전체
         </button>
-        {meetingFrame?.attendees.map((attendee) => (
+        {meetingBase?.attendeeNames.map((attendee) => (
           <button
             key={attendee}
             css={s_tabButton(true)}
@@ -58,18 +58,18 @@ export default function MeetingTimePickPage() {
           </button>
         ))}
       </section>
-      {meetingFrame && isTimePickerUpdate ? (
+      {meetingBase && isTimePickerUpdate ? (
         <TimePickerContainer
-          firstTime={meetingFrame.firstTime}
-          lastTime={meetingFrame.lastTime}
-          availableDates={meetingFrame.availableDates}
+          firstTime={meetingBase.firstTime}
+          lastTime={meetingBase.lastTime}
+          availableDates={meetingBase.availableDates}
         />
       ) : (
-        meetingFrame && (
+        meetingBase && (
           <TimeViewer
-            firstTime={meetingFrame.firstTime}
-            lastTime={meetingFrame.lastTime}
-            availableDates={meetingFrame.availableDates}
+            firstTime={meetingBase.firstTime}
+            lastTime={meetingBase.lastTime}
+            availableDates={meetingBase.availableDates}
             selectedAttendee={selectedAttendee}
           />
         )
