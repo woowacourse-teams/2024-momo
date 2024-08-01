@@ -22,7 +22,7 @@ public class ConfirmScheduleController {
     public ResponseEntity<Void> confirmSchedule(
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid ScheduleConfirmRequest request
     ) {
-        confirmScheduleService.confirmSchedule(uuid, id, request);
+        confirmScheduleService.create(uuid, id, request);
         return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed-schedule")).build();
     }
 }

@@ -29,7 +29,7 @@ public class ConfirmScheduleService {
     private final ConfirmedScheduleRepository confirmedScheduleRepository;
 
     @Transactional
-    public void confirmSchedule(String uuid, long attendeeId, ScheduleConfirmRequest request) {
+    public void create(String uuid, long attendeeId, ScheduleConfirmRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
