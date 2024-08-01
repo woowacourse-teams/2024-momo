@@ -1,4 +1,5 @@
 spring:
+  config.import: optional:classpath:property-override.yml
   profiles:
     active: local  # Default Active Profile
     group:

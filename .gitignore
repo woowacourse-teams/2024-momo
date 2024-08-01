@@ -340,3 +340,4 @@ gradle-app.setting
 
 ### BACKEND
 **/.idea
+backend/src/main/resources/property-override.yml
