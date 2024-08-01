@@ -10,7 +10,7 @@ export const s_td = (isSelected: boolean, isUpdate: boolean) => css`
 
   color: ${isSelected ? '#121010' : '#fff'};
 
-  background: ${isSelected ? theme.colors.primary : '#ececec'};
+  background: ${isSelected ? theme.colors.primary : theme.colors.grey.primary};
   border-radius: 0.4rem;
 
   &:hover {
