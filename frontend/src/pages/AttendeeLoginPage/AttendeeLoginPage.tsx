@@ -27,12 +27,12 @@ export default function AttendeeLoginPage() {
     }
 
     try {
-      const response = await postAttendeeLogin({
+      const data = await postAttendeeLogin({
         uuid,
         request: { name, password },
       });
 
-      setCookie(COOKIE_KEYS.token, response.data.token, { path: '/', maxAge: 604800 });
+      if (data) setCookie(COOKIE_KEYS.token, data.token, { path: '/', maxAge: 604800 });
       setCookie(COOKIE_KEYS.attendeeName, name); // TODO: name을 cookie에 저장하지 않고, navigate 두 번째 인자로 넘기는 방향 (@Yoonkyoungme)
 
       navigate(`/meeting/${uuid}`);
