@@ -88,9 +88,9 @@ public class MeetingService {
     @Transactional
     public void unlock(String uuid, long id) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         Attendee attendee = attendeeRepository.findByIdAndMeeting(id, meeting)
-                .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
         validateHostPermission(attendee);
         meeting.unlock();
     }

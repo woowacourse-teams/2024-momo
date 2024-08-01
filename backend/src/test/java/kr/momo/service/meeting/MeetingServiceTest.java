@@ -180,7 +180,7 @@ class MeetingServiceTest {
 
         assertThatThrownBy(() -> meetingService.unlock(uuid, id))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.NOT_FOUND_MEETING.message());
+                .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
 
     @DisplayName("약속 잠금을 해제할 때 참가자가 존재하지 않다면 예외가 발생한다.")
@@ -192,7 +192,7 @@ class MeetingServiceTest {
 
         assertThatThrownBy(() -> meetingService.unlock(uuid, id))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AttendeeErrorCode.NOT_FOUND_ATTENDEE.message());
+                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
 
     @DisplayName("약속 잠금을 해제할 때 로그인된 참가자가 호스트가 아니면 예외가 발생한다.")
