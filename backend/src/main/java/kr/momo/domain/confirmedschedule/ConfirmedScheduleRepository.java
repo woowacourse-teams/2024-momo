@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ConfirmedScheduleRepository extends JpaRepository<ConfirmedSchedule, Long> {
 
     Optional<ConfirmedSchedule> findByMeeting(Meeting meeting);
+
+    boolean existsByMeeting(Meeting meeting);
 }

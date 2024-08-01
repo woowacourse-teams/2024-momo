@@ -38,16 +38,17 @@ public class ConfirmScheduleService {
 
         validateHostPermission(attendee);
 
-        confirmedScheduleRepository.findByMeeting(meeting).ifPresent(ignore -> {
+        if (confirmedScheduleRepository.existsByMeeting(meeting)) {
             throw new MomoException(ConfirmedScheduleErrorCode.CONFIRMED_SCHEDULE_EXISTS);
-        });
+        }
 
         validateMeetingLocked(meeting);
 
         AvailableDate date = getValidateAvailableDate(meeting, request.date());
         meeting.validateContainedTimes(request.startTime(), request.endTime());
 
-        confirmedScheduleRepository.save(new ConfirmedSchedule(meeting, date, request.startTime(), request.endTime()));
+        ConfirmedSchedule confirmedSchedule = new ConfirmedSchedule(meeting, date, request.startTime(), request.endTime());
+        confirmedScheduleRepository.save(confirmedSchedule);
     }
 
     private void validateHostPermission(Attendee attendee) {
