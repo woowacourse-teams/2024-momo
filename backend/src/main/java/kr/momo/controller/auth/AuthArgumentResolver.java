@@ -3,8 +3,7 @@ package kr.momo.controller.auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import kr.momo.exception.MomoException;
-import kr.momo.exception.code.AuthErrorCode;
+import java.util.Optional;
 import kr.momo.service.auth.JwtManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -38,24 +37,19 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     ) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         Cookie[] cookies = request.getCookies();
-        String token = getCookieValue(cookies);
-
-        if (token == null) {
-            throw new MomoException(AuthErrorCode.NOT_FOUND_TOKEN);
-        }
+        String token = getCookieValue(cookies).orElse("");
 
         return jwtManager.extract(token);
     }
 
-    private String getCookieValue(Cookie[] cookies) {
+    private Optional<String> getCookieValue(Cookie[] cookies) {
         if (cookies == null) {
-            return null;
+            return Optional.empty();
         }
 
         return Arrays.stream(cookies)
                 .filter(cookie -> ACCESS_TOKEN.equals(cookie.getName()))
                 .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }
