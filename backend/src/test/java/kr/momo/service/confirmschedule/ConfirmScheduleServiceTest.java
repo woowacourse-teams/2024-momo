@@ -155,7 +155,7 @@ class ConfirmScheduleServiceTest {
 
         assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(ConfirmedScheduleErrorCode.CONFIRMED_SCHEDULE_EXISTS.message());
+                .hasMessage(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE.message());
     }
 
     @DisplayName("약속애 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")

@@ -39,7 +39,7 @@ public class ConfirmScheduleService {
         validateHostPermission(attendee);
 
         if (confirmedScheduleRepository.existsByMeeting(meeting)) {
-            throw new MomoException(ConfirmedScheduleErrorCode.CONFIRMED_SCHEDULE_EXISTS);
+            throw new MomoException(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
         }
 
         validateMeetingLocked(meeting);
