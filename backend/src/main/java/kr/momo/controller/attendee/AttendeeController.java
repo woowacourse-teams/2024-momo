@@ -1,8 +1,10 @@
 package kr.momo.controller.attendee;
 
 import jakarta.validation.Valid;
+import kr.momo.controller.MomoApiResponse;
 import kr.momo.service.attendee.AttendeeService;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
+import kr.momo.service.attendee.dto.AttendeeLoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -22,22 +24,34 @@ public class AttendeeController {
     private final AttendeeService attendeeService;
 
     @PostMapping("/api/v1/meetings/{uuid}/login")
-    public ResponseEntity<Void> login(@PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request) {
-        String token = attendeeService.login(uuid, request);
-        String path = String.format("/api/v1/meetings/%s/", uuid);
-
+    public ResponseEntity<MomoApiResponse<String>> login(
+            @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
+    ) {
+        AttendeeLoginResponse response = attendeeService.login(uuid, request);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, createCookie(token, path))
+                .header(HttpHeaders.SET_COOKIE, createCookie(response.token(), uuid, -1))
+                .body(new MomoApiResponse<>(response.name()));
+    }
+
+    @PostMapping("/api/v1/meetings/{uuid}/logout")
+    public ResponseEntity<Void> logout(@PathVariable String uuid) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, createCookie("", uuid, 0))
                 .build();
     }
 
-    private String createCookie(String value, String path) {
+    private String createCookie(String value, String uuid, long maxAge) {
         return ResponseCookie.from(ACCESS_TOKEN, value)
                 .httpOnly(true)
                 .secure(true)
-                .path(path)
+                .path(buildPath(uuid))
                 .sameSite(SAME_SITE_SETTING)
+                .maxAge(maxAge)
                 .build()
                 .toString();
+    }
+
+    private String buildPath(String uuid) {
+        return String.format("/meeting/%s", uuid);
     }
 }

@@ -1,9 +1,11 @@
 package kr.momo.controller.attendee;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -20,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -43,7 +44,7 @@ class AttendeeControllerTest {
         RestAssured.port = port;
     }
 
-    @DisplayName("로그인에 성공하면 200 상태 코드와 토큰을 응답한다.")
+    @DisplayName("로그인에 성공하면 200 상태 코드를 응답한다.")
     @Test
     void login() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
@@ -51,14 +52,17 @@ class AttendeeControllerTest {
 
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
 
-        String token = RestAssured.given().log().all()
+        Response response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().cookie("ACCESS_TOKEN");
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid());
 
-        assertThat(jwtManager.extract(token)).isEqualTo(attendee.getId());
+        String token = response.cookie("ACCESS_TOKEN");
+        String hostName = response.jsonPath().getString("data");
+
+        assertAll(
+                () -> assertThat(jwtManager.extract(token)).isEqualTo(attendee.getId()),
+                () -> assertThat(hostName).isEqualTo(request.name())
+        );
     }
 }

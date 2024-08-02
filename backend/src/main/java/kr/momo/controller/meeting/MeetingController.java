@@ -6,6 +6,7 @@ import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingService;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
+import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,10 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @PostMapping("/api/v1/meetings")
-    public ResponseEntity<MomoApiResponse<MeetingSharingResponse>> create(
+    public ResponseEntity<MomoApiResponse<MeetingCreateResponse>> create(
             @RequestBody @Valid MeetingCreateRequest request
     ) {
-        MeetingSharingResponse response = meetingService.create(request);
+        MeetingCreateResponse response = meetingService.create(request);
         return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
                 .body(new MomoApiResponse<>(response));
     }
