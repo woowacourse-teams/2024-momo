@@ -22,4 +22,4 @@ logging:
 security:
   jwt:
     secret_key: ${random.value}"
-    expiration-period: 60000
+    expiration_period: 3600

@@ -22,3 +22,4 @@ spring:
 security:
   jwt:
     secret_key: ${random.value}"
+    expiration_period: 3600
