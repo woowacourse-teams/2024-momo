@@ -1,5 +1,7 @@
 package kr.momo.controller.schedule;
 
+import static kr.momo.service.schedule.ScheduleRecommender.EARLIEST_ORDER;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
@@ -146,10 +148,10 @@ class ScheduleControllerTest {
     void recommendSchedules() {
 
         RestAssured.given().log().all()
-                .pathParams("uuid", meeting.getUuid(), "recommendType", "earliest")
-                .queryParam("attendeeNames", attendee.name())
+                .pathParam("uuid", meeting.getUuid())
+                .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/recommend-schedules/{recommendType}")
+                .when().get("/api/v1/meetings/{uuid}/recommend-schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
