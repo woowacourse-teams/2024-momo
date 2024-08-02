@@ -93,6 +93,7 @@ class MeetingServiceTest {
     @Test
     void throwExceptionWhenDuplicatedDates() {
         //given
+        LocalDate today = LocalDate.of(2024, 7, 23);
         LocalDate date = LocalDate.of(2024, 7, 24);
         MeetingCreateRequest request = new MeetingCreateRequest(
                 "momoHost",
@@ -103,9 +104,29 @@ class MeetingServiceTest {
                 LocalTime.of(22, 0));
 
         //when //then
-        assertThatThrownBy(() -> meetingService.create(request))
+        assertThatThrownBy(() -> meetingService.create(request, today))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
+    }
+
+    @DisplayName("약속을 생성할 때 과거 날짜를 보내면 예외가 발생합니다.")
+    @Test
+    void throwExceptionWhenDatesHavePast() {
+        //given
+        LocalDate today = LocalDate.of(2024, 7, 23);
+        LocalDate yesterday = today.minusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(yesterday, today),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0));
+
+        //when //then
+        assertThatThrownBy(() -> meetingService.create(request, today))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_AVAILABLE_MEETING.message());
     }
 
     @DisplayName("약속을 잠그면 잠금 상태가 변경된다.")

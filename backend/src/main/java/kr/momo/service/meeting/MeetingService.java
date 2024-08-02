@@ -33,9 +33,9 @@ public class MeetingService {
     private final JwtManager jwtManager;
 
     @Transactional
-    public MeetingCreateResponse create(MeetingCreateRequest request) {
+    public MeetingCreateResponse create(MeetingCreateRequest request, LocalDate today) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        saveAvailableDates(request.meetingAvailableDates(), meeting);
+        saveAvailableDates(request.meetingAvailableDates(), meeting, today);
 
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());
@@ -48,8 +48,11 @@ public class MeetingService {
         return meetingRepository.save(meeting);
     }
 
-    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting) {
+    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
         AvailableDates availableDates = new AvailableDates(dates, meeting);
+        if (availableDates.isAllBefore(date)) {
+            throw new MomoException(MeetingErrorCode.NOT_AVAILABLE_MEETING);
+        }
         availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
@@ -62,7 +65,8 @@ public class MeetingService {
     public MeetingResponse findByUUID(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeetingOrderByDate(meeting));
+        AvailableDates availableDates = new AvailableDates(
+                availableDateRepository.findAllByMeetingOrderByDate(meeting));
         List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
 
         return MeetingResponse.of(meeting, availableDates, attendees);
