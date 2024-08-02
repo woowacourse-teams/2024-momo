@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttendeeController {
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+    private static final String SAME_SITE_SETTING = "None";
 
     private final AttendeeService attendeeService;
 
@@ -35,6 +36,7 @@ public class AttendeeController {
                 .httpOnly(true)
                 .secure(true)
                 .path(path)
+                .sameSite(SAME_SITE_SETTING)
                 .build()
                 .toString();
     }
