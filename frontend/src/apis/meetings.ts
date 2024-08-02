@@ -2,7 +2,7 @@ import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
 
-interface GetMeetingResponse {
+interface GetMeetingBaseResponse {
   meetingName: string;
   firstTime: string;
   lastTime: string;
@@ -41,7 +41,7 @@ export interface MeetingInfo {
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   const url = `${BASE_URL}/${uuid}`;
 
-  const data = await fetchClient<GetMeetingResponse>({
+  const data = await fetchClient<GetMeetingBaseResponse>({
     url,
     method: 'GET',
     errorMessage: '약속 정보를 조회하는 중 문제가 발생했어요 :(',
