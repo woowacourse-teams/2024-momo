@@ -14,6 +14,7 @@ import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
+import kr.momo.service.auth.JwtManager;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -29,13 +30,17 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
+    private final JwtManager jwtManager;
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         saveAvailableDates(request.meetingAvailableDates(), meeting);
-        return MeetingCreateResponse.from(meeting, attendee);
+
+        Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
+        String token = jwtManager.generate(attendee.getId());
+
+        return MeetingCreateResponse.from(meeting, attendee, token);
     }
 
     private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
