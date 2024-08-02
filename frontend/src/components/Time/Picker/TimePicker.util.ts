@@ -1,4 +1,4 @@
-import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/meeting';
+import type { MeetingAllSchedules, MeetingSingleSchedule } from '@apis/schedules';
 
 const generateTimeSlots = (start: string, end: string) => {
   const startHour = Number(start.split(':')[0]);
@@ -42,9 +42,11 @@ export const generateScheduleMatrix = ({
     if ('attendeeName' in meetingSchedules) {
       meetingSchedules.schedules.forEach(({ date, times }) => {
         const colIndex = availableDates.indexOf(date);
+
         if (colIndex !== -1) {
           times.forEach((time) => {
             const rowIndex = timeSlotIndex[time];
+
             if (rowIndex !== undefined) {
               scheduleMatrix[rowIndex][colIndex] = 1;
             }

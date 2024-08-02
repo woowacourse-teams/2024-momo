@@ -7,7 +7,7 @@ import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStatePro
 
 import Button from '@components/_common/Button';
 
-import { handleGetMeetingSchedules } from '@apis/getMeetingSchedules';
+import { handleGetMeetingSchedules } from '@apis/schedules';
 
 import { getCookie } from '@utils/cookies';
 

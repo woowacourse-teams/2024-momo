@@ -1,16 +1,23 @@
-import { API_URL } from '@constants/api';
+import { BASE_URL } from '@constants/api';
 
-export interface Schedules {
-  date: string;
-  times: string[];
+import { fetchClient } from './_common/fetchClient';
+
+interface GetMeetingBaseResponse {
+  meetingName: string;
+  firstTime: string;
+  lastTime: string;
+  isLocked: boolean;
+  availableDates: string[];
+  attendeeNames: string[];
 }
 
-export interface GetMeetingResponse {
+export interface MeetingBase {
   meetingName: string;
-  startTime: string;
-  endTime: string;
+  firstTime: string;
+  lastTime: string;
+  isLocked: boolean;
   availableDates: string[];
-  schedules: Schedules[];
+  attendeeNames: string[];
 }
 
 export interface MeetingRequest {
@@ -22,48 +29,43 @@ export interface MeetingRequest {
   meetingEndTime: string;
 }
 
-export interface PostMeetingResponse {
+interface PostMeetingResponse {
+  uuid: string;
+}
+
+export interface MeetingInfo {
   uuid: string;
 }
 
 // uuid 기본값은 임시 설정된 uuid
-const getMeeting = async (uuid: string): Promise<GetMeetingResponse> => {
-  const url = `${API_URL}/api/v1/meeting/${uuid}`;
+export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
+  const url = `${BASE_URL}/${uuid}`;
 
-  const response = await fetch(url, {
+  const data = await fetchClient<GetMeetingBaseResponse>({
+    url,
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    errorMessage: '약속 정보를 조회하는 중 문제가 발생했어요 :(',
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data.data;
+  return {
+    meetingName: data.meetingName,
+    isLocked: data.isLocked,
+    firstTime: data.firstTime,
+    lastTime: data.lastTime,
+    availableDates: data.availableDates,
+    attendeeNames: data.attendeeNames,
+  };
 };
 
-export default getMeeting;
-
-export const postMeeting = async (request: MeetingRequest): Promise<PostMeetingResponse> => {
-  const url = `${API_URL}/api/v1/meeting`;
-
-  const response = await fetch(url, {
+export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo> => {
+  const data = await fetchClient<PostMeetingResponse>({
+    url: BASE_URL,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    body: request,
+    errorMessage: '약속을 생성하는데 문제가 발생했어요 :(',
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data.data;
+  return {
+    uuid: data.uuid,
+  };
 };
