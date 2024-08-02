@@ -13,16 +13,16 @@ public class Attendees {
     private final List<Attendee> attendees;
 
     public Attendees(List<Attendee> attendees) {
-        validateDuplicatedDates(attendees);
+        validateUniqueNames(attendees);
         this.attendees = attendees;
     }
 
-    public void validateDuplicatedDates(List<Attendee> attendees) {
-        long distinctCount = attendees.stream()
+    private void validateUniqueNames(List<Attendee> attendees) {
+        long distinctNames = attendees.stream()
                 .map(Attendee::name)
                 .distinct()
                 .count();
-        if (attendees.size() != distinctCount) {
+        if (attendees.size() != distinctNames) {
             throw new MomoException(AttendeeErrorCode.DUPLICATED_ATTENDEE_NAME);
         }
     }
