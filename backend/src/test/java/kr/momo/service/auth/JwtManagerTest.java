@@ -3,13 +3,8 @@ package kr.momo.service.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.attendee.AttendeeName;
-import kr.momo.domain.attendee.AttendeePassword;
-import kr.momo.domain.attendee.Role;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AuthErrorCode;
-import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,19 +13,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class JwtManagerTest {
 
-    private final JwtManager jwtManager = new JwtManager("secretKey");
+    private final JwtManager jwtManager = new JwtManager("secretKey", 3600000);
 
     @DisplayName("참가자의 정보를 이용하여 jwt 토큰을 발행한다.")
     @Test
     void generate() {
-        AttendeeName name = new AttendeeName("attendee");
-        AttendeePassword password = new AttendeePassword("password");
-        Attendee attendee = new Attendee(1L, MeetingFixture.DINNER.create(), name, password, Role.GUEST);
+        String token = jwtManager.generate(1L);
 
-        String token = jwtManager.generate(attendee.getId());
         long attendeeId = jwtManager.extract(token);
 
-        assertThat(attendeeId).isEqualTo(attendee.getId());
+        assertThat(attendeeId).isEqualTo(1L);
     }
 
     @DisplayName("토큰이 null이거나 올바르지 않을 경우 예외를 발생시킨다.")
@@ -40,6 +32,17 @@ class JwtManagerTest {
     void throwExceptionForInvalidToken(String token) {
         assertThatThrownBy(() -> jwtManager.extract(token))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AuthErrorCode.INVALID_TOKEN.message());
+                .hasMessage(AuthErrorCode.UNAUTHORIZED_TOKEN.message());
+    }
+
+    @DisplayName("만료된 토큰일 경우 예외를 발생시킨다.")
+    @Test
+    void throwExceptionWhenTokenIsExpired() {
+        JwtManager jwtManager = new JwtManager("secretKey", 1);
+        String token = jwtManager.generate(1L);
+
+        assertThatThrownBy(() -> jwtManager.extract(token))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AuthErrorCode.UNAUTHORIZED_TOKEN.message());
     }
 }

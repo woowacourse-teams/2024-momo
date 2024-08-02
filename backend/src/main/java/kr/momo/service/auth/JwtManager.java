@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.util.Date;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AuthErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,20 @@ public class JwtManager {
     private static final String CLAIM_ID = "id";
 
     private final String secretKey;
+    private final long expirationPeriod;
 
-    public JwtManager(@Value("${security.jwt.secret_key}") String secretKey) {
+    public JwtManager(@Value("${security.jwt.secret_key}") String secretKey,
+                      @Value("${security.jwt.expiration-period}") long expirationPeriod) {
         this.secretKey = secretKey;
+        this.expirationPeriod = expirationPeriod;
     }
 
     public String generate(long id) {
+        Date expirationDate = new Date(System.currentTimeMillis() + expirationPeriod);
         return JWT.create()
                 .withClaim(CLAIM_ID, id)
+                .withIssuedAt(new Date())
+                .withExpiresAt(expirationDate)
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
@@ -44,16 +51,16 @@ public class JwtManager {
             return verifier.verify(token);
         } catch (InvalidClaimException e) {
             log.warn("토큰 내 클레임이 유효하지 않습니다. {} ", e.getMessage());
-            throw new MomoException(AuthErrorCode.INVALID_TOKEN);
+            throw new MomoException(AuthErrorCode.UNAUTHORIZED_TOKEN);
         } catch (JWTDecodeException e) {
             log.warn("JWT 토큰 구성이 올바르지 않습니다. {} ", e.getMessage());
-            throw new MomoException(AuthErrorCode.INVALID_TOKEN);
+            throw new MomoException(AuthErrorCode.UNAUTHORIZED_TOKEN);
         } catch (SignatureVerificationException e) {
             log.warn("토큰의 서명이 알고리즘을 사용하여 검증했을 때 유효하지 않습니다. {} ", e.getMessage());
-            throw new MomoException(AuthErrorCode.INVALID_TOKEN);
+            throw new MomoException(AuthErrorCode.UNAUTHORIZED_TOKEN);
         } catch (JWTVerificationException e) {
             log.warn("토큰 검증 과정에서 예기치 못한 에러가 발생하였습니다. {} ", e.getMessage());
-            throw new MomoException(AuthErrorCode.INVALID_TOKEN);
+            throw new MomoException(AuthErrorCode.UNAUTHORIZED_TOKEN);
         }
     }
 }
