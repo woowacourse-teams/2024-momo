@@ -35,6 +35,7 @@ public class AttendeeController {
                 .httpOnly(true)
                 .secure(true)
                 .path(path)
+                .sameSite("None")
                 .build()
                 .toString();
     }
