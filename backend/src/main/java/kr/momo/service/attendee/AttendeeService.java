@@ -39,12 +39,12 @@ public class AttendeeService {
 
     private AttendeeLoginResponse verifyPassword(Attendee attendee, AttendeePassword password) {
         attendee.verifyPassword(password);
-        return new AttendeeLoginResponse(jwtManager.generate(attendee.getId()), attendee.name());
+        return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 
     private AttendeeLoginResponse signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
-        return new AttendeeLoginResponse(jwtManager.generate(attendee.getId()), name.getName());
+        return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 }
