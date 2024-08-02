@@ -17,6 +17,7 @@ import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -142,5 +143,115 @@ class MeetingControllerTest {
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 잠그면 200 OK를 반환한다.")
+    @Test
+    void lock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .when().patch("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("존재하지 않는 약속을 잠금 시도하면 404 Not Found를 반환한다.")
+    @Test
+    void lockWithInvalidUUID() {
+        String invalidUUID = "INVALID_UUID";
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", invalidUUID)
+                .when().patch("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("약속을 잠글 때 호스트 권한이 없다면 403을 반환한다.")
+    @Test
+    void lockWithNoPermission() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .when().patch("/api/v1/meetings/{uuid}/lock")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @DisplayName("약속을 잠금을 해제하면 200 OK를 반환한다.")
+    @Test
+    void unlock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .when().patch("/api/v1/meetings/{uuid}/unlock")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("존재하지 않는 약속을 잠금 해제 시도하면 400 Bad Request를 반환한다.")
+    @Test
+    void unlockWithInvalidUUID() {
+        String invalidUUID = "INVALID_UUID";
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", invalidUUID)
+                .when().patch("/api/v1/meetings/{uuid}/unlock")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 잠금을 해제할 때 호스트 권한이 없다면 403을 반환한다.")
+    @Test
+    void unlockWithNoPermission() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String token = getToken(attendee, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .contentType(ContentType.JSON)
+                .pathParam("uuid", meeting.getUuid())
+                .when().patch("/api/v1/meetings/{uuid}/unlock")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    private String getToken(Attendee attendee, Meeting meeting) {
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().cookie("ACCESS_TOKEN");
     }
 }

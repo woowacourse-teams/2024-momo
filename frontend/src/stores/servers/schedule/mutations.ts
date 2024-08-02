@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { postSchedule } from '@apis/postSchedule';
+import { postSchedule } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 

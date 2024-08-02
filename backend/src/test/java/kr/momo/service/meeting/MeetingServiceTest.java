@@ -2,7 +2,7 @@ package kr.momo.service.meeting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,6 +14,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
+import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.AvailableDateErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
@@ -56,13 +57,14 @@ class MeetingServiceTest {
 
         MeetingResponse response = meetingService.findByUUID(meeting.getUuid());
 
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime());
-            softAssertions.assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime());
-            softAssertions.assertThat(response.meetingName()).isEqualTo(meeting.getName());
-            softAssertions.assertThat(response.availableDates().size()).isEqualTo(availableDates.size());
-            softAssertions.assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()));
-        });
+        assertAll(
+                () -> assertThat(response.firstTime()).isEqualTo(meeting.startTimeslotTime()),
+                () -> assertThat(response.lastTime()).isEqualTo(meeting.endTimeslotTime()),
+                () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
+                () -> assertThat(response.isLocked()).isFalse(),
+                () -> assertThat(response.availableDates()).hasSize(availableDates.size()),
+                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()))
+        );
     }
 
     @DisplayName("생성 완료된 약속의 정보를 조회한다.")
@@ -104,5 +106,105 @@ class MeetingServiceTest {
         assertThatThrownBy(() -> meetingService.create(request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
+    }
+
+    @DisplayName("약속을 잠그면 잠금 상태가 변경된다.")
+    @Test
+    void lock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+
+        meetingService.lock(meeting.getUuid(), attendee.getId());
+        Meeting changedMeeting = meetingRepository.findById(meeting.getId()).orElseThrow();
+
+        assertThat(changedMeeting.isLocked()).isTrue();
+    }
+
+    @DisplayName("약속을 잠글 때 약속을 조회할 수 없다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenNoMeeting() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = "";
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.lock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_FOUND_MEETING.message());
+    }
+
+    @DisplayName("약속을 잠글 때 참가자가 존재하지 않다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenNoAttendee() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        String uuid = meeting.getUuid();
+        long id = 1L;
+
+        assertThatThrownBy(() -> meetingService.lock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.NOT_FOUND_ATTENDEE.message());
+    }
+
+    @DisplayName("약속을 잠글 때 로그인된 참가자가 호스트가 아니면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenAttendeeGuest() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = meeting.getUuid();
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.lock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
+
+    @DisplayName("약속 잠금을 해제하면 잠금 상태가 변경된다.")
+    @Test
+    void unlock() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+
+        meetingService.unlock(meeting.getUuid(), attendee.getId());
+        Meeting changedMeeting = meetingRepository.findById(meeting.getId()).orElseThrow();
+
+        assertThat(changedMeeting.isLocked()).isFalse();
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 약속을 조회할 수 없다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockNoMeeting() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = "";
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.INVALID_UUID.message());
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 참가자가 존재하지 않다면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockNoAttendee() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        String uuid = meeting.getUuid();
+        long id = 1L;
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
+    }
+
+    @DisplayName("약속 잠금을 해제할 때 로그인된 참가자가 호스트가 아니면 예외가 발생한다.")
+    @Test
+    void throwsExceptionWhenUnlockAttendeeGuest() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        String uuid = meeting.getUuid();
+        long id = attendee.getId();
+
+        assertThatThrownBy(() -> meetingService.unlock(uuid, id))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
     }
 }

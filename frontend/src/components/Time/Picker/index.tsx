@@ -1,13 +1,14 @@
 import { css } from '@emotion/react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import type { MeetingSingleSchedule } from 'types/meeting';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import Button from '@components/_common/Button';
 
 import useTimePick from '@hooks/useTimePick/useTimePick';
+
+import type { MeetingSingleSchedule } from '@apis/schedules';
 
 import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
 

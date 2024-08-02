@@ -57,7 +57,7 @@ export const s_tabButton = (isSelected: boolean) => css`
   ${isSelected
     ? css`
         color: #fff;
-        background-color: ${theme.color.primary};
+        background-color: ${theme.colors.primary};
       `
     : css`
         color: #6d7580;

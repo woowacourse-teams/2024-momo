@@ -1,28 +1,11 @@
 import '@emotion/react';
 
+import type { SEMANTIC_COLORS } from '@styles/tokens/colors';
+import type TYPOGRAPHY from '@styles/tokens/typographys';
+
 declare module '@emotion/react' {
   export interface Theme {
-    color: {
-      primary: string;
-      holiday: string;
-      primaryUnselected: string;
-    };
-    linear: {
-      selectedTime: string;
-    };
-    fontWeight: {
-      light: number;
-      normal: number;
-      medium: number;
-      bold: number;
-      extraBold: number;
-    };
-    fontSize: {
-      xs: string;
-      small: string;
-      medium: string;
-      large: string;
-      xl: string;
-    };
+    colors: typeof SEMANTIC_COLORS;
+    typography: typeof TYPOGRAPHY;
   }
 }

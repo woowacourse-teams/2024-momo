@@ -12,6 +12,7 @@ import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
+import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -66,5 +67,31 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         return MeetingSharingResponse.from(meeting);
+    }
+
+    @Transactional
+    public void lock(String uuid, long id) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(id, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
+        validateHostPermission(attendee);
+        meeting.lock();
+    }
+
+    private void validateHostPermission(Attendee attendee) {
+        if (!attendee.isHost()) {
+            throw new MomoException(AttendeeErrorCode.ACCESS_DENIED);
+        }
+    }
+
+    @Transactional
+    public void unlock(String uuid, long id) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(id, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
+        validateHostPermission(attendee);
+        meeting.unlock();
     }
 }

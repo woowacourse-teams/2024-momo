@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { getMeetingMySchedule } from '@apis/getMeetingSchedules';
+import { getMeetingMySchedule } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
@@ -26,14 +26,15 @@ export default function TimePickerContainer({
     staleTime: 0,
   });
 
-  if (!meetingSchedules) return null;
-
   return (
-    <TimePicker
-      firstTime={firstTime}
-      lastTime={lastTime}
-      availableDates={availableDates}
-      meetingSchedules={meetingSchedules}
-    />
+    meetingSchedules &&
+    meetingSchedules.attendeeName !== '' && (
+      <TimePicker
+        firstTime={firstTime}
+        lastTime={lastTime}
+        availableDates={availableDates}
+        meetingSchedules={meetingSchedules}
+      />
+    )
   );
 }

@@ -74,7 +74,7 @@ class ScheduleControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+                .extract().cookie("ACCESS_TOKEN");
 
         List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
         List<DateTimesCreateRequest> dateTimes = List.of(
@@ -85,7 +85,7 @@ class ScheduleControllerTest {
         ScheduleCreateRequest scheduleCreateRequest = new ScheduleCreateRequest(attendee.name(), dateTimes);
 
         RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
+                .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(scheduleCreateRequest)
@@ -130,10 +130,10 @@ class ScheduleControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getString("data.token");
+                .extract().cookie("ACCESS_TOKEN");
 
         RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
+                .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meetings/{uuid}/attendees/me/schedules")
