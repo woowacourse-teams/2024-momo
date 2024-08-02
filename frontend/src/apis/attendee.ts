@@ -18,8 +18,10 @@ interface AttendeeLogin {
   token: string;
 }
 
-const postAttendeeLogin = async (props: PostAttendeeLoginRequest): Promise<AttendeeLogin> => {
-  const { uuid, request } = props;
+const postAttendeeLogin = async ({
+  uuid,
+  request,
+}: PostAttendeeLoginRequest): Promise<AttendeeLogin> => {
   const url = `${BASE_URL}/${uuid}/login`;
 
   const data = await fetchClient<PostAttendeeLoginResponse>({
@@ -30,7 +32,7 @@ const postAttendeeLogin = async (props: PostAttendeeLoginRequest): Promise<Atten
   });
 
   return {
-    token: data?.token,
+    token: data.token,
   };
 };
 
