@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 
+import theme from '@styles/theme';
+
 export const s_calendarContainer = css`
   display: flex;
   flex-direction: column;
@@ -67,7 +69,7 @@ export const s_daySlotButton = css`
 export const s_daySlot = (isHoliday: boolean) => css`
   cursor: pointer;
   font-size: 1.5rem;
-  color: ${isHoliday ? 'red' : '#000'};
+  color: ${isHoliday ? theme.colors.holiday : theme.colors.black};
 `;
 
 export const s_selectedDaySlot = (isSelected: boolean) => css`
