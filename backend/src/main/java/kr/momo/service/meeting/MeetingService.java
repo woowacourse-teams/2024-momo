@@ -15,6 +15,7 @@ import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
+import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,11 @@ public class MeetingService {
     private final AttendeeRepository attendeeRepository;
 
     @Transactional
-    public MeetingSharingResponse create(MeetingCreateRequest request) {
+    public MeetingCreateResponse create(MeetingCreateRequest request) {
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
+        Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         saveAvailableDates(request.meetingAvailableDates(), meeting);
-        saveHostAttendee(meeting, request.hostName(), request.hostPassword());
-        return MeetingSharingResponse.from(meeting);
+        return MeetingCreateResponse.from(meeting, attendee);
     }
 
     private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
@@ -47,9 +48,9 @@ public class MeetingService {
         availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
-    private void saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
+    private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
         Attendee attendee = new Attendee(meeting, hostName, hostPassword, Role.HOST);
-        attendeeRepository.save(attendee);
+        return attendeeRepository.save(attendee);
     }
 
     @Transactional(readOnly = true)
