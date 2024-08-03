@@ -4,14 +4,14 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtCookieManager {
+public class CookieManager {
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String SAME_SITE_SETTING = "None";
     private static final long EXPIRED_COOKIE_AGE = 0;
 
-    public String createNewCookie(String token, String uuid, long maxAge) {
-        return createCookie(token, buildPath(uuid), maxAge);
+    public String createNewCookie(String value, String uuid, long maxAge) {
+        return createCookie(value, buildPath(uuid), maxAge);
     }
 
     public String createExpiredCookie(String uuid) {

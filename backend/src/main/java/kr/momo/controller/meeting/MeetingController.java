@@ -2,7 +2,7 @@ package kr.momo.controller.meeting;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import kr.momo.controller.JwtCookieManager;
+import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingService;
@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeetingController {
 
     private final MeetingService meetingService;
-    private final JwtCookieManager jwtCookieManager;
+    private final CookieManager cookieManager;
 
     @PostMapping("/api/v1/meetings")
     public ResponseEntity<MomoApiResponse<MeetingCreateResponse>> create(
             @RequestBody @Valid MeetingCreateRequest request
     ) {
         MeetingCreateResponse response = meetingService.create(request);
-        String cookie = jwtCookieManager.createNewCookie(response.token(), response.uuid(), -1);
+        String cookie = cookieManager.createNewCookie(response.token(), response.uuid(), -1);
 
         return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
                 .header(HttpHeaders.SET_COOKIE, cookie)

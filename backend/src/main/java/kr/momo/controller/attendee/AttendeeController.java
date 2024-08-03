@@ -1,7 +1,7 @@
 package kr.momo.controller.attendee;
 
 import jakarta.validation.Valid;
-import kr.momo.controller.JwtCookieManager;
+import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.service.attendee.AttendeeService;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
@@ -21,14 +21,14 @@ public class AttendeeController {
     private static final long SESSION_COOKIE_AGE = -1;
 
     private final AttendeeService attendeeService;
-    private final JwtCookieManager jwtCookieManager;
+    private final CookieManager cookieManager;
 
     @PostMapping("/api/v1/meetings/{uuid}/login")
     public ResponseEntity<MomoApiResponse<String>> login(
             @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
     ) {
         AttendeeLoginResponse response = attendeeService.login(uuid, request);
-        String cookie = jwtCookieManager.createNewCookie(response.token(), uuid, SESSION_COOKIE_AGE);
+        String cookie = cookieManager.createNewCookie(response.token(), uuid, SESSION_COOKIE_AGE);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie)
@@ -37,7 +37,7 @@ public class AttendeeController {
 
     @PostMapping("/api/v1/meetings/{uuid}/logout")
     public ResponseEntity<Void> logout(@PathVariable String uuid) {
-        String cookie = jwtCookieManager.createExpiredCookie(uuid);
+        String cookie = cookieManager.createExpiredCookie(uuid);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie)
