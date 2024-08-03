@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import Button from '@components/_common/Button';
 
 import { handleGetMeetingSchedules } from '@apis/schedules';
 
@@ -120,7 +119,7 @@ export default function TimeViewer({
       </table>
 
       <div css={s_buttonContainer}>
-        <Button text="수정하기" onClick={handleScheduleUpdate} />
+        <button onClick={handleScheduleUpdate}>수정하기</button>
       </div>
     </div>
   );
