@@ -1,28 +1,66 @@
+import type { CSSObject } from '@emotion/react';
 import { css } from '@emotion/react';
+import type { CSSProperties } from 'react';
 
 import theme from '@styles/theme';
 
-export const s_button = css`
+import type { ButtonSize } from '.';
+
+interface Typography extends CSSObject {
+  fontSize: string;
+  fontWeight: CSSProperties['fontWeight'];
+}
+
+interface Size {
+  width?: string;
+  height: string;
+  typography: Typography;
+}
+
+const buttonSize: Record<ButtonSize, Size> = {
+  xs: { height: '2.4rem', typography: theme.typography.captionBold },
+  s: { height: '2.4rem', typography: theme.typography.captionBold },
+  m: { height: '3.6rem', typography: theme.typography.bodyBold },
+  full: { width: '100%', height: '3.6rem', typography: theme.typography.bodyBold },
+};
+
+export const s_baseButton = (borderRadius: number | string) => css`
   display: flex;
   align-items: center;
   justify-content: center;
 
   box-sizing: border-box;
-  width: 12rem;
-  height: 4rem;
-  padding: 0.4rem 3rem;
+  padding: 0.4rem;
 
-  font-weight: 700;
+  border-radius: ${borderRadius};
+`;
+
+export const s_size = (size: ButtonSize) => css`
+  ${buttonSize[size].typography}
+  width: ${buttonSize[size].width};
+  height: ${buttonSize[size].height};
+`;
+
+export const s_primary = css`
+  color: ${theme.colors.white};
+  background-color: ${theme.colors.primary};
+  border: none;
+
+  &:hover {
+    color: ${theme.colors.primary};
+    background-color: ${theme.colors.white};
+    border: 1px solid ${theme.colors.primary};
+  }
+`;
+
+export const s_secondary = css`
   color: ${theme.colors.primary};
-
-  background: #fff;
+  background-color: ${theme.colors.white};
   border: 1px solid ${theme.colors.primary};
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgb(0 0 0 / 20%);
 
   &:hover {
     color: ${theme.colors.white};
-    background: ${theme.colors.primary};
+    background-color: ${theme.colors.primary};
     border: none;
   }
 `;
