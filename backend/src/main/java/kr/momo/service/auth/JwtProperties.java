@@ -18,6 +18,7 @@ public class JwtProperties {
     @NotNull
     private final String secretKey;
 
+    @NotNull
     @DurationUnit(ChronoUnit.HOURS)
     private final Duration expirationPeriod;
 
