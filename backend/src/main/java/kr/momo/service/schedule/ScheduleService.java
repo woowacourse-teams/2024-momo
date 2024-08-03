@@ -178,6 +178,6 @@ public class ScheduleService {
     private boolean isDiscontinuousDateTime(
             LocalDateTime now, LocalDateTime next, AttendeeGroup nowAttendeeGroup, AttendeeGroup nextAttendeeGroup
     ) {
-        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.isSameGroup(nextAttendeeGroup));
+        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.equals(nextAttendeeGroup));
     }
 }
