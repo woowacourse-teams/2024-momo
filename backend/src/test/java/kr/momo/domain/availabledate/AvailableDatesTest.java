@@ -82,7 +82,7 @@ class AvailableDatesTest {
     @DisplayName("가능한 시간 목록 중 하나라도 비교군보다 이전 시간인지 판단한다.")
     @ParameterizedTest
     @CsvSource(value = {"-3,-2,-1,true", "-2,-1,0,true", "-1,0,1,true", "0,1,2,false", "1,2,3,false"})
-    void isAllBefore(int plusDays1, int plusDays2, int plusDays3, boolean expected) {
+    void isAnyBefore(int plusDays1, int plusDays2, int plusDays3, boolean expected) {
         LocalDate today = LocalDate.now();
         LocalDate firstDay = today.plusDays(plusDays1);
         LocalDate secondDay = today.plusDays(plusDays2);
@@ -94,7 +94,7 @@ class AvailableDatesTest {
                 new AvailableDate(thirdDay, meeting)
         ));
 
-        boolean result = availableDates.isAllBefore(today);
+        boolean result = availableDates.isAnyBefore(today);
 
         assertThat(result).isEqualTo(expected);
     }

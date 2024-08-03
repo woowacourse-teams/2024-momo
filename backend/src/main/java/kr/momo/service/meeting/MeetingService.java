@@ -50,7 +50,7 @@ public class MeetingService {
 
     private void saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
         AvailableDates availableDates = new AvailableDates(dates, meeting);
-        if (availableDates.isAllBefore(date)) {
+        if (availableDates.isAnyBefore(date)) {
             throw new MomoException(MeetingErrorCode.NOT_AVAILABLE_MEETING);
         }
         availableDateRepository.saveAll(availableDates.getAvailableDates());

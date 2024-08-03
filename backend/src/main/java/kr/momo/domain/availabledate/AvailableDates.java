@@ -32,7 +32,7 @@ public class AvailableDates {
         }
     }
 
-    public boolean isAllBefore(LocalDate other) {
+    public boolean isAnyBefore(LocalDate other) {
         return availableDates.stream()
                 .anyMatch(date -> date.isBefore(other));
     }
