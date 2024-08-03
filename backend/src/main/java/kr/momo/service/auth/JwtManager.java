@@ -24,8 +24,10 @@ public class JwtManager {
     private final String secretKey;
     private final long expirationPeriod;
 
-    public JwtManager(@Value("${security.jwt.secret_key}") String secretKey,
-                      @Value("${security.jwt.expiration_period}") long expirationPeriod) {
+    public JwtManager(
+            @Value("${security.jwt.secret_key}") String secretKey,
+            @Value("${security.jwt.expiration_period}") long expirationPeriod
+    ) {
         this.secretKey = secretKey;
         this.expirationPeriod = expirationPeriod;
     }
