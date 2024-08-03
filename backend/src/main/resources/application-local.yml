@@ -3,6 +3,8 @@ spring:
     activate.on-profile: local
     import:
       - classpath:datasource.yml
+      - classpath:security/cors.yml
+
   jpa:
     hibernate:
       ddl-auto: create

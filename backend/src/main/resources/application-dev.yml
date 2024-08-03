@@ -4,6 +4,7 @@ spring:
     import:
       - ${SECURITY_PATH:classpath:security}/datasource-dev.yml
       - ${SECURITY_PATH:classpath:security}/jwt.yml
+      - ${SECURITY_PATH:classpath:security}/cors.yml
   jpa:
     hibernate:
       ddl-auto: update
