@@ -134,7 +134,7 @@ public class ScheduleService {
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
 
-        return SchedulesRecommendResponse.from(attendeeGroup, recommendResponse);
+        return SchedulesRecommendResponse.of(attendeeGroup, recommendResponse);
     }
 
     private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {
@@ -143,7 +143,9 @@ public class ScheduleService {
         }
 
         Map<LocalDateTime, AttendeeGroup> attendeeByDateTime = groupAttendeeByDateTime(schedules);
-        List<LocalDateTime> sortedDateTimes = attendeeByDateTime.keySet().stream().sorted().toList();
+        List<LocalDateTime> sortedDateTimes = attendeeByDateTime.keySet().stream()
+                .sorted().
+                toList();
 
         LocalDateTime startTime = sortedDateTimes.get(0);
         AttendeeGroup startNames = attendeeByDateTime.get(startTime);
@@ -156,14 +158,14 @@ public class ScheduleService {
             LocalDateTime next = sortedDateTimes.get(i);
             AttendeeGroup nextNames = attendeeByDateTime.get(next);
             if (isDiscontinuousDateTime(now, next, nowNames, nextNames)) {
-                responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
+                responses.add(ScheduleRecommendResponse.of(startTime, now, startNames));
                 startTime = next;
                 startNames = nextNames;
             }
             now = next;
             nowNames = nextNames;
         }
-        responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
+        responses.add(ScheduleRecommendResponse.of(startTime, now, startNames));
         return responses;
     }
 

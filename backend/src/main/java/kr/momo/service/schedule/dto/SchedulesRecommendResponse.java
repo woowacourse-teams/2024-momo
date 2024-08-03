@@ -8,7 +8,7 @@ public record SchedulesRecommendResponse(
         List<String> attendeeNames, List<ScheduleRecommendResponse> recommendSchedules
 ) {
 
-    public static SchedulesRecommendResponse from(
+    public static SchedulesRecommendResponse of(
             AttendeeGroup attendeeGroup, List<ScheduleRecommendResponse> recommendSchedules
     ) {
         List<String> attendeeNames = attendeeGroup.getAttendees().stream()
