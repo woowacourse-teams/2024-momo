@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AttendeeController {
 
-    private static final long SESSION_COOKIE_AGE = -1;
-
     private final AttendeeService attendeeService;
     private final CookieManager cookieManager;
 
@@ -28,7 +26,8 @@ public class AttendeeController {
             @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
     ) {
         AttendeeLoginResponse response = attendeeService.login(uuid, request);
-        String cookie = cookieManager.createNewCookie(response.token(), uuid, SESSION_COOKIE_AGE);
+        String path = String.format("/meeting/%s", uuid);
+        String cookie = cookieManager.createNewCookie(response.token(), path);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie)

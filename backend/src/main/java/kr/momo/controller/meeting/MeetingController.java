@@ -32,7 +32,8 @@ public class MeetingController {
             @RequestBody @Valid MeetingCreateRequest request
     ) {
         MeetingCreateResponse response = meetingService.create(request);
-        String cookie = cookieManager.createNewCookie(response.token(), response.uuid(), -1);
+        String path = String.format("/meeting/%s", response.uuid());
+        String cookie = cookieManager.createNewCookie(response.token(), path);
 
         return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
                 .header(HttpHeaders.SET_COOKIE, cookie)
