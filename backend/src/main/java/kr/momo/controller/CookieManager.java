@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class CookieManager {
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    private static final String SAME_SITE_SETTING = "None";
+    private static final String SAME_SITE_OPTION = "None";
     private static final long EXPIRED_COOKIE_AGE = 0;
 
     public String createNewCookie(String value, String uuid, long maxAge) {
@@ -23,7 +23,7 @@ public class CookieManager {
                 .httpOnly(true)
                 .secure(true)
                 .path(path)
-                .sameSite(SAME_SITE_SETTING)
+                .sameSite(SAME_SITE_OPTION)
                 .maxAge(maxAge)
                 .build()
                 .toString();
