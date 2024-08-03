@@ -8,14 +8,14 @@ public class JwtCookieManager {
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String SAME_SITE_SETTING = "None";
-    private static final long EXPIRED_AGE = 0;
+    private static final long EXPIRED_COOKIE_AGE = 0;
 
     public String createNewCookie(String token, String uuid, long maxAge) {
         return createCookie(token, buildPath(uuid), maxAge);
     }
 
     public String createExpiredCookie(String uuid) {
-        return createCookie("", buildPath(uuid), EXPIRED_AGE);
+        return createCookie("", buildPath(uuid), EXPIRED_COOKIE_AGE);
     }
 
     private String createCookie(String value, String path, long maxAge) {
