@@ -1,5 +1,6 @@
 package kr.momo.domain.attendee;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,13 +19,15 @@ public class Attendees {
     }
 
     private void validateUniqueNames(List<Attendee> attendees) {
-        long distinctNames = attendees.stream()
-                .map(Attendee::name)
-                .distinct()
-                .count();
-        if (attendees.size() != distinctNames) {
+        if (isNotUnique(attendees)) {
             throw new MomoException(AttendeeErrorCode.DUPLICATED_ATTENDEE_NAME);
         }
+    }
+
+    private boolean isNotUnique(List<Attendee> attendees) {
+        return !attendees.stream()
+                .map(Attendee::name)
+                .allMatch(new HashSet<>()::add);
     }
 
     public boolean isSameGroup(Attendees others) {
@@ -45,5 +48,4 @@ public class Attendees {
                 .toList();
         return new Attendees(filteredAttendee);
     }
-
 }
