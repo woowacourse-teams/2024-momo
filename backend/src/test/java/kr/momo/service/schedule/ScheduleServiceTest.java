@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
+import kr.momo.domain.attendee.Attendees;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -32,7 +33,6 @@ import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -241,36 +241,36 @@ class ScheduleServiceTest {
                 movieMeeting.getUuid(), "longTerm", List.of(a.name(), b.name())
         );
 
-        Assertions.assertThat(responses.recommendSchedules()).containsExactly(
+        assertThat(responses.recommendSchedules()).containsExactly(
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        List.of(b.name())
+                        new Attendees(List.of(b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
-                        List.of(a.name())
+                        new Attendees(List.of(a))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        List.of(a.name())
+                        new Attendees(List.of(a))
                 )
         );
     }
@@ -293,36 +293,36 @@ class ScheduleServiceTest {
                 movieMeeting.getUuid(), "earliest", List.of(a.name(), b.name())
         );
 
-        Assertions.assertThat(responses.recommendSchedules()).containsExactly(
+        assertThat(responses.recommendSchedules()).containsExactly(
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        List.of(a.name(), b.name())
+                        new Attendees(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        List.of(b.name())
+                        new Attendees(List.of(b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
-                        List.of(a.name())
+                        new Attendees(List.of(a))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        List.of(a.name())
+                        new Attendees(List.of(a))
                 )
         );
     }
@@ -339,7 +339,6 @@ class ScheduleServiceTest {
      * 1:30-3:00 : attendee1, attendee2
      * 5:00-5:30 : attendee1
      */
-
     private List<Schedule> addSchedule(
             Attendee attendee1, Attendee attendee2, AvailableDate date1, AvailableDate date2
     ) {

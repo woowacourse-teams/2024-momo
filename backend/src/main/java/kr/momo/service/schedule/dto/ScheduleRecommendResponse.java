@@ -16,33 +16,20 @@ public record ScheduleRecommendResponse(
         String dayOfWeek,
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
-        List<String> attendeeNames) {
+        List<String> attendeeNames
+) {
 
-    public static ScheduleRecommendResponse from(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            List<String> attendeeNames) {
-
-        return new ScheduleRecommendResponse(
-                startTime.toLocalDate(),
-                startTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
-                startTime.toLocalTime(),
-                endTime.toLocalTime().plusMinutes(30),
-                attendeeNames
-        );
-    }
-
-    public static ScheduleRecommendResponse from(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            Attendees attendees) {
+    public static ScheduleRecommendResponse from(LocalDateTime startTime, LocalDateTime endTime, Attendees attendees) {
+        List<String> attendeeNames = attendees.getAttendees().stream()
+                .map(Attendee::name)
+                .toList();
 
         return new ScheduleRecommendResponse(
                 startTime.toLocalDate(),
                 startTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
                 startTime.toLocalTime(),
                 endTime.toLocalTime(),
-                attendees.getAttendees().stream().map(Attendee::name).toList()
+                attendeeNames
         );
     }
 }

@@ -9,9 +9,12 @@ public record SchedulesRecommendResponse(
 ) {
 
     public static SchedulesRecommendResponse from(
-            Attendees attendees, List<ScheduleRecommendResponse> recommendSchedules) {
-        return new SchedulesRecommendResponse(
-                attendees.getAttendees().stream().map(Attendee::name).toList(), recommendSchedules
-        );
+            Attendees attendees, List<ScheduleRecommendResponse> recommendSchedules
+    ) {
+        List<String> attendeeNames = attendees.getAttendees().stream()
+                .map(Attendee::name)
+                .toList();
+
+        return new SchedulesRecommendResponse(attendeeNames , recommendSchedules);
     }
 }

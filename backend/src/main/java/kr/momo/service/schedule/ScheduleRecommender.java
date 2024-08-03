@@ -44,6 +44,4 @@ public enum ScheduleRecommender {
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
-
-
 }
