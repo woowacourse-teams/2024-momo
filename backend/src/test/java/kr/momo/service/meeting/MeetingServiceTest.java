@@ -140,7 +140,7 @@ class MeetingServiceTest {
         //when //then
         assertThatThrownBy(() -> meetingService.create(request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.NOT_AVAILABLE_MEETING.message());
+                .hasMessage(MeetingErrorCode.PAST_NOT_PERMITTED.message());
     }
 
     @DisplayName("약속을 잠그면 잠금 상태가 변경된다.")

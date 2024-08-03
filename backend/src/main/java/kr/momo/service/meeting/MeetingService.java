@@ -54,7 +54,7 @@ public class MeetingService {
     private void saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
         AvailableDates availableDates = new AvailableDates(dates, meeting);
         if (availableDates.isAnyBefore(date)) {
-            throw new MomoException(MeetingErrorCode.NOT_AVAILABLE_MEETING);
+            throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
         }
         availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
