@@ -3,8 +3,10 @@ package kr.momo.service.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Duration;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AuthErrorCode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +15,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class JwtManagerTest {
 
-    private final JwtManager jwtManager = new JwtManager("secretKey", 3600000);
+    private JwtManager jwtManager;
+
+    @BeforeEach
+    void setUp() {
+        JwtProperties jwtProperties = new JwtProperties("secretKey", Duration.ofMinutes(10));
+        jwtManager = new JwtManager(jwtProperties);
+    }
 
     @DisplayName("참가자의 정보를 이용하여 jwt 토큰을 발행한다.")
     @Test
@@ -38,7 +46,8 @@ class JwtManagerTest {
     @DisplayName("만료된 토큰일 경우 예외를 발생시킨다.")
     @Test
     void throwExceptionWhenTokenIsExpired() {
-        JwtManager jwtManager = new JwtManager("secretKey", 1);
+        JwtProperties jwtProperties = new JwtProperties("secretKey", Duration.ofMillis(1));
+        JwtManager jwtManager = new JwtManager(jwtProperties);
         String token = jwtManager.generate(1L);
 
         assertThatThrownBy(() -> jwtManager.extract(token))

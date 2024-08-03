@@ -11,34 +11,25 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AuthErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtManager {
 
     private static final String CLAIM_ID = "id";
 
-    private final String secretKey;
-    private final long expirationPeriod;
-
-    public JwtManager(
-            @Value("${security.jwt.secret_key}") String secretKey,
-            @Value("${security.jwt.expiration_period}") long expirationPeriod
-    ) {
-        this.secretKey = secretKey;
-        this.expirationPeriod = expirationPeriod;
-    }
+    private final JwtProperties jwtProperties;
 
     public String generate(long id) {
-        Date expirationDate = new Date(System.currentTimeMillis() + expirationPeriod);
+        Date expirationDate = new Date(System.currentTimeMillis() + jwtProperties.getExpirationPeriodInMillis());
         return JWT.create()
                 .withClaim(CLAIM_ID, id)
-                .withIssuedAt(new Date())
                 .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC256(secretKey));
+                .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
     }
 
     public long extract(String token) {
@@ -48,7 +39,7 @@ public class JwtManager {
 
     private DecodedJWT verifyToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecretKey());
             JWTVerifier verifier = JWT.require(algorithm).build();
             return verifier.verify(token);
         } catch (InvalidClaimException e) {
