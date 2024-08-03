@@ -2,7 +2,6 @@ package kr.momo.controller.meeting;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.time.LocalDate;
 import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
@@ -32,8 +31,7 @@ public class MeetingController {
     public ResponseEntity<MomoApiResponse<MeetingCreateResponse>> create(
             @RequestBody @Valid MeetingCreateRequest request
     ) {
-        LocalDate today = LocalDate.now();
-        MeetingCreateResponse response = meetingService.create(request, today);
+        MeetingCreateResponse response = meetingService.create(request);
         String path = String.format("/meeting/%s", response.uuid());
         String cookie = cookieManager.createNewCookie(response.token(), path);
 
