@@ -9,11 +9,11 @@ import kr.momo.exception.code.AttendeeErrorCode;
 import lombok.Getter;
 
 @Getter
-public class Attendees {
+public class AttendeeGroup {
 
     private final List<Attendee> attendees;
 
-    public Attendees(List<Attendee> attendees) {
+    public AttendeeGroup(List<Attendee> attendees) {
         validateUniqueNames(attendees);
         this.attendees = attendees;
     }
@@ -30,7 +30,7 @@ public class Attendees {
                 .allMatch(new HashSet<>()::add);
     }
 
-    public boolean isSameGroup(Attendees others) {
+    public boolean isSameGroup(AttendeeGroup others) {
         Set<AttendeeName> attendeeNames = attendees
                 .stream()
                 .map(Attendee::getName)
@@ -42,10 +42,10 @@ public class Attendees {
         return attendeeNames.equals(otherNames);
     }
 
-    public Attendees filterAttendeesByName(List<String> names) {
+    public AttendeeGroup filterAttendeesByName(List<String> names) {
         List<Attendee> filteredAttendee = attendees.stream()
                 .filter(attendee -> names.contains(attendee.name()))
                 .toList();
-        return new Attendees(filteredAttendee);
+        return new AttendeeGroup(filteredAttendee);
     }
 }

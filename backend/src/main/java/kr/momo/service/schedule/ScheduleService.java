@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.attendee.Attendees;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
@@ -125,16 +125,16 @@ public class ScheduleService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
-        Attendees attendees = new Attendees(attendeeRepository.findAllByMeeting(meeting));
-        Attendees filteredAttendees = attendees.filterAttendeesByName(names);
+        AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
+        AttendeeGroup filteredAttendeeGroup = attendeeGroup.filterAttendeesByName(names);
 
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendees.getAttendees());
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendeeGroup.getAttendees());
         List<ScheduleRecommendResponse> recommendResponse = groupingScheduleByAttendees(schedules)
                 .stream()
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
 
-        return SchedulesRecommendResponse.from(attendees, recommendResponse);
+        return SchedulesRecommendResponse.from(attendeeGroup, recommendResponse);
     }
 
     private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {
@@ -142,20 +142,20 @@ public class ScheduleService {
             return Collections.emptyList();
         }
 
-        Map<LocalDateTime, Attendees> attendeeByDateTime = groupAttendeeByDateTime(schedules);
+        Map<LocalDateTime, AttendeeGroup> attendeeByDateTime = groupAttendeeByDateTime(schedules);
         List<LocalDateTime> sortedDateTimes = attendeeByDateTime.keySet().stream().sorted().toList();
 
         LocalDateTime startTime = sortedDateTimes.get(0);
-        Attendees startNames = attendeeByDateTime.get(startTime);
+        AttendeeGroup startNames = attendeeByDateTime.get(startTime);
 
         LocalDateTime now = startTime;
-        Attendees nowNames = startNames;
+        AttendeeGroup nowNames = startNames;
 
         List<ScheduleRecommendResponse> responses = new ArrayList<>();
         for (int i = 1; i < sortedDateTimes.size(); i++) {
             LocalDateTime next = sortedDateTimes.get(i);
-            Attendees nextNames = attendeeByDateTime.get(next);
-            if (isContinuousDateTime(now, next, nowNames, nextNames)) {
+            AttendeeGroup nextNames = attendeeByDateTime.get(next);
+            if (isDiscontinuousDateTime(now, next, nowNames, nextNames)) {
                 responses.add(ScheduleRecommendResponse.from(startTime, now, startNames));
                 startTime = next;
                 startNames = nextNames;
@@ -167,17 +167,17 @@ public class ScheduleService {
         return responses;
     }
 
-    private Map<LocalDateTime, Attendees> groupAttendeeByDateTime(List<Schedule> schedules) {
+    private Map<LocalDateTime, AttendeeGroup> groupAttendeeByDateTime(List<Schedule> schedules) {
         return schedules.stream()
                 .collect(groupingBy(Schedule::dateTime,
                         mapping(Schedule::getAttendee,
-                                Collectors.collectingAndThen(Collectors.toList(), Attendees::new)))
+                                Collectors.collectingAndThen(Collectors.toList(), AttendeeGroup::new)))
                 );
     }
 
-    private boolean isContinuousDateTime(
-            LocalDateTime now, LocalDateTime next, Attendees nowAttendees, Attendees nextAttendees
+    private boolean isDiscontinuousDateTime(
+            LocalDateTime now, LocalDateTime next, AttendeeGroup nowAttendeeGroup, AttendeeGroup nextAttendeeGroup
     ) {
-        return !(now.plusMinutes(30).equals(next) && nowAttendees.isSameGroup(nextAttendees));
+        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.isSameGroup(nextAttendeeGroup));
     }
 }

@@ -11,7 +11,7 @@ import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class AttendeesTest {
+class AttendeeGroupTest {
 
     @DisplayName("참가자의 이름이 중복이면 예외를 발생시킨다.")
     @Test
@@ -22,7 +22,7 @@ class AttendeesTest {
         Attendee pedro2 = AttendeeFixture.GUEST_PEDRO.create(meeting);
         List<Attendee> attendees = List.of(jazz, pedro1, pedro2);
 
-        assertThatThrownBy(() -> new Attendees(attendees))
+        assertThatThrownBy(() -> new AttendeeGroup(attendees))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.DUPLICATED_ATTENDEE_NAME.message());
     }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.attendee.Attendees;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -245,32 +245,32 @@ class ScheduleServiceTest {
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new Attendees(List.of(b))
+                        new AttendeeGroup(List.of(b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
-                        new Attendees(List.of(a))
+                        new AttendeeGroup(List.of(a))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        new Attendees(List.of(a))
+                        new AttendeeGroup(List.of(a))
                 )
         );
     }
@@ -297,32 +297,32 @@ class ScheduleServiceTest {
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new Attendees(List.of(a, b))
+                        new AttendeeGroup(List.of(a, b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new Attendees(List.of(b))
+                        new AttendeeGroup(List.of(b))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
                         LocalDateTime.of(date1.getDate(), Timeslot.TIME_0430.getLocalTime()),
-                        new Attendees(List.of(a))
+                        new AttendeeGroup(List.of(a))
                 ),
                 ScheduleRecommendResponse.from(
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
                         LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        new Attendees(List.of(a))
+                        new AttendeeGroup(List.of(a))
                 )
         );
     }

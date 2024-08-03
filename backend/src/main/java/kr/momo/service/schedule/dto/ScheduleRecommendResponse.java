@@ -9,7 +9,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.attendee.Attendees;
+import kr.momo.domain.attendee.AttendeeGroup;
 
 public record ScheduleRecommendResponse(
         LocalDate date,
@@ -19,8 +19,8 @@ public record ScheduleRecommendResponse(
         List<String> attendeeNames
 ) {
 
-    public static ScheduleRecommendResponse from(LocalDateTime startTime, LocalDateTime endTime, Attendees attendees) {
-        List<String> attendeeNames = attendees.getAttendees().stream()
+    public static ScheduleRecommendResponse from(LocalDateTime startTime, LocalDateTime endTime, AttendeeGroup attendeeGroup) {
+        List<String> attendeeNames = attendeeGroup.getAttendees().stream()
                 .map(Attendee::name)
                 .toList();
 
