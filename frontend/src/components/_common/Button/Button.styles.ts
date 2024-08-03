@@ -26,6 +26,7 @@ const buttonSize: Record<ButtonSize, Size> = {
 
 export const s_baseButton = (borderRadius: number | string) => css`
   display: flex;
+  gap: 0.4rem;
   align-items: center;
   justify-content: center;
 
