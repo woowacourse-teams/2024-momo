@@ -2,13 +2,16 @@ package kr.momo.controller.meeting;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingService;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
+import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,13 +25,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final CookieManager cookieManager;
 
     @PostMapping("/api/v1/meetings")
-    public ResponseEntity<MomoApiResponse<MeetingSharingResponse>> create(
+    public ResponseEntity<MomoApiResponse<MeetingCreateResponse>> create(
             @RequestBody @Valid MeetingCreateRequest request
     ) {
-        MeetingSharingResponse response = meetingService.create(request);
+        MeetingCreateResponse response = meetingService.create(request);
+        String path = String.format("/meeting/%s", response.uuid());
+        String cookie = cookieManager.createNewCookie(response.token(), path);
+
         return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
+                .header(HttpHeaders.SET_COOKIE, cookie)
                 .body(new MomoApiResponse<>(response));
     }
 

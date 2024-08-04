@@ -10,6 +10,7 @@ import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
+import kr.momo.service.attendee.dto.AttendeeLoginResponse;
 import kr.momo.service.auth.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class AttendeeService {
     private final JwtManager jwtManager;
 
     @Transactional
-    public String login(String uuid, AttendeeLoginRequest request) {
+    public AttendeeLoginResponse login(String uuid, AttendeeLoginRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
@@ -36,14 +37,14 @@ public class AttendeeService {
                 .orElseGet(() -> signup(meeting, name, password));
     }
 
-    private String verifyPassword(Attendee attendee, AttendeePassword password) {
+    private AttendeeLoginResponse verifyPassword(Attendee attendee, AttendeePassword password) {
         attendee.verifyPassword(password);
-        return jwtManager.generate(attendee.getId());
+        return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 
-    private String signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
+    private AttendeeLoginResponse signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
-        return jwtManager.generate(attendee.getId());
+        return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 }

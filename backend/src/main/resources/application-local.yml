@@ -21,4 +21,5 @@ spring:
 
 security:
   jwt:
-    secret_key: ${random.value}"
+    secret-key: ${random.value}"
+    expiration-period: 1h
