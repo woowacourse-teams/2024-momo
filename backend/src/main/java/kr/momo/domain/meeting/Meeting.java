@@ -52,12 +52,18 @@ public class Meeting extends BaseEntity {
         isLocked = false;
     }
 
-    public Timeslot getValidatedTimeslot(LocalTime other) {
-        return timeslotInterval.getValidatedTimeslot(other);
+    public boolean isContainedWithinTimeRange(LocalTime startTime, LocalTime endTime) {
+        Timeslot startTimeSlot = getValidatedTimeslot(startTime);
+        Timeslot endTimeSlot = getValidatedTimeslot(endTime.minusMinutes(30));
+        return timeslotInterval.isContainedWithinTimeSlotRange(startTimeSlot, endTimeSlot);
     }
 
-    public void validateContainedTimes(LocalTime startTime, LocalTime endTime) {
-        timeslotInterval.validateContainedWithin(startTime, endTime);
+    public boolean isNotFullTime() {
+        return timeslotInterval.isNotFullTime();
+    }
+
+    public Timeslot getValidatedTimeslot(LocalTime other) {
+        return timeslotInterval.getValidatedTimeslot(other);
     }
 
     public LocalTime startTimeslotTime() {

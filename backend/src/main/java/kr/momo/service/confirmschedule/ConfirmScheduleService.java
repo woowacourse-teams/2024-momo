@@ -1,9 +1,9 @@
 package kr.momo.service.confirmschedule;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.confirmedschedule.ConfirmedSchedule;
@@ -30,12 +30,14 @@ public class ConfirmScheduleService {
 
     @Transactional
     public void create(String uuid, long attendeeId, ScheduleConfirmRequest request) {
+        LocalDateTime startDateTime = request.startDateTime();
+        LocalDateTime endDateTime = request.endDateTime();
+
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
-
         validateHostPermission(attendee);
 
         if (confirmedScheduleRepository.existsByMeeting(meeting)) {
@@ -43,11 +45,10 @@ public class ConfirmScheduleService {
         }
 
         validateMeetingLocked(meeting);
+        validateTimeRange(meeting, startDateTime, endDateTime);
+        validateDateRange(meeting, startDateTime, endDateTime);
 
-        AvailableDate date = getValidateAvailableDate(meeting, request.date());
-        meeting.validateContainedTimes(request.startTime(), request.endTime());
-
-        ConfirmedSchedule confirmedSchedule = new ConfirmedSchedule(meeting, date, request.startTime(), request.endTime());
+        ConfirmedSchedule confirmedSchedule = new ConfirmedSchedule(meeting, startDateTime, endDateTime);
         confirmedScheduleRepository.save(confirmedSchedule);
     }
 
@@ -63,8 +64,31 @@ public class ConfirmScheduleService {
         }
     }
 
-    private AvailableDate getValidateAvailableDate(Meeting meeting, LocalDate date) {
+    private void validateTimeRange(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        if (startDateTime.isAfter(endDateTime)
+                || !meeting.isContainedWithinTimeRange(startDateTime.toLocalTime(), endDateTime.toLocalTime())) {
+            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+        }
+    }
+
+    private void validateDateRange(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
-        return availableDates.findByDate(date);
+        LocalDate startDate = startDateTime.toLocalDate();
+        LocalDate endDate = endDateTime.toLocalDate();
+
+        if (startDate.equals(endDate)) {
+            if (availableDates.notExistsByDate(startDate)) {
+                throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+            }
+            return;
+        }
+
+        if (meeting.isNotFullTime()) {
+            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+        }
+
+        if (availableDates.isContainedWithinDateRange(startDate, endDate)) {
+            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+        }
     }
 }

@@ -47,4 +47,16 @@ public class AvailableDate extends BaseEntity {
     public boolean isSameDate(LocalDate other) {
         return date.equals(other);
     }
+
+    public boolean isAfter(LocalDate other) {
+        return date.isAfter(other);
+    }
+
+    public boolean isBefore(LocalDate other) {
+        return date.isBefore(other);
+    }
+
+    public boolean isEqual(LocalDate other) {
+        return date.isEqual(other);
+    }
 }

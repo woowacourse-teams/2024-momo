@@ -52,9 +52,12 @@ public class TimeslotInterval {
         return this.startTimeslot.isAfter(other) || this.endTimeslot.isBefore(other);
     }
 
-    public void validateContainedWithin(LocalTime startTime, LocalTime endTime) {
-        if (startTimeslot.isAfter(startTime) || this.endTimeslot.isBefore(endTime.minusMinutes(30))) {
-            throw new MomoException(ScheduleErrorCode.INVALID_SCHEDULE_TIMESLOT);
-        }
+    public boolean isContainedWithinTimeSlotRange(Timeslot startTime, Timeslot endTime) {
+        return (startTimeslot.equals(startTime) || startTimeslot.isBefore(startTime))
+                && (endTimeslot.equals(endTime) || endTimeslot.isAfter(endTime));
+    }
+
+    public boolean isNotFullTime() {
+        return !Timeslot.TIME_0000.equals(startTimeslot) || !Timeslot.TIME_2330.equals(endTimeslot);
     }
 }

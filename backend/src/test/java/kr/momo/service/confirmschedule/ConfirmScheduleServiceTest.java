@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -18,7 +19,6 @@ import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
-import kr.momo.exception.code.AvailableDateErrorCode;
 import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.exception.code.ScheduleErrorCode;
@@ -58,12 +58,17 @@ class ConfirmScheduleServiceTest {
     private Meeting meeting;
     private Attendee attendee;
     private AvailableDate today;
+    private ScheduleConfirmRequest validRequest;
 
     @BeforeEach
     void setUp() {
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
+        validRequest = new ScheduleConfirmRequest(
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime())
+        );
     }
 
     @DisplayName("주최자가 잠겨있는 약속의 일정을 확정한다.")
@@ -72,17 +77,15 @@ class ConfirmScheduleServiceTest {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
         meeting.lock();
         meetingRepository.save(meeting);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
-        confirmSchedule.create(meeting.getUuid(), attendee.getId(), request);
+        confirmSchedule.create(meeting.getUuid(), attendee.getId(), validRequest);
 
         ConfirmedSchedule confirmedSchedule = confirmedScheduleRepository.findByMeeting(meeting).get();
-        Timeslot startTimeslot = confirmedSchedule.getTimeslotInterval().getStartTimeslot();
-        Timeslot endTimeslot = confirmedSchedule.getTimeslotInterval().getEndTimeslot();
+        LocalDateTime startDateTime = confirmedSchedule.getStartDateTime();
+        LocalDateTime endDateTime = confirmedSchedule.getEndDateTime();
         assertAll(
-                () -> assertThat(startTimeslot).isEqualTo(Timeslot.TIME_0100),
-                () -> assertThat(endTimeslot).isEqualTo(Timeslot.TIME_0100)
+                () -> assertThat(startDateTime).isEqualTo(validRequest.startDateTime()),
+                () -> assertThat(endDateTime).isEqualTo(validRequest.endDateTime())
         );
     }
 
@@ -92,11 +95,9 @@ class ConfirmScheduleServiceTest {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
         meeting.lock();
         meetingRepository.save(meeting);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
         String invalidUuid = "invalidUuid";
-        assertThatThrownBy(() -> confirmSchedule.create(invalidUuid, attendee.getId(), request))
+        assertThatThrownBy(() -> confirmSchedule.create(invalidUuid, attendee.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
@@ -107,11 +108,9 @@ class ConfirmScheduleServiceTest {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
         meeting.lock();
         meetingRepository.save(meeting);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-        long InvalidAttendeeId = 9999L;
 
-        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), InvalidAttendeeId, request))
+        long InvalidAttendeeId = 9999L;
+        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), InvalidAttendeeId, validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }
@@ -123,10 +122,8 @@ class ConfirmScheduleServiceTest {
         meeting.lock();
         meetingRepository.save(meeting);
         Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
-        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), guest.getId(), request))
+        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), guest.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
     }
@@ -135,10 +132,8 @@ class ConfirmScheduleServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_Unlock() {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0130));
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
 
-        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), request))
+        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.MEETING_UNLOCKED.message());
     }
@@ -149,27 +144,28 @@ class ConfirmScheduleServiceTest {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
         meeting.lock();
         meetingRepository.save(meeting);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
-        confirmSchedule.create(meeting.getUuid(), attendee.getId(), request);
+        confirmSchedule.create(meeting.getUuid(), attendee.getId(), validRequest);
 
-        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), request))
+        assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE.message());
     }
 
-    @DisplayName("약속애 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")
+    @DisplayName("약속에 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0130));
         meeting.lock();
         meetingRepository.save(meeting);
+        LocalDate invalidDate = LocalDate.now().plusDays(30);
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                LocalDate.now().plusDays(30), Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
+                LocalDateTime.of(invalidDate, Timeslot.TIME_0100.getLocalTime()),
+                LocalDateTime.of(invalidDate, Timeslot.TIME_0130.getLocalTime())
+        );
 
         assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(AvailableDateErrorCode.INVALID_AVAILABLE_DATE.message());
+                .hasMessage(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE.message());
     }
 
     @DisplayName("약속에 포함되지 않은 시간의 일정을 확정 시 예외가 발생한다.")
@@ -179,7 +175,9 @@ class ConfirmScheduleServiceTest {
         meeting.lock();
         meetingRepository.save(meeting);
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                today.getDate(), Timeslot.TIME_2200.getLocalTime(), Timeslot.TIME_2300.getLocalTime());
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_2200.getLocalTime()),
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime())
+        );
 
         assertThatThrownBy(() -> confirmSchedule.create(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)

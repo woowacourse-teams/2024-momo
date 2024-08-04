@@ -3,6 +3,7 @@ package kr.momo.controller.confirmschdule;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
@@ -54,8 +55,7 @@ class ConfirmScheduleControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        meeting = MeetingFixture.MOVIE.create();
-        meeting = meetingRepository.save(meeting);
+        meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
         createAttendeeSchedule(host);
@@ -78,7 +78,9 @@ class ConfirmScheduleControllerTest {
         String token = getToken(host, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime())
+        );
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -101,7 +103,9 @@ class ConfirmScheduleControllerTest {
         String token = getToken(guest, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
+        );
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -119,7 +123,9 @@ class ConfirmScheduleControllerTest {
         String token = getToken(host, meeting);
 
         ScheduleConfirmRequest request = new ScheduleConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime(), Timeslot.TIME_0330.getLocalTime());
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
+        );
 
         RestAssured.given().log().all()
                 .header("Authorization", "Bearer " + token)
