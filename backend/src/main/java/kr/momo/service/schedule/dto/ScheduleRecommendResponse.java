@@ -12,10 +12,12 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 
 public record ScheduleRecommendResponse(
-        LocalDate date,
-        String dayOfWeek,
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
+        LocalDate startDate,
+        String startDayOfWeek,
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
+        LocalDate endDate,
+        String endDayOfWeek,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
         List<String> attendeeNames
 ) {
 
@@ -30,8 +32,18 @@ public record ScheduleRecommendResponse(
                 startTime.toLocalDate(),
                 startTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
                 startTime.toLocalTime(),
+                endTime.toLocalDate(),
+                endTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
                 endTime.toLocalTime(),
                 attendeeNames
         );
+    }
+
+    public LocalDateTime startDateTime() {
+        return LocalDateTime.of(startDate, startTime);
+    }
+
+    public LocalDateTime endDateTime() {
+        return LocalDateTime.of(endDate, endTime);
     }
 }

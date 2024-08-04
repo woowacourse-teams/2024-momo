@@ -1,5 +1,7 @@
 package kr.momo.service.schedule;
 
+import static kr.momo.service.schedule.ScheduleRecommender.EARLIEST_ORDER;
+import static kr.momo.service.schedule.ScheduleRecommender.LONG_TERM_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -239,7 +241,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), "longTerm", List.of(attendee1.name(), attendee2.name())
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(attendee1.name(), attendee2.name())
         );
 
         assertThat(responses.recommendSchedules()).containsExactly(
@@ -312,7 +314,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), ScheduleRecommender.EARLIEST_ORDER.getType(), List.of(a.name(), b.name())
+                movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(a.name(), b.name())
         );
 
         assertThat(responses.recommendSchedules()).containsExactly(

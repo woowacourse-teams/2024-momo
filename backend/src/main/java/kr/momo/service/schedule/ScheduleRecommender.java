@@ -14,16 +14,18 @@ public enum ScheduleRecommender {
 
     EARLIEST_ORDER(
             "earliest",
-            descendingByAttendees().thenComparing(response -> LocalDateTime.of(response.date(), response.startTime())
+            descendingByAttendees().thenComparing(
+                    response -> LocalDateTime.of(response.startDate(), response.startTime())
             )
     ),
     LONG_TERM_ORDER(
             "longTerm",
-            descendingByAttendees().thenComparing((r1, r2) -> {
-                Duration duration1 = Duration.between(r1.startTime(), r1.endTime());
-                Duration duration2 = Duration.between(r2.startTime(), r2.endTime());
-                return duration2.compareTo(duration1);
-            })
+            descendingByAttendees().thenComparing(
+                    (r1, r2) -> {
+                        Duration duration1 = Duration.between(r1.startDateTime(), r1.endDateTime());
+                        Duration duration2 = Duration.between(r2.startDateTime(), r2.endDateTime());
+                        return duration1.compareTo(duration2);
+                    })
     );
 
     private static Comparator<ScheduleRecommendResponse> descendingByAttendees() {
