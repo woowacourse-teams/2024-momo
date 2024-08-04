@@ -38,8 +38,9 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class MeetingServiceTest {
 
-    private static final Clock FIXED_CLOCK =
-            Clock.fixed(Instant.parse("2024-08-01T10:15:30Z"), ZoneId.of("Asia/Seoul"));
+    private static final Clock FIXED_CLOCK = Clock.fixed(
+            Instant.parse("2024-08-01T10:15:30Z"), ZoneId.of("Asia/Seoul")
+    );
 
     @SpyBean
     private Clock clock;
