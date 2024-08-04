@@ -5,7 +5,7 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 
 public record SchedulesRecommendResponse(
-        List<String> attendeeNames, List<ScheduleRecommendResponse> recommendSchedules
+        List<String> allAttendeeNames, List<ScheduleRecommendResponse> recommendSchedules
 ) {
 
     public static SchedulesRecommendResponse of(
