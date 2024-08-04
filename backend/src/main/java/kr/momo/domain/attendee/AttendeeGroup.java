@@ -31,8 +31,9 @@ public class AttendeeGroup {
     }
 
     public AttendeeGroup filterAttendeesByName(List<String> names) {
+        HashSet<String> set = new HashSet<>(names);
         List<Attendee> filteredAttendee = attendees.stream()
-                .filter(attendee -> names.contains(attendee.name()))
+                .filter(attendee -> set.contains(attendee.name()))
                 .toList();
         return new AttendeeGroup(filteredAttendee);
     }
