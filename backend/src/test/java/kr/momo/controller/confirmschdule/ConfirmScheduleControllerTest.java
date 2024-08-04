@@ -128,7 +128,7 @@ class ConfirmScheduleControllerTest {
         );
 
         RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + token)
+                .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
                 .body(request)
