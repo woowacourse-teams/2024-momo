@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @ConfigurationPropertiesScan
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class MomoApplication {
 
     public static void main(String[] args) {
