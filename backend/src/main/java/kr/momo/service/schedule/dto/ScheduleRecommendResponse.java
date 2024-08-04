@@ -14,10 +14,10 @@ import kr.momo.domain.attendee.AttendeeGroup;
 public record ScheduleRecommendResponse(
         LocalDate startDate,
         String startDayOfWeek,
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
         LocalDate endDate,
         String endDayOfWeek,
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime endTime,
         List<String> attendeeNames
 ) {
 

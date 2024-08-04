@@ -371,6 +371,65 @@ class ScheduleServiceTest {
         );
     }
 
+    @DisplayName("익일을 넘어가도 한 하나의 약속으로 취급한다.")
+    @Test
+    void recommendContinuousSchedule() {
+        Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
+        AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
+        AvailableDate date2 = availableDateRepository.save(
+                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
+        );
+        Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
+        Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+
+        List<Schedule> schedules = addNextDaySchedule(a, b, date1, date2);
+        scheduleRepository.saveAll(schedules);
+
+        SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(a.name(), b.name())
+        );
+
+        assertThat(responses.recommendSchedules()).containsExactly(
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2300.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        new AttendeeGroup(List.of(a, b))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(a, b))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2230.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(a))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_1700.getLocalTime()),
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_1800.getLocalTime()),
+                        new AttendeeGroup(List.of(a))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        new AttendeeGroup(List.of(a))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2300.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        new AttendeeGroup(List.of(b))
+                ),
+                ScheduleRecommendResponse.of(
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0200.getLocalTime()),
+                        new AttendeeGroup(List.of(b))
+                )
+        );
+
+
+    }
+
     private List<Schedule> addSchedule(
             Attendee attendee1, Attendee attendee2, Attendee attendee3, AvailableDate date1, AvailableDate date2
     ) {
@@ -427,6 +486,40 @@ class ScheduleServiceTest {
         schedules.add(new Schedule(attendee3, date2, Timeslot.TIME_0300));
         schedules.add(new Schedule(attendee3, date2, Timeslot.TIME_0330));
         schedules.add(new Schedule(attendee3, date2, Timeslot.TIME_0400));
+
+        return schedules;
+    }
+
+    private List<Schedule> addNextDaySchedule(
+            Attendee attendee1, Attendee attendee2, AvailableDate date1, AvailableDate date2
+    ) {
+        List<Schedule> schedules = new ArrayList<>();
+
+        // attendee1
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_1700));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_1730));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_1800));
+
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_2230));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_2300));
+        schedules.add(new Schedule(attendee1, date1, Timeslot.TIME_2330));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0030));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0100));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0130));
+
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0400));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0430));
+        schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0500));
+
+        // attendee2
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_2300));
+        schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_2330));
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0030));
+
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0130));
+        schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0200));
 
         return schedules;
     }
