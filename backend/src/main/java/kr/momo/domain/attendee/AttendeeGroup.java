@@ -47,14 +47,14 @@ public class AttendeeGroup {
         return attendees.size();
     }
 
-    public List<AttendeeGroup> findCombinationAttendeeGroups() {
+    public List<AttendeeGroup> findAttendeeGroupCombination() {
         Map<Attendee, Boolean> visited = new HashMap<>();
         List<AttendeeGroup> groupCombination = new ArrayList<>();
-        groupIfAttendee(visited, groupCombination, 0);
+        addCombinationAttendeeGroup(visited, groupCombination, 0);
         return groupCombination;
     }
 
-    private void groupIfAttendee(Map<Attendee, Boolean> isVisit, List<AttendeeGroup> groupCombination, int index) {
+    private void addCombinationAttendeeGroup(Map<Attendee, Boolean> isVisit, List<AttendeeGroup> groupCombination, int index) {
         if (index == attendees.size()) {
             AttendeeGroup attendeeGroup = groupIfAttendee(isVisit);
             groupCombination.add(attendeeGroup);
@@ -63,9 +63,9 @@ public class AttendeeGroup {
 
         if (index < attendees.size()) {
             isVisit.put(attendees.get(index), Boolean.TRUE);
-            groupIfAttendee(isVisit, groupCombination, index + 1);
+            addCombinationAttendeeGroup(isVisit, groupCombination, index + 1);
             isVisit.put(attendees.get(index), Boolean.FALSE);
-            groupIfAttendee(isVisit, groupCombination, index + 1);
+            addCombinationAttendeeGroup(isVisit, groupCombination, index + 1);
         }
     }
 

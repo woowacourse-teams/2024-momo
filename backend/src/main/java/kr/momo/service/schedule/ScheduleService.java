@@ -128,7 +128,7 @@ public class ScheduleService {
 
         AttendeeGroup allAttendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
         AttendeeGroup filteredAttendeeGroup = allAttendeeGroup.filterAttendeesByName(names);
-        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findCombinationAttendeeGroups();
+        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findAttendeeGroupCombination();
 
         List<ScheduleRecommendResponse> recommendResponses = new ArrayList<>();
         for (AttendeeGroup group : groupCombinations) {

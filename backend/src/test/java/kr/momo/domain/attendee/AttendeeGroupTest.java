@@ -37,7 +37,7 @@ class AttendeeGroupTest {
         Attendee baeky = AttendeeFixture.GUEST_BAKEY.create(meeting);
         AttendeeGroup attendeeGroup = new AttendeeGroup(List.of(jazz, pedro, baeky));
 
-        List<AttendeeGroup> attendeeGroups = attendeeGroup.findCombinationAttendeeGroups();
+        List<AttendeeGroup> attendeeGroups = attendeeGroup.findAttendeeGroupCombination();
 
         assertThat(attendeeGroups)
                 .containsExactlyInAnyOrder(
