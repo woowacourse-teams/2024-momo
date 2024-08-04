@@ -24,7 +24,7 @@ public enum ScheduleRecommender {
                     (r1, r2) -> {
                         Duration duration1 = Duration.between(r1.startDateTime(), r1.endDateTime());
                         Duration duration2 = Duration.between(r2.startDateTime(), r2.endDateTime());
-                        return duration1.compareTo(duration2);
+                        return duration2.compareTo(duration1);
                     })
     );
 
