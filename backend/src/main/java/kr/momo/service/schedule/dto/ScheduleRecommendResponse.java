@@ -19,7 +19,9 @@ public record ScheduleRecommendResponse(
         List<String> attendeeNames
 ) {
 
-    public static ScheduleRecommendResponse of(LocalDateTime startTime, LocalDateTime endTime, AttendeeGroup attendeeGroup) {
+    public static ScheduleRecommendResponse of(
+            LocalDateTime startTime, LocalDateTime endTime, AttendeeGroup attendeeGroup
+    ) {
         List<String> attendeeNames = attendeeGroup.getAttendees().stream()
                 .map(Attendee::name)
                 .toList();

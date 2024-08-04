@@ -43,6 +43,10 @@ public class AttendeeGroup {
                 .collect(collectingAndThen(toList(), AttendeeGroup::new));
     }
 
+    public int size() {
+        return attendees.size();
+    }
+
     public List<AttendeeGroup> findCombinationAttendeeGroups() {
         Map<Attendee, Boolean> visited = new HashMap<>();
         List<AttendeeGroup> groupCombination = new ArrayList<>();

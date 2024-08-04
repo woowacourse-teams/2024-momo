@@ -1,7 +1,9 @@
 package kr.momo.service.schedule;
 
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,12 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.attendee.AttendeeName;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
@@ -125,16 +126,30 @@ public class ScheduleService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
-        AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
-        AttendeeGroup filteredAttendeeGroup = attendeeGroup.filterAttendeesByName(names);
+        AttendeeGroup allAttendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
+        AttendeeGroup filteredAttendeeGroup = allAttendeeGroup.filterAttendeesByName(names);
+        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findCombinationAttendeeGroups();
 
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(filteredAttendeeGroup.getAttendees());
-        List<ScheduleRecommendResponse> recommendResponse = groupingScheduleByAttendees(schedules)
-                .stream()
+        List<ScheduleRecommendResponse> recommendResponses = new ArrayList<>();
+        for (AttendeeGroup group : groupCombinations) {
+            List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(group.getAttendees());
+            List<ScheduleRecommendResponse> recommendResponse = groupingScheduleByAttendees(schedules);
+            List<ScheduleRecommendResponse> response = sortedAndFilterByRecommendType(
+                    recommendType, group.size(), recommendResponse
+            );
+            recommendResponses.addAll(response);
+        }
+
+        return SchedulesRecommendResponse.of(allAttendeeGroup, recommendResponses);
+    }
+
+    private List<ScheduleRecommendResponse> sortedAndFilterByRecommendType(
+            String recommendType, int groupSize, List<ScheduleRecommendResponse> scheduleRecommendResponses
+    ) {
+        return scheduleRecommendResponses.stream()
+                .filter(response -> response.attendeeNames().size() == groupSize)
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
-
-        return SchedulesRecommendResponse.of(attendeeGroup, recommendResponse);
     }
 
     private List<ScheduleRecommendResponse> groupingScheduleByAttendees(List<Schedule> schedules) {
@@ -144,8 +159,8 @@ public class ScheduleService {
 
         Map<LocalDateTime, AttendeeGroup> attendeeByDateTime = groupAttendeeByDateTime(schedules);
         List<LocalDateTime> sortedDateTimes = attendeeByDateTime.keySet().stream()
-                .sorted().
-                toList();
+                .sorted()
+                .toList();
 
         LocalDateTime startTime = sortedDateTimes.get(0);
         AttendeeGroup startNames = attendeeByDateTime.get(startTime);
@@ -172,14 +187,13 @@ public class ScheduleService {
     private Map<LocalDateTime, AttendeeGroup> groupAttendeeByDateTime(List<Schedule> schedules) {
         return schedules.stream()
                 .collect(groupingBy(Schedule::dateTime,
-                        mapping(Schedule::getAttendee,
-                                Collectors.collectingAndThen(Collectors.toList(), AttendeeGroup::new)))
+                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new)))
                 );
     }
 
     private boolean isDiscontinuousDateTime(
             LocalDateTime now, LocalDateTime next, AttendeeGroup nowAttendeeGroup, AttendeeGroup nextAttendeeGroup
     ) {
-        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.equals(nextAttendeeGroup));
+        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.size() == nextAttendeeGroup.size());
     }
 }
