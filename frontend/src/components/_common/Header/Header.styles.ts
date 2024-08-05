@@ -25,3 +25,7 @@ export const s_title = css`
   font-size: 2.4rem;
   font-weight: 800;
 `;
+
+export const s_button = css`
+  width: 20%;
+`;
