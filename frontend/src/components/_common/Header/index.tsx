@@ -16,7 +16,7 @@ export default function Header() {
   const { isLoggedIn } = useContext(AuthContext).state;
 
   const handleClickLoginButton = () => {
-    navigate(`/${uuid}/login`);
+    navigate(`/meeting/${uuid}/login`);
   };
 
   return (
