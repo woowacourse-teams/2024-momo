@@ -44,11 +44,11 @@ public class MeetingController {
     }
 
     @PostMapping("/api/v1/meetings/{uuid}/confirm")
-    public ResponseEntity<Void> confirmSchedule(
+    public ResponseEntity<Void> confirm(
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid MeetingConfirmRequest request
     ) {
         meetingConfirmService.create(uuid, id, request);
-        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed-schedule")).build();
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed")).build();
     }
 
     @GetMapping("/api/v1/meetings/{uuid}")
