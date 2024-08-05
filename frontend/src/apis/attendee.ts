@@ -1,5 +1,3 @@
-import { BASE_URL } from '@constants/api';
-
 import { fetchClient } from './_common/fetchClient';
 
 interface PostAttendeeLoginRequest {
@@ -10,30 +8,13 @@ interface PostAttendeeLoginRequest {
   };
 }
 
-interface PostAttendeeLoginResponse {
-  token: string;
-}
-
-interface AttendeeLogin {
-  token: string;
-}
-
-const postAttendeeLogin = async ({
-  uuid,
-  request,
-}: PostAttendeeLoginRequest): Promise<AttendeeLogin> => {
-  const url = `${BASE_URL}/${uuid}/login`;
-
-  const data = await fetchClient<PostAttendeeLoginResponse>({
-    url,
+export const postAttendeeLogin = async ({ uuid, request }: PostAttendeeLoginRequest) => {
+  const data = await fetchClient({
+    path: `/${uuid}/login`,
     method: 'POST',
-    errorMessage: '로그인 정보를 요청하는 중 문제가 발생했어요 :(',
+    errorMessage: '로그인하는 도중 문제가 발생했습니다 :( 다시 시도해 주세요.',
     body: request,
   });
 
-  return {
-    token: data.token,
-  };
+  return data;
 };
-
-export default postAttendeeLogin;
