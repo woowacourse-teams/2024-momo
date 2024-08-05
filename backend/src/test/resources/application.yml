@@ -23,3 +23,5 @@ security:
   jwt:
     secret-key: ${random.value}"
     expiration-period: 1h
+  allow-origins:
+    - http://localhost:[*]

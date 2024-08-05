@@ -3,6 +3,7 @@ spring:
     activate.on-profile: local
     import:
       - classpath:datasource.yml
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -23,3 +24,5 @@ security:
   jwt:
     secret-key: ${random.value}"
     expiration-period: 1h
+  allow-origins:
+    - http://localhost:[*]

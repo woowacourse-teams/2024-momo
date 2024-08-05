@@ -7,9 +7,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    private static final String MULTIPLE_DELIMITER = ", ";
+
+    private final CorsProperties corsProperties;
+
+    public CorsConfig(CorsProperties corsProperties) {
+        this.corsProperties = corsProperties;
+    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*");
+        String allowedOrigins = String.join(MULTIPLE_DELIMITER, corsProperties.getAllowOrigins());
+
+        registry.addMapping("/api/**")
+                .allowedOriginPatterns(allowedOrigins)
+                .allowedMethods("GET", "POST", "HEAD", "PATCH")
+                .allowCredentials(true);
     }
 }
