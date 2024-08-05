@@ -1,6 +1,10 @@
 import { fetchClient } from './_common/fetchClient';
 
-interface PostAttendeeLoginRequest {
+interface AttendeeLoginResponse {
+  data: string;
+}
+
+interface AttendeeLoginRequest {
   uuid: string;
   request: {
     name: string;
@@ -8,13 +12,15 @@ interface PostAttendeeLoginRequest {
   };
 }
 
-export const postAttendeeLogin = async ({ uuid, request }: PostAttendeeLoginRequest) => {
-  const data = await fetchClient({
+export const postAttendeeLogin = async ({ uuid, request }: AttendeeLoginRequest) => {
+  const data = await fetchClient<AttendeeLoginResponse>({
     path: `/${uuid}/login`,
     method: 'POST',
     errorMessage: '로그인하는 도중 문제가 발생했습니다 :( 다시 시도해 주세요.',
     body: request,
   });
 
-  return data;
+  return {
+    userName: data.data,
+  };
 };

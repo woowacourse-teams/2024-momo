@@ -3,14 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 
 import { handleGetMeetingSchedules } from '@apis/schedules';
 
-import { getCookie } from '@utils/cookies';
-
-import { COOKIE_KEYS } from '@constants/cookies';
 import { QUERY_KEY } from '@constants/queryKeys';
 
 import { generateScheduleMatrix } from '../Picker/TimePicker.util';
@@ -49,6 +47,8 @@ export default function TimeViewer({
   selectedAttendee,
 }: TimeViewerProps) {
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
+  const { isLoggedIn } = useContext(AuthContext).state;
+
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
@@ -68,14 +68,11 @@ export default function TimeViewer({
   });
 
   const handleScheduleUpdate = () => {
-    // TODO : 쿠키에 토큰 있는지 확인 해야 함.
-    const savedToken = getCookie(COOKIE_KEYS.token);
-
-    if (!savedToken) {
+    if (!isLoggedIn) {
       alert('로그인 해주세요');
       navigate(`/meeting/${uuid}/login`);
-      return;
     }
+
     handleToggleIsTimePickerUpdate();
   };
 

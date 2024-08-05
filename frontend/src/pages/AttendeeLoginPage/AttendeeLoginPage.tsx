@@ -1,24 +1,26 @@
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { AuthContext } from '@contexts/AuthProvider';
 
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 
-import postAttendeeLogin from '@apis/attendee';
-
-import { setCookie } from '@utils/cookies';
-
-import { COOKIE_KEYS } from '@constants/cookies';
+import { postAttendeeLogin } from '@apis/attendee';
 
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
-  const { value: name, onValueChange: onNameChange } = useInput();
-  const { value: password, onValueChange: onPasswordChange } = useInput();
+  const authContext = useContext(AuthContext);
+  const { setIsLoggedIn, setUserName } = authContext.actions;
 
   const navigate = useNavigate();
   const { uuid } = useParams<{ uuid: string }>();
+
+  const { value: name, onValueChange: onNameChange } = useInput();
+  const { value: password, onValueChange: onPasswordChange } = useInput();
 
   const handleLoginButtonClick = async () => {
     if (!uuid) {
@@ -26,19 +28,14 @@ export default function AttendeeLoginPage() {
       return;
     }
 
-    try {
-      const data = await postAttendeeLogin({
-        uuid,
-        request: { name, password },
-      });
+    const { userName } = await postAttendeeLogin({
+      uuid,
+      request: { name, password },
+    });
 
-      if (data) setCookie(COOKIE_KEYS.token, data.token, { path: '/', maxAge: 604800 });
-      setCookie(COOKIE_KEYS.attendeeName, name); // TODO: name을 cookie에 저장하지 않고, navigate 두 번째 인자로 넘기는 방향 (@Yoonkyoungme)
-
-      navigate(`/meeting/${uuid}`);
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
+    setIsLoggedIn(true);
+    setUserName(userName);
+    navigate(-1);
   };
 
   return (
