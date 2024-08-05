@@ -4,9 +4,9 @@ import java.util.Optional;
 import kr.momo.domain.meeting.Meeting;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ConfirmedScheduleRepository extends JpaRepository<ConfirmedSchedule, Long> {
+public interface ConfirmedMeetingRepository extends JpaRepository<ConfirmedMeeting, Long> {
 
-    Optional<ConfirmedSchedule> findByMeeting(Meeting meeting);
+    Optional<ConfirmedMeeting> findByMeeting(Meeting meeting);
 
     boolean existsByMeeting(Meeting meeting);
 }

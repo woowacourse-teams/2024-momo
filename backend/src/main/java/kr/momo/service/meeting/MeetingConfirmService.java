@@ -1,4 +1,4 @@
-package kr.momo.service.confirmschedule;
+package kr.momo.service.meeting;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,30 +6,30 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
-import kr.momo.domain.confirmedschedule.ConfirmedSchedule;
-import kr.momo.domain.confirmedschedule.ConfirmedScheduleRepository;
+import kr.momo.domain.confirmedschedule.ConfirmedMeeting;
+import kr.momo.domain.confirmedschedule.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
-import kr.momo.service.schedule.dto.ScheduleConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ConfirmScheduleService {
+public class MeetingConfirmService {
 
     private final MeetingRepository meetingRepository;
     private final AttendeeRepository attendeeRepository;
     private final AvailableDateRepository availableDateRepository;
-    private final ConfirmedScheduleRepository confirmedScheduleRepository;
+    private final ConfirmedMeetingRepository confirmedMeetingRepository;
 
     @Transactional
-    public void create(String uuid, long attendeeId, ScheduleConfirmRequest request) {
+    public void create(String uuid, long attendeeId, MeetingConfirmRequest request) {
         LocalDateTime startDateTime = request.startDateTime();
         LocalDateTime endDateTime = request.endDateTime();
 
@@ -40,7 +40,7 @@ public class ConfirmScheduleService {
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
         validateHostPermission(attendee);
 
-        if (confirmedScheduleRepository.existsByMeeting(meeting)) {
+        if (confirmedMeetingRepository.existsByMeeting(meeting)) {
             throw new MomoException(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
         }
 
@@ -48,8 +48,8 @@ public class ConfirmScheduleService {
         validateTimeRange(meeting, startDateTime, endDateTime);
         validateDateRange(meeting, startDateTime, endDateTime);
 
-        ConfirmedSchedule confirmedSchedule = new ConfirmedSchedule(meeting, startDateTime, endDateTime);
-        confirmedScheduleRepository.save(confirmedSchedule);
+        ConfirmedMeeting confirmedMeeting = new ConfirmedMeeting(meeting, startDateTime, endDateTime);
+        confirmedMeetingRepository.save(confirmedMeeting);
     }
 
     private void validateHostPermission(Attendee attendee) {

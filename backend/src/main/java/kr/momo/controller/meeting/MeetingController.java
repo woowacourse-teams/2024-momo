@@ -5,11 +5,13 @@ import java.net.URI;
 import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
+import kr.momo.service.meeting.MeetingConfirmService;
 import kr.momo.service.meeting.MeetingService;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
+import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final MeetingConfirmService meetingConfirmService;
     private final CookieManager cookieManager;
 
     @PostMapping("/api/v1/meetings")
@@ -38,6 +41,14 @@ public class MeetingController {
         return ResponseEntity.created(URI.create("/meeting/" + response.uuid()))
                 .header(HttpHeaders.SET_COOKIE, cookie)
                 .body(new MomoApiResponse<>(response));
+    }
+
+    @PostMapping("/api/v1/meetings/{uuid}/confirm")
+    public ResponseEntity<Void> confirmSchedule(
+            @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid MeetingConfirmRequest request
+    ) {
+        meetingConfirmService.create(uuid, id, request);
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed-schedule")).build();
     }
 
     @GetMapping("/api/v1/meetings/{uuid}")

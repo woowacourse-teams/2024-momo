@@ -1,4 +1,4 @@
-package kr.momo.service.confirmschedule;
+package kr.momo.service.meeting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,8 +10,8 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
-import kr.momo.domain.confirmedschedule.ConfirmedSchedule;
-import kr.momo.domain.confirmedschedule.ConfirmedScheduleRepository;
+import kr.momo.domain.confirmedschedule.ConfirmedMeeting;
+import kr.momo.domain.confirmedschedule.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.schedule.Schedule;
@@ -24,7 +24,7 @@ import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.exception.code.ScheduleErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
-import kr.momo.service.schedule.dto.ScheduleConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,10 +35,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-class ConfirmScheduleServiceTest {
+class MeetingConfirmServiceTest {
 
     @Autowired
-    private ConfirmScheduleService confirmSchedule;
+    private MeetingConfirmService confirmSchedule;
 
     @Autowired
     private MeetingRepository meetingRepository;
@@ -53,19 +53,19 @@ class ConfirmScheduleServiceTest {
     private AvailableDateRepository availableDateRepository;
 
     @Autowired
-    private ConfirmedScheduleRepository confirmedScheduleRepository;
+    private ConfirmedMeetingRepository confirmedMeetingRepository;
 
     private Meeting meeting;
     private Attendee attendee;
     private AvailableDate today;
-    private ScheduleConfirmRequest validRequest;
+    private MeetingConfirmRequest validRequest;
 
     @BeforeEach
     void setUp() {
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
-        validRequest = new ScheduleConfirmRequest(
+        validRequest = new MeetingConfirmRequest(
                 LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
                 LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime())
         );
@@ -80,9 +80,9 @@ class ConfirmScheduleServiceTest {
 
         confirmSchedule.create(meeting.getUuid(), attendee.getId(), validRequest);
 
-        ConfirmedSchedule confirmedSchedule = confirmedScheduleRepository.findByMeeting(meeting).get();
-        LocalDateTime startDateTime = confirmedSchedule.getStartDateTime();
-        LocalDateTime endDateTime = confirmedSchedule.getEndDateTime();
+        ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.findByMeeting(meeting).get();
+        LocalDateTime startDateTime = confirmedMeeting.getStartDateTime();
+        LocalDateTime endDateTime = confirmedMeeting.getEndDateTime();
         assertAll(
                 () -> assertThat(startDateTime).isEqualTo(validRequest.startDateTime()),
                 () -> assertThat(endDateTime).isEqualTo(validRequest.endDateTime())
@@ -158,7 +158,7 @@ class ConfirmScheduleServiceTest {
         meeting.lock();
         meetingRepository.save(meeting);
         LocalDate invalidDate = LocalDate.now().plusDays(30);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
                 LocalDateTime.of(invalidDate, Timeslot.TIME_0100.getLocalTime()),
                 LocalDateTime.of(invalidDate, Timeslot.TIME_0130.getLocalTime())
         );
@@ -174,7 +174,7 @@ class ConfirmScheduleServiceTest {
         scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0130));
         meeting.lock();
         meetingRepository.save(meeting);
-        ScheduleConfirmRequest request = new ScheduleConfirmRequest(
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
                 LocalDateTime.of(today.getDate(), Timeslot.TIME_2200.getLocalTime()),
                 LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime())
         );

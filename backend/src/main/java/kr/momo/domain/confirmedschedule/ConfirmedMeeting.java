@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ConfirmedSchedule extends BaseEntity {
+public class ConfirmedMeeting extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class ConfirmedSchedule extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime endDateTime;
 
-    public ConfirmedSchedule(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public ConfirmedMeeting(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         this.meeting = meeting;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
