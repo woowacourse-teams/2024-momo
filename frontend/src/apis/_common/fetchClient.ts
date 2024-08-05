@@ -37,8 +37,12 @@ const createFetchClient = (baseUrl: string) => {
       credentials: isAuthRequire ? 'include' : 'omit',
     });
 
+    if (response.status === 401) {
+      throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+    }
+
     if (!response.ok) {
-      throw new Error(errorMessage);
+      throw new Error(errorMessage || response.statusText);
     }
 
     // 현재 응답 결과로 받아오는 데이터가 모두 data로 감싸서 전달받는 형태이므로 아래와 같이 구현(@낙타)
