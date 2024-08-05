@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
+
+import { loadAuthState, saveAuthState } from '@utils/auth';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -18,13 +20,18 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-interface LoginProviderProps {
+interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: LoginProviderProps) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { isLoggedIn: initialIsLoggedIn, userName: initialUserName } = loadAuthState();
+  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn);
+  const [userName, setUserName] = useState(initialUserName);
+
+  useEffect(() => {
+    saveAuthState(isLoggedIn, userName);
+  }, [isLoggedIn, userName]);
 
   const value: AuthContextType = {
     state: { isLoggedIn, userName },
