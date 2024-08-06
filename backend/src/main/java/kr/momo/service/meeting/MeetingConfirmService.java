@@ -50,15 +50,15 @@ public class MeetingConfirmService {
         return MeetingConfirmResponse.from(confirmedMeeting);
     }
 
-    private void validateNotAlreadyConfirmed(Meeting meeting) {
-        if (confirmedMeetingRepository.existsByMeeting(meeting)) {
-            throw new MomoException(MeetingErrorCode.ALREADY_CONFIRMED);
-        }
-    }
-
     private void validateHostPermission(Attendee attendee) {
         if (attendee.isNotHost()) {
             throw new MomoException(AttendeeErrorCode.ACCESS_DENIED);
+        }
+    }
+
+    private void validateNotAlreadyConfirmed(Meeting meeting) {
+        if (confirmedMeetingRepository.existsByMeeting(meeting)) {
+            throw new MomoException(MeetingErrorCode.ALREADY_CONFIRMED);
         }
     }
 
