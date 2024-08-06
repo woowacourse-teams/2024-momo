@@ -12,16 +12,22 @@ interface Typography extends CSSObject {
 }
 
 interface Size {
-  width?: string;
-  height: string;
+  width?: CSSProperties['width'];
+  height: CSSProperties['height'];
+  padding: CSSProperties['padding'];
   typography: Typography;
 }
 
 const buttonSize: Record<ButtonSize, Size> = {
-  xs: { height: '2.4rem', typography: theme.typography.captionBold },
-  s: { height: '2.4rem', typography: theme.typography.captionBold },
-  m: { height: '3.6rem', typography: theme.typography.bodyBold },
-  full: { width: '100%', height: '3.6rem', typography: theme.typography.bodyBold },
+  xs: { height: '2rem', padding: '0.4rem', typography: theme.typography.captionBold },
+  s: { height: '2.4rem', padding: '0.4rem', typography: theme.typography.captionBold },
+  m: { height: '3.6rem', padding: '0.8rem', typography: theme.typography.bodyBold },
+  full: {
+    width: '100%',
+    padding: '0.8rem',
+    height: '3.6rem',
+    typography: theme.typography.bodyBold,
+  },
 };
 
 export const s_baseButton = (borderRadius: number | string) => css`
@@ -31,7 +37,6 @@ export const s_baseButton = (borderRadius: number | string) => css`
   justify-content: center;
 
   box-sizing: border-box;
-  padding: 0.4rem;
 
   border-radius: ${borderRadius};
 `;
@@ -65,4 +70,5 @@ export const s_size = (size: ButtonSize) => css`
   ${buttonSize[size].typography}
   width: ${buttonSize[size].width};
   height: ${buttonSize[size].height};
+  padding: ${buttonSize[size].padding};
 `;
