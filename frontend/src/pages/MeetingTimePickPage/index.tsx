@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
+import SchedulePickerContainer from '@components/Schedules/Picker/SchedulePickerContainer';
 import SchedulesViewer from '@components/Schedules/SchedulesViewer';
-import TimePickerContainer from '@components/Time/Picker/TimePickerContainer';
 
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
 
@@ -35,11 +35,11 @@ export default function MeetingTimePickPage() {
           firstTime={meetingFrame?.firstTime}
           lastTime={meetingFrame?.lastTime}
           availableDates={meetingFrame?.availableDates}
-          meetingAttendees={meetingFrame?.attendees}
+          meetingAttendees={meetingFrame?.attendeeNames}
         />
       ) : (
         meetingFrame && (
-          <TimePickerContainer
+          <SchedulePickerContainer
             firstTime={meetingFrame?.firstTime}
             lastTime={meetingFrame?.lastTime}
             availableDates={meetingFrame?.availableDates}
