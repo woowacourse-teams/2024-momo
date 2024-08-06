@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { loadAuthState, saveAuthState } from '@utils/auth';
 
@@ -25,13 +26,19 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const { isLoggedIn: initialIsLoggedIn, userName: initialUserName } = loadAuthState();
-  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn);
-  const [userName, setUserName] = useState(initialUserName);
+  const params = useParams<{ uuid?: string }>();
+  const uuid = params.uuid;
+
+  const initialState = uuid ? loadAuthState(uuid) : { isLoggedIn: false, userName: '' };
+
+  const [isLoggedIn, setIsLoggedIn] = useState(initialState.isLoggedIn);
+  const [userName, setUserName] = useState(initialState.userName);
 
   useEffect(() => {
-    saveAuthState(isLoggedIn, userName);
-  }, [isLoggedIn, userName]);
+    if (uuid) {
+      saveAuthState(uuid, { isLoggedIn, userName });
+    }
+  }, [isLoggedIn, userName, uuid]);
 
   const value: AuthContextType = {
     state: { isLoggedIn, userName },

@@ -1,14 +1,18 @@
-export const loadAuthState = () => {
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  const userName = localStorage.getItem('userName');
+export interface AuthState {
+  isLoggedIn: boolean;
+  userName: string;
+}
 
-  return {
-    isLoggedIn: isLoggedIn ? JSON.parse(isLoggedIn) : false,
-    userName: userName ? userName : '',
-  };
+export const loadAuthState = (uuid: string) => {
+  const authState = localStorage.getItem(uuid);
+
+  if (authState) {
+    return JSON.parse(authState);
+  }
+
+  return { isLoggedIn: false, userName: '' };
 };
 
-export const saveAuthState = (isLoggedIn: boolean, userName: string) => {
-  localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn));
-  localStorage.setItem('userName', userName);
+export const saveAuthState = (uuid: string, authState: AuthState) => {
+  localStorage.setItem(uuid, JSON.stringify(authState));
 };
