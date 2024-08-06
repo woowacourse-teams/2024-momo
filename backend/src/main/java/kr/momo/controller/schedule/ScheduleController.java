@@ -52,7 +52,7 @@ public class ScheduleController {
         return new MomoApiResponse<>(response);
     }
 
-    @GetMapping("/api/v1/meetings/{uuid}/recommend-schedules")
+    @GetMapping("/api/v1/meetings/{uuid}/recommended-schedules")
     public MomoApiResponse<SchedulesRecommendResponse> recommendSchedules(
             @PathVariable String uuid, @RequestParam String recommendType, @RequestParam List<String> attendeeNames
     ) {

@@ -151,7 +151,7 @@ class ScheduleControllerTest {
                 .pathParam("uuid", meeting.getUuid())
                 .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/recommend-schedules")
+                .when().get("/api/v1/meetings/{uuid}/recommended-schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
