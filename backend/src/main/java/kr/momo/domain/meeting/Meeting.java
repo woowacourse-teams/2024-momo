@@ -56,6 +56,11 @@ public class Meeting extends BaseEntity {
         return timeslotInterval.getValidatedTimeslot(other);
     }
 
+    public void validateContainedTimes(LocalTime startTime, LocalTime endTime) {
+        this.timeslotInterval.validateContainedWithin(startTime);
+        this.timeslotInterval.validateContainedWithin(endTime.minusMinutes(30));
+    }
+
     public LocalTime startTimeslotTime() {
         return timeslotInterval.getStartTimeslot().getLocalTime();
     }

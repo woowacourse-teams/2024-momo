@@ -51,4 +51,10 @@ public class TimeslotInterval {
     private boolean isNotContainedWithin(LocalTime other) {
         return this.startTimeslot.isAfter(other) || this.endTimeslot.isBefore(other);
     }
+
+    public void validateContainedWithin(LocalTime other) {
+        if (isNotContainedWithin(other)) {
+            throw new MomoException(ScheduleErrorCode.INVALID_SCHEDULE_TIMESLOT);
+        }
+    }
 }

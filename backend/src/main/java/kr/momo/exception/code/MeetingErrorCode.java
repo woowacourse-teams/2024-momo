@@ -8,6 +8,7 @@ public enum MeetingErrorCode implements ErrorCodeType {
     NOT_FOUND_MEETING(HttpStatus.NOT_FOUND, "존재하지 않는 약속 정보 입니다."),
     INVALID_TIME_RANGE(HttpStatus.BAD_REQUEST, "끝 시간은 시작 시간 이후가 되어야 합니다."),
     MEETING_LOCKED(HttpStatus.BAD_REQUEST, "약속이 잠겨있어 수행할 수 없습니다."),
+    MEETING_UNLOCKED(HttpStatus.BAD_REQUEST, "약속이 잠겨있지 않아 수행할 수 없습니다."),
     PAST_NOT_PERMITTED(HttpStatus.BAD_REQUEST, "과거 날짜로는 약속을 생성할 수 없습니다.");
 
     private final HttpStatus httpStatus;
