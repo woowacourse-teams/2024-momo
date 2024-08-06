@@ -1,18 +1,30 @@
+import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/meeting';
+
+import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import {
   s_attendeesContainer,
   s_tabButton,
 } from '@pages/MeetingTimePickPage/MeetingTimePickPage.styles';
 
-import { handleGetMeetingSchedules } from '@apis/getMeetingSchedules';
+import Button from '@components/_common/Button';
+
+import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
+
+import type { MeetingAllSchedules, MeetingSingleSchedule } from '@apis/schedules';
+import { handleGetMeetingSchedules } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
-import AllSchedules from './AllSchdules';
+import AllSchedules from './AllSchedule';
+import {
+  s_buttonContainer,
+  s_datesControlButton,
+  s_datesControlButtonContainer,
+} from './Schedules.styles';
 import SingleSchedule from './SingleSchedule';
 
 interface SchedulesViewerProps {
@@ -31,11 +43,18 @@ export default function SchedulesViewer({
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
-  const [selectedAttendee, setSelectedAttendee] = useState('');
-  const handleAttendeeChange = (attendee: string) => {
-    if (selectedAttendee === attendee) return;
-    setSelectedAttendee(attendee);
-  };
+  const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
+
+  const {
+    currentDates,
+    increaseDatePage,
+    decreaseDatePage,
+    isMultiPage,
+    isFirstPage,
+    isLastPage,
+    selectedAttendee,
+    handleAttendeeChange,
+  } = useSelectSchedule(availableDates);
 
   const { data: meetingSchedules } = useQuery({
     queryKey: [QUERY_KEY.meetingSchedules, selectedAttendee],
@@ -59,21 +78,48 @@ export default function SchedulesViewer({
           </button>
         ))}
       </section>
-      {selectedAttendee === '' ? (
-        <AllSchedules
-          firstTime={firstTime}
-          lastTime={lastTime}
-          availableDates={availableDates}
-          allSchedules={meetingSchedules as MeetingAllSchedules}
-        />
-      ) : (
-        <SingleSchedule
-          firstTime={firstTime}
-          lastTime={lastTime}
-          availableDates={availableDates}
-          singleSchedule={meetingSchedules as MeetingSingleSchedule}
-        />
-      )}
+      <section
+        css={css`
+          position: relative;
+        `}
+      >
+        {isMultiPage && (
+          <div css={s_datesControlButtonContainer}>
+            <button
+              css={s_datesControlButton}
+              onClick={() => decreaseDatePage()}
+              disabled={isFirstPage}
+            >
+              {'<'}
+            </button>
+            <button
+              css={s_datesControlButton}
+              onClick={() => increaseDatePage()}
+              disabled={isLastPage}
+            >
+              {'>'}
+            </button>
+          </div>
+        )}
+        {selectedAttendee === '' ? (
+          <AllSchedules
+            firstTime={firstTime}
+            lastTime={lastTime}
+            availableDates={currentDates}
+            allSchedules={meetingSchedules as MeetingAllSchedules}
+          />
+        ) : (
+          <SingleSchedule
+            firstTime={firstTime}
+            lastTime={lastTime}
+            availableDates={currentDates}
+            singleSchedule={meetingSchedules as MeetingSingleSchedule}
+          />
+        )}
+      </section>
+      <div css={s_buttonContainer}>
+        <Button text="수정하기" onClick={handleToggleIsTimePickerUpdate} />
+      </div>
     </>
   );
 }
