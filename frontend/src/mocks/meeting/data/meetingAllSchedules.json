@@ -4,32 +4,37 @@
       {
         "date": "2024-07-24",
         "time": "13:00",
-        "attendeeNames": ["마크", "배키", "다온"]
+        "attendeeNames": ["해리", "낙타", "빙봉"]
       },
       {
         "date": "2024-07-24",
         "time": "14:00",
-        "attendeeNames": ["배키", "다온"]
+        "attendeeNames": ["낙타", "빙봉"]
       },
       {
         "date": "2024-07-25",
         "time": "14:00",
-        "attendeeNames": ["마크", "다온"]
+        "attendeeNames": ["해리", "빙봉"]
       },
       {
         "date": "2024-07-25",
         "time": "15:00",
-        "attendeeNames": ["마크", "배키"]
+        "attendeeNames": ["해리", "낙타"]
       },
       {
         "date": "2024-07-26",
         "time": "16:00",
-        "attendeeNames": ["마크"]
+        "attendeeNames": ["해리"]
       },
       {
         "date": "2024-07-26",
         "time": "17:00",
-        "attendeeNames": ["다온"]
+        "attendeeNames": ["빙봉"]
+      },
+      {
+        "date": "2024-07-27",
+        "time": "17:00",
+        "attendeeNames": ["빙봉"]
       }
     ]
   }
