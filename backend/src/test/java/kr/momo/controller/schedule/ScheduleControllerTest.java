@@ -82,7 +82,7 @@ class ScheduleControllerTest {
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
 
-        ScheduleCreateRequest scheduleCreateRequest = new ScheduleCreateRequest(attendee.name(), dateTimes);
+        ScheduleCreateRequest scheduleCreateRequest = new ScheduleCreateRequest(dateTimes);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
