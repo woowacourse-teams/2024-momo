@@ -1,7 +1,5 @@
 import { BASE_URL } from '@constants/api';
 
-import getHeaders from './getHeaders';
-
 export type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface FetchOption {
@@ -28,11 +26,12 @@ const createFetchClient = (baseUrl: string) => {
     body,
     isAuthRequire,
   }: FetchOption): Promise<T> => {
-    const headers = getHeaders();
     const url = `${baseUrl}${path}`;
     const response = await fetch(url, {
       method,
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: body ? JSON.stringify(body) : null,
       credentials: isAuthRequire ? 'include' : 'omit',
     });
