@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { TooltipPosition } from 'types/tooltip';
 
@@ -31,12 +31,6 @@ export default function Tooltip({ content, children, position = 'top' }: Tooltip
   const positionStyle = {
     ...getTooltipPosition(position, triggerRef?.current?.getBoundingClientRect()),
   };
-
-  useEffect(() => {
-    if (triggerRef.current) {
-      console.log(triggerRef.current.getBoundingClientRect());
-    }
-  }, [visible]);
 
   return (
     <div css={tooltipContainer}>
