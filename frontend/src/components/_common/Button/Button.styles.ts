@@ -36,32 +36,33 @@ export const s_baseButton = (borderRadius: number | string) => css`
   border-radius: ${borderRadius};
 `;
 
+export const s_variant = {
+  primary: css`
+    color: ${theme.colors.white};
+    background-color: ${theme.colors.primary};
+    border: none;
+
+    &:hover {
+      color: ${theme.colors.primary};
+      background-color: ${theme.colors.white};
+      border: 1px solid ${theme.colors.primary};
+    }
+  `,
+  secondary: css`
+    color: ${theme.colors.primary};
+    background-color: ${theme.colors.white};
+    border: 1px solid ${theme.colors.primary};
+
+    &:hover {
+      color: ${theme.colors.white};
+      background-color: ${theme.colors.primary};
+      border: none;
+    }
+  `,
+};
+
 export const s_size = (size: ButtonSize) => css`
   ${buttonSize[size].typography}
   width: ${buttonSize[size].width};
   height: ${buttonSize[size].height};
-`;
-
-export const s_primary = css`
-  color: ${theme.colors.white};
-  background-color: ${theme.colors.primary};
-  border: none;
-
-  &:hover {
-    color: ${theme.colors.primary};
-    background-color: ${theme.colors.white};
-    border: 1px solid ${theme.colors.primary};
-  }
-`;
-
-export const s_secondary = css`
-  color: ${theme.colors.primary};
-  background-color: ${theme.colors.white};
-  border: 1px solid ${theme.colors.primary};
-
-  &:hover {
-    color: ${theme.colors.white};
-    background-color: ${theme.colors.primary};
-    border: none;
-  }
 `;
