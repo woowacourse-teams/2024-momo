@@ -54,7 +54,9 @@ public class AttendeeGroup {
         return groupCombination;
     }
 
-    private void addCombinationAttendeeGroup(Map<Attendee, Boolean> isVisit, List<AttendeeGroup> groupCombination, int index) {
+    private void addCombinationAttendeeGroup(
+            Map<Attendee, Boolean> isVisit, List<AttendeeGroup> groupCombination, int index
+    ) {
         if (index == attendees.size()) {
             AttendeeGroup attendeeGroup = groupIfAttendee(isVisit);
             groupCombination.add(attendeeGroup);
