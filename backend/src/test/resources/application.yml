@@ -25,3 +25,5 @@ security:
     expiration-period: 1h
   allow-origins:
     - http://localhost:[*]
+  cookie:
+    domain: "localhost"
