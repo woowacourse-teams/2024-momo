@@ -1,5 +1,6 @@
 package kr.momo.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,12 @@ public class CookieManager {
     private static final String SAME_SITE_OPTION = "None";
     private static final long SESSION_COOKIE_AGE = -1;
     private static final long EXPIRED_COOKIE_AGE = 0;
+
+    private final String cookieDomain;
+
+    public CookieManager(@Value("${security.cookie.domain}") String cookieDomain) {
+        this.cookieDomain = cookieDomain;
+    }
 
     public String createNewCookie(String value, String path) {
         return createCookie(value, path, SESSION_COOKIE_AGE);
@@ -23,6 +30,7 @@ public class CookieManager {
         return ResponseCookie.from(ACCESS_TOKEN, value)
                 .httpOnly(true)
                 .secure(true)
+                .domain(cookieDomain)
                 .path(path)
                 .sameSite(SAME_SITE_OPTION)
                 .maxAge(maxAge)
