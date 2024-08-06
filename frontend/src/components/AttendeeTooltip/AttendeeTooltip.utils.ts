@@ -1,4 +1,4 @@
-import type { MeetingAllSchedules } from 'types/meeting';
+import type { MeetingAllSchedules } from '@apis/schedules';
 
 export const findAttendeeNames = (
   allSchedules: MeetingAllSchedules,
