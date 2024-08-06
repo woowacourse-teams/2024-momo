@@ -64,8 +64,10 @@ public class MeetingConfirmService {
     }
 
     private void validateTimeRange(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        if (startDateTime.isAfter(endDateTime)
-                || !meeting.isContainedWithinTimeRange(startDateTime.toLocalTime(), endDateTime.toLocalTime())) {
+        boolean isNotContained = !meeting.isContainedWithinTimeRange(
+                startDateTime.toLocalTime(), endDateTime.toLocalTime()
+        );
+        if (startDateTime.isAfter(endDateTime) || isNotContained) {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }
@@ -75,18 +77,15 @@ public class MeetingConfirmService {
         LocalDate startDate = startDateTime.toLocalDate();
         LocalDate endDate = endDateTime.toLocalDate();
 
-        if (startDate.equals(endDate)) {
-            if (availableDates.notExistsByDate(startDate)) {
-                throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
-            }
-            return;
-        }
-
-        if (meeting.isNotFullTime()) {
+        if (startDate.equals(endDate) && availableDates.notExistsByDate(startDate)) {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
 
-        if (availableDates.isContainedWithinDateRange(startDate, endDate)) {
+        if (!startDate.equals(endDate) && meeting.isNotFullTime()) {
+            throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
+        }
+
+        if (availableDates.isNotConsecutiveDay(startDate, endDate)) {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }

@@ -51,21 +51,17 @@ public class AvailableDates {
                 .noneMatch(availableDate -> availableDate.isSameDate(other));
     }
 
-    public boolean isContainedWithinDateRange(LocalDate startDate, LocalDate endDate) {
-        List<AvailableDate> sortedDates = availableDates.stream()
+    public boolean isNotConsecutiveDay(LocalDate startDateInclusive, LocalDate endDateInclusive) {
+        long availableDateRangeCount = availableDates.stream()
                 .sorted(comparing(AvailableDate::getDate))
-                .toList();
+                .dropWhile(date -> date.isBefore(startDateInclusive))
+                .takeWhile(date -> !date.isAfter(endDateInclusive))
+                .count();
 
-        int count = 0;
-        for (AvailableDate date : sortedDates) {
-            if (date.isAfter(endDate)) {
-                break;
-            }
-            if ((date.isEqual(startDate) || date.isEqual(endDate))
-                    || (date.isAfter(startDate) && date.isBefore(endDate))) {
-                count++;
-            }
-        }
-        return count != endDate.toEpochDay() - startDate.toEpochDay() + 1;
+        return isNotDateCountEqual(startDateInclusive, endDateInclusive, availableDateRangeCount);
+    }
+
+    private boolean isNotDateCountEqual(LocalDate startDateInclusive, LocalDate endDateInclusive, long count) {
+        return count != endDateInclusive.toEpochDay() - startDateInclusive.toEpochDay() + 1;
     }
 }
