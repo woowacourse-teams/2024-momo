@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
-import { s_buttonContainer, s_container, s_input, s_switch } from './ToggleButton.styles';
+import { s_buttonContainer, s_container, s_input } from './ToggleButton.styles';
 
 interface ToggleButtonProps {
   id: string;
@@ -17,9 +17,12 @@ export default function ToggleButton({
   return (
     <div css={s_container}>
       {children}
-      <label htmlFor={id} onClick={onClick} css={s_buttonContainer(isToggled)}>
-        <span css={s_switch}>선택</span>
-      </label>
+      <label
+        aria-label="토글체크버튼"
+        htmlFor={id}
+        onClick={onClick}
+        css={s_buttonContainer(isToggled)}
+      />
       <input type="checkbox" id={id} checked={isToggled} css={s_input} />
     </div>
   );

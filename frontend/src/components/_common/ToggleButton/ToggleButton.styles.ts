@@ -47,7 +47,3 @@ export const s_buttonContainer = (isToggled: boolean) => css`
     transition: all 0.2s;
   }
 `;
-
-export const s_switch = css`
-  display: none;
-`;
