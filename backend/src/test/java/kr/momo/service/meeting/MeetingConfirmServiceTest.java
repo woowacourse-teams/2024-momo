@@ -20,7 +20,6 @@ import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
-import kr.momo.exception.code.ScheduleErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
@@ -133,7 +132,7 @@ class MeetingConfirmServiceTest {
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE.message());
+                .hasMessage(MeetingErrorCode.ALREADY_CONFIRMED.message());
     }
 
     @DisplayName("약속에 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")
@@ -160,6 +159,6 @@ class MeetingConfirmServiceTest {
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(ScheduleErrorCode.INVALID_SCHEDULE_TIMESLOT.message());
+                .hasMessage(MeetingErrorCode.INVALID_DATETIME_RANGE.message());
     }
 }

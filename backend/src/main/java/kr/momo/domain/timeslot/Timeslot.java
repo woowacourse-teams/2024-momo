@@ -71,16 +71,8 @@ public enum Timeslot {
                 .orElseThrow(() -> new MomoException(TimeslotErrorCode.INVALID_TIMESLOT));
     }
 
-    public boolean isAfter(Timeslot other) {
-        return this.localTime.isAfter(other.localTime);
-    }
-
     public boolean isAfter(LocalTime other) {
         return this.localTime.isAfter(other);
-    }
-
-    public boolean isBefore(Timeslot other) {
-        return this.localTime.isBefore(other.localTime);
     }
 
     public boolean isBefore(LocalTime other) {

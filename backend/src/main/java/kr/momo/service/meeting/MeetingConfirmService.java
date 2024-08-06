@@ -52,7 +52,7 @@ public class MeetingConfirmService {
 
     private void validateNotAlreadyConfirmed(Meeting meeting) {
         if (confirmedMeetingRepository.existsByMeeting(meeting)) {
-            throw new MomoException(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
+            throw new MomoException(MeetingErrorCode.ALREADY_CONFIRMED);
         }
     }
 
@@ -69,10 +69,10 @@ public class MeetingConfirmService {
     }
 
     private void validateTimeRange(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isNotContained = !meeting.isContainedWithinTimeRange(
+        boolean isNotTimeInRange = !meeting.isTimeInRange(
                 startDateTime.toLocalTime(), endDateTime.toLocalTime()
         );
-        if (startDateTime.isAfter(endDateTime) || isNotContained) {
+        if (startDateTime.isAfter(endDateTime) || isNotTimeInRange) {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }

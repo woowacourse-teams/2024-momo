@@ -52,10 +52,8 @@ public class Meeting extends BaseEntity {
         isLocked = false;
     }
 
-    public boolean isContainedWithinTimeRange(LocalTime startTime, LocalTime endTime) {
-        Timeslot startTimeSlot = getValidatedTimeslot(startTime);
-        Timeslot endTimeSlot = getValidatedTimeslot(endTime.minusMinutes(30));
-        return timeslotInterval.isContainedWithinTimeSlotRange(startTimeSlot, endTimeSlot);
+    public boolean isTimeInRange(LocalTime startTime, LocalTime endTime) {
+        return timeslotInterval.isTimeInRange(startTime, endTime);
     }
 
     public boolean isNotFullTime() {
