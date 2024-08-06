@@ -101,6 +101,7 @@ export const getMeetingMySchedule = async (uuid: string): Promise<MeetingSingleS
     path,
     method: 'GET',
     errorMessage: '내 시간 정보를 조회하는 중 문제가 발생했어요 :(',
+    isAuthRequire: true,
   });
 
   return {

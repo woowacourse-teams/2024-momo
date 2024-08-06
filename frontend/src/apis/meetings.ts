@@ -60,6 +60,7 @@ export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo>
     method: 'POST',
     body: request,
     errorMessage: '약속을 생성하는데 문제가 발생했어요 :(',
+    isAuthRequire: true,
   });
 
   return {
