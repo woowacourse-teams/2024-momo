@@ -14,6 +14,7 @@ import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class MeetingConfirmService {
     private final ConfirmedMeetingRepository confirmedMeetingRepository;
 
     @Transactional
-    public void create(String uuid, long attendeeId, MeetingConfirmRequest request) {
+    public MeetingConfirmResponse create(String uuid, long attendeeId, MeetingConfirmRequest request) {
         LocalDateTime startDateTime = request.startDateTime();
         LocalDateTime endDateTime = request.endDateTime();
 
@@ -37,18 +38,22 @@ public class MeetingConfirmService {
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
+
         validateHostPermission(attendee);
-
-        if (confirmedMeetingRepository.existsByMeeting(meeting)) {
-            throw new MomoException(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
-        }
-
+        validateNotAlreadyConfirmed(meeting);
         validateMeetingLocked(meeting);
         validateTimeRange(meeting, startDateTime, endDateTime);
         validateDateRange(meeting, startDateTime, endDateTime);
 
         ConfirmedMeeting confirmedMeeting = new ConfirmedMeeting(meeting, startDateTime, endDateTime);
         confirmedMeetingRepository.save(confirmedMeeting);
+        return MeetingConfirmResponse.from(confirmedMeeting);
+    }
+
+    private void validateNotAlreadyConfirmed(Meeting meeting) {
+        if (confirmedMeetingRepository.existsByMeeting(meeting)) {
+            throw new MomoException(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
+        }
     }
 
     private void validateHostPermission(Attendee attendee) {

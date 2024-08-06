@@ -7,6 +7,7 @@ import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingConfirmService;
 import kr.momo.service.meeting.MeetingService;
+import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -44,17 +45,18 @@ public class MeetingController {
     }
 
     @PostMapping("/api/v1/meetings/{uuid}/confirm")
-    public ResponseEntity<Void> confirm(
+    public ResponseEntity<MomoApiResponse<MeetingConfirmResponse>> confirm(
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid MeetingConfirmRequest request
     ) {
-        meetingConfirmService.create(uuid, id, request);
-        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed")).build();
+        MeetingConfirmResponse response = meetingConfirmService.create(uuid, id, request);
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed"))
+                .body(new MomoApiResponse<>(response));
     }
 
     @GetMapping("/api/v1/meetings/{uuid}")
     public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
-        MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
-        return new MomoApiResponse<>(meetingResponse);
+        MeetingResponse response = meetingService.findByUUID(uuid);
+        return new MomoApiResponse<>(response);
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/sharing")
