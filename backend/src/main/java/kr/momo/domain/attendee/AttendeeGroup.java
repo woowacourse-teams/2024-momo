@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import lombok.EqualsAndHashCode;
@@ -31,13 +32,13 @@ public class AttendeeGroup {
     }
 
     private boolean isNotUnique(List<Attendee> attendees) {
-        return !attendees.stream()
+        return attendees.stream()
                 .map(Attendee::name)
-                .allMatch(new HashSet<>()::add);
+                .noneMatch(new HashSet<>()::add);
     }
 
     public AttendeeGroup filterAttendeesByName(List<String> names) {
-        HashSet<String> attendeeNames = new HashSet<>(names);
+        Set<String> attendeeNames = new HashSet<>(names);
         return attendees.stream()
                 .filter(attendee -> attendeeNames.contains(attendee.name()))
                 .collect(collectingAndThen(toList(), AttendeeGroup::new));
