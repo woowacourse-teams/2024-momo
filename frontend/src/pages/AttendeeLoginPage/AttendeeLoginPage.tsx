@@ -35,7 +35,7 @@ export default function AttendeeLoginPage() {
 
     setIsLoggedIn(true);
     setUserName(userName);
-    navigate(-1);
+    navigate(`/meeting/${uuid}`);
   };
 
   return (
