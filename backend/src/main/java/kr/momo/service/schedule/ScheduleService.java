@@ -32,7 +32,7 @@ import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
-import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
+import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
@@ -131,11 +131,11 @@ public class ScheduleService {
         AttendeeGroup filteredAttendeeGroup = allAttendeeGroup.filterAttendeesByName(names);
         List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findAttendeeGroupCombination();
 
-        List<ScheduleRecommendResponse> recommendResponses = new ArrayList<>();
+        List<RecommendedScheduleResponse> recommendResponses = new ArrayList<>();
         for (AttendeeGroup group : groupCombinations) {
             List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(group.getAttendees());
-            List<ScheduleRecommendResponse> recommendResponse = createRecommendResponses(schedules);
-            List<ScheduleRecommendResponse> response = sortedAndFilterByRecommendType(
+            List<RecommendedScheduleResponse> recommendResponse = createRecommendResponses(schedules);
+            List<RecommendedScheduleResponse> response = sortedAndFilterByRecommendType(
                     recommendType, group.size(), recommendResponse
             );
             recommendResponses.addAll(response);
@@ -144,7 +144,7 @@ public class ScheduleService {
         return SchedulesRecommendResponse.of(allAttendeeGroup, recommendResponses);
     }
 
-    private List<ScheduleRecommendResponse> createRecommendResponses(List<Schedule> schedules) {
+    private List<RecommendedScheduleResponse> createRecommendResponses(List<Schedule> schedules) {
         Map<LocalDateTime, AttendeeGroup> attendeeByDateTime = groupAttendeeByDateTime(schedules);
         Iterator<LocalDateTime> iterator = getIteratorBySortedDateTime(attendeeByDateTime);
         if (!iterator.hasNext()) {
@@ -157,14 +157,14 @@ public class ScheduleService {
         LocalDateTime currentDateTime = startDateTime;
         AttendeeGroup currentGroup = startGroup;
 
-        List<ScheduleRecommendResponse> responses = new ArrayList<>();
+        List<RecommendedScheduleResponse> responses = new ArrayList<>();
 
         while (iterator.hasNext()) {
             LocalDateTime nextDateTime = iterator.next();
             AttendeeGroup nextGroup = attendeeByDateTime.get(nextDateTime);
 
             if (isDiscontinuousDateTime(currentDateTime, nextDateTime, currentGroup, nextGroup)) {
-                responses.add(ScheduleRecommendResponse.of(startDateTime, currentDateTime, startGroup));
+                responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, startGroup));
                 startDateTime = nextDateTime;
                 startGroup = nextGroup;
             }
@@ -172,7 +172,7 @@ public class ScheduleService {
             currentDateTime = nextDateTime;
             currentGroup = nextGroup;
         }
-        responses.add(ScheduleRecommendResponse.of(startDateTime, currentDateTime, startGroup));
+        responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, startGroup));
         return responses;
     }
 
@@ -183,10 +183,10 @@ public class ScheduleService {
                 .iterator();
     }
 
-    private List<ScheduleRecommendResponse> sortedAndFilterByRecommendType(
-            String recommendType, int groupSize, List<ScheduleRecommendResponse> scheduleRecommendResponses
+    private List<RecommendedScheduleResponse> sortedAndFilterByRecommendType(
+            String recommendType, int groupSize, List<RecommendedScheduleResponse> recommendedScheduleRespons
     ) {
-        return scheduleRecommendResponses.stream()
+        return recommendedScheduleRespons.stream()
                 .filter(response -> response.attendeeNames().size() == groupSize)
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();

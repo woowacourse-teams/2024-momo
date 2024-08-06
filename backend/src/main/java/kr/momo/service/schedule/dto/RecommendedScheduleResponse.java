@@ -11,7 +11,7 @@ import java.util.Locale;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 
-public record ScheduleRecommendResponse(
+public record RecommendedScheduleResponse(
         LocalDate startDate,
         String startDayOfWeek,
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime startTime,
@@ -21,14 +21,14 @@ public record ScheduleRecommendResponse(
         List<String> attendeeNames
 ) {
 
-    public static ScheduleRecommendResponse of(
+    public static RecommendedScheduleResponse of(
             LocalDateTime startTime, LocalDateTime endTime, AttendeeGroup attendeeGroup
     ) {
         List<String> attendeeNames = attendeeGroup.getAttendees().stream()
                 .map(Attendee::name)
                 .toList();
 
-        return new ScheduleRecommendResponse(
+        return new RecommendedScheduleResponse(
                 startTime.toLocalDate(),
                 startTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREA),
                 startTime.toLocalTime(),

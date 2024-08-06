@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.ScheduleErrorCode;
-import kr.momo.service.schedule.dto.ScheduleRecommendResponse;
+import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import lombok.Getter;
 
 @Getter
@@ -28,15 +28,15 @@ public enum ScheduleRecommender {
                     })
     );
 
-    private static Comparator<ScheduleRecommendResponse> descendingByAttendees() {
-        return Comparator.comparingInt((ScheduleRecommendResponse r) -> r.attendeeNames().size())
+    private static Comparator<RecommendedScheduleResponse> descendingByAttendees() {
+        return Comparator.comparingInt((RecommendedScheduleResponse r) -> r.attendeeNames().size())
                 .reversed();
     }
 
     private final String type;
-    private final Comparator<ScheduleRecommendResponse> comparator;
+    private final Comparator<RecommendedScheduleResponse> comparator;
 
-    ScheduleRecommender(String type, Comparator<ScheduleRecommendResponse> comparator) {
+    ScheduleRecommender(String type, Comparator<RecommendedScheduleResponse> comparator) {
         this.type = type;
         this.comparator = comparator;
     }
