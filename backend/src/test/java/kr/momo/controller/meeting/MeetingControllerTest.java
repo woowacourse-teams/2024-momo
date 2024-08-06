@@ -287,7 +287,7 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed-schedule");
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed");
     }
 
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
