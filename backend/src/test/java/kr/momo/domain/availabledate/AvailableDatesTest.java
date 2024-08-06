@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AvailableDateErrorCode;
@@ -13,7 +14,9 @@ import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AvailableDatesTest {
 
@@ -97,5 +100,46 @@ class AvailableDatesTest {
         boolean result = availableDates.isAnyBefore(today);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @DisplayName("start일자부터 end일 사이의 모든 날짜가 가능한 날짜인지 확인한다.")
+    @ParameterizedTest
+    @MethodSource("isNotConsecutiveDayProvider")
+    void isNotConsecutiveDay(List<LocalDate> dates, LocalDate startDate, LocalDate endDate, boolean expected) {
+        AvailableDates availableDates = new AvailableDates(dates, null);
+
+        boolean actual = availableDates.isNotConsecutiveDay(startDate, endDate);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> isNotConsecutiveDayProvider() {
+        return Stream.of(
+                Arguments.of(
+                        List.of(
+                                LocalDate.of(2024, 8, 1),
+                                LocalDate.of(2024, 8, 2),
+                                LocalDate.of(2024, 8, 3)
+                        ),
+                        LocalDate.of(2024, 8, 1),
+                        LocalDate.of(2024, 8, 3),
+                        false),
+                Arguments.of(
+                        List.of(
+                                LocalDate.of(2024, 8, 1),
+                                LocalDate.of(2024, 8, 3)
+                        ),
+                        LocalDate.of(2024, 8, 1),
+                        LocalDate.of(2024, 8, 3),
+                        true),
+                Arguments.of(
+                        List.of(
+                                LocalDate.of(2024, 8, 2),
+                                LocalDate.of(2024, 8, 3)
+                        ),
+                        LocalDate.of(2024, 8, 1),
+                        LocalDate.of(2024, 8, 3),
+                        true)
+        );
     }
 }
