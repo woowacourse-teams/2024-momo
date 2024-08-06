@@ -4,23 +4,23 @@ import { s_buttonContainer, s_container, s_input, s_switch } from './ToggleButto
 
 interface ToggleButtonProps {
   id: string;
-  isClicked: boolean;
+  isToggled: boolean;
   onClick: () => void;
 }
 
 export default function ToggleButton({
   id,
   children,
-  isClicked,
+  isToggled,
   onClick,
 }: PropsWithChildren<ToggleButtonProps>) {
   return (
     <div css={s_container}>
       {children}
-      <label htmlFor={id} onClick={onClick} css={s_buttonContainer(isClicked)}>
+      <label htmlFor={id} onClick={onClick} css={s_buttonContainer(isToggled)}>
         <span css={s_switch}>선택</span>
       </label>
-      <input type="checkbox" id={id} checked={isClicked} css={s_input} />
+      <input type="checkbox" id={id} checked={isToggled} css={s_input} />
     </div>
   );
 }

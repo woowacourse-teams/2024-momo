@@ -15,7 +15,7 @@ export const s_input = css`
   left: -1000%;
 `;
 
-export const s_buttonContainer = (isClicked: boolean) => css`
+export const s_buttonContainer = (isToggled: boolean) => css`
   cursor: pointer;
 
   position: relative;
@@ -27,7 +27,7 @@ export const s_buttonContainer = (isClicked: boolean) => css`
   height: 2.4rem;
   padding: 0.4rem;
 
-  background-color: ${isClicked ? theme.colors.primary : theme.colors.grey.primary};
+  background-color: ${isToggled ? theme.colors.primary : theme.colors.grey.primary};
   border: none;
   border-radius: 1.2rem;
 
@@ -35,7 +35,7 @@ export const s_buttonContainer = (isClicked: boolean) => css`
     content: '';
 
     position: absolute;
-    transform: ${isClicked ? 'translateX(2.4rem)' : 'translateX(0)'};
+    transform: ${isToggled ? 'translateX(2.4rem)' : 'translateX(0)'};
 
     width: 1.6rem;
     height: 1.6rem;

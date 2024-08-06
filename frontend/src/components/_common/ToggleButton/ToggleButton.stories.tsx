@@ -9,15 +9,15 @@ const meta = {
   tags: ['autodocs'],
   decorators: [
     (Story, context) => {
-      const [{ isClicked }, setArgState] = useArgs();
+      const [{ isToggled }, setArgState] = useArgs();
 
-      const handleClick = () => setArgState({ isClicked: !isClicked });
+      const handleClick = () => setArgState({ isToggled: !isToggled });
 
       return (
         <Story
           args={{
             ...context.args,
-            isClicked,
+            isToggled,
             onClick: handleClick,
           }}
         />
@@ -33,7 +33,7 @@ type Story = StoryObj<typeof meta>;
 export const UnToggled: Story = {
   args: {
     id: 'toggle-button',
-    isClicked: false,
+    isToggled: false,
     onClick: () => {},
   },
 };
@@ -41,7 +41,7 @@ export const UnToggled: Story = {
 export const Toggled: Story = {
   args: {
     id: 'toggled-button',
-    isClicked: true,
+    isToggled: true,
     onClick: () => {},
   },
 };
@@ -50,7 +50,7 @@ export const WithLabel: Story = {
   args: {
     id: 'toggled-button',
     children: '응답 다시 받기',
-    isClicked: true,
+    isToggled: true,
     onClick: () => {},
   },
 };
