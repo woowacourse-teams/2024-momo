@@ -26,7 +26,7 @@ public class AttendeeController {
             @PathVariable String uuid, @RequestBody @Valid AttendeeLoginRequest request
     ) {
         AttendeeLoginResponse response = attendeeService.login(uuid, request);
-        String path = String.format("/meeting/%s", uuid);
+        String path = cookieManager.pathOf(uuid);
         String cookie = cookieManager.createNewCookie(response.token(), path);
 
         return ResponseEntity.ok()
