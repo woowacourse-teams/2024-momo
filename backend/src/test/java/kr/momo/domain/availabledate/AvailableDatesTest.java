@@ -12,6 +12,8 @@ import kr.momo.exception.code.AvailableDateErrorCode;
 import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AvailableDatesTest {
 
@@ -75,5 +77,25 @@ class AvailableDatesTest {
         // when then
         assertThatCode(() -> new AvailableDates(dates, meeting))
                 .doesNotThrowAnyException();
+    }
+
+    @DisplayName("가능한 시간 목록 중 하나라도 비교군보다 이전 시간인지 판단한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"-3,-2,-1,true", "-2,-1,0,true", "-1,0,1,true", "0,1,2,false", "1,2,3,false"})
+    void isAnyBefore(int plusDays1, int plusDays2, int plusDays3, boolean expected) {
+        LocalDate today = LocalDate.now();
+        LocalDate firstDay = today.plusDays(plusDays1);
+        LocalDate secondDay = today.plusDays(plusDays2);
+        LocalDate thirdDay = today.plusDays(plusDays3);
+        Meeting meeting = MeetingFixture.GAME.create();
+        AvailableDates availableDates = new AvailableDates(List.of(
+                new AvailableDate(firstDay, meeting),
+                new AvailableDate(secondDay, meeting),
+                new AvailableDate(thirdDay, meeting)
+        ));
+
+        boolean result = availableDates.isAnyBefore(today);
+
+        assertThat(result).isEqualTo(expected);
     }
 }

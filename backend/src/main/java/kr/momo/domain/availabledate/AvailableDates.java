@@ -15,7 +15,7 @@ public class AvailableDates {
     private final List<AvailableDate> availableDates;
 
     public AvailableDates(List<LocalDate> dates, Meeting meeting) {
-        validateDuplicatedDates(dates);
+        validateUniqueDates(dates);
         this.availableDates = dates.stream()
                 .map(date -> new AvailableDate(date, meeting))
                 .toList();
@@ -25,11 +25,16 @@ public class AvailableDates {
         this.availableDates = availableDates;
     }
 
-    private void validateDuplicatedDates(List<LocalDate> dates) {
+    private void validateUniqueDates(List<LocalDate> dates) {
         Set<LocalDate> dateSet = new HashSet<>(dates);
         if (dateSet.size() != dates.size()) {
             throw new MomoException(AvailableDateErrorCode.DUPLICATED_DATE);
         }
+    }
+
+    public boolean isAnyBefore(LocalDate other) {
+        return availableDates.stream()
+                .anyMatch(date -> date.isBefore(other));
     }
 
     public AvailableDate findByDate(LocalDate other) {

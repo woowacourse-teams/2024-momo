@@ -3,9 +3,13 @@ package kr.momo.service.meeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.doReturn;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -28,10 +32,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class MeetingServiceTest {
+
+    private static final Clock FIXED_CLOCK = Clock.fixed(
+            Instant.parse("2024-08-01T10:15:30Z"), ZoneId.of("Asia/Seoul")
+    );
+
+    @SpyBean
+    private Clock clock;
 
     @Autowired
     private MeetingService meetingService;
@@ -93,19 +105,43 @@ class MeetingServiceTest {
     @Test
     void throwExceptionWhenDuplicatedDates() {
         //given
-        LocalDate date = LocalDate.of(2024, 7, 24);
+        setFixedClock();
+        LocalDate today = LocalDate.now(clock);
         MeetingCreateRequest request = new MeetingCreateRequest(
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                List.of(date, date),
+                List.of(today, today),
                 LocalTime.of(8, 0),
-                LocalTime.of(22, 0));
+                LocalTime.of(22, 0)
+        );
 
         //when //then
         assertThatThrownBy(() -> meetingService.create(request))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
+    }
+
+    @DisplayName("약속을 생성할 때 과거 날짜를 보내면 예외가 발생합니다.")
+    @Test
+    void throwExceptionWhenDatesHavePast() {
+        //given
+        setFixedClock();
+        LocalDate today = LocalDate.now(clock);
+        LocalDate yesterday = today.minusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(yesterday, today),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0)
+        );
+
+        //when //then
+        assertThatThrownBy(() -> meetingService.create(request))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.PAST_NOT_PERMITTED.message());
     }
 
     @DisplayName("약속을 잠그면 잠금 상태가 변경된다.")
@@ -206,5 +242,11 @@ class MeetingServiceTest {
         assertThatThrownBy(() -> meetingService.unlock(uuid, id))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
+
+    private void setFixedClock() {
+        doReturn(Instant.now(FIXED_CLOCK))
+                .when(clock)
+                .instant();
     }
 }

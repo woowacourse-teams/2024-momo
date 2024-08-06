@@ -1,5 +1,6 @@
 package kr.momo.service.meeting;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -27,15 +28,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetingService {
 
+    private final JwtManager jwtManager;
+    private final Clock clock;
     private final MeetingRepository meetingRepository;
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
-    private final JwtManager jwtManager;
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
+        LocalDate today = LocalDate.now(clock);
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        saveAvailableDates(request.meetingAvailableDates(), meeting);
+        saveAvailableDates(request.meetingAvailableDates(), meeting, today);
 
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());
@@ -48,8 +51,11 @@ public class MeetingService {
         return meetingRepository.save(meeting);
     }
 
-    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting) {
+    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
         AvailableDates availableDates = new AvailableDates(dates, meeting);
+        if (availableDates.isAnyBefore(date)) {
+            throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
+        }
         availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
@@ -62,7 +68,9 @@ public class MeetingService {
     public MeetingResponse findByUUID(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeetingOrderByDate(meeting));
+        AvailableDates availableDates = new AvailableDates(
+                availableDateRepository.findAllByMeetingOrderByDate(meeting)
+        );
         List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
 
         return MeetingResponse.of(meeting, availableDates, attendees);
