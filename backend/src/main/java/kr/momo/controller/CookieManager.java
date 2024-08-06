@@ -29,4 +29,8 @@ public class CookieManager {
                 .build()
                 .toString();
     }
+
+    public String pathOf(String meetingUuid) {
+        return String.format("/api/v1/meeting/%s/", meetingUuid);
+    }
 }
