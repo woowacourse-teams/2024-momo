@@ -1,6 +1,8 @@
 import { css } from '@emotion/react';
 
-import type { MeetingSingleSchedule } from '@apis/schedules';
+import AttendeeTooltip from '@components/AttendeeTooltip';
+
+import type { MeetingAllSchedules } from '@apis/schedules';
 
 import { generateScheduleMatrix } from './Picker/SchedulePicker.utils';
 import {
@@ -12,26 +14,26 @@ import {
   s_timeColumn,
   s_timeText,
 } from './Schedules.styles';
-import { formatDate, formatTime } from './Schedules.util';
+import { formatDate, formatTime, getTooltipPosition } from './Schedules.util';
 
-interface SingleScheduleProps {
+interface AllSchedulesProps {
   firstTime: string;
   lastTime: string;
   availableDates: string[];
-  singleSchedule: MeetingSingleSchedule;
+  allSchedules: MeetingAllSchedules;
 }
 
-export default function SingleSchedule({
+export default function AllSchedules({
   firstTime,
   lastTime,
   availableDates,
-  singleSchedule,
-}: SingleScheduleProps) {
+  allSchedules,
+}: AllSchedulesProps) {
   const schedules = generateScheduleMatrix({
     firstTime,
     lastTime,
     availableDates,
-    meetingSchedules: singleSchedule,
+    meetingSchedules: allSchedules,
   });
 
   return (
@@ -60,13 +62,29 @@ export default function SingleSchedule({
                   {formatTime(`${rowIndex + parseInt(firstTime.slice(0, 2))}:00`)}
                 </span>
               </td>
-              {row.map((_, columnIndex) => (
+              {row.map((attendeeCount, columnIndex) => (
                 <td
                   key={columnIndex}
                   css={css`
-                    ${s_td(schedules[rowIndex][columnIndex])}
+                    ${s_td(attendeeCount)}
                   `}
-                />
+                >
+                  {attendeeCount > 0 && (
+                    <AttendeeTooltip
+                      allSchedules={allSchedules}
+                      availableDates={availableDates}
+                      rowIndex={rowIndex}
+                      columnIndex={columnIndex}
+                      firstTime={firstTime}
+                      position={getTooltipPosition(
+                        rowIndex,
+                        columnIndex,
+                        schedules.length,
+                        row.length,
+                      )}
+                    />
+                  )}
+                </td>
               ))}
             </tr>
           ))}
