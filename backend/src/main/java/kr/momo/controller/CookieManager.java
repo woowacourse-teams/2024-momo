@@ -39,6 +39,6 @@ public class CookieManager {
     }
 
     public String pathOf(String meetingUuid) {
-        return String.format("/api/v1/meeting/%s/", meetingUuid);
+        return String.format("/api/v1/meetings/%s/", meetingUuid);
     }
 }
