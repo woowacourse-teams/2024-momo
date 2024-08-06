@@ -10,6 +10,7 @@ export const s_container = css`
   height: 2.4rem;
 `;
 
+// left -1000%를 적용한 이유는 label 태그를 기반으로 디자인을 구현했기 때문에 기본 체크박스의 디자인을 보이지 않도록 하기 위해서입니다.(@낙타)
 export const s_input = css`
   position: absolute;
   left: -1000%;
