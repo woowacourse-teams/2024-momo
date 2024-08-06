@@ -30,7 +30,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const False: Story = {
+export const UnToggled: Story = {
   args: {
     id: 'toggle-button',
     isClicked: false,
@@ -38,9 +38,9 @@ export const False: Story = {
   },
 };
 
-export const True: Story = {
+export const Toggled: Story = {
   args: {
-    id: 'toggle-true-button',
+    id: 'toggled-button',
     isClicked: true,
     onClick: () => {},
   },
@@ -48,7 +48,7 @@ export const True: Story = {
 
 export const WithLabel: Story = {
   args: {
-    id: 'toggle-true-button',
+    id: 'toggled-button',
     children: '응답 다시 받기',
     isClicked: true,
     onClick: () => {},
