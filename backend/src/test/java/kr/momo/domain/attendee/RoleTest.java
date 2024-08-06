@@ -8,9 +8,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 class RoleTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"HOST,true", "GUEST,false"})
+    @CsvSource(value = {"HOST,false", "GUEST,true"})
     void isHost(Role given, boolean expected) {
-        boolean result = given.isHost();
+        boolean result = given.isNotHost();
 
         assertThat(result).isEqualTo(expected);
     }

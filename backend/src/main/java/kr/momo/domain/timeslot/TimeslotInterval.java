@@ -42,13 +42,22 @@ public class TimeslotInterval {
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {
-        if (isNotContainedWithin(other)) {
+        if (!isContainedWithin(other)) {
             throw new MomoException(ScheduleErrorCode.INVALID_SCHEDULE_TIMESLOT);
         }
         return Timeslot.from(other);
     }
 
-    private boolean isNotContainedWithin(LocalTime other) {
-        return this.startTimeslot.isAfter(other) || this.endTimeslot.isBefore(other);
+    private boolean isContainedWithin(LocalTime other) {
+        return !(this.startTimeslot.isAfter(other) || this.endTimeslot.isBefore(other));
+    }
+
+    public boolean isTimeInRange(LocalTime startTime, LocalTime endTime) {
+        endTime = endTime.minusMinutes(30);
+        return isContainedWithin(startTime) && isContainedWithin(endTime);
+    }
+
+    public boolean isNotFullTime() {
+        return !Timeslot.TIME_0000.equals(startTimeslot) || !Timeslot.TIME_2330.equals(endTimeslot);
     }
 }

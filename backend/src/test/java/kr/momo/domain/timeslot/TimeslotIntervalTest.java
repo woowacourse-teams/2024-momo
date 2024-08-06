@@ -5,10 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.ScheduleErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class TimeslotIntervalTest {
 
@@ -39,5 +43,26 @@ class TimeslotIntervalTest {
     public void successfulCreationForSameStartAndEndTime() {
         assertThatNoException()
                 .isThrownBy(() -> new TimeslotInterval(LocalTime.of(23, 30), LocalTime.of(23, 30)));
+    }
+
+    @DisplayName("주어진 시작 시간, 끝 시간이 포함되어 있는지 확인한다.")
+    @ParameterizedTest
+    @MethodSource("isTimeInRangeProvider")
+    void isTimeInRange(LocalTime startTime, LocalTime endTime, boolean expected) {
+        TimeslotInterval timeslotInterval = new TimeslotInterval(Timeslot.TIME_0100, Timeslot.TIME_0200);
+
+        boolean actual = timeslotInterval.isTimeInRange(startTime, endTime);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> isTimeInRangeProvider() {
+        return Stream.of(
+                Arguments.of(
+                        LocalTime.of(1, 0),
+                        LocalTime.of(2, 30), true),
+                Arguments.of(
+                        LocalTime.of(2, 0),
+                        LocalTime.of(3, 0), false));
     }
 }

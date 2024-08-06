@@ -1,5 +1,7 @@
 package kr.momo.domain.availabledate;
 
+import static java.util.Comparator.comparing;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -42,5 +44,24 @@ public class AvailableDates {
                 .filter(availableDate -> availableDate.isSameDate(other))
                 .findFirst()
                 .orElseThrow(() -> new MomoException(AvailableDateErrorCode.INVALID_AVAILABLE_DATE));
+    }
+
+    public boolean notExistsByDate(LocalDate other) {
+        return availableDates.stream()
+                .noneMatch(availableDate -> availableDate.isSameDate(other));
+    }
+
+    public boolean isNotConsecutiveDay(LocalDate startDateInclusive, LocalDate endDateInclusive) {
+        long availableDateRangeCount = availableDates.stream()
+                .sorted(comparing(AvailableDate::getDate))
+                .dropWhile(date -> date.isBefore(startDateInclusive))
+                .takeWhile(date -> !date.isAfter(endDateInclusive))
+                .count();
+
+        return isNotDateCountEqual(startDateInclusive, endDateInclusive, availableDateRangeCount);
+    }
+
+    private boolean isNotDateCountEqual(LocalDate startDateInclusive, LocalDate endDateInclusive, long count) {
+        return count != endDateInclusive.toEpochDay() - startDateInclusive.toEpochDay() + 1;
     }
 }

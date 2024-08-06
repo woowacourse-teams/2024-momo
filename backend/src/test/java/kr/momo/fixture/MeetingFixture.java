@@ -9,7 +9,8 @@ public enum MeetingFixture {
     SPORTS("스포츠", "sports", LocalTime.of(8, 0), LocalTime.of(12, 0)),
     DINNER("저녁식사", "dinner", LocalTime.of(18, 0), LocalTime.of(22, 0)),
     COFFEE("커피", "coffee", LocalTime.of(10, 0), LocalTime.of(14, 0)),
-    GAME("게임", "game", LocalTime.of(18, 0), LocalTime.of(23, 30));
+    GAME("게임", "game", LocalTime.of(18, 0), LocalTime.of(23, 30)),
+    DRINK("음주", "drink", LocalTime.of(0, 0), LocalTime.of(23, 59));
 
     private final String name;
     private final String uuid;

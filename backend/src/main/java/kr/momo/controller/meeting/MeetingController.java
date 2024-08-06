@@ -5,11 +5,14 @@ import java.net.URI;
 import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
+import kr.momo.service.meeting.MeetingConfirmService;
 import kr.momo.service.meeting.MeetingService;
+import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
+import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final MeetingConfirmService meetingConfirmService;
     private final CookieManager cookieManager;
 
     @PostMapping("/api/v1/meetings")
@@ -40,10 +44,19 @@ public class MeetingController {
                 .body(new MomoApiResponse<>(response));
     }
 
+    @PostMapping("/api/v1/meetings/{uuid}/confirm")
+    public ResponseEntity<MomoApiResponse<MeetingConfirmResponse>> confirm(
+            @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid MeetingConfirmRequest request
+    ) {
+        MeetingConfirmResponse response = meetingConfirmService.create(uuid, id, request);
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed"))
+                .body(new MomoApiResponse<>(response));
+    }
+
     @GetMapping("/api/v1/meetings/{uuid}")
     public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
-        MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
-        return new MomoApiResponse<>(meetingResponse);
+        MeetingResponse response = meetingService.findByUUID(uuid);
+        return new MomoApiResponse<>(response);
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/sharing")
