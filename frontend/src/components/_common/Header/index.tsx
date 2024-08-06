@@ -13,10 +13,19 @@ export default function Header() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
-  const { isLoggedIn } = useContext(AuthContext).state;
+  const authContext = useContext(AuthContext);
+  const {
+    state: { isLoggedIn },
+    actions: { setIsLoggedIn, setUserName },
+  } = authContext;
 
-  const handleClickLoginButton = () => {
-    navigate(`/meeting/${uuid}/login`);
+  const handleAuthButtonClick = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+      setUserName('');
+    } else {
+      navigate(`/meeting/${uuid}/login`);
+    }
   };
 
   return (
@@ -26,7 +35,7 @@ export default function Header() {
         <h1 css={s_title}>momo</h1>
       </div>
       {uuid ? (
-        <button css={s_button} onClick={handleClickLoginButton}>
+        <button css={s_button} onClick={handleAuthButtonClick}>
           {isLoggedIn ? '로그아웃' : '로그인'}
         </button>
       ) : null}
