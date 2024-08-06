@@ -1,4 +1,4 @@
-package kr.momo.domain.confirmedschedule;
+package kr.momo.domain.meeting;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.momo.domain.BaseEntity;
-import kr.momo.domain.meeting.Meeting;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -6,13 +6,12 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
-import kr.momo.domain.confirmedschedule.ConfirmedMeeting;
-import kr.momo.domain.confirmedschedule.ConfirmedMeetingRepository;
+import kr.momo.domain.meeting.ConfirmedMeeting;
+import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
-import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,7 @@ public class MeetingConfirmService {
         validateHostPermission(attendee);
 
         if (confirmedMeetingRepository.existsByMeeting(meeting)) {
-            throw new MomoException(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
+            throw new MomoException(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE);
         }
 
         validateMeetingLocked(meeting);
@@ -67,7 +66,7 @@ public class MeetingConfirmService {
     private void validateTimeRange(Meeting meeting, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         if (startDateTime.isAfter(endDateTime)
                 || !meeting.isContainedWithinTimeRange(startDateTime.toLocalTime(), endDateTime.toLocalTime())) {
-            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+            throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }
 
@@ -78,17 +77,17 @@ public class MeetingConfirmService {
 
         if (startDate.equals(endDate)) {
             if (availableDates.notExistsByDate(startDate)) {
-                throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+                throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
             }
             return;
         }
 
         if (meeting.isNotFullTime()) {
-            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+            throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
 
         if (availableDates.isContainedWithinDateRange(startDate, endDate)) {
-            throw new MomoException(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE);
+            throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }
 }

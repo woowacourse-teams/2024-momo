@@ -10,8 +10,8 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
-import kr.momo.domain.confirmedschedule.ConfirmedMeeting;
-import kr.momo.domain.confirmedschedule.ConfirmedMeetingRepository;
+import kr.momo.domain.meeting.ConfirmedMeeting;
+import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.schedule.Schedule;
@@ -19,7 +19,6 @@ import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
-import kr.momo.exception.code.ConfirmedScheduleErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.exception.code.ScheduleErrorCode;
 import kr.momo.fixture.AttendeeFixture;
@@ -134,7 +133,7 @@ class MeetingConfirmServiceTest {
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(ConfirmedScheduleErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE.message());
+                .hasMessage(MeetingErrorCode.ALREADY_EXIST_CONFIRMED_SCHEDULE.message());
     }
 
     @DisplayName("약속에 존재하지 않는 날짜로 일정을 확정 시 예외가 발생한다.")
@@ -148,7 +147,7 @@ class MeetingConfirmServiceTest {
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
                 .isInstanceOf(MomoException.class)
-                .hasMessage(ConfirmedScheduleErrorCode.INVALID_DATETIME_RANGE.message());
+                .hasMessage(MeetingErrorCode.INVALID_DATETIME_RANGE.message());
     }
 
     @DisplayName("약속에 포함되지 않은 시간의 일정을 확정 시 예외가 발생한다.")

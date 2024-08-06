@@ -1,7 +1,6 @@
-package kr.momo.domain.confirmedschedule;
+package kr.momo.domain.meeting;
 
 import java.util.Optional;
-import kr.momo.domain.meeting.Meeting;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConfirmedMeetingRepository extends JpaRepository<ConfirmedMeeting, Long> {
