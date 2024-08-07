@@ -12,8 +12,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.AttendeeGroup;
+import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -25,13 +25,14 @@ import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
+import kr.momo.fixture.AvailableDateFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.schedule.dto.AttendeesScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
+import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
-import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
@@ -229,71 +230,70 @@ class ScheduleServiceTest {
     @Test
     void recommendLongTermSchedules() {
         Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
-        AvailableDate date2 = availableDateRepository.save(
-                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
-        );
-        Attendee attendee1 = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
-        Attendee attendee3 = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+        AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
+        AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        List<Schedule> schedules = addSchedule(attendee1, attendee2, attendee3, date1, date2);
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+
+        List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
         SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(attendee1.name(), attendee2.name())
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
         assertThat(responses.recommendSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1, attendee2))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1, attendee2))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1, attendee2))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee1))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee2))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee2))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new AttendeeGroup(List.of(attendee2))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 )
         );
     }
@@ -302,71 +302,70 @@ class ScheduleServiceTest {
     @Test
     void recommendFastestSchedules() {
         Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
-        AvailableDate date2 = availableDateRepository.save(
-                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
-        );
-        Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
-        Attendee c = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+        AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
+        AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        List<Schedule> schedules = addSchedule(a, b, c, date1, date2);
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+
+        List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
         SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(a.name(), b.name())
+                movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
         assertThat(responses.recommendSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new AttendeeGroup(List.of(a, b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(a, b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new AttendeeGroup(List.of(a, b))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0230.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        new AttendeeGroup(List.of(b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_0630.getLocalTime()),
-                        new AttendeeGroup(List.of(b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                        new AttendeeGroup(List.of(b))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 )
         );
     }
@@ -375,55 +374,54 @@ class ScheduleServiceTest {
     @Test
     void recommendContinuousSchedule() {
         Meeting movieMeeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        AvailableDate date1 = availableDateRepository.save(new AvailableDate(LocalDate.now(), movieMeeting));
-        AvailableDate date2 = availableDateRepository.save(
-                new AvailableDate(LocalDate.now().plusDays(1), movieMeeting)
-        );
-        Attendee a = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee b = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+        AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
+        AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        List<Schedule> schedules = addNextDaySchedule(a, b, date1, date2);
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+
+        List<Schedule> schedules = addNextDaySchedule(jazz, daon, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
         SchedulesRecommendResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(a.name(), b.name())
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
         assertThat(responses.recommendSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2300.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0030.getLocalTime()),
-                        new AttendeeGroup(List.of(a, b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new AttendeeGroup(List.of(a, b))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2230.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2230.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_1700.getLocalTime()),
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_1800.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1700.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1800.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        new AttendeeGroup(List.of(a))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date1.getDate(), Timeslot.TIME_2300.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0030.getLocalTime()),
-                        new AttendeeGroup(List.of(b))
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(date2.getDate(), Timeslot.TIME_0200.getLocalTime()),
-                        new AttendeeGroup(List.of(b))
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0200.getLocalTime()),
+                        new AttendeeGroup(List.of(daon))
                 )
         );
 

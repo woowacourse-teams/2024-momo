@@ -26,7 +26,6 @@ public class AttendeeGroup {
     }
 
     private void validateUniqueNames(List<Attendee> attendees) {
-        System.out.println(isNotUnique(attendees));
         if (isNotUnique(attendees)) {
             throw new MomoException(AttendeeErrorCode.DUPLICATED_ATTENDEE_NAME);
         }
@@ -49,27 +48,11 @@ public class AttendeeGroup {
         return attendees.size();
     }
 
-    public List<AttendeeGroup> findAttendeeGroupCombination1() {
+    public List<AttendeeGroup> findAttendeeGroupCombination() {
         Map<Attendee, Boolean> visited = new HashMap<>();
         List<AttendeeGroup> groupCombination = new ArrayList<>();
         addCombinationAttendeeGroup(visited, groupCombination, 0);
         return groupCombination;
-    }
-
-    public List<AttendeeGroup> findAttendeeGroupCombination() {
-        List<AttendeeGroup> groupCombination = new ArrayList<>();
-        addCombinationAttendeeGroup(new ArrayList<>(), groupCombination, 0);
-        return groupCombination;
-    }
-
-    private void addCombinationAttendeeGroup(List<Attendee> currentCombination, List<AttendeeGroup> groupCombination, int start) {
-        groupCombination.add(new AttendeeGroup(new ArrayList<>(currentCombination)));
-
-        for (int i = start; i < attendees.size(); i++) {
-            currentCombination.add(attendees.get(i));
-            addCombinationAttendeeGroup(currentCombination, groupCombination, i + 1);
-            currentCombination.remove(currentCombination.size() - 1);
-        }
     }
 
     private void addCombinationAttendeeGroup(
