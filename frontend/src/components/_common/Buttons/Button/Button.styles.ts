@@ -64,6 +64,10 @@ export const s_variant = {
       border: none;
     }
   `,
+  kakao: css`
+    background-color: #f9e000;
+    border: none;
+  `,
 };
 
 export const s_size = (size: ButtonSize) => css`
