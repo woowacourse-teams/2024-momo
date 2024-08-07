@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import kr.momo.domain.schedule.Schedule;
 
 @Schema(description = "특정 날짜의 일정 응답")
-public record ScheduleDateTimesResponse(
+public record DateTimesResponse(
 
         @Schema(type = "string", description = "일정 날짜", example = "2024-08-06")
         LocalDate date,
@@ -23,12 +23,12 @@ public record ScheduleDateTimesResponse(
         @Schema(description = "일정 시간 목록", example = "[\"12:00\", \"14:00\", \"16:00\"]")
         List<LocalTime> times
 ) {
-    public static List<ScheduleDateTimesResponse> from(List<Schedule> schedules) {
+    public static List<DateTimesResponse> from(List<Schedule> schedules) {
         Map<LocalDate, List<LocalTime>> results = schedules.stream()
                 .collect(Collectors.groupingBy(Schedule::date, mapping(Schedule::time, toList())));
 
         return results.keySet().stream()
-                .map(date -> new ScheduleDateTimesResponse(date, results.get(date)))
+                .map(date -> new DateTimesResponse(date, results.get(date)))
                 .toList();
     }
 }

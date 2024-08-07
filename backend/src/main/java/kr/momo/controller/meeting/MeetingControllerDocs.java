@@ -105,8 +105,10 @@ public interface MeetingControllerDocs {
                     )
             )
     })
-    void lock(@PathVariable @Schema(description = "약속 UUID") String uuid,
-              @AuthAttendee @Schema(hidden = true) long id);
+    void lock(
+            @PathVariable @Schema(description = "약속 UUID") String uuid,
+            @AuthAttendee @Schema(hidden = true) long id
+    );
 
     @Operation(
             summary = "약속 잠금 해제",
@@ -149,6 +151,8 @@ public interface MeetingControllerDocs {
                     )
             )
     })
-    void unlock(@PathVariable @Schema(description = "약속 UUID") String uuid,
-                @AuthAttendee @Schema(hidden = true) long id);
+    void unlock(
+            @PathVariable @Schema(description = "약속 UUID") String uuid,
+            @AuthAttendee @Schema(hidden = true) long id
+    );
 }

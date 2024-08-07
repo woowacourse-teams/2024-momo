@@ -11,8 +11,8 @@ import jakarta.validation.Valid;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.exception.CustomProblemDetail;
+import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
-import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,7 +100,7 @@ public interface ScheduleControllerDocs {
                     description = "단일 참가자 일정 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ScheduleOneAttendeeResponse.class)
+                            schema = @Schema(implementation = AttendeeScheduleResponse.class)
                     )
             ),
             @ApiResponse(
@@ -116,7 +116,7 @@ public interface ScheduleControllerDocs {
                     )
             )
     })
-    MomoApiResponse<ScheduleOneAttendeeResponse> findSchedulesOfAttendee(
+    MomoApiResponse<AttendeeScheduleResponse> findSchedulesOfAttendee(
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @Parameter(description = "참가자 이름", example = "모모") String attendeeName
     );
@@ -134,7 +134,7 @@ public interface ScheduleControllerDocs {
                     description = "일정 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ScheduleOneAttendeeResponse.class)
+                            schema = @Schema(implementation = AttendeeScheduleResponse.class)
                     )
             ),
             @ApiResponse(
@@ -158,7 +158,7 @@ public interface ScheduleControllerDocs {
                     )
             )
     })
-    MomoApiResponse<ScheduleOneAttendeeResponse> findMySchedule(
+    MomoApiResponse<AttendeeScheduleResponse> findMySchedule(
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @AuthAttendee @Schema(hidden = true) long id
     );
