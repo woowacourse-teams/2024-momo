@@ -28,3 +28,6 @@ security:
       - http://localhost:[*]
   cookie:
     domain: "localhost"
+
+log:
+  directory: ./logs
