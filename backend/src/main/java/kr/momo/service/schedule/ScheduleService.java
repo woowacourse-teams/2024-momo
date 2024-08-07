@@ -130,7 +130,7 @@ public class ScheduleService {
 
         AttendeeGroup allAttendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
         AttendeeGroup filteredAttendeeGroup = allAttendeeGroup.filterAttendeesByName(names);
-        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findAttendeeGroupCombination();
+        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findAttendeeGroupCombinationsOverSize(1);
 
         List<RecommendedScheduleResponse> recommendResponses = new ArrayList<>();
         for (AttendeeGroup group : groupCombinations) {
@@ -190,7 +190,8 @@ public class ScheduleService {
                 ));
     }
 
-    private List<LocalDateTime> filterAndSortCommonDateTimes(Map<LocalDateTime, AttendeeGroup> attendeeMap, AttendeeGroup targetGroup) {
+    private List<LocalDateTime> filterAndSortCommonDateTimes(Map<LocalDateTime, AttendeeGroup> attendeeMap,
+                                                             AttendeeGroup targetGroup) {
         return attendeeMap.entrySet().stream()
                 .filter(e -> e.getValue().isSameSize(targetGroup))
                 .map(Entry::getKey)

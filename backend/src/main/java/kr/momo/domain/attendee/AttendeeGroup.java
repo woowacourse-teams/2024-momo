@@ -4,11 +4,10 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import lombok.EqualsAndHashCode;
@@ -48,34 +47,37 @@ public class AttendeeGroup {
         return attendees.size();
     }
 
-    public List<AttendeeGroup> findAttendeeGroupCombination() {
-        Map<Attendee, Boolean> visited = new HashMap<>();
-        List<AttendeeGroup> groupCombination = new ArrayList<>();
-        addCombinationAttendeeGroup(visited, groupCombination, 0);
-        return groupCombination;
+    public List<AttendeeGroup> findAttendeeGroupCombinationsOverSize(int minSize) {
+        List<AttendeeGroup> array = new ArrayList<>();
+        for (int i = attendees.size(); i >= minSize; i--) {
+            array.addAll(findAttendeeGroupCombinations(i));
+        }
+        return array;
     }
 
-    private void addCombinationAttendeeGroup(
-            Map<Attendee, Boolean> isVisit, List<AttendeeGroup> groupCombination, int index
-    ) {
-        if (index == attendees.size()) {
-            AttendeeGroup attendeeGroup = groupIfAttendee(isVisit);
-            groupCombination.add(attendeeGroup);
-            return;
+    private List<AttendeeGroup> findAttendeeGroupCombinations(int r) {
+        if (r < 1 || r > attendees.size()) {
+            throw new MomoException(AttendeeErrorCode.INVALID_ATTENDEE_SIZE);
         }
 
-        if (index < attendees.size()) {
-            isVisit.put(attendees.get(index), Boolean.TRUE);
-            addCombinationAttendeeGroup(isVisit, groupCombination, index + 1);
-            isVisit.put(attendees.get(index), Boolean.FALSE);
-            addCombinationAttendeeGroup(isVisit, groupCombination, index + 1);
-        }
+        return generateCombinations(r);
     }
 
-    private AttendeeGroup groupIfAttendee(Map<Attendee, Boolean> isVisit) {
-        return attendees.stream()
-                .filter(isVisit::get)
-                .collect(collectingAndThen(toList(), AttendeeGroup::new));
+    private List<AttendeeGroup> generateCombinations(int groupSize) {
+        return IntStream.range(0, (1 << attendees.size()))
+                .filter(mask -> Integer.bitCount(mask) == groupSize)
+                .mapToObj(this::createGroupFromMask)
+                .toList();
+    }
+
+    private AttendeeGroup createGroupFromMask(int mask) {
+        List<Attendee> group = new ArrayList<>();
+        for (int i = 0; i < attendees.size(); i++) {
+            if ((mask & (1 << i)) != 0) {
+                group.add(attendees.get(i));
+            }
+        }
+        return new AttendeeGroup(group);
     }
 
     public boolean isSameSize(AttendeeGroup attendeeGroup) {
