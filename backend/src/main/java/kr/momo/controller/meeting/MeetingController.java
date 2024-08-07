@@ -16,6 +16,7 @@ import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,5 +74,11 @@ public class MeetingController implements MeetingControllerDocs {
     @PatchMapping("/api/v1/meetings/{uuid}/unlock")
     public void unlock(@PathVariable String uuid, @AuthAttendee long id) {
         meetingService.unlock(uuid, id);
+    }
+
+    @DeleteMapping("/api/v1/meetings/{uuid}/confirmed")
+    public ResponseEntity<Void> cancelConfirmedMeeting(@PathVariable String uuid, @AuthAttendee long id) {
+        meetingConfirmService.delete(uuid, id);
+        return ResponseEntity.noContent().build();
     }
 }

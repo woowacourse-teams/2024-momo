@@ -1,5 +1,6 @@
 package kr.momo.controller.meeting;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
 
@@ -15,14 +16,16 @@ import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
+import kr.momo.domain.meeting.ConfirmedMeeting;
+import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
-import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +52,9 @@ class MeetingControllerTest {
 
     @Autowired
     private AvailableDateRepository availableDateRepository;
+
+    @Autowired
+    private ConfirmedMeetingRepository confirmedMeetingRepository;
 
     @BeforeEach
     void setUp() {
@@ -338,5 +344,74 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("주최자가 잠겨있는 약속의 확정된 약속을 취소하면 확정된 약속이 삭제되고 잠김이 해제된다. 204 상태 코드를 응답 받는다.")
+    @Test
+    void cancelConfirmedMeeting() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
+        confirmedMeetingRepository.save(new ConfirmedMeeting(
+                meeting,
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
+        ));
+        String token = getToken(host, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        meeting = meetingRepository.findByUuid(meeting.getUuid()).get();
+        boolean existConfirmedMeeting = confirmedMeetingRepository.existsByMeeting(meeting);
+        assertThat(existConfirmedMeeting).isFalse();
+        assertThat(meeting.isLocked()).isFalse();
+    }
+
+    @DisplayName("주최자가 확정되지 않은 약속을 취소하면 204 상태 코드를 응답 받는다.")
+    @Test
+    void cancelConfirmedMeetingNonExist() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
+        String token = getToken(host, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("주최자가 아닌 참여자가 약속 확정 취소하면 403 상태 코드를 응답 받는다.")
+    @Test
+    void cancelConfirmedMeetingNotHost() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee guest = attendeeRepository.save(new Attendee(meeting, "guest", "password", Role.GUEST));
+        confirmedMeetingRepository.save(new ConfirmedMeeting(
+                meeting,
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
+        ));
+        String token = getToken(guest, meeting);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 }
