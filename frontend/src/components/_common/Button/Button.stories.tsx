@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import Button from './index';
+import { Button } from '.';
 
 const meta = {
   title: 'Components/Button',
+  tags: ['autodocs'],
   component: Button,
   argTypes: {
-    text: { control: 'text' },
+    size: { control: 'radio' },
     onClick: { action: 'clicked' },
-    disabled: { control: 'boolean' },
   },
 } satisfies Meta<typeof Button>;
 
@@ -16,21 +16,61 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Primary: Story = {
   args: {
-    text: 'Default Button',
+    variant: 'primary',
+    size: 'm',
+    onClick: () => {},
+    children: '버튼',
   },
 };
 
-export const Disabled: Story = {
+export const Secondary: Story = {
   args: {
-    text: 'Disabled Button',
-    disabled: true,
+    variant: 'secondary',
+    size: 'm',
+    onClick: () => {},
+    children: '버튼',
   },
 };
 
-export const CustomText: Story = {
+export const ExtraSmall: Story = {
   args: {
-    text: 'Custom Text Button',
+    size: 'xs',
+    onClick: () => {},
+    children: '버튼',
+  },
+};
+
+export const Small: Story = {
+  args: {
+    size: 's',
+    onClick: () => {},
+    children: '버튼',
+  },
+};
+
+export const Medium: Story = {
+  args: {
+    size: 'm',
+    onClick: () => {},
+    children: '버튼',
+  },
+};
+
+export const Full: Story = {
+  args: {
+    size: 'full',
+    onClick: () => {},
+    children: '버튼',
+  },
+};
+
+export const FullWithNoBorderRadius: Story = {
+  args: {
+    size: 'full',
+    borderRadius: 0,
+    onClick: () => {},
+    children: '버튼',
   },
 };

@@ -4,8 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import Button from '@components/_common/Button';
-
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
 import type { MeetingSingleSchedule } from '@apis/schedules';
@@ -123,7 +121,7 @@ export default function TimePicker({
       </table>
 
       <div css={s_buttonContainer}>
-        <Button text="등록하기" onClick={handleOnToggle} />
+        <button onClick={handleOnToggle}>등록하기</button>
       </div>
     </div>
   );

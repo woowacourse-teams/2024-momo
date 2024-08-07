@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
-import Button from './index';
 import Calendar from './index';
 
 const meta = {
@@ -47,7 +46,7 @@ const meta = {
       );
     },
   ],
-} satisfies Meta<typeof Button>;
+} satisfies Meta<typeof Calendar>;
 
 export default meta;
 
