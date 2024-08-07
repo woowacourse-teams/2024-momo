@@ -1,16 +1,23 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
+import type { MeetingInfo } from '@apis/meetings';
 import { postMeeting } from '@apis/meetings';
 
+import { saveAuthState } from '@utils/auth';
+
 export const usePostMeetingMutation = () => {
-  const [data, setData] = useState<string>('');
+  const [meetingInfo, setMeetingInfo] = useState<MeetingInfo>({
+    uuid: '',
+    userName: '',
+  });
 
   const mutation = useMutation({
     mutationFn: postMeeting,
     onSuccess: (responseData) => {
-      setData(responseData.uuid);
+      setMeetingInfo(responseData);
+      saveAuthState(responseData.uuid, { isLoggedIn: true, userName: responseData.userName });
     },
   });
-  return { mutation, uuid: data };
+  return { mutation, meetingInfo };
 };

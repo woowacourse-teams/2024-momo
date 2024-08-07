@@ -29,10 +29,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const params = useParams<{ uuid?: string }>();
   const uuid = params.uuid;
 
-  const initialState = uuid ? loadAuthState(uuid) : { isLoggedIn: false, userName: '' };
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (uuid) {
+      const savedState = loadAuthState(uuid);
+      return savedState.isLoggedIn;
+    }
+    return false;
+  });
 
-  const [isLoggedIn, setIsLoggedIn] = useState(initialState.isLoggedIn);
-  const [userName, setUserName] = useState(initialState.userName);
+  const [userName, setUserName] = useState(() => {
+    if (uuid) {
+      const savedState = loadAuthState(uuid);
+      return savedState.userName;
+    }
+    return '';
+  });
 
   useEffect(() => {
     if (uuid) {

@@ -24,11 +24,15 @@ import {
 
 export default function CreateMeetingPage() {
   const navigate = useNavigate();
-  const { uuid, mutation: postMeetingMutation } = usePostMeetingMutation();
+
+  const { meetingInfo, mutation: postMeetingMutation } = usePostMeetingMutation();
+  const uuid = meetingInfo.uuid;
+
   const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
   const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
   const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
+
   const {
     startTime,
     endTime,
@@ -44,7 +48,7 @@ export default function CreateMeetingPage() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleMeetingCreateButtonClick = () => {
     postMeetingMutation.mutate({
       hostName: hostName,
       hostPassword: hostPassword,
@@ -124,7 +128,7 @@ export default function CreateMeetingPage() {
           </div>
         </Field>
         <div css={s_confirmContainer}>
-          <button css={s_confirm} onClick={handleSubmit}>
+          <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
             약속 생성하기
           </button>
         </div>

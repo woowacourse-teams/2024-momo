@@ -29,10 +29,12 @@ export interface MeetingRequest {
 
 interface PostMeetingResponse {
   uuid: string;
+  name: string;
 }
 
 export interface MeetingInfo {
   uuid: string;
+  userName: string;
 }
 
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
@@ -65,5 +67,6 @@ export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo>
 
   return {
     uuid: data.uuid,
+    userName: data.name,
   };
 };
