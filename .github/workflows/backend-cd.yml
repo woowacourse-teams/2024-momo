@@ -111,7 +111,7 @@ jobs:
       - name: docker run new container
         run: >-
           docker run --name momo-api
-          --rm -d -p 80:8080
+          --rm -d -p 8080:8080
           --volume=$HOME/security:/momo/security:ro
           --volume=$HOME/logs:/momo/logs
           --env SPRING_PROFILE=dev
