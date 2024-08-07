@@ -176,12 +176,20 @@ public class ScheduleService {
         return responses;
     }
 
+    private Map<LocalDateTime, AttendeeGroup> groupAttendeeByDateTime(List<Schedule> schedules) {
+        return schedules.stream()
+                .collect(groupingBy(Schedule::dateTime,
+                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new)))
+                );
+    }
+
     private Iterator<LocalDateTime> getIteratorBySortedDateTime(Map<LocalDateTime, AttendeeGroup> attendeeByDateTime) {
         return attendeeByDateTime.keySet().stream()
                 .sorted()
                 .toList()
                 .iterator();
     }
+
 
     private List<RecommendedScheduleResponse> sortedAndFilterByRecommendType(
             String recommendType, int groupSize, List<RecommendedScheduleResponse> recommendedScheduleRespons
@@ -190,13 +198,6 @@ public class ScheduleService {
                 .filter(response -> response.attendeeNames().size() == groupSize)
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
-    }
-
-    private Map<LocalDateTime, AttendeeGroup> groupAttendeeByDateTime(List<Schedule> schedules) {
-        return schedules.stream()
-                .collect(groupingBy(Schedule::dateTime,
-                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new)))
-                );
     }
 
     private boolean isDiscontinuousDateTime(
