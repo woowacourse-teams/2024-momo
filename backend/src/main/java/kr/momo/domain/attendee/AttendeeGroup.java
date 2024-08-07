@@ -77,4 +77,8 @@ public class AttendeeGroup {
                 .filter(isVisit::get)
                 .collect(collectingAndThen(toList(), AttendeeGroup::new));
     }
+
+    public boolean isSameSize(AttendeeGroup attendeeGroup) {
+        return attendees.size() == attendeeGroup.size();
+    }
 }

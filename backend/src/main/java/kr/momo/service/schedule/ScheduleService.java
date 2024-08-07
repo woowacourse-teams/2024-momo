@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
@@ -133,8 +134,7 @@ public class ScheduleService {
 
         List<RecommendedScheduleResponse> recommendResponses = new ArrayList<>();
         for (AttendeeGroup group : groupCombinations) {
-            List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(group.getAttendees());
-            List<RecommendedScheduleResponse> recommendResponse = createRecommendResponses(schedules);
+            List<RecommendedScheduleResponse> recommendResponse = mapContinuousSchedulesToResponses(group);
             List<RecommendedScheduleResponse> response = sortedAndFilterByRecommendType(
                     recommendType, group.size(), recommendResponse
             );
@@ -144,65 +144,70 @@ public class ScheduleService {
         return SchedulesRecommendResponse.of(allAttendeeGroup, recommendResponses);
     }
 
-    private List<RecommendedScheduleResponse> createRecommendResponses(List<Schedule> schedules) {
-        Map<LocalDateTime, AttendeeGroup> attendeeByDateTime = groupAttendeeByDateTime(schedules);
-        Iterator<LocalDateTime> iterator = getIteratorBySortedDateTime(attendeeByDateTime);
+    private List<RecommendedScheduleResponse> mapContinuousSchedulesToResponses(AttendeeGroup targetGroup) {
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(targetGroup.getAttendees());
+        List<LocalDateTime> dateTimesOfSchedules = filterCommonScheduleDateTimes(schedules, targetGroup);
+
+        Iterator<LocalDateTime> iterator = dateTimesOfSchedules.iterator();
         if (!iterator.hasNext()) {
             return Collections.emptyList();
         }
 
-        LocalDateTime startDateTime = iterator.next();
-        AttendeeGroup startGroup = attendeeByDateTime.get(startDateTime);
+        return connectContinuousDateTimeAndMapToResponse(targetGroup, iterator);
+    }
 
-        LocalDateTime currentDateTime = startDateTime;
-        AttendeeGroup currentGroup = startGroup;
-
+    private List<RecommendedScheduleResponse> connectContinuousDateTimeAndMapToResponse(
+            AttendeeGroup targetGroup, Iterator<LocalDateTime> iterator
+    ) {
         List<RecommendedScheduleResponse> responses = new ArrayList<>();
+
+        LocalDateTime startDateTime = iterator.next();
+        LocalDateTime currentDateTime = startDateTime;
 
         while (iterator.hasNext()) {
             LocalDateTime nextDateTime = iterator.next();
-            AttendeeGroup nextGroup = attendeeByDateTime.get(nextDateTime);
 
-            if (isDiscontinuousDateTime(currentDateTime, nextDateTime, currentGroup, nextGroup)) {
-                responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, startGroup));
+            if (isContinuousDateTime(currentDateTime, nextDateTime)) {
+                responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, targetGroup));
                 startDateTime = nextDateTime;
-                startGroup = nextGroup;
             }
-
             currentDateTime = nextDateTime;
-            currentGroup = nextGroup;
         }
-        responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, startGroup));
+        responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, targetGroup));
         return responses;
     }
 
-    private Map<LocalDateTime, AttendeeGroup> groupAttendeeByDateTime(List<Schedule> schedules) {
+    private List<LocalDateTime> filterCommonScheduleDateTimes(List<Schedule> schedules, AttendeeGroup targetGroup) {
+        Map<LocalDateTime, AttendeeGroup> attendeeGroupMap = groupingAttendeesByDateTime(schedules);
+        return filterAndSortCommonDateTimes(attendeeGroupMap, targetGroup);
+    }
+
+    private Map<LocalDateTime, AttendeeGroup> groupingAttendeesByDateTime(List<Schedule> schedules) {
         return schedules.stream()
-                .collect(groupingBy(Schedule::dateTime,
-                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new)))
-                );
+                .collect(groupingBy(
+                        Schedule::dateTime,
+                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new))
+                ));
     }
 
-    private Iterator<LocalDateTime> getIteratorBySortedDateTime(Map<LocalDateTime, AttendeeGroup> attendeeByDateTime) {
-        return attendeeByDateTime.keySet().stream()
+    private List<LocalDateTime> filterAndSortCommonDateTimes(Map<LocalDateTime, AttendeeGroup> attendeeMap, AttendeeGroup targetGroup) {
+        return attendeeMap.entrySet().stream()
+                .filter(e -> e.getValue().isSameSize(targetGroup))
+                .map(Entry::getKey)
                 .sorted()
-                .toList()
-                .iterator();
+                .toList();
     }
-
 
     private List<RecommendedScheduleResponse> sortedAndFilterByRecommendType(
-            String recommendType, int groupSize, List<RecommendedScheduleResponse> recommendedScheduleRespons
+            String recommendType, int groupSize, List<RecommendedScheduleResponse> recommendedScheduleResponses
     ) {
-        return recommendedScheduleRespons.stream()
+        return recommendedScheduleResponses.stream()
                 .filter(response -> response.attendeeNames().size() == groupSize)
                 .sorted(ScheduleRecommender.from(recommendType).getComparator())
                 .toList();
     }
 
-    private boolean isDiscontinuousDateTime(
-            LocalDateTime now, LocalDateTime next, AttendeeGroup nowAttendeeGroup, AttendeeGroup nextAttendeeGroup
-    ) {
-        return !(now.plusMinutes(30).equals(next) && nowAttendeeGroup.size() == nextAttendeeGroup.size());
+    private boolean isContinuousDateTime(LocalDateTime now, LocalDateTime next) {
+        return !(now.plusMinutes(30).equals(next));
     }
 }
