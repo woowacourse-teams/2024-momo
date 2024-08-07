@@ -161,4 +161,29 @@ class MeetingConfirmServiceTest {
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_DATETIME_RANGE.message());
     }
+
+    @DisplayName("주최자가 확정된 약속을 취소하면 확정된 약속이 삭제되고 약속은 잠금 해제 된다.")
+    @Test
+    void cancelConfirmSchedule() {
+        meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
+
+        meetingConfirmService.delete(meeting.getUuid(), attendee.getId());
+
+        meeting = meetingRepository.findByUuid(meeting.getUuid()).get();
+        assertAll(
+                () -> assertThat(confirmedMeetingRepository.findByMeeting(meeting)).isEmpty(),
+                () -> assertThat(meeting.isLocked()).isFalse()
+        );
+    }
+
+    @DisplayName("주최자가 아닌 참여자가 확정된 약속을 취소하면 예외가 발생한다.")
+    @Test
+    void cancelConfirmScheduleNotHost() {
+        meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+
+        assertThatThrownBy(() -> meetingConfirmService.delete(meeting.getUuid(), guest.getId()))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
 }
