@@ -14,8 +14,9 @@ export const s_header = css`
 
 export const s_logoContainer = css`
   display: flex;
-  align-items: center;
   gap: 1.2rem;
+  align-items: center;
+
   width: 100%;
   height: 3.6rem;
 `;
