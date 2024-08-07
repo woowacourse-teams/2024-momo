@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class MeetingController {
+public class MeetingController implements MeetingControllerDocs {
 
     private final MeetingService meetingService;
     private final MeetingConfirmService meetingConfirmService;

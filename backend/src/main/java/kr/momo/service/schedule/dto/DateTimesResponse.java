@@ -16,7 +16,7 @@ import kr.momo.domain.schedule.Schedule;
 @Schema(description = "특정 날짜의 일정 응답")
 public record DateTimesResponse(
 
-        @Schema(type = "string", description = "일정 날짜", example = "2024-08-06")
+        @Schema(description = "일정 날짜")
         LocalDate date,
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")

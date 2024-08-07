@@ -10,7 +10,7 @@ import java.util.List;
 public record DateTimesCreateRequest(
 
         @NotNull
-        @Schema(type = "string", description = "일정 날짜", example = "2024-08-06")
+        @Schema(description = "일정 날짜")
         LocalDate date,
 
         @NotNull

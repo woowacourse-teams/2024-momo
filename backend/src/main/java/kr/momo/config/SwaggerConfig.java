@@ -28,7 +28,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public RouterOperationCustomizer appendQueryParamsToPath() {
+    protected RouterOperationCustomizer appendQueryParamsToPath() {
         return (routerOperation, handlerMethod) -> {
             if (routerOperation.getParams().length > 0) {
                 routerOperation.setPath(

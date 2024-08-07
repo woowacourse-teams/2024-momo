@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Schema(description = "참가자 로그인 요청")
 public record AttendeeLoginRequest(
+
         @NotEmpty
         @Schema(description = "참가자 이름", example = "모모")
         String attendeeName,

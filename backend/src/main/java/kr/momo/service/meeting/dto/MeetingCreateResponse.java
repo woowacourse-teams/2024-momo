@@ -15,8 +15,8 @@ public record MeetingCreateResponse(
         String hostName,
 
         @JsonIgnore
-        String token) {
-
+        String token
+) {
     public static MeetingCreateResponse from(Meeting meeting, Attendee attendee, String token) {
         return new MeetingCreateResponse(meeting.getUuid(), attendee.name(), token);
     }
