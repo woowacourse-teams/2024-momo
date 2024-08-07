@@ -37,14 +37,12 @@ export const postSchedule = async ({
   requestData: SingleAttendeeTimeSlot[];
 }) => {
   const path = `/${uuid}/schedules`;
-  const attendeeName = '빙봉'; // TODO: 임시 설정
 
   await fetchClient({
     path,
     method: 'POST',
     errorMessage: '약속 참여 시간을 등록하는 중 문제가 발생했어요 :(',
     body: {
-      attendeeName,
       dateTimes: requestData,
     },
     isAuthRequire: true,
