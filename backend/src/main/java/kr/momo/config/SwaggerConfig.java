@@ -1,14 +1,19 @@
 package kr.momo.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.RouterOperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
+
+    private final SchemaDefinitions schemaDefinitions;
 
     @Bean
     protected ForwardedHeaderFilter forwardedHeaderFilter() {
@@ -18,7 +23,8 @@ public class SwaggerConfig {
     @Bean
     protected OpenAPI openAPI() {
         return new OpenAPI()
-                .info(apiInfo());
+                .info(apiInfo())
+                .components(new Components().schemas(schemaDefinitions.getSchemas()));
     }
 
     private Info apiInfo() {

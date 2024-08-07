@@ -23,11 +23,11 @@ public record MeetingCreateRequest(
         String meetingName,
 
         @NotNull
-        @Schema(description = "가능한 약속 날짜들")
+        @Schema(description = "가능한 약속 날짜들", ref = "#/components/schemas/availableMeetingDates")
         List<LocalDate> availableMeetingDates,
 
         @NotNull
-        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간", example = "12:00")
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간", example = "01:00")
         LocalTime meetingStartTime,
 
         @NotNull
