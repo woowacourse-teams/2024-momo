@@ -113,6 +113,7 @@ jobs:
           docker run --name momo-api
           --rm -d -p 80:8080
           --volume=$HOME/security:/momo/security:ro
+          --volume=$HOME/logs:/momo/logs
           --env SPRING_PROFILE=dev
           ${{ secrets.DOCKERHUB_USERNAME }}/momo-api
 
