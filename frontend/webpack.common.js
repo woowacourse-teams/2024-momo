@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+
 module.exports = () => ({
   entry: './src/index.tsx',
   module: {
@@ -32,6 +34,7 @@ module.exports = () => ({
       },
     ],
   },
+
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
     alias: {
@@ -50,19 +53,34 @@ module.exports = () => ({
       '@stores': path.resolve(__dirname, 'src/stores'),
     },
   },
+
   output: {
     filename: 'momo-bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
     publicPath: '/',
   },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
     new ForkTsCheckerWebpackPlugin(),
     new DotenvWebpackPlugin(),
+    sentryWebpackPlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'momo2024', // TODO: org, project 네이밍 변경 + 모모 구글 계정으로 이동(@해리)
+      project: 'momo-harry-test',
+      sourcemaps: {
+        filesToDeleteAfterUpload: '**/*.js.map',
+        // ! sourcemap 파일을 업로드 한 후, 삭제하기 위한 설정(@해리)
+        // ? hidden-source-map을 사용해야 삭제가 되는 것인지는 아직 모름.
+      },
+    }),
   ],
+
+  devtool: 'source-map',
+
   performance: {
     hints: false,
     maxEntrypointSize: 400000,
