@@ -5,7 +5,7 @@ public enum Role {
     HOST,
     GUEST;
 
-    public boolean isNotHost() {
-        return !HOST.equals(this);
+    public boolean isHost() {
+        return HOST.equals(this);
     }
 }
