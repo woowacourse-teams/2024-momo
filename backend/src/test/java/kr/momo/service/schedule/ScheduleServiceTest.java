@@ -27,12 +27,12 @@ import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.AvailableDateFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
 import kr.momo.service.schedule.dto.AttendeesScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
+import kr.momo.service.schedule.dto.DateTimesResponse;
 import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
-import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
-import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -165,8 +165,8 @@ class ScheduleServiceTest {
     void findSingleSchedule() {
         createAttendeeSchedule(attendee);
 
-        ScheduleOneAttendeeResponse result = scheduleService.findSingleSchedule(meeting.getUuid(), attendee.name());
-        ScheduleDateTimesResponse firstTimeResponse = result.schedules().get(0);
+        AttendeeScheduleResponse result = scheduleService.findSingleSchedule(meeting.getUuid(), attendee.name());
+        DateTimesResponse firstTimeResponse = result.schedules().get(0);
 
         assertAll(
                 () -> assertThat(result.attendeeName()).isEqualTo(attendee.name()),
@@ -204,8 +204,8 @@ class ScheduleServiceTest {
     void findMySchedule() {
         createAttendeeSchedule(attendee);
 
-        ScheduleOneAttendeeResponse result = scheduleService.findMySchedule(meeting.getUuid(), attendee.getId());
-        ScheduleDateTimesResponse firstTimeResponse = result.schedules().get(0);
+        AttendeeScheduleResponse result = scheduleService.findMySchedule(meeting.getUuid(), attendee.getId());
+        DateTimesResponse firstTimeResponse = result.schedules().get(0);
 
         assertAll(
                 () -> assertThat(result.attendeeName()).isEqualTo(attendee.name()),

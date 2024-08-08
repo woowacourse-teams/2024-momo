@@ -1,11 +1,10 @@
 {
   "data": {
-    "meeting": {
-      "name": "momo",
-      "firstTime": "10:00",
-      "lastTime": "18:00",
-      "availableDates": ["2024-07-24", "2024-07-25", "2024-07-26"]
-    },
-    "attendees": ["낙타", "해리", "빙봉"]
+    "meetingName": "momo",
+    "firstTime": "10:00",
+    "lastTime": "18:00",
+    "isLocked": false,
+    "availableDates": ["2024-07-24", "2024-07-25", "2024-07-26", "2024-07-27"],
+    "attendeeNames": ["낙타", "해리", "빙봉"]
   }
 }

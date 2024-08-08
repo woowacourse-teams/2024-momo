@@ -16,7 +16,7 @@ interface GenerateScheduleMatrixProps {
   firstTime: string;
   lastTime: string;
   availableDates: string[];
-  meetingSchedules: MeetingAllSchedules | MeetingSingleSchedule | undefined;
+  meetingSchedules: MeetingAllSchedules | MeetingSingleSchedule;
 }
 
 export const generateScheduleMatrix = ({

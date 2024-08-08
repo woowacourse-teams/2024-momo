@@ -13,13 +13,13 @@ const COLOR_VARIANTS = {
   9: '#7A1B54',
 } as Record<number, CSSProperties['color']>;
 
-export const s_table = css`
+export const s_scheduleTable = css`
   border-spacing: 0;
   border-collapse: separate;
   width: 100%;
 `;
 
-export const s_th = css`
+export const s_tableHeaderCell = css`
   padding: 10px;
   font-weight: normal;
   color: #666;

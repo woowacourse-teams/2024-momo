@@ -2,6 +2,7 @@ package kr.momo.service.meeting.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -10,12 +11,27 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 
+@Schema(description = "약속 정보 응답")
 public record MeetingResponse(
+
+        @Schema(description = "약속 이름")
         String meetingName,
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime firstTime,
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul") LocalTime lastTime,
+
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간")
+        LocalTime firstTime,
+
+        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시간")
+        LocalTime lastTime,
+
+        @Schema(description = "약속 잠금 여부")
         boolean isLocked,
+
+        @Schema(description = "약속 가능한 날짜들")
         List<LocalDate> availableDates,
+
+        @Schema(description = "참가자 이름 목록")
         List<String> attendeeNames
 ) {
 

@@ -29,11 +29,11 @@ import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
+import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
+import kr.momo.service.schedule.dto.DateTimesResponse;
 import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
-import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
-import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -99,7 +99,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public ScheduleOneAttendeeResponse findSingleSchedule(String uuid, String attendeeName) {
+    public AttendeeScheduleResponse findSingleSchedule(String uuid, String attendeeName) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
@@ -107,11 +107,11 @@ public class ScheduleService {
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
-        return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
+        return AttendeeScheduleResponse.of(attendee, DateTimesResponse.from(schedules));
     }
 
     @Transactional(readOnly = true)
-    public ScheduleOneAttendeeResponse findMySchedule(String uuid, long attendeeId) {
+    public AttendeeScheduleResponse findMySchedule(String uuid, long attendeeId) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
@@ -119,7 +119,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.NOT_FOUND_ATTENDEE));
 
         List<Schedule> schedules = scheduleRepository.findAllByAttendee(attendee);
-        return ScheduleOneAttendeeResponse.of(attendee, ScheduleDateTimesResponse.from(schedules));
+        return AttendeeScheduleResponse.of(attendee, DateTimesResponse.from(schedules));
     }
 
     @Transactional(readOnly = true)

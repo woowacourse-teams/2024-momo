@@ -22,6 +22,7 @@ export const usePostMeetingMutation = () => {
     mutationFn: postMeeting,
     onSuccess: (responseData) => {
       const { uuid, userName } = responseData;
+
       setMeetingInfo(responseData);
       setIsLoggedIn(true);
       setUserName(userName);

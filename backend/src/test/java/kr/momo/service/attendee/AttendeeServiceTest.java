@@ -3,6 +3,7 @@ package kr.momo.service.attendee;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -75,5 +76,17 @@ class AttendeeServiceTest {
         long finalCount = attendeeRepository.count();
 
         assertThat(finalCount).isEqualTo(initialCount);
+    }
+
+    @DisplayName("미팅에 해당하는 모든 참여자의 이름 리스트를 반환한다.")
+    @Test
+    void findAllAttendeeNames() {
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+
+        List<String> attendeeNames = attendeeService.findAll(meeting.getUuid());
+
+        assertThat(attendeeNames).containsExactlyInAnyOrder(jazz.name(), pero.name(), mark.name());
     }
 }

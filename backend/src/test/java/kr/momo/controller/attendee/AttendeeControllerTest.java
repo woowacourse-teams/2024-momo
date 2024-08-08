@@ -1,6 +1,7 @@
 package kr.momo.controller.attendee;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -62,7 +64,25 @@ class AttendeeControllerTest {
 
         assertAll(
                 () -> assertThat(jwtManager.extract(token)).isEqualTo(attendee.getId()),
-                () -> assertThat(hostName).isEqualTo(request.name())
+                () -> assertThat(hostName).isEqualTo(request.attendeeName())
         );
+    }
+
+    @DisplayName("미팅에 참여한 모든 참여자를 조회하고 200 OK 상태코드를 반환한다.")
+    @Test
+    void findInMeeting() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .pathParams("uuid", meeting.getUuid())
+                .when().get("/api/v1/meetings/{uuid}/attendees")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("data", hasItems(jazz.name(), pero.name(), mark.name()));
     }
 }

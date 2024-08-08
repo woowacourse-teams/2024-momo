@@ -5,19 +5,19 @@ import { getMeetingMySchedule } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
-import TimePicker from '.';
+import SchedulePicker from '.';
 
-interface TimePickerContainerProps {
+interface SchedulePickerContainerProps {
   firstTime: string;
   lastTime: string;
   availableDates: string[];
 }
 
-export default function TimePickerContainer({
+export default function SchedulePickerContainer({
   firstTime,
   lastTime,
   availableDates,
-}: TimePickerContainerProps) {
+}: SchedulePickerContainerProps) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
   const { data: meetingSchedules } = useQuery({
@@ -29,7 +29,7 @@ export default function TimePickerContainer({
   return (
     meetingSchedules &&
     meetingSchedules.attendeeName !== '' && (
-      <TimePicker
+      <SchedulePicker
         firstTime={firstTime}
         lastTime={lastTime}
         availableDates={availableDates}
