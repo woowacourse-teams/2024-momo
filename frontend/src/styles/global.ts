@@ -162,6 +162,7 @@ const globalStyles = css`
 
   button {
     cursor: pointer;
+    font: inherit;
   }
 `;
 
