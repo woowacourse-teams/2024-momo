@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface UserDatePageReturn {
+interface UseDatePageReturn {
   currentDatePage: number;
   currentDates: string[];
   increaseDatePage: () => void;
@@ -11,14 +11,14 @@ interface UserDatePageReturn {
   isLastPage: boolean;
 }
 
-type UseDatePageHook = (availableDates: string[]) => UserDatePageReturn;
+type UseDatePageHook = (availableDates: string[]) => UseDatePageReturn;
 
 /**
  * useDatePage 훅은 주어진 날짜 배열을 페이지 단위로 나누어 관리합니다.
  * 날짜가 4일 이상인 경우, 현재 저희 서비스의 정책인 3일 단위로 나누어서 날짜를 페이지네이션 책임을 가지고 있습니다.(@해리)
  *
  * @param {string[]} availableDates - 사용할 수 있는 날짜들의 배열
- * @returns {UserDatePageReturn}
+ * @returns {UseDatePageReturn}
  *
  * 아래는 useDatePage 훅 반환 타입에 대한 간단한 설명입니다. :)
  * @property {number} currentDatePage - 현재 페이지 번호
@@ -45,9 +45,11 @@ const useDatePage: UseDatePageHook = (availableDates) => {
   const increaseDatePage = () => {
     setCurrentDatePage((prev) => prev + 1);
   };
+
   const decreaseDatePage = () => {
     setCurrentDatePage((prev) => prev - 1);
   };
+
   const resetDatePage = () => {
     setCurrentDatePage(0);
   };
