@@ -62,7 +62,7 @@ class AttendeeControllerTest {
 
         assertAll(
                 () -> assertThat(jwtManager.extract(token)).isEqualTo(attendee.getId()),
-                () -> assertThat(hostName).isEqualTo(request.name())
+                () -> assertThat(hostName).isEqualTo(request.attendeeName())
         );
     }
 }

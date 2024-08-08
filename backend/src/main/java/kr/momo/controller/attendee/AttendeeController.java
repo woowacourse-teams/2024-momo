@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class AttendeeController {
+public class AttendeeController implements AttendeeControllerDocs {
 
     private final AttendeeService attendeeService;
     private final CookieManager cookieManager;

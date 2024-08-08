@@ -29,7 +29,7 @@ public class AttendeeService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
-        AttendeeName name = new AttendeeName(request.name());
+        AttendeeName name = new AttendeeName(request.attendeeName());
         AttendeePassword password = new AttendeePassword(request.password());
 
         return attendeeRepository.findByMeetingAndName(meeting, name)

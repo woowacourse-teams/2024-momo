@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class MeetingController {
+public class MeetingController implements MeetingControllerDocs {
 
     private final MeetingService meetingService;
     private final MeetingConfirmService meetingConfirmService;
@@ -55,8 +55,8 @@ public class MeetingController {
 
     @GetMapping("/api/v1/meetings/{uuid}")
     public MomoApiResponse<MeetingResponse> find(@PathVariable String uuid) {
-        MeetingResponse response = meetingService.findByUUID(uuid);
-        return new MomoApiResponse<>(response);
+        MeetingResponse meetingResponse = meetingService.findByUUID(uuid);
+        return new MomoApiResponse<>(meetingResponse);
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/sharing")

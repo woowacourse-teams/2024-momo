@@ -4,13 +4,18 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import kr.momo.domain.schedule.Schedule;
 
-public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
+@Schema(description = "모든 일정 응답")
+public record SchedulesResponse(
 
+        @Schema(description = "일정 정보 리스트")
+        List<AttendeesScheduleResponse> schedules
+) {
     public static SchedulesResponse from(List<Schedule> schedules) {
         Map<LocalDateTime, List<String>> attendeesOfSchedules = groupingAttendeeByMeetingDateTime(schedules);
         List<AttendeesScheduleResponse> scheduleResponses = convertToAttendeesResponses(attendeesOfSchedules);
@@ -26,10 +31,10 @@ public record SchedulesResponse(List<AttendeesScheduleResponse> schedules) {
             Map<LocalDateTime, List<String>> attendeesOfSchedules
     ) {
         return attendeesOfSchedules.keySet().stream()
-                .map(dataTime -> new AttendeesScheduleResponse(
-                        dataTime.toLocalDate(),
-                        dataTime.toLocalTime(),
-                        attendeesOfSchedules.get(dataTime)
+                .map(dateTime -> new AttendeesScheduleResponse(
+                        dateTime.toLocalDate(),
+                        dateTime.toLocalTime(),
+                        attendeesOfSchedules.get(dateTime)
                 ))
                 .toList();
     }

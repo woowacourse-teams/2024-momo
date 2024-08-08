@@ -38,7 +38,7 @@ public class MeetingService {
     public MeetingCreateResponse create(MeetingCreateRequest request) {
         LocalDate today = LocalDate.now(clock);
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        saveAvailableDates(request.meetingAvailableDates(), meeting, today);
+        saveAvailableDates(request.availableMeetingDates(), meeting, today);
 
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());

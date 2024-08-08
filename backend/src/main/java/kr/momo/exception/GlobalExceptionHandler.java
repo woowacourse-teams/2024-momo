@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final String ERROR_CODE = "errorCode";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "예기치 못한 서버 에러가 발생했습니다.";
 
     @ExceptionHandler
@@ -18,8 +17,7 @@ public class GlobalExceptionHandler {
         log.warn(ex.message(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(ex.httpStatus(), ex.message());
-        problemDetail.setProperty(ERROR_CODE, ex.errorCode());
-        return problemDetail;
+        return new CustomProblemDetail(problemDetail, ex.errorCode());
     }
 
     @ExceptionHandler
