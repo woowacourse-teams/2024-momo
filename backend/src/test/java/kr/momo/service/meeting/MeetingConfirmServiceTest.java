@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -23,6 +27,8 @@ import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingConfirmResponse;
+import kr.momo.service.meeting.dto.MeetingConfirmedResponse;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,10 +72,9 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime())
+                LocalDateTime.of(today.getDate(), meeting.startTimeslotTime()),
+                LocalDateTime.of(today.getDate(), meeting.startTimeslotTime().plusMinutes(90))
         );
-        scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
     }
 
     @DisplayName("주최자가 잠겨있는 약속의 일정을 확정한다.")
@@ -185,5 +190,42 @@ class MeetingConfirmServiceTest {
         assertThatThrownBy(() -> meetingConfirmService.delete(meeting.getUuid(), guest.getId()))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
+
+    @DisplayName("확정 약속을 조회한다.")
+    @Test
+    void findByUuid() {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0030));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0100));
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
+        scheduleRepository.saveAll(schedules);
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(
+                meeting.getUuid(), attendee.getId(), validRequest
+        );
+
+        MeetingConfirmedResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
+        String expectStartDayOfWeek = confirmed.startDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String expectEndDayOfWeek = confirmed.endDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+
+        assertAll(
+                () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
+                () -> assertThat(response.availableAttendeeNames()).containsExactlyInAnyOrder(attendee.name()),
+                () -> assertThat(response.startDateTime()).isEqualTo(confirmed.startDateTime()),
+                () -> assertThat(response.startDayOfWeek()).isEqualTo(expectStartDayOfWeek),
+                () -> assertThat(response.endDateTime()).isEqualTo(confirmed.endDateTime()),
+                () -> assertThat(response.endDayOfWeek()).isEqualTo(expectEndDayOfWeek)
+        );
+    }
+
+    @DisplayName("확정되지 않은 확정 약속을 조회하면 예외가 발생한다.")
+    @Test
+    void findByUuidNotConfirmed() {
+        assertThatThrownBy(() -> meetingConfirmService.findByUuid(meeting.getUuid()))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_CONFIRMED.message());
     }
 }

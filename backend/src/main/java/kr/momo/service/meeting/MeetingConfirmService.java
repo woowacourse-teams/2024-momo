@@ -2,6 +2,7 @@ package kr.momo.service.meeting;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDateRepository;
@@ -10,11 +11,14 @@ import kr.momo.domain.meeting.ConfirmedMeeting;
 import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.schedule.Schedule;
+import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
+import kr.momo.service.meeting.dto.MeetingConfirmedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ public class MeetingConfirmService {
     private final AttendeeRepository attendeeRepository;
     private final AvailableDateRepository availableDateRepository;
     private final ConfirmedMeetingRepository confirmedMeetingRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public MeetingConfirmResponse create(String uuid, long attendeeId, MeetingConfirmRequest request) {
@@ -93,6 +98,21 @@ public class MeetingConfirmService {
         if (availableDates.isNotConsecutiveDay(startDate, endDate)) {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
+    }
+
+    @Transactional
+    public MeetingConfirmedResponse findByUuid(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.findByMeeting(meeting)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_CONFIRMED));
+
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
+
+        attendees = confirmedMeeting.availableAttendeesOf(schedules);
+
+        return MeetingConfirmedResponse.from(meeting, attendees, confirmedMeeting);
     }
 
     @Transactional
