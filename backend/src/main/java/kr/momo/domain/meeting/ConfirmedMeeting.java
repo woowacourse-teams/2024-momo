@@ -23,7 +23,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "confirmed_schedule")
+@Table(name = "confirmed_meeting")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
