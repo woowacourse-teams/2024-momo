@@ -5,7 +5,8 @@ import { AuthContext } from '@contexts/AuthProvider';
 
 import Logo from '@assets/images/logo.svg';
 
-import { s_button, s_header, s_logoContainer, s_title } from './Header.styles';
+import { Button } from '../Buttons/Button';
+import { s_header, s_logoContainer, s_title } from './Header.styles';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -34,11 +35,10 @@ export default function Header() {
         <Logo width={36} height={36} />
         <h1 css={s_title}>momo</h1>
       </div>
-      {uuid ? (
-        <button css={s_button} onClick={handleAuthButtonClick}>
-          {isLoggedIn ? '로그아웃' : '로그인'}
-        </button>
-      ) : null}
+
+      <Button variant="primary" size="m" onClick={handleAuthButtonClick}>
+        {isLoggedIn ? '로그아웃' : '로그인'}
+      </Button>
     </header>
   );
 }

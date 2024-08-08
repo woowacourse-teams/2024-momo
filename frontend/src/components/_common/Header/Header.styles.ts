@@ -16,16 +16,10 @@ export const s_logoContainer = css`
   display: flex;
   gap: 1.2rem;
   align-items: center;
-
-  width: 100%;
   height: 3.6rem;
 `;
 
 export const s_title = css`
   font-size: 2.4rem;
   font-weight: 800;
-`;
-
-export const s_button = css`
-  width: 20%;
 `;
