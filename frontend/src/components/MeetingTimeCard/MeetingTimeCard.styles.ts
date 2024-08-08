@@ -3,9 +3,6 @@ import { css } from '@emotion/react';
 import theme from '@styles/theme';
 
 export const s_baseContainer = css`
-  display: flex;
-  gap: 1.2rem;
-
   width: 100%;
   height: 100%;
   padding: 0.8rem 1.2rem;
@@ -16,12 +13,16 @@ export const s_baseContainer = css`
 `;
 
 export const s_recommendContainer = css`
+  display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 `;
 
 export const s_optionContainer = css`
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  border: none;
 `;
 
 export const s_getSelectedStyle = (isSelected: boolean) => css`

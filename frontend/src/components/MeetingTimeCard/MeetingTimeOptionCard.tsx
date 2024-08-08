@@ -1,5 +1,3 @@
-import { css } from '@emotion/react';
-
 import {
   s_attendeeInfo,
   s_baseContainer,
@@ -8,6 +6,7 @@ import {
   s_dateInfo,
   s_getSelectedStyle,
   s_optionContainer,
+  s_recommendContainer,
 } from './MeetingTimeCard.styles';
 
 const formatDateWithDay = (date: string, dayOfWeek: string) => {
@@ -81,14 +80,7 @@ export default function MeetingTimeOptionCard({
       css={[s_baseContainer, s_optionContainer, s_getSelectedStyle(isSelected)]}
       onClick={onSelect}
     >
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: 1.2rem;
-          height: 100%;
-        `}
-      >
+      <div css={s_recommendContainer}>
         <span css={s_attendeeInfo}>{`${attendeeCount}명 중 ${currentAttendeeCount}명`}</span>
         <span css={s_dateInfo}>{startRecommendDateInfo}부터</span>
         <span css={s_dateInfo}>{endRecommendDateInfo}까지</span>
