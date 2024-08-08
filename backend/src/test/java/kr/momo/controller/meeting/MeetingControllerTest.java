@@ -396,4 +396,39 @@ class MeetingControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
+
+    @DisplayName("확정된 약속을 조회하면 200 상태 코드를 응답한다.")
+    @Test
+    void findConfirmedMeeting() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.save(new ConfirmedMeeting(
+                meeting,
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
+                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
+        ));
+
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("확정되지않은 약속의 확정 일정을 조회하면 400 상태 코드를 응답한다.")
+    @Test
+    void findConfirmedMeetingNotConfirmed() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }
