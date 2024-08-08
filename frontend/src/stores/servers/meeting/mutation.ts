@@ -1,17 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { AuthContext } from '@contexts/AuthProvider';
 
 import type { MeetingInfo } from '@apis/meetings';
 import { postMeeting } from '@apis/meetings';
 
+import { saveAuthState } from '@utils/auth';
+
 export const usePostMeetingMutation = () => {
   const navigate = useNavigate();
-
-  const authContext = useContext(AuthContext);
-  const { setIsLoggedIn, setUserName } = authContext.actions;
 
   const [meetingInfo, setMeetingInfo] = useState<MeetingInfo>({
     uuid: '',
@@ -24,9 +21,7 @@ export const usePostMeetingMutation = () => {
       const { uuid, userName } = responseData;
 
       setMeetingInfo(responseData);
-      setIsLoggedIn(true);
-      setUserName(userName);
-
+      saveAuthState(uuid, { isLoggedIn: true, userName });
       navigate(`/meeting/${uuid}/complete`);
     },
   });

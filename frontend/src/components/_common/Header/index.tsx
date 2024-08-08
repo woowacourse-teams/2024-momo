@@ -3,8 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
-import { postUserLogout } from '@apis/users';
-
 import Logo from '@assets/images/logo.svg';
 
 import { Button } from '../Buttons/Button';
@@ -22,14 +20,10 @@ export default function Header() {
     actions: { setIsLoggedIn, setUserName },
   } = authContext;
 
-  const handleAuthButtonClick = async () => {
+  const handleAuthButtonClick = () => {
     if (isLoggedIn) {
-      await postUserLogout(uuid);
-
       setIsLoggedIn(false);
       setUserName('');
-
-      alert('로그아웃 되었습니다 :)');
     } else {
       navigate(`/meeting/${uuid}/login`);
     }

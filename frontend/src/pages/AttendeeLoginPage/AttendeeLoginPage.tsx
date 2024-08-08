@@ -8,7 +8,7 @@ import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 
-import { postUserLogin } from '@apis/users';
+import { postAttendeeLogin } from '@apis/attendee';
 
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
@@ -19,7 +19,7 @@ export default function AttendeeLoginPage() {
   const navigate = useNavigate();
   const { uuid } = useParams<{ uuid: string }>();
 
-  const { value: attendeeName, onValueChange: onNameChange } = useInput();
+  const { value: name, onValueChange: onNameChange } = useInput();
   const { value: password, onValueChange: onPasswordChange } = useInput();
 
   const handleLoginButtonClick = async () => {
@@ -28,9 +28,9 @@ export default function AttendeeLoginPage() {
       return;
     }
 
-    const { userName } = await postUserLogin({
+    const { userName } = await postAttendeeLogin({
       uuid,
-      request: { attendeeName, password },
+      request: { name, password },
     });
 
     setIsLoggedIn(true);
@@ -42,7 +42,7 @@ export default function AttendeeLoginPage() {
     <div css={s_container}>
       <div css={s_inputContainer}>
         <Field labelText="이름" id="name">
-          <Input placeholder="이름을 입력하세요." value={attendeeName} onChange={onNameChange} />
+          <Input placeholder="이름을 입력하세요." value={name} onChange={onNameChange} />
         </Field>
         <Field labelText="비밀번호" id="password">
           <Input

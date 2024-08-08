@@ -47,10 +47,6 @@ describe('useTimeRangeDropdown', () => {
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onEndTimeChange('15:00');
-    });
-
-    act(() => {
       result.current.onStartTimeChange('12:00');
     });
 

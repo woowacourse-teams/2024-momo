@@ -29,7 +29,7 @@ export interface MeetingRequest {
 
 interface PostMeetingResponse {
   uuid: string;
-  hostName: string;
+  name: string;
 }
 
 export interface MeetingInfo {
@@ -67,6 +67,6 @@ export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo>
 
   return {
     uuid: data.uuid,
-    userName: data.hostName,
+    userName: data.name,
   };
 };
