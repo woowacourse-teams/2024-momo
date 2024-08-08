@@ -10,8 +10,6 @@ import {
   s_tabButton,
 } from '@pages/MeetingTimePickPage/MeetingTimePickPage.styles';
 
-import Button from '@components/_common/Button';
-
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
 import type { MeetingAllSchedules, MeetingSingleSchedule } from '@apis/schedules';
@@ -118,7 +116,7 @@ export default function SchedulesViewer({
         )}
       </section>
       <div css={s_buttonContainer}>
-        <Button text="수정하기" onClick={handleToggleIsTimePickerUpdate} />
+        <button onClick={handleToggleIsTimePickerUpdate}>수정하기</button>
       </div>
     </>
   );
