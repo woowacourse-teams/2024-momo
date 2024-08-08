@@ -15,28 +15,33 @@ import org.slf4j.MDC;
 public class LogFilter implements Filter {
 
     public static final String TRACE_ID = "traceId";
-    private static final String REQUEST_LOG_FORMAT = "REQUEST [{}][{}]";
-    private static final String RESPONSE_LOG_FORMAT = "RESPONSE [{}][{}][{} ms]";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
 
-        UUID uuid = UUID.randomUUID();
-        MDC.put(TRACE_ID, uuid.toString());
-
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+        String httpMethod = httpRequest.getMethod();
         String requestURI = httpRequest.getRequestURI();
+        String remoteAddr = httpRequest.getRemoteAddr();
+
+        String traceId = generateShortUuid();
+        MDC.put(TRACE_ID, traceId);
 
         long startTime = System.currentTimeMillis();
 
         try {
-            log.info(REQUEST_LOG_FORMAT, uuid, requestURI);
+            log.info("REQUEST [{}][{} {}][{}]", traceId, httpMethod, requestURI, remoteAddr);
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
-            log.info(RESPONSE_LOG_FORMAT, uuid, requestURI, duration);
+            log.info("RESPONSE [{}][{}][{} ms]", traceId, requestURI, duration);
             MDC.clear();
         }
+    }
+
+    private String generateShortUuid() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().split("-", 2)[0];
     }
 }
