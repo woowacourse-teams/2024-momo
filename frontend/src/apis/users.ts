@@ -5,7 +5,7 @@ import { fetchClient } from './_common/fetchClient';
 interface UserLoginRequest {
   uuid: string;
   request: {
-    name: string;
+    attendeeName: string;
     password: string;
   };
 }

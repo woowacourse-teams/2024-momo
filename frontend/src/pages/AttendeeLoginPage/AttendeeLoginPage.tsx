@@ -19,7 +19,7 @@ export default function AttendeeLoginPage() {
   const navigate = useNavigate();
   const { uuid } = useParams<{ uuid: string }>();
 
-  const { value: name, onValueChange: onNameChange } = useInput();
+  const { value: attendeeName, onValueChange: onNameChange } = useInput();
   const { value: password, onValueChange: onPasswordChange } = useInput();
 
   const handleLoginButtonClick = async () => {
@@ -30,7 +30,7 @@ export default function AttendeeLoginPage() {
 
     const { userName } = await postUserLogin({
       uuid,
-      request: { name, password },
+      request: { attendeeName, password },
     });
 
     setIsLoggedIn(true);
@@ -42,7 +42,7 @@ export default function AttendeeLoginPage() {
     <div css={s_container}>
       <div css={s_inputContainer}>
         <Field labelText="이름" id="name">
-          <Input placeholder="이름을 입력하세요." value={name} onChange={onNameChange} />
+          <Input placeholder="이름을 입력하세요." value={attendeeName} onChange={onNameChange} />
         </Field>
         <Field labelText="비밀번호" id="password">
           <Input
