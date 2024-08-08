@@ -1,6 +1,6 @@
 package kr.momo.exception;
 
-import kr.momo.config.LogFilter;
+import kr.momo.config.filter.LogFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
