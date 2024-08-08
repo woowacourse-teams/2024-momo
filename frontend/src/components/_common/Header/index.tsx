@@ -22,7 +22,6 @@ export default function Header() {
     actions: { setIsLoggedIn, setUserName },
   } = authContext;
 
-  console.log('isLoggedIn', isLoggedIn);
   const handleAuthButtonClick = async () => {
     if (isLoggedIn) {
       await postUserLogout(uuid);
