@@ -163,8 +163,6 @@ const globalStyles = css`
   button {
     cursor: pointer;
     font: inherit;
-    background: none;
-    border: none;
   }
 `;
 
