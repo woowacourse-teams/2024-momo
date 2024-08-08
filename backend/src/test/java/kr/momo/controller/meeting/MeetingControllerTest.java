@@ -353,7 +353,7 @@ class MeetingControllerTest {
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meetings/{uuid}/confirmed")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -426,7 +426,7 @@ class MeetingControllerTest {
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meetings/{uuid}/confirmed")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
