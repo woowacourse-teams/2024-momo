@@ -8,4 +8,6 @@ public interface ConfirmedMeetingRepository extends JpaRepository<ConfirmedMeeti
     Optional<ConfirmedMeeting> findByMeeting(Meeting meeting);
 
     boolean existsByMeeting(Meeting meeting);
+
+    void deleteByMeeting(Meeting meeting);
 }

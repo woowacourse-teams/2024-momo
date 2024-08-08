@@ -94,4 +94,18 @@ public class MeetingConfirmService {
             throw new MomoException(MeetingErrorCode.INVALID_DATETIME_RANGE);
         }
     }
+
+    @Transactional
+    public void delete(String uuid, long attendeeId) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+
+        Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
+        validateHostPermission(attendee);
+
+        confirmedMeetingRepository.deleteByMeeting(meeting);
+
+        meeting.unlock();
+    }
 }
