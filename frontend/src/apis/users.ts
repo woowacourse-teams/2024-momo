@@ -1,6 +1,8 @@
+import { BASE_URL } from '@constants/api';
+
 import { fetchClient } from './_common/fetchClient';
 
-interface AttendeeLoginRequest {
+interface UserLoginRequest {
   uuid: string;
   request: {
     name: string;
@@ -8,7 +10,7 @@ interface AttendeeLoginRequest {
   };
 }
 
-export const postAttendeeLogin = async ({ uuid, request }: AttendeeLoginRequest) => {
+export const postUserLogin = async ({ uuid, request }: UserLoginRequest) => {
   const data = await fetchClient<string>({
     path: `/${uuid}/login`,
     method: 'POST',
@@ -21,3 +23,4 @@ export const postAttendeeLogin = async ({ uuid, request }: AttendeeLoginRequest)
     userName: data,
   };
 };
+

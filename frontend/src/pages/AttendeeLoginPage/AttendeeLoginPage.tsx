@@ -8,7 +8,7 @@ import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 
-import { postAttendeeLogin } from '@apis/attendee';
+import { postUserLogin } from '@apis/users';
 
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
@@ -28,7 +28,7 @@ export default function AttendeeLoginPage() {
       return;
     }
 
-    const { userName } = await postAttendeeLogin({
+    const { userName } = await postUserLogin({
       uuid,
       request: { name, password },
     });
