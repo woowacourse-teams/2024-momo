@@ -8,6 +8,7 @@ import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.annotation.ApiErrorResponse;
 import kr.momo.controller.annotation.ApiSuccessResponse;
 import kr.momo.controller.auth.AuthAttendee;
+import kr.momo.service.meeting.dto.ConfirmedMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
@@ -57,6 +58,13 @@ public interface MeetingControllerDocs {
 
     @Operation(summary = "약속 공유 정보 조회", deprecated = true)
     MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid);
+
+    @Operation(summary = "확정된 약속 정보 조회", description = "확정된 약속의 정보를 조회하는 API 입니다.")
+    @ApiSuccessResponse.Ok(value = "확정된 약속 정보 조회 성공")
+    @ApiErrorResponse.NotFound("약속이 확정되지 않았습니다.")
+    MomoApiResponse<ConfirmedMeetingResponse> findConfirmedMeeting(
+            @PathVariable @Schema(description = "약속 UUID") String uuid
+    );
 
     @Operation(
             summary = "약속 잠금",
@@ -109,7 +117,7 @@ public interface MeetingControllerDocs {
     )
     @ApiErrorResponse.Unauthorized("JWT 토큰 인증에 실패하였습니다.")
     @ApiErrorResponse.Forbidden("주최자 권한만 가능합니다.")
-    public ResponseEntity<Void> cancelConfirmedMeeting(
+    ResponseEntity<Void> cancelConfirmedMeeting(
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @AuthAttendee @Schema(hidden = true) long id
     );
