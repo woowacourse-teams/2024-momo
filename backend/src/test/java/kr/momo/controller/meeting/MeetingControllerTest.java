@@ -13,15 +13,14 @@ import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
-import kr.momo.domain.meeting.ConfirmedMeeting;
 import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
+import kr.momo.fixture.ConfirmedMeetingFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
@@ -273,12 +272,9 @@ class MeetingControllerTest {
     @DisplayName("주최자가 잠겨있는 약속 일정을 확정하면 201 상태 코드를 응답한다.")
     @Test
     void confirmSchedule() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting.lock();
-        meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
+        Meeting meeting = createLockedMovieMeeting();
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-
         String token = getToken(host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
@@ -296,16 +292,18 @@ class MeetingControllerTest {
                 .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed");
     }
 
+    private Meeting createLockedMovieMeeting() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        return meetingRepository.save(meeting);
+    }
+
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
     @Test
     void confirmScheduleNotHost() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting.lock();
-        meeting = meetingRepository.save(meeting);
+        Meeting meeting = createLockedMovieMeeting();
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-
-        Attendee guest = attendeeRepository.save(new Attendee(meeting, "guest", "password", Role.GUEST));
-
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         String token = getToken(guest, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
@@ -325,11 +323,9 @@ class MeetingControllerTest {
     @DisplayName("주최자가 잠겨있지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
     @Test
     void confirmScheduleUnlock() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
+        Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-
         String token = getToken(host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
@@ -349,15 +345,9 @@ class MeetingControllerTest {
     @DisplayName("주최자가 잠겨있는 약속의 확정된 약속을 취소하면 확정된 약속이 삭제되고 잠김이 해제된다. 204 상태 코드를 응답 받는다.")
     @Test
     void cancelConfirmedMeeting() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting.lock();
-        meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
-        confirmedMeetingRepository.save(new ConfirmedMeeting(
-                meeting,
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
-        ));
+        Meeting meeting = createLockedMovieMeeting();
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
         String token = getToken(host, meeting);
 
         RestAssured.given().log().all()
@@ -377,10 +367,8 @@ class MeetingControllerTest {
     @DisplayName("주최자가 확정되지 않은 약속을 취소하면 204 상태 코드를 응답 받는다.")
     @Test
     void cancelConfirmedMeetingNonExist() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting.lock();
-        meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(new Attendee(meeting, "host", "password", Role.HOST));
+        Meeting meeting = createLockedMovieMeeting();
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         String token = getToken(host, meeting);
 
         RestAssured.given().log().all()
@@ -395,15 +383,9 @@ class MeetingControllerTest {
     @DisplayName("주최자가 아닌 참여자가 약속 확정 취소하면 403 상태 코드를 응답 받는다.")
     @Test
     void cancelConfirmedMeetingNotHost() {
-        Meeting meeting = MeetingFixture.MOVIE.create();
-        meeting.lock();
-        meeting = meetingRepository.save(meeting);
-        Attendee guest = attendeeRepository.save(new Attendee(meeting, "guest", "password", Role.GUEST));
-        confirmedMeetingRepository.save(new ConfirmedMeeting(
-                meeting,
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
-        ));
+        Meeting meeting = createLockedMovieMeeting();
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
         String token = getToken(guest, meeting);
 
         RestAssured.given().log().all()
