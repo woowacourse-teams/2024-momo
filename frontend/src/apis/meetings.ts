@@ -1,3 +1,5 @@
+import { BASE_URL } from '@constants/api';
+
 import { fetchClient } from './_common/fetchClient';
 
 interface GetMeetingBaseResponse {
@@ -5,6 +7,7 @@ interface GetMeetingBaseResponse {
   firstTime: string;
   lastTime: string;
   isLocked: boolean;
+  hostName: string;
   availableDates: string[];
   attendeeNames: string[];
 }
@@ -14,6 +17,7 @@ export interface MeetingBase {
   firstTime: string;
   lastTime: string;
   isLocked: boolean;
+  hostName: string;
   availableDates: string[];
   attendeeNames: string[];
 }
@@ -53,6 +57,7 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
     lastTime: data.lastTime,
     availableDates: data.availableDates,
     attendeeNames: data.attendeeNames,
+    hostName: data.hostName,
   };
 };
 
@@ -69,4 +74,32 @@ export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo>
     uuid: data.uuid,
     userName: data.hostName,
   };
+};
+
+export const lockMeeting = async (uuid: string) => {
+  const response = await fetch(`${BASE_URL}/${uuid}/lock`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    throw new Error('약속을 잠그는 중 에러가 발생했습니다.');
+  }
+};
+
+export const unlockMeeting = async (uuid: string) => {
+  const response = await fetch(`${BASE_URL}/${uuid}/unlock`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    throw new Error('잠긴 약속을 해제하는 중 에러가 발생했습니다.');
+  }
 };
