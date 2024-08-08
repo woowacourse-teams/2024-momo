@@ -145,18 +145,41 @@ public class ScheduleService {
     }
 
     private List<RecommendedScheduleResponse> mapContinuousSchedulesToResponses(AttendeeGroup targetGroup) {
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(targetGroup.getAttendees());
-        List<LocalDateTime> dateTimesOfSchedules = filterCommonScheduleDateTimes(schedules, targetGroup);
+        List<LocalDateTime> dateTimesOfSchedules = filterCommonScheduleDateTimes(targetGroup);
 
         Iterator<LocalDateTime> iterator = dateTimesOfSchedules.iterator();
         if (!iterator.hasNext()) {
             return Collections.emptyList();
         }
 
-        return connectContinuousDateTimeAndMapToResponse(targetGroup, iterator);
+        return mergeContinuousDateTimeAndMapToResponse(targetGroup, iterator);
     }
 
-    private List<RecommendedScheduleResponse> connectContinuousDateTimeAndMapToResponse(
+    private List<LocalDateTime> filterCommonScheduleDateTimes(AttendeeGroup targetGroup) {
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(targetGroup.getAttendees());
+        Map<LocalDateTime, AttendeeGroup> attendeeGroupMap = groupingAttendeesByDateTime(schedules);
+        return filterAndSortCommonDateTimes(attendeeGroupMap, targetGroup);
+    }
+
+    private Map<LocalDateTime, AttendeeGroup> groupingAttendeesByDateTime(List<Schedule> schedules) {
+        return schedules.stream()
+                .collect(groupingBy(
+                        Schedule::dateTime,
+                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new))
+                ));
+    }
+
+    private List<LocalDateTime> filterAndSortCommonDateTimes(
+            Map<LocalDateTime, AttendeeGroup> attendeeMap, AttendeeGroup targetGroup
+    ) {
+        return attendeeMap.entrySet().stream()
+                .filter(e -> e.getValue().isSameSize(targetGroup))
+                .map(Entry::getKey)
+                .sorted()
+                .toList();
+    }
+
+    private List<RecommendedScheduleResponse> mergeContinuousDateTimeAndMapToResponse(
             AttendeeGroup targetGroup, Iterator<LocalDateTime> iterator
     ) {
         List<RecommendedScheduleResponse> responses = new ArrayList<>();
@@ -175,28 +198,6 @@ public class ScheduleService {
         }
         responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, targetGroup));
         return responses;
-    }
-
-    private List<LocalDateTime> filterCommonScheduleDateTimes(List<Schedule> schedules, AttendeeGroup targetGroup) {
-        Map<LocalDateTime, AttendeeGroup> attendeeGroupMap = groupingAttendeesByDateTime(schedules);
-        return filterAndSortCommonDateTimes(attendeeGroupMap, targetGroup);
-    }
-
-    private Map<LocalDateTime, AttendeeGroup> groupingAttendeesByDateTime(List<Schedule> schedules) {
-        return schedules.stream()
-                .collect(groupingBy(
-                        Schedule::dateTime,
-                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new))
-                ));
-    }
-
-    private List<LocalDateTime> filterAndSortCommonDateTimes(Map<LocalDateTime, AttendeeGroup> attendeeMap,
-                                                             AttendeeGroup targetGroup) {
-        return attendeeMap.entrySet().stream()
-                .filter(e -> e.getValue().isSameSize(targetGroup))
-                .map(Entry::getKey)
-                .sorted()
-                .toList();
     }
 
     private List<RecommendedScheduleResponse> sortedAndFilterByRecommendType(
