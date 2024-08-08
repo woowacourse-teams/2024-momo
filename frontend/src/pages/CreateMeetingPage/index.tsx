@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 import Calendar from '@components/_common/Calendar';
 import Dropdown from '@components/_common/Dropdown';

@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (uuid) {
       saveAuthState(uuid, { isLoggedIn, userName });
     }
-  }, [isLoggedIn, userName, uuid]);
+  }, [isLoggedIn, userName]);
 
   const value: AuthContextType = {
     state: { isLoggedIn, userName },
