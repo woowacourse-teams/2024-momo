@@ -6,7 +6,7 @@ interface GetMeetingRecommendRequest {
   attendeeNames: string[] | undefined;
 }
 
-interface MeetingRecommend {
+export interface MeetingRecommend {
   startDate: string;
   startDayOfWeek: string;
   startTime: string;
