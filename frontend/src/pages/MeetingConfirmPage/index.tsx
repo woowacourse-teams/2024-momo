@@ -22,8 +22,6 @@ export default function MeetingConfirmPage() {
     retry: 0,
   });
 
-  console.log('log');
-
   return (
     <div css={s_container} aria-label="약속 시간 확정 페이지">
       <section css={s_pageHeader}>

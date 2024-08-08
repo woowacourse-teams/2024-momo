@@ -19,7 +19,7 @@ export const usePostMeetingMutation = () => {
     mutationFn: postMeeting,
     onSuccess: (responseData) => {
       const { uuid, userName } = responseData;
-      console.log(uuid);
+
       setMeetingInfo(responseData);
       saveAuthState(uuid, { isLoggedIn: true, userName });
       navigate(`/meeting/${uuid}/complete`);
