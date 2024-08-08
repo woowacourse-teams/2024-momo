@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Calendar from '@components/_common/Calendar';
 import Dropdown from '@components/_common/Dropdown';
@@ -23,12 +23,13 @@ import {
 } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
-  const navigate = useNavigate();
-  const { uuid, mutation: postMeetingMutation } = usePostMeetingMutation();
+  const { mutation: postMeetingMutation } = usePostMeetingMutation();
+
   const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
   const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
   const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
+
   const {
     startTime,
     endTime,
@@ -44,7 +45,7 @@ export default function CreateMeetingPage() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleMeetingCreateButtonClick = () => {
     postMeetingMutation.mutate({
       hostName: hostName,
       hostPassword: hostPassword,
@@ -54,16 +55,6 @@ export default function CreateMeetingPage() {
       meetingEndTime: endTime,
     });
   };
-
-  useEffect(() => {
-    if (uuid !== '') {
-      navigate('/meeting/complete', {
-        state: {
-          uuid: uuid,
-        },
-      });
-    }
-  }, [uuid, navigate]);
 
   return (
     <div>
@@ -124,7 +115,7 @@ export default function CreateMeetingPage() {
           </div>
         </Field>
         <div css={s_confirmContainer}>
-          <button css={s_confirm} onClick={handleSubmit}>
+          <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
             약속 생성하기
           </button>
         </div>

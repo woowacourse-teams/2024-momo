@@ -1,8 +1,3 @@
-import { getCookie } from '@utils/cookies';
-
-import { BASE_URL } from '@constants/api';
-import { COOKIE_KEYS } from '@constants/cookies';
-
 import { fetchClient } from './_common/fetchClient';
 
 interface SingleAttendeeTimeSlot {
@@ -41,17 +36,16 @@ export const postSchedule = async ({
   uuid: string;
   requestData: SingleAttendeeTimeSlot[];
 }) => {
-  const url = `${BASE_URL}/${uuid}/schedules`;
-  const attendeeName = getCookie(COOKIE_KEYS.attendeeName);
+  const path = `/${uuid}/schedules`;
 
   await fetchClient({
-    url,
+    path,
     method: 'POST',
     errorMessage: '약속 참여 시간을 등록하는 중 문제가 발생했어요 :(',
     body: {
-      attendeeName,
       dateTimes: requestData,
     },
+    isAuthRequire: true,
   });
 };
 
@@ -60,14 +54,14 @@ export const createMeetingSchedulesRequestUrl = (uuid: string, attendeeName: str
 
   params.append('attendeeName', attendeeName);
 
-  return `${BASE_URL}/${uuid}/schedules?${params.toString()}`;
+  return `/${uuid}/schedules?${params.toString()}`;
 };
 
 const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules> => {
-  const url = `${BASE_URL}/${uuid}/schedules`;
+  const path = `/${uuid}/schedules`;
 
   const data = await fetchClient<MeetingAllSchedulesResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '약속 참여자들의 시간 정보를 조회하는 중 문제가 발생했어요 :(',
   });
@@ -84,10 +78,10 @@ const getMeetingSingleSchedule = async ({
   attendeeName: string;
   uuid: string;
 }): Promise<MeetingSingleSchedule> => {
-  const url = createMeetingSchedulesRequestUrl(uuid, attendeeName);
+  const path = createMeetingSchedulesRequestUrl(uuid, attendeeName);
 
   const data = await fetchClient<MeetingSingleScheduleResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '약속 참여자들의 시간 정보를 조회하는 중 문제가 발생했어요 :(',
   });
@@ -99,12 +93,13 @@ const getMeetingSingleSchedule = async ({
 };
 
 export const getMeetingMySchedule = async (uuid: string): Promise<MeetingSingleSchedule> => {
-  const url = `${BASE_URL}/${uuid}/attendees/me/schedules`;
+  const path = `/${uuid}/attendees/me/schedules`;
 
   const data = await fetchClient<MeetingSingleScheduleResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '내 시간 정보를 조회하는 중 문제가 발생했어요 :(',
+    isAuthRequire: true,
   });
 
   return {

@@ -32,7 +32,7 @@ const router = createBrowserRouter([
           },
 
           {
-            path: 'complete',
+            path: ':uuid/complete',
             element: <MeetingLinkSharePage />,
           },
           {

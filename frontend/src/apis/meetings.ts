@@ -1,5 +1,3 @@
-import { BASE_URL } from '@constants/api';
-
 import { fetchClient } from './_common/fetchClient';
 
 interface GetMeetingBaseResponse {
@@ -31,18 +29,19 @@ export interface MeetingRequest {
 
 interface PostMeetingResponse {
   uuid: string;
+  name: string;
 }
 
 export interface MeetingInfo {
   uuid: string;
+  userName: string;
 }
 
-// uuid 기본값은 임시 설정된 uuid
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
-  const url = `${BASE_URL}/${uuid}`;
+  const path = `/${uuid}`;
 
   const data = await fetchClient<GetMeetingBaseResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '약속 정보를 조회하는 중 문제가 발생했어요 :(',
   });
@@ -59,13 +58,15 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
 
 export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo> => {
   const data = await fetchClient<PostMeetingResponse>({
-    url: BASE_URL,
+    path: '',
     method: 'POST',
     body: request,
     errorMessage: '약속을 생성하는데 문제가 발생했어요 :(',
+    isAuthRequire: true,
   });
 
   return {
     uuid: data.uuid,
+    userName: data.name,
   };
 };
