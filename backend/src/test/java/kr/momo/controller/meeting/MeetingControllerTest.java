@@ -289,7 +289,7 @@ class MeetingControllerTest {
                 .when().post("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirmed");
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
     }
 
     private Meeting createLockedMovieMeeting() {
@@ -354,7 +354,7 @@ class MeetingControllerTest {
                 .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .when().delete("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
@@ -375,7 +375,7 @@ class MeetingControllerTest {
                 .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .when().delete("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -392,7 +392,7 @@ class MeetingControllerTest {
                 .cookie("ACCESS_TOKEN", token)
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().delete("/api/v1/meetings/{uuid}/confirmed")
+                .when().delete("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }

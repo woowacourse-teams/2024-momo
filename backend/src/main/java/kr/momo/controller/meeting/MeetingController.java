@@ -7,12 +7,12 @@ import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingConfirmService;
 import kr.momo.service.meeting.MeetingService;
+import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
-import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,7 @@ public class MeetingController implements MeetingControllerDocs {
             @PathVariable String uuid, @AuthAttendee long id, @RequestBody @Valid MeetingConfirmRequest request
     ) {
         MeetingConfirmResponse response = meetingConfirmService.create(uuid, id, request);
-        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirmed"))
+        return ResponseEntity.created(URI.create("/api/v1/meetings/" + uuid + "/confirm"))
                 .body(new MomoApiResponse<>(response));
     }
 
@@ -76,7 +76,7 @@ public class MeetingController implements MeetingControllerDocs {
         meetingService.unlock(uuid, id);
     }
 
-    @DeleteMapping("/api/v1/meetings/{uuid}/confirmed")
+    @DeleteMapping("/api/v1/meetings/{uuid}/confirm")
     public ResponseEntity<Void> cancelConfirmedMeeting(@PathVariable String uuid, @AuthAttendee long id) {
         meetingConfirmService.delete(uuid, id);
         return ResponseEntity.noContent().build();
