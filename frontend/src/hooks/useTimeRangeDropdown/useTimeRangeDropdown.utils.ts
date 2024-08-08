@@ -32,7 +32,8 @@ export function generateEndTimeOptions(startTime: string) {
   for (let i = startHours + 1; i <= MAXIMUM_TIME; i++) {
     const label = formatHours(i).padStart(2, '0');
 
-    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
+    // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 24시일 때, 00:00시로 표현하기로 합의(@낙타)
+    times.push({ value: `${String(i === 24 ? 0 : i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;
