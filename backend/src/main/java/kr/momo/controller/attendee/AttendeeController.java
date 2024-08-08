@@ -46,7 +46,7 @@ public class AttendeeController implements AttendeeControllerDocs {
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/attendees")
-    public MomoApiResponse<List<String>> findInMeeting(@PathVariable String uuid) {
+    public MomoApiResponse<List<String>> findAttendeesOfMeeting(@PathVariable String uuid) {
         return new MomoApiResponse<>(attendeeService.findAll(uuid));
     }
 }
