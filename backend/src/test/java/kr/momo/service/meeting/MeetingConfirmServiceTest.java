@@ -208,8 +208,8 @@ class MeetingConfirmServiceTest {
         );
 
         MeetingConfirmedResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
-        String expectStartDayOfWeek = confirmed.startDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
-        String expectEndDayOfWeek = confirmed.endDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String expectStartDayOfWeek = confirmed.startDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
+        String expectEndDayOfWeek = confirmed.endDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
 
         assertAll(
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),

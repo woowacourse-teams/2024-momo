@@ -22,9 +22,9 @@ public record MeetingConfirmedResponse(
                 meeting.getName(),
                 attendees.stream().map(Attendee::name).toList(),
                 confirmedMeeting.getStartDateTime(),
-                confirmedMeeting.getStartDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN),
+                confirmedMeeting.getStartDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
                 confirmedMeeting.getEndDateTime(),
-                confirmedMeeting.getEndDateTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)
+                confirmedMeeting.getEndDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)
         );
     }
 }
