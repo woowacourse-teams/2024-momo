@@ -39,6 +39,10 @@ const router = createBrowserRouter([
             path: ':uuid/login',
             element: <AttendeeLoginPage />,
           },
+          {
+            path: ':uuid/recommend',
+            element: <MeetingRecommendPage />,
+          },
         ],
       },
     ],
