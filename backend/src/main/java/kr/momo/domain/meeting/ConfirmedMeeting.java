@@ -12,8 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import kr.momo.domain.BaseEntity;
@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConfirmedMeeting extends BaseEntity {
 
-    private static final int SECOND_OF_HALF_HOUR = 30 * 60;
+    private static final long SECOND_OF_HALF_HOUR = 30 * 60;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,7 +70,6 @@ public class ConfirmedMeeting extends BaseEntity {
     }
 
     private long countTimeSlotOfConfirmedMeeting() {
-        return (endDateTime.toEpochSecond(ZoneOffset.UTC) - startDateTime.toEpochSecond(ZoneOffset.UTC))
-                / SECOND_OF_HALF_HOUR;
+        return Duration.between(startDateTime, endDateTime).dividedBy(SECOND_OF_HALF_HOUR).getSeconds();
     }
 }

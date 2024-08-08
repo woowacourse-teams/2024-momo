@@ -12,6 +12,7 @@ import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,9 @@ class ConfirmedMeetingTest {
 
         List<Attendee> attendees = confirmedMeeting.availableAttendeesOf(schedules);
 
-        assertThat(attendees).hasSize(1);
-        assertThat(attendees).containsExactly(attendee1);
+        Assertions.assertAll(
+                () -> assertThat(attendees).hasSize(1),
+                () -> assertThat(attendees).containsExactly(attendee1)
+        );
     }
 }

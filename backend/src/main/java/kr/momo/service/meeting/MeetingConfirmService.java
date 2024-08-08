@@ -100,7 +100,7 @@ public class MeetingConfirmService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ConfirmedMeetingResponse findByUuid(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
