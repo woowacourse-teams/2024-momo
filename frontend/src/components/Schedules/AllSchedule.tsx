@@ -63,12 +63,7 @@ export default function AllSchedules({
                 </span>
               </td>
               {row.map((attendeeCount, columnIndex) => (
-                <td
-                  key={columnIndex}
-                  css={css`
-                    ${s_td(attendeeCount)}
-                  `}
-                >
+                <td key={columnIndex} css={s_td(attendeeCount)}>
                   {attendeeCount > 0 && (
                     <AttendeeTooltip
                       allSchedules={allSchedules}

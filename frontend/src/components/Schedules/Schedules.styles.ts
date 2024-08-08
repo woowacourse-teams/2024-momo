@@ -109,7 +109,7 @@ export const s_datesControlButton = css`
   }
 
   &:first-of-type {
-    margin-left: calc(5rem); /* Adjust according to your needs */
+    margin-left: 5rem;
   }
 `;
 
