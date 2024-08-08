@@ -27,6 +27,7 @@ import {
 import SingleSchedule from './SingleSchedule';
 
 interface SchedulesViewerProps {
+  isLocked: boolean;
   firstTime: string;
   lastTime: string;
   availableDates: string[];
@@ -34,6 +35,7 @@ interface SchedulesViewerProps {
 }
 
 export default function SchedulesViewer({
+  isLocked,
   firstTime,
   lastTime,
   availableDates,
@@ -130,7 +132,9 @@ export default function SchedulesViewer({
         )}
       </section>
       <div css={s_buttonContainer}>
-        <button onClick={handleScheduleUpdate}>수정하기</button>
+        <button disabled={isLocked} onClick={handleScheduleUpdate}>
+          수정하기
+        </button>
       </div>
     </>
   );

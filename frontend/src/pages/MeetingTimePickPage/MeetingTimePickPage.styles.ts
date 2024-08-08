@@ -65,3 +65,10 @@ export const s_tabButton = (isSelected: boolean) => css`
         background-color: #ebeef2;
       `}
 `;
+
+export const s_toggleButtonContainer = css`
+  display: flex;
+  gap: 0.8rem;
+  justify-content: right;
+  width: 100%;
+`;
