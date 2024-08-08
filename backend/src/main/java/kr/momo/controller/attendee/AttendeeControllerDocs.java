@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.annotation.ApiErrorResponse;
 import kr.momo.controller.annotation.ApiSuccessResponse;
@@ -40,4 +41,13 @@ public interface AttendeeControllerDocs {
     @Operation(summary = "참가자 로그아웃", description = "참가자 로그아웃 API 입니다.")
     @ApiSuccessResponse.Ok("로그아웃 성공")
     ResponseEntity<Void> logout(@PathVariable @Schema(description = "약속 UUID") String uuid);
+
+    @Operation(summary = "약속의 모든 참여자 조회", description = "약속의 모든 참여자를 조회하는 API 입니다.")
+    @ApiSuccessResponse.Ok("약속의 모든 참여자 조회")
+    @ApiErrorResponse.BadRequest("""
+            요청이 잘못되었습니다.
+            1. 유효하지 않은 UUID
+            """
+    )
+    MomoApiResponse<List<String>> findAttendeesOfMeeting(@PathVariable @Schema(description = "약속 UUID") String uuid);
 }

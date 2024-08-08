@@ -1,6 +1,7 @@
 package kr.momo.controller.attendee;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import kr.momo.controller.CookieManager;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.service.attendee.AttendeeService;
@@ -9,6 +10,7 @@ import kr.momo.service.attendee.dto.AttendeeLoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,5 +43,10 @@ public class AttendeeController implements AttendeeControllerDocs {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie)
                 .build();
+    }
+
+    @GetMapping("/api/v1/meetings/{uuid}/attendees")
+    public MomoApiResponse<List<String>> findAttendeesOfMeeting(@PathVariable String uuid) {
+        return new MomoApiResponse<>(attendeeService.findAll(uuid));
     }
 }

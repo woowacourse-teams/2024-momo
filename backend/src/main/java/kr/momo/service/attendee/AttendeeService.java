@@ -1,5 +1,6 @@
 package kr.momo.service.attendee;
 
+import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
 import kr.momo.domain.attendee.AttendeePassword;
@@ -46,5 +47,15 @@ public class AttendeeService {
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
+    }
+
+    public List<String> findAll(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
+
+        return attendees.stream()
+                .map(Attendee::name)
+                .toList();
     }
 }

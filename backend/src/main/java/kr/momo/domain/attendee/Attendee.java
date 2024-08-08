@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class Attendee extends BaseEntity {
 
     @Id
