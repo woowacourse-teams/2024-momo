@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 import kr.momo.exception.MomoException;
@@ -14,7 +15,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode
 public class AttendeeGroup {
 
     private final List<Attendee> attendees;
@@ -78,5 +78,25 @@ public class AttendeeGroup {
 
     public boolean isSameSize(AttendeeGroup attendeeGroup) {
         return attendees.size() == attendeeGroup.size();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendeeGroup that = (AttendeeGroup) object;
+
+        HashSet<Attendee> thatSet = new HashSet<>(that.getAttendees());
+        HashSet<Attendee> set = new HashSet<>(getAttendees());
+        return thatSet.equals(set);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAttendees());
     }
 }
