@@ -1,8 +1,9 @@
 package kr.momo.controller.meeting;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -348,21 +349,13 @@ class MeetingControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        RestAssured.given().log().all()
-                .pathParam("uuid", meeting.getUuid())
-                .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/confirm")
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-
-        RestAssured.given().log().all()
-                .cookie("ACCESS_TOKEN", token)
-                .pathParam("uuid", meeting.getUuid())
-                .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}")
-                .then().log().all()
-                .body("data.isLocked", equalTo(false))
-                .statusCode(HttpStatus.OK.value());
+        assertAll(
+                () -> {
+                    Meeting cancelConfirmMeeting = meetingRepository.findById(meeting.getId()).get();
+                    assertThat(cancelConfirmMeeting.isLocked()).isFalse();
+                },
+                () -> assertThat(confirmedMeetingRepository.findByMeeting(meeting)).isNotPresent()
+        );
     }
 
     @DisplayName("주최자가 확정되지 않은 약속을 취소하면 204 상태 코드를 응답 받는다.")
