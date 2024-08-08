@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class LogFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+        HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         String httpMethod = httpRequest.getMethod();
         String requestURI = httpRequest.getRequestURI();
         String remoteAddr = httpRequest.getRemoteAddr();
@@ -35,7 +37,8 @@ public class LogFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
-            log.info("RESPONSE [{}][{}][{} ms]", traceId, requestURI, duration);
+            int status = httpResponse.getStatus();
+            log.info("RESPONSE [{}][{} {}][{} ms][Status: {}]", traceId, httpMethod, requestURI, duration, status);
             MDC.clear();
         }
     }
