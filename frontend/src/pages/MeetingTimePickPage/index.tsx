@@ -32,17 +32,17 @@ export default function MeetingTimePickPage() {
       </section>
       {meetingFrame && !isTimePickerUpdate ? (
         <SchedulesViewer
-          firstTime={meetingFrame?.firstTime}
-          lastTime={meetingFrame?.lastTime}
-          availableDates={meetingFrame?.availableDates}
-          meetingAttendees={meetingFrame?.attendeeNames}
+          firstTime={meetingFrame.firstTime}
+          lastTime={meetingFrame.lastTime}
+          availableDates={meetingFrame.availableDates}
+          meetingAttendees={meetingFrame.attendeeNames}
         />
       ) : (
         meetingFrame && (
           <SchedulePickerContainer
-            firstTime={meetingFrame?.firstTime}
-            lastTime={meetingFrame?.lastTime}
-            availableDates={meetingFrame?.availableDates}
+            firstTime={meetingFrame.firstTime}
+            lastTime={meetingFrame.lastTime}
+            availableDates={meetingFrame.availableDates}
           />
         )
       )}
