@@ -5,7 +5,7 @@ import useTimePick from '@hooks/useTimePick/useTimePick';
 
 interface UseTimePickReturn {
   tableRef: React.MutableRefObject<HTMLTableElement | null>;
-  currentValue: number[][];
+  currentTableValue: number[][];
   tableValue: number[][];
 }
 
@@ -29,7 +29,7 @@ type UsePagedTimePickHook = (
  * * 아래는 usePagedTimePick 훅 반환 타입에 대한 간단한 설명입니다. :)
  * @property {React.MutableRefObject<HTMLTableElement | null>} tableRef - 테이블 요소의 참조 객체
  * @property {number[][]} tableValue - 전체 테이블 값
- * @property {number[][]} currentValue - 현재 페이지에 해당하는 테이블 값
+ * @property {number[][]} currentTableValue - 현재 페이지에 해당하는 테이블 값
  * @property {number} currentDatePage - 현재 날짜 페이지 인덱스
  * @property {string[]} currentDates - 현재 페이지에 해당하는 날짜 배열
  * @property {() => void} increaseDatePage - 날짜 페이지를 증가시키는 함수
@@ -52,7 +52,7 @@ const usePagedTimePick: UsePagedTimePickHook = (availableDates, initialSchedules
 
   const { tableRef, tableValue } = useTimePick(initialSchedules, currentDatePage);
 
-  const currentValue = useMemo(
+  const currentTableValue = useMemo(
     () =>
       tableValue.map((row) =>
         row.slice(currentDatePage * DATES_PER_PAGE, (currentDatePage + 1) * DATES_PER_PAGE),
@@ -63,7 +63,7 @@ const usePagedTimePick: UsePagedTimePickHook = (availableDates, initialSchedules
   return {
     tableRef,
     tableValue,
-    currentValue,
+    currentTableValue,
     currentDatePage,
     currentDates,
     increaseDatePage,

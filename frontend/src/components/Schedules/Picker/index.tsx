@@ -56,7 +56,7 @@ export default function SchedulePicker({
   const {
     tableRef,
     tableValue,
-    currentValue,
+    currentTableValue,
     currentDates,
     isMultiPage,
     increaseDatePage,
@@ -116,7 +116,7 @@ export default function SchedulePicker({
             </tr>
           </thead>
           <tbody>
-            {currentValue.map((row, rowIndex) => (
+            {currentTableValue.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 <td css={s_timeColumn}>
                   <span css={s_timeText}>
@@ -124,12 +124,7 @@ export default function SchedulePicker({
                   </span>
                 </td>
                 {row.map((_, columnIndex) => (
-                  <td
-                    key={columnIndex}
-                    css={css`
-                      ${s_td(currentValue[rowIndex][columnIndex])}
-                    `}
-                  />
+                  <td key={columnIndex} css={s_td(currentTableValue[rowIndex][columnIndex])} />
                 ))}
               </tr>
             ))}
