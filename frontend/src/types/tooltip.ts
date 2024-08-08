@@ -1,8 +1,6 @@
-export type TooltipPosition =
-  | 'top'
-  | 'left'
-  | 'right'
-  | 'bottom'
+export type BasicPosition = 'top' | 'left' | 'right' | 'bottom';
+
+export type CombinedPosition =
   | 'topLeft'
   | 'topRight'
   | 'bottomLeft'
@@ -11,3 +9,5 @@ export type TooltipPosition =
   | 'leftBottom'
   | 'rightTop'
   | 'rightBottom';
+
+export type TooltipPosition = BasicPosition | CombinedPosition;
