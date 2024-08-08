@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import {
@@ -41,7 +42,10 @@ export default function SchedulesViewer({
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
+  const navigate = useNavigate();
+
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
+  const { isLoggedIn } = useContext(AuthContext).state;
 
   const {
     currentDates,
@@ -59,6 +63,16 @@ export default function SchedulesViewer({
     queryFn: () => handleGetMeetingSchedules({ uuid, attendeeName: selectedAttendee }),
     staleTime: 0,
   });
+
+  const handleScheduleUpdate = () => {
+    if (!isLoggedIn) {
+      alert('로그인 해주세요');
+      navigate(`/meeting/${uuid}/login`);
+      return;
+    }
+
+    handleToggleIsTimePickerUpdate();
+  };
 
   return (
     <>
@@ -116,7 +130,7 @@ export default function SchedulesViewer({
         )}
       </section>
       <div css={s_buttonContainer}>
-        <button onClick={handleToggleIsTimePickerUpdate}>수정하기</button>
+        <button onClick={handleScheduleUpdate}>수정하기</button>
       </div>
     </>
   );
