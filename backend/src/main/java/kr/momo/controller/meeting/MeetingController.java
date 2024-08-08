@@ -67,7 +67,7 @@ public class MeetingController implements MeetingControllerDocs {
         return new MomoApiResponse<>(response);
     }
 
-    @GetMapping("/api/v1/meetings/{uuid}/confirmed")
+    @GetMapping("/api/v1/meetings/{uuid}/confirm")
     public MomoApiResponse<ConfirmedMeetingResponse> findConfirmedMeeting(@PathVariable String uuid) {
         ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(uuid);
         return new MomoApiResponse<>(response);

@@ -351,7 +351,7 @@ class MeetingControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .when().get("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
 
@@ -409,7 +409,7 @@ class MeetingControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .when().get("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -424,7 +424,7 @@ class MeetingControllerTest {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .when().get("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
