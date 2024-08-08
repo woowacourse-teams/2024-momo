@@ -45,7 +45,7 @@ const router = createBrowserRouter([
             element: <MeetingConfirmPage />,
           },
           {
-            path: 'complete',
+            path: ':uuid/complete',
             element: <MeetingLinkSharePage />,
           },
         ],
