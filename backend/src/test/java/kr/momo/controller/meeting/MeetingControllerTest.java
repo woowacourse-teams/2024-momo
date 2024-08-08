@@ -298,6 +298,12 @@ class MeetingControllerTest {
         return meetingRepository.save(meeting);
     }
 
+    private Meeting createLockedMovieMeeting() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        return meetingRepository.save(meeting);
+    }
+
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
     @Test
     void confirmScheduleNotHost() {
