@@ -1,5 +1,3 @@
-import { BASE_URL } from '@constants/api';
-
 import { fetchClient } from './_common/fetchClient';
 
 interface GetMeetingRecommendRequest {
@@ -29,12 +27,12 @@ export const getMeetingTimeRecommends = async ({
 }: GetMeetingRecommendRequest): Promise<MeetingRecommend[]> => {
   if (!attendeeNames) return [];
 
-  const url = `${BASE_URL}/${uuid}/recommended-schedules?recommendType=${recommendType}&attendeeNames=${attendeeNames.join(
+  const path = `/${uuid}/recommended-schedules?recommendType=${recommendType}&attendeeNames=${attendeeNames.join(
     ',',
   )}`;
 
   const data = await fetchClient<GetMeetingRecommendResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '약속 시간 추천을 가져오는데 실패했어요 :(',
   });
@@ -51,10 +49,10 @@ export const getMeetingAttendees = async ({
 }: {
   uuid: string;
 }): Promise<MeetingAttendees> => {
-  const url = `${BASE_URL}/${uuid}/attendees`;
+  const path = `/${uuid}/attendees`;
 
   const data = await fetchClient<GetMeetingAttendeesResponse>({
-    url,
+    path,
     method: 'GET',
     errorMessage: '약속 참여자들의 정보를 가져오는데 실패했어요 :(',
   });
