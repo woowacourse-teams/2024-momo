@@ -7,10 +7,11 @@ export const findAttendeeNames = (
   rowIndex: number,
   firstTime: string,
 ): string[] => {
+  const targetDate = availableDates[columnIndex];
+  const targetTime = `${rowIndex + parseInt(firstTime.slice(0, 2))}:00`;
+
   const schedule = allSchedules.schedules.find(
-    (s) =>
-      s.date === availableDates[columnIndex] &&
-      s.time === `${rowIndex + parseInt(firstTime.slice(0, 2))}:00`,
+    (s) => s.date === targetDate && s.time === targetTime,
   );
 
   return schedule ? schedule.attendeeNames : [];
