@@ -35,10 +35,11 @@ export default function Header() {
         <Logo width={36} height={36} />
         <h1 css={s_title}>momo</h1>
       </div>
-
-      <Button variant="primary" size="m" onClick={handleAuthButtonClick}>
-        {isLoggedIn ? '로그아웃' : '로그인'}
-      </Button>
+      {uuid ? (
+        <Button variant="primary" size="m" onClick={handleAuthButtonClick}>
+          {isLoggedIn ? '로그아웃' : '로그인'}
+        </Button>
+      ) : null}
     </header>
   );
 }
