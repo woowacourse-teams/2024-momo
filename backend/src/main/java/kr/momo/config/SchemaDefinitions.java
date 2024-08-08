@@ -26,7 +26,7 @@ public class SchemaDefinitions {
 
     private void initSchemas() {
         schemas.put("availableMeetingDates", createAvailableMeetingDates());
-        schemas.put("meetingConfirmLocalDateTime", createMeetingConfirmLocalDateTime());
+        schemas.put("localDateTime", createLocalDateTime());
     }
 
     private Schema createAvailableMeetingDates() {
@@ -38,7 +38,7 @@ public class SchemaDefinitions {
                 .example(List.of(today.toString(), tomorrow.toString()));
     }
 
-    private Schema createMeetingConfirmLocalDateTime() {
+    private Schema createLocalDateTime() {
         LocalDateTime startTime = LocalDateTime.now();
         LocalDateTime endTime = LocalDateTime.now().plusHours(4);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

@@ -16,9 +16,9 @@ import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
+import kr.momo.service.meeting.dto.ConfirmedMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
-import kr.momo.service.meeting.dto.MeetingConfirmedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,7 +101,7 @@ public class MeetingConfirmService {
     }
 
     @Transactional
-    public MeetingConfirmedResponse findByUuid(String uuid) {
+    public ConfirmedMeetingResponse findByUuid(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.findByMeeting(meeting)
@@ -112,7 +112,7 @@ public class MeetingConfirmService {
 
         attendees = confirmedMeeting.availableAttendeesOf(schedules);
 
-        return MeetingConfirmedResponse.from(meeting, attendees, confirmedMeeting);
+        return ConfirmedMeetingResponse.from(meeting, attendees, confirmedMeeting);
     }
 
     @Transactional

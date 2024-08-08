@@ -8,7 +8,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
@@ -405,11 +404,7 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        confirmedMeetingRepository.save(new ConfirmedMeeting(
-                meeting,
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
-        ));
+        confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
 
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())

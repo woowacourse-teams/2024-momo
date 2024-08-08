@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConfirmedMeeting extends BaseEntity {
 
-    private static final int SECOND_OF_HALF_HOUR = 1800;
+    private static final int SECOND_OF_HALF_HOUR = 30 * 60;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +65,7 @@ public class ConfirmedMeeting extends BaseEntity {
     }
 
     public boolean isScheduleWithinDateTimeRange(Schedule schedule) {
-        LocalDateTime dateTime = schedule.getDateTime();
+        LocalDateTime dateTime = schedule.dateTime();
         return !(dateTime.isBefore(startDateTime) || dateTime.isAfter(endDateTime));
     }
 

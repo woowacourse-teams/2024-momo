@@ -1,26 +1,20 @@
 package kr.momo.service.meeting.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import io.swagger.v3.oas.annotations.media.Schema;
 import kr.momo.domain.meeting.ConfirmedMeeting;
 
-// TODO 스키마 확인
-@Schema(description = "약속 확정 응답", ref = "#/components/schemas/meetingConfirmLocalDateTime")
 public record MeetingConfirmResponse(
 
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-        @Schema(description = "시작 날짜")
+        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
         LocalDate startDate,
-        @JsonFormat(pattern = "HH:mm", shape = JsonFormat.Shape.STRING)
-        @Schema(description = "시작 시간")
+        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
         LocalTime startTime,
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-        @Schema(description = "종료 날짜")
+        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
         LocalDate endDate,
-        @JsonFormat(pattern = "HH:mm", shape = JsonFormat.Shape.STRING)
-        @Schema(description = "종료 시간")
+        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
         LocalTime endTime
 ) {
 

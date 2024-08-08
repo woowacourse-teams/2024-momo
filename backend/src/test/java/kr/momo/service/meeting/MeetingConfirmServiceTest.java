@@ -26,9 +26,9 @@ import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.meeting.dto.ConfirmedMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
-import kr.momo.service.meeting.dto.MeetingConfirmedResponse;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -209,7 +209,7 @@ class MeetingConfirmServiceTest {
                 meeting.getUuid(), attendee.getId(), validRequest
         );
 
-        MeetingConfirmedResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
+        ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
 
         assertAll(
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
