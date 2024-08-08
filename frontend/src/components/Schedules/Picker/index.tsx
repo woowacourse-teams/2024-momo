@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import Button from '@components/_common/Button';
+import { Button } from '@components/_common/Buttons/Button';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 
@@ -132,7 +132,9 @@ export default function SchedulePicker({
         </table>
       </div>
       <div css={s_buttonContainer}>
-        <Button text="등록하기" onClick={handleOnToggle} />
+        <Button onClick={handleOnToggle} size="m" variant="primary">
+          등록하기
+        </Button>
       </div>
     </section>
   );

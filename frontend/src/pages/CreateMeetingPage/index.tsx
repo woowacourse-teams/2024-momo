@@ -49,7 +49,7 @@ export default function CreateMeetingPage() {
       hostName: hostName,
       hostPassword: hostPassword,
       meetingName: meetingName,
-      meetingAvailableDates: selectedDates,
+      availableMeetingDates: selectedDates,
       meetingStartTime: startTime,
       meetingEndTime: endTime,
     });

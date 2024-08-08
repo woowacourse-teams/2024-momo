@@ -22,7 +22,7 @@ export interface MeetingRequest {
   hostName: string;
   hostPassword: string;
   meetingName: string;
-  meetingAvailableDates: string[];
+  availableMeetingDates: string[];
   meetingStartTime: string;
   meetingEndTime: string;
 }
