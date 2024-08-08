@@ -78,7 +78,8 @@ class AttendeeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/api/v1/meetings/{uuid}/attendees", meeting.getUuid())
+                .pathParams("uuid", meeting.getUuid())
+                .when().get("/api/v1/meetings/{uuid}/attendees")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
