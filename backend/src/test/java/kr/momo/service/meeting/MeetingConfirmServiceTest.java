@@ -72,8 +72,8 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                LocalDateTime.of(today.getDate(), meeting.startTimeslotTime()),
-                LocalDateTime.of(today.getDate(), meeting.startTimeslotTime().plusMinutes(90))
+                today.getDate(), meeting.startTimeslotTime(),
+                today.getDate(), meeting.startTimeslotTime().plusMinutes(90)
         );
     }
 
@@ -86,8 +86,10 @@ class MeetingConfirmServiceTest {
         LocalDateTime startDateTime = confirmedMeeting.getStartDateTime();
         LocalDateTime endDateTime = confirmedMeeting.getEndDateTime();
         assertAll(
-                () -> assertThat(startDateTime).isEqualTo(validRequest.startDateTime()),
-                () -> assertThat(endDateTime).isEqualTo(validRequest.endDateTime())
+                () -> assertThat(startDateTime)
+                        .isEqualTo(LocalDateTime.of(validRequest.startDate(), validRequest.startTime())),
+                () -> assertThat(endDateTime)
+                        .isEqualTo(LocalDateTime.of(validRequest.endDate(), validRequest.endTime()))
         );
     }
 
@@ -145,8 +147,8 @@ class MeetingConfirmServiceTest {
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         LocalDate invalidDate = LocalDate.now().plusDays(30);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(invalidDate, Timeslot.TIME_0100.getLocalTime()),
-                LocalDateTime.of(invalidDate, Timeslot.TIME_0130.getLocalTime())
+                invalidDate, Timeslot.TIME_0100.getLocalTime(),
+                invalidDate, Timeslot.TIME_0130.getLocalTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -158,8 +160,8 @@ class MeetingConfirmServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidTime() {
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_2200.getLocalTime()),
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime())
+                today.getDate(), Timeslot.TIME_2200.getLocalTime(),
+                today.getDate(), Timeslot.TIME_2300.getLocalTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -208,16 +210,19 @@ class MeetingConfirmServiceTest {
         );
 
         MeetingConfirmedResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
-        String expectStartDayOfWeek = confirmed.startDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
-        String expectEndDayOfWeek = confirmed.endDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
 
         assertAll(
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
                 () -> assertThat(response.availableAttendeeNames()).containsExactlyInAnyOrder(attendee.name()),
-                () -> assertThat(response.startDateTime()).isEqualTo(confirmed.startDateTime()),
-                () -> assertThat(response.startDayOfWeek()).isEqualTo(expectStartDayOfWeek),
-                () -> assertThat(response.endDateTime()).isEqualTo(confirmed.endDateTime()),
-                () -> assertThat(response.endDayOfWeek()).isEqualTo(expectEndDayOfWeek)
+                () -> assertThat(response.startDate()).isEqualTo(confirmed.startDate()),
+                () -> assertThat(response.startTime()).isEqualTo(confirmed.startTime()),
+                () -> assertThat(response.startDayOfWeek())
+                        .isEqualTo(
+                                confirmed.startDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)),
+                () -> assertThat(response.endDate()).isEqualTo(confirmed.endDate()),
+                () -> assertThat(response.endTime()).isEqualTo(confirmed.endTime()),
+                () -> assertThat(response.endDayOfWeek())
+                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN))
         );
     }
 

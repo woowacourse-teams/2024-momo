@@ -276,10 +276,7 @@ class MeetingControllerTest {
         Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String token = getToken(host, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -305,10 +302,7 @@ class MeetingControllerTest {
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         String token = getToken(guest, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -327,10 +321,7 @@ class MeetingControllerTest {
         Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String token = getToken(host, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -441,5 +432,12 @@ class MeetingControllerTest {
                 .when().get("/api/v1/meetings/{uuid}/confirmed")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
+        return new MeetingConfirmRequest(
+                tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime(),
+                tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime()
+        );
     }
 }
