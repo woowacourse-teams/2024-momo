@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Calendar from '@components/_common/Calendar';
 import Dropdown from '@components/_common/Dropdown';
@@ -23,10 +23,7 @@ import {
 } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
-  const navigate = useNavigate();
-
-  const { meetingInfo, mutation: postMeetingMutation } = usePostMeetingMutation();
-  const uuid = meetingInfo.uuid;
+  const { mutation: postMeetingMutation } = usePostMeetingMutation();
 
   const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
   const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
@@ -58,16 +55,6 @@ export default function CreateMeetingPage() {
       meetingEndTime: endTime,
     });
   };
-
-  useEffect(() => {
-    if (uuid !== '') {
-      navigate('/meeting/complete', {
-        state: {
-          uuid: uuid,
-        },
-      });
-    }
-  }, [uuid, navigate]);
 
   return (
     <div>

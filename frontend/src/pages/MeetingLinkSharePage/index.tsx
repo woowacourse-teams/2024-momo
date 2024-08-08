@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { copyToClipboard } from '@utils/clipboard';
 
@@ -13,8 +13,10 @@ import {
 } from './MeetingLinkSharePage.styles';
 
 export default function MeetingLinkSharePage() {
-  const location = useLocation();
-  const LINK = `${window.location.host}/meeting/${location.state.uuid}`;
+  const params = useParams<{ uuid: string }>();
+  const uuid = params.uuid!;
+
+  const LINK = `${window.location.host}/meeting/${uuid}`;
 
   return (
     <div css={s_container}>
