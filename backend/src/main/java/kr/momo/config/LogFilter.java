@@ -23,28 +23,27 @@ public class LogFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        String httpMethod = httpRequest.getMethod();
-        String requestURI = httpRequest.getRequestURI();
-        String remoteAddr = httpRequest.getRemoteAddr();
 
         String traceId = generateShortUuid();
         MDC.put(TRACE_ID, traceId);
 
+        String httpMethod = httpRequest.getMethod();
+        String requestURI = httpRequest.getRequestURI();
+        String remoteAddr = httpRequest.getRemoteAddr();
         long startTime = System.currentTimeMillis();
+        int status = httpResponse.getStatus();
 
         try {
             log.info("REQUEST [{}][{} {}][{}]", traceId, httpMethod, requestURI, remoteAddr);
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
-            int status = httpResponse.getStatus();
             log.info("RESPONSE [{}][{} {}][{} ms][Status: {}]", traceId, httpMethod, requestURI, duration, status);
             MDC.clear();
         }
     }
 
     private String generateShortUuid() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString().split("-", 2)[0];
+        return UUID.randomUUID().toString().split("-", 2)[0];
     }
 }
