@@ -48,19 +48,15 @@ public class AttendeeGroup {
     }
 
     public List<AttendeeGroup> findAttendeeGroupCombinationsOverSize(int minSize) {
-        List<AttendeeGroup> array = new ArrayList<>();
-        for (int i = attendees.size(); i >= minSize; i--) {
-            array.addAll(findAttendeeGroupCombinations(i));
-        }
-        return array;
-    }
-
-    private List<AttendeeGroup> findAttendeeGroupCombinations(int r) {
-        if (r < 1 || r > attendees.size()) {
+        if (minSize < 1 || minSize > attendees.size()) {
             throw new MomoException(AttendeeErrorCode.INVALID_ATTENDEE_SIZE);
         }
 
-        return generateCombinations(r);
+        List<AttendeeGroup> array = new ArrayList<>();
+        for (int i = attendees.size(); i >= minSize; i--) {
+            array.addAll(generateCombinations(i));
+        }
+        return array;
     }
 
     private List<AttendeeGroup> generateCombinations(int groupSize) {
