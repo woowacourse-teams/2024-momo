@@ -1,8 +1,8 @@
 package kr.momo.controller.meeting;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -358,10 +358,21 @@ class MeetingControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        meeting = meetingRepository.findByUuid(meeting.getUuid()).get();
-        boolean existConfirmedMeeting = confirmedMeetingRepository.existsByMeeting(meeting);
-        assertThat(existConfirmedMeeting).isFalse();
-        assertThat(meeting.isLocked()).isFalse();
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/confirmed")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}")
+                .then().log().all()
+                .body("data.isLocked", equalTo(false))
+                .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("주최자가 확정되지 않은 약속을 취소하면 204 상태 코드를 응답 받는다.")
@@ -403,7 +414,7 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.save(new ConfirmedMeeting(
+        confirmedMeetingRepository.save(new ConfirmedMeeting(
                 meeting,
                 LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0000.getLocalTime()),
                 LocalDateTime.of(LocalDate.now().plusDays(1), Timeslot.TIME_0600.getLocalTime())
