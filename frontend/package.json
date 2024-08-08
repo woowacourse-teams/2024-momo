@@ -6,7 +6,8 @@
   "scripts": {
     "prod": "webpack server --open --config webpack.prod.js",
     "dev": "webpack server --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "build": "webpack --config webpack.prod.js && npm run sentry:sourcemaps",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload -o momo2024 -p momo-harry-test /dist",
     "lint:css": "stylelint '**/*.styles.ts' --fix",
     "test": "jest",
     "storybook": "storybook dev -p 6006",
@@ -28,6 +29,8 @@
   "dependencies": {
     "@emotion/babel-preset-css-prop": "11.11.0",
     "@emotion/react": "11.11.4",
+    "@sentry/react": "8.24.0",
+    "@sentry/webpack-plugin": "2.21.1",
     "@tanstack/react-query": "5.51.1",
     "react": "18.3.1",
     "react-cookie": "^7.2.0",
