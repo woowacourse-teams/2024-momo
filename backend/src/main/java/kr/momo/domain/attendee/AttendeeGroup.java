@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter

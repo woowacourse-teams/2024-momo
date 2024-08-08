@@ -5,9 +5,9 @@ import java.util.List;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.schedule.ScheduleService;
+import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
-import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,10 +53,12 @@ public class ScheduleController {
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/recommended-schedules")
-    public MomoApiResponse<SchedulesRecommendResponse> recommendSchedules(
+    public MomoApiResponse<List<RecommendedScheduleResponse>> recommendSchedules(
             @PathVariable String uuid, @RequestParam String recommendType, @RequestParam List<String> attendeeNames
     ) {
-        SchedulesRecommendResponse response = scheduleService.recommendSchedules(uuid, recommendType, attendeeNames);
+        List<RecommendedScheduleResponse> response = scheduleService.recommendSchedules(
+                uuid, recommendType, attendeeNames
+        );
         return new MomoApiResponse<>(response);
     }
 }

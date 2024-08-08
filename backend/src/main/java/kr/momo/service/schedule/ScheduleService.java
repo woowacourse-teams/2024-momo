@@ -34,7 +34,6 @@ import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleDateTimesResponse;
 import kr.momo.service.schedule.dto.ScheduleOneAttendeeResponse;
-import kr.momo.service.schedule.dto.SchedulesRecommendResponse;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -124,7 +123,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public SchedulesRecommendResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
+    public List<RecommendedScheduleResponse> recommendSchedules(String uuid, String recommendType, List<String> names) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
 
@@ -141,7 +140,7 @@ public class ScheduleService {
             recommendResponses.addAll(response);
         }
 
-        return SchedulesRecommendResponse.of(allAttendeeGroup, recommendResponses);
+        return recommendResponses;
     }
 
     private List<RecommendedScheduleResponse> mapContinuousSchedulesToResponses(AttendeeGroup targetGroup) {
