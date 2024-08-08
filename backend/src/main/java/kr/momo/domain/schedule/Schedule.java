@@ -52,7 +52,7 @@ public class Schedule extends BaseEntity {
         this.timeslot = timeslot;
     }
 
-    public LocalDateTime getDateTime() {
+    public LocalDateTime dateTime() {
         return LocalDateTime.of(availableDate.getDate(), timeslot.getLocalTime());
     }
 
