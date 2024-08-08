@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 
+import theme from '@styles/theme';
+
 export const s_tooltipTrigger = css`
   width: 100%;
   height: 100%;
@@ -10,11 +12,9 @@ export const s_container = css`
 `;
 
 export const s_tooltipTitle = css`
-  font-size: 1.6rem;
-  font-weight: 500;
+  ${theme.typography.bodyBold}
 `;
 
 export const s_attendeeText = css`
-  font-size: 1.2rem;
-  font-weight: 300;
+  ${theme.typography.captionLight}
 `;
