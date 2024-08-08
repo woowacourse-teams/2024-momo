@@ -99,4 +99,18 @@ public interface MeetingControllerDocs {
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @AuthAttendee @Schema(hidden = true) long id
     );
+
+    @ApiSuccessResponse.NoContent("약속 취소 성공")
+    @ApiErrorResponse.BadRequest("""
+            요청이 잘못되었습니다.
+            1. 유효하지 않은 UUID
+            2. 유효하지 않은 주최자 정보
+            """
+    )
+    @ApiErrorResponse.Unauthorized("JWT 토큰 인증에 실패하였습니다.")
+    @ApiErrorResponse.Forbidden("주최자 권한만 가능합니다.")
+    public ResponseEntity<Void> cancelConfirmedMeeting(
+            @PathVariable @Schema(description = "약속 UUID") String uuid,
+            @AuthAttendee @Schema(hidden = true) long id
+    );
 }

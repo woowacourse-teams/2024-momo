@@ -28,4 +28,13 @@ public @interface ApiSuccessResponse {
         @AliasFor(annotation = ApiResponse.class, attribute = "description")
         String value() default "";
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation
+    @ApiResponse(responseCode = "204", description = "No Content")
+    @interface NoContent {
+        @AliasFor(annotation = ApiResponse.class, attribute = "description")
+        String value() default "";
+    }
 }
