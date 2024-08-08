@@ -28,15 +28,9 @@ export default function MeetingLinkSharePage() {
   const navigate = useNavigate();
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
-
   const LINK = `${window.location.host}/meeting/${uuid}`;
 
-  useEffect(() => {
-    if (!Kakao.isInitialized()) {
-      Kakao.init(process.env.KAKAO_KEY);
-    }
-  }, [Kakao]);
-
+  // TODO: 약속명이 있다면, ${userName}을 templateArgs에 같이 삽입(@낙타)
   const handleShareButton = () => {
     Kakao.Share.sendCustom({
       templateId: Number(process.env.KAKAO_MESSAGE_TEMPLATE_ID),
@@ -45,6 +39,12 @@ export default function MeetingLinkSharePage() {
       },
     });
   };
+
+  useEffect(() => {
+    if (!Kakao.isInitialized()) {
+      Kakao.init(process.env.KAKAO_KEY);
+    }
+  }, [Kakao]);
 
   return (
     <div css={s_container}>
