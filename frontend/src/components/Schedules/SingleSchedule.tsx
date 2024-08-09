@@ -1,5 +1,3 @@
-import { css } from '@emotion/react';
-
 import type { MeetingSingleSchedule } from '@apis/schedules';
 
 import { generateScheduleMatrix } from './Picker/SchedulePicker.utils';
@@ -61,12 +59,7 @@ export default function SingleSchedule({
                 </span>
               </td>
               {row.map((_, columnIndex) => (
-                <td
-                  key={columnIndex}
-                  css={css`
-                    ${s_td(schedules[rowIndex][columnIndex])}
-                  `}
-                />
+                <td key={columnIndex} css={s_td(schedules[rowIndex][columnIndex])} />
               ))}
             </tr>
           ))}
