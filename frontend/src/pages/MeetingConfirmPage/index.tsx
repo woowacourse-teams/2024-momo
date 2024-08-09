@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { getMeetingAttendees } from '@apis/mettingRecommend';
+import { getMeetingAttendees } from '@apis/meetingRecommend';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
@@ -17,7 +17,7 @@ export default function MeetingConfirmPage() {
   const uuid = params.uuid!;
 
   const { data: attendeeNames } = useQuery({
-    queryKey: [QUERY_KEY.meetingMySchedule],
+    queryKey: [QUERY_KEY.meetingAttendees],
     queryFn: () => getMeetingAttendees({ uuid }),
     retry: 0,
   });
