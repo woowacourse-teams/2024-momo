@@ -58,9 +58,8 @@ public class ConfirmedMeeting extends BaseEntity {
 
         long confirmedTimeSlotCount = countTimeSlotOfConfirmedMeeting();
 
-        return groupAttendeeByScheduleCount.entrySet().stream()
-                .filter(entry -> entry.getValue() == confirmedTimeSlotCount)
-                .map(Map.Entry::getKey)
+        return groupAttendeeByScheduleCount.keySet().stream()
+                .filter(key -> groupAttendeeByScheduleCount.get(key) == confirmedTimeSlotCount)
                 .toList();
     }
 
