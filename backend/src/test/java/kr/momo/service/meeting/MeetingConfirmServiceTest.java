@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -22,7 +26,9 @@ import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.meeting.dto.ConfirmedMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
+import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,10 +72,9 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime())
+                today.getDate(), meeting.startTimeslotTime(),
+                today.getDate(), meeting.startTimeslotTime().plusMinutes(90)
         );
-        scheduleRepository.save(new Schedule(attendee, today, Timeslot.TIME_0100));
     }
 
     @DisplayName("주최자가 잠겨있는 약속의 일정을 확정한다.")
@@ -81,8 +86,10 @@ class MeetingConfirmServiceTest {
         LocalDateTime startDateTime = confirmedMeeting.getStartDateTime();
         LocalDateTime endDateTime = confirmedMeeting.getEndDateTime();
         assertAll(
-                () -> assertThat(startDateTime).isEqualTo(validRequest.startDateTime()),
-                () -> assertThat(endDateTime).isEqualTo(validRequest.endDateTime())
+                () -> assertThat(startDateTime)
+                        .isEqualTo(LocalDateTime.of(validRequest.startDate(), validRequest.startTime())),
+                () -> assertThat(endDateTime)
+                        .isEqualTo(LocalDateTime.of(validRequest.endDate(), validRequest.endTime()))
         );
     }
 
@@ -140,8 +147,8 @@ class MeetingConfirmServiceTest {
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         LocalDate invalidDate = LocalDate.now().plusDays(30);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(invalidDate, Timeslot.TIME_0100.getLocalTime()),
-                LocalDateTime.of(invalidDate, Timeslot.TIME_0130.getLocalTime())
+                invalidDate, Timeslot.TIME_0100.getLocalTime(),
+                invalidDate, Timeslot.TIME_0130.getLocalTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -153,8 +160,8 @@ class MeetingConfirmServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidTime() {
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_2200.getLocalTime()),
-                LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime())
+                today.getDate(), Timeslot.TIME_2200.getLocalTime(),
+                today.getDate(), Timeslot.TIME_2300.getLocalTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -185,5 +192,45 @@ class MeetingConfirmServiceTest {
         assertThatThrownBy(() -> meetingConfirmService.delete(meeting.getUuid(), guest.getId()))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
+
+    @DisplayName("확정 약속을 조회한다.")
+    @Test
+    void findByUuid() {
+        List<Schedule> schedules = new ArrayList<>();
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0030));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0100));
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0000));
+        schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
+        scheduleRepository.saveAll(schedules);
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(
+                meeting.getUuid(), attendee.getId(), validRequest
+        );
+
+        ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
+
+        assertAll(
+                () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
+                () -> assertThat(response.availableAttendeeNames()).containsExactlyInAnyOrder(attendee.name()),
+                () -> assertThat(response.startDate()).isEqualTo(confirmed.startDate()),
+                () -> assertThat(response.startTime()).isEqualTo(confirmed.startTime()),
+                () -> assertThat(response.startDayOfWeek())
+                        .isEqualTo(
+                                confirmed.startDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)),
+                () -> assertThat(response.endDate()).isEqualTo(confirmed.endDate()),
+                () -> assertThat(response.endTime()).isEqualTo(confirmed.endTime()),
+                () -> assertThat(response.endDayOfWeek())
+                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN))
+        );
+    }
+
+    @DisplayName("확정되지 않은 확정 약속을 조회하면 예외가 발생한다.")
+    @Test
+    void findByUuidNotConfirmed() {
+        assertThatThrownBy(() -> meetingConfirmService.findByUuid(meeting.getUuid()))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_CONFIRMED.message());
     }
 }

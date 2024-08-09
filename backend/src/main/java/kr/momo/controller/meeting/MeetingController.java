@@ -7,6 +7,7 @@ import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.meeting.MeetingConfirmService;
 import kr.momo.service.meeting.MeetingService;
+import kr.momo.service.meeting.dto.ConfirmedMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
@@ -63,6 +64,12 @@ public class MeetingController implements MeetingControllerDocs {
     @GetMapping("/api/v1/meetings/{uuid}/sharing")
     public MomoApiResponse<MeetingSharingResponse> findMeetingSharing(@PathVariable String uuid) {
         MeetingSharingResponse response = meetingService.findMeetingSharing(uuid);
+        return new MomoApiResponse<>(response);
+    }
+
+    @GetMapping("/api/v1/meetings/{uuid}/confirm")
+    public MomoApiResponse<ConfirmedMeetingResponse> findConfirmedMeeting(@PathVariable String uuid) {
+        ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(uuid);
         return new MomoApiResponse<>(response);
     }
 

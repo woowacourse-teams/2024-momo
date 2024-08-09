@@ -3,12 +3,12 @@ package kr.momo.controller.meeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
@@ -276,10 +276,7 @@ class MeetingControllerTest {
         Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String token = getToken(host, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -305,10 +302,7 @@ class MeetingControllerTest {
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         String token = getToken(guest, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -327,10 +321,7 @@ class MeetingControllerTest {
         Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String token = getToken(host, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0330.getLocalTime())
-        );
+        MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -358,10 +349,13 @@ class MeetingControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        meeting = meetingRepository.findByUuid(meeting.getUuid()).get();
-        boolean existConfirmedMeeting = confirmedMeetingRepository.existsByMeeting(meeting);
-        assertThat(existConfirmedMeeting).isFalse();
-        assertThat(meeting.isLocked()).isFalse();
+        assertAll(
+                () -> {
+                    Meeting cancelConfirmMeeting = meetingRepository.findById(meeting.getId()).get();
+                    assertThat(cancelConfirmMeeting.isLocked()).isFalse();
+                },
+                () -> assertThat(confirmedMeetingRepository.findByMeeting(meeting)).isNotPresent()
+        );
     }
 
     @DisplayName("주최자가 확정되지 않은 약속을 취소하면 204 상태 코드를 응답 받는다.")
@@ -395,5 +389,43 @@ class MeetingControllerTest {
                 .when().delete("/api/v1/meetings/{uuid}/confirm")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @DisplayName("확정된 약속을 조회하면 200 상태 코드를 응답한다.")
+    @Test
+    void findConfirmedMeeting() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
+
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("확정되지않은 약속의 확정 일정을 조회하면 400 상태 코드를 응답한다.")
+    @Test
+    void findConfirmedMeetingNotConfirmed() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
+        return new MeetingConfirmRequest(
+                tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime(),
+                tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime()
+        );
     }
 }
