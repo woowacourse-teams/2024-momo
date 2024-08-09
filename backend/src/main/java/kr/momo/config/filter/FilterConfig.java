@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     private static final String BASE_URL = "/api/v1/*";
-    private static final int FIRST = 0;
+    private static final int FIRST_ORDER = 0;
 
     private final TraceIdGenerator traceIdGenerator;
     private final LogGenerator logGenerator;
@@ -22,7 +22,7 @@ public class FilterConfig {
 
         filterRegistrationBean.setFilter(new LogFilter(traceIdGenerator, logGenerator));
         filterRegistrationBean.addUrlPatterns(BASE_URL);
-        filterRegistrationBean.setOrder(FIRST);
+        filterRegistrationBean.setOrder(FIRST_ORDER);
 
         return filterRegistrationBean;
     }
