@@ -39,6 +39,12 @@ export const s_baseButton = (borderRadius: number | string) => css`
   box-sizing: border-box;
 
   border-radius: ${borderRadius};
+
+  :disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 
 export const s_variant = {
