@@ -13,7 +13,7 @@ export default function MeetingRecommendPage() {
   const uuid = params.uuid!;
 
   const { data: attendeeNames } = useQuery({
-    queryKey: [QUERY_KEY.meetingMySchedule],
+    queryKey: [QUERY_KEY.meetingAttendees],
     queryFn: () => getMeetingAttendees({ uuid }),
     retry: 0,
   });
