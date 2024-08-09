@@ -93,9 +93,11 @@ export default function MeetingTimePickPage() {
           />
         )
       )}
-      <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
-        추천 받으러 가기
-      </Button>
+      {!isTimePickerUpdate && (
+        <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
+          추천 받으러 가기
+        </Button>
+      )}
     </div>
   );
 }
