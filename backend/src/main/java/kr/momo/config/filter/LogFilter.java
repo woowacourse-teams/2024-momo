@@ -11,6 +11,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.slf4j.MDC.MDCCloseable;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,16 +30,13 @@ public class LogFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 
         String traceId = traceIdGenerator.generateShortUuid();
-        MDC.put(TRACE_ID, traceId);
 
-        long startTime = System.currentTimeMillis();
-
-        try {
+        try (MDCCloseable ignored = MDC.putCloseable(TRACE_ID, traceId)) {
             logGenerator.logRequest(traceId, httpRequest);
+            long startTime = System.currentTimeMillis();
             filterChain.doFilter(servletRequest, servletResponse);
-        } finally {
-            logGenerator.logResponse(traceId, startTime, httpRequest, httpResponse);
-            MDC.clear();
+            long duration = System.currentTimeMillis() - startTime;
+            logGenerator.logResponse(traceId, duration, httpRequest, httpResponse);
         }
     }
 }

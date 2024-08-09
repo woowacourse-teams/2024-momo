@@ -17,11 +17,10 @@ public class LogGenerator {
         log.info("REQUEST [{}][{} {}][{}]", traceId, httpMethod, requestURI, remoteAddr);
     }
 
-    public void logResponse(String traceId, long startTime, HttpServletRequest request, HttpServletResponse response) {
+    public void logResponse(String traceId, long duration, HttpServletRequest request, HttpServletResponse response) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
         int status = response.getStatus();
-        long duration = System.currentTimeMillis() - startTime;
 
         log.info("RESPONSE [{}][{} {}][{} ms][Status: {}]", traceId, httpMethod, requestURI, duration, status);
     }
