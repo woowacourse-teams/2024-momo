@@ -17,6 +17,7 @@ export function Button({
   borderRadius = '0.8rem',
   children,
   size,
+  disabled,
   type = 'button',
   onClick,
 }: ButtonProps) {
@@ -25,7 +26,7 @@ export function Button({
   if (variant) cssProps.push(s_variant[variant]);
 
   return (
-    <button css={cssProps} type={type} onClick={onClick}>
+    <button disabled={disabled} css={cssProps} type={type} onClick={onClick}>
       {children}
     </button>
   );
