@@ -6,6 +6,7 @@ export const s_container = css`
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-height: fit-content;
 `;
 
 export const s_pageHeader = css`

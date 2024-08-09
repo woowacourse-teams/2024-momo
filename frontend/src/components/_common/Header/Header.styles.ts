@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 
 export const s_header = css`
+  position: sticky;
+  top: 0;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,6 +12,7 @@ export const s_header = css`
   height: 6rem;
   padding: 0 1.6rem;
 
+  background-color: #fff;
   box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
 `;
 

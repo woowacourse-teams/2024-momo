@@ -8,7 +8,7 @@ export const s_container = css`
   justify-content: center;
 
   width: 100%;
-  height: calc(100vh - 6rem);
+  height: 100%;
 `;
 
 export const s_meetingInfo = css`
@@ -17,7 +17,6 @@ export const s_meetingInfo = css`
   gap: 1rem;
 
   width: 90%;
-  height: 16rem;
   padding: 1.6rem;
 
   background-color: #f7dacb;
@@ -31,7 +30,7 @@ export const s_description = css`
 export const s_buttonContainer = css`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
 `;
 
 export const s_button = css`

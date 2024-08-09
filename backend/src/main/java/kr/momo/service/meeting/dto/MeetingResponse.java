@@ -10,6 +10,8 @@ import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
+import kr.momo.exception.MomoException;
+import kr.momo.exception.code.MeetingErrorCode;
 
 @Schema(description = "약속 정보 응답")
 public record MeetingResponse(
@@ -32,7 +34,10 @@ public record MeetingResponse(
         List<LocalDate> availableDates,
 
         @Schema(description = "참가자 이름 목록")
-        List<String> attendeeNames
+        List<String> attendeeNames,
+
+        @Schema(description = "약속 주최자 이름")
+        String hostName
 ) {
 
     public static MeetingResponse of(Meeting meeting, AvailableDates availableDates, List<Attendee> attendees) {
@@ -44,13 +49,20 @@ public record MeetingResponse(
                 .map(Attendee::name)
                 .toList();
 
+        String hostName = attendees.stream()
+                .filter(Attendee::isHost)
+                .map(Attendee::name)
+                .findFirst()
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.MEETING_LOAD_FAILURE));
+
         return new MeetingResponse(
                 meeting.getName(),
                 meeting.startTimeslotTime(),
                 meeting.endTimeslotTime(),
                 meeting.isLocked(),
                 dates,
-                attendeeNames
+                attendeeNames,
+                hostName
         );
     }
 }

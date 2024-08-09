@@ -57,8 +57,12 @@ public class Attendee extends BaseEntity {
         this(meeting, new AttendeeName(name), new AttendeePassword(password), role);
     }
 
+    public boolean isHost() {
+        return role.isHost();
+    }
+
     public boolean isNotHost() {
-        return role.isNotHost();
+        return !isHost();
     }
 
     public void verifyPassword(AttendeePassword other) {

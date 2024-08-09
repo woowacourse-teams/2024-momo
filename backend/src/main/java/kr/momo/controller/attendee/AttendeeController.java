@@ -38,7 +38,8 @@ public class AttendeeController implements AttendeeControllerDocs {
 
     @PostMapping("/api/v1/meetings/{uuid}/logout")
     public ResponseEntity<Void> logout(@PathVariable String uuid) {
-        String cookie = cookieManager.createExpiredCookie(uuid);
+        String path = cookieManager.pathOf(uuid);
+        String cookie = cookieManager.createExpiredCookie(path);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie)

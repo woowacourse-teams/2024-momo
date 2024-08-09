@@ -14,7 +14,5 @@ export const s_globalContainer = css`
 `;
 
 export const s_content = css`
-  overflow-y: scroll;
-  height: calc(100vh - 8.4rem);
   padding: 0 1.6rem;
 `;
