@@ -27,7 +27,7 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
         <button css={s_tabButton(isSelectedAllAttendee)} onClick={() => toggleAttendee('전체')}>
           전체
         </button>
-        {attendeeNames?.map((attendee) => (
+        {attendeeNames.map((attendee) => (
           <button
             key={attendee}
             css={s_tabButton(checkSelectedAttendee(attendee))}

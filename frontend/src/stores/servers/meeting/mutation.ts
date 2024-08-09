@@ -1,11 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
 import type { MeetingInfo } from '@apis/meetings';
-import { postMeeting } from '@apis/meetings';
+import { lockMeeting, postMeeting, unlockMeeting } from '@apis/meetings';
+
+import { QUERY_KEY } from '@constants/queryKeys';
 
 export const usePostMeetingMutation = () => {
   const navigate = useNavigate();
@@ -32,4 +34,26 @@ export const usePostMeetingMutation = () => {
   });
 
   return { mutation, meetingInfo };
+};
+
+export const useLockMeetingMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: lockMeeting,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meeting] });
+    },
+  });
+};
+
+export const useUnlockMeetingMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: unlockMeeting,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.meeting] });
+    },
+  });
 };

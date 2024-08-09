@@ -15,11 +15,6 @@ export interface MeetingRecommend {
   endTime: string;
   attendeeNames: string[];
 }
-
-interface GetMeetingRecommendResponse {
-  recommendSchedules: MeetingRecommend[];
-}
-
 export const getMeetingTimeRecommends = async ({
   uuid,
   recommendType,
@@ -31,13 +26,13 @@ export const getMeetingTimeRecommends = async ({
     ',',
   )}`;
 
-  const data = await fetchClient<GetMeetingRecommendResponse>({
+  const data = await fetchClient<MeetingRecommend[]>({
     path,
     method: 'GET',
     errorMessage: '약속 시간 추천을 가져오는데 실패했어요 :(',
   });
 
-  return data.recommendSchedules;
+  return data;
 };
 
 type GetMeetingAttendeesResponse = string[];

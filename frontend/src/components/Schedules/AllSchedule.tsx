@@ -1,5 +1,3 @@
-import { css } from '@emotion/react';
-
 import AttendeeTooltip from '@components/AttendeeTooltip';
 
 import type { MeetingAllSchedules } from '@apis/schedules';

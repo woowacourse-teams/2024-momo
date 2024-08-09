@@ -23,7 +23,7 @@ export default function ToggleButton({
         onClick={onClick}
         css={s_buttonContainer(isToggled)}
       />
-      <input type="checkbox" id={id} checked={isToggled} css={s_input} />
+      <input readOnly type="checkbox" id={id} checked={isToggled} css={s_input} />
     </div>
   );
 }
