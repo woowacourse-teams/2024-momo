@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateFormatConstraint {
 
-    String message() default "유효하지 않은 날짜 형식입니다. ex) 2024-03-01";
+    String message() default "유효하지 않은 날짜 형식입니다 ex)2024-03-01";
 
     Class<?>[] groups() default {};
 
