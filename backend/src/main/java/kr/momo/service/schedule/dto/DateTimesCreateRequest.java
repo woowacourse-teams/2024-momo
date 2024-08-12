@@ -17,9 +17,8 @@ public record DateTimesCreateRequest(
         String date,
 
         @NotNull
-        @TimeFormatConstraint
         @Schema(description = "일정 시간 리스트", example = "[\"12:00\", \"12:30\", \"16:00\"]")
-        List<String> times
+        List<@TimeFormatConstraint String> times
 ) {
 
     public LocalDate toDate() {

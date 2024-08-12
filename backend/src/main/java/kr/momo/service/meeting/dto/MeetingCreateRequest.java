@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import kr.momo.controller.validator.DateFormatConstraint;
 import kr.momo.controller.validator.TimeFormatConstraint;
 
 @Schema(description = "약속 생성 요청")
@@ -24,7 +25,7 @@ public record MeetingCreateRequest(
 
         @NotNull
         @Schema(description = "가능한 약속 날짜들", ref = "#/components/schemas/availableMeetingDates")
-        List<String> availableMeetingDates,
+        List<@DateFormatConstraint String> availableMeetingDates,
 
         @NotBlank
         @TimeFormatConstraint
