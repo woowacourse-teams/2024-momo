@@ -6,6 +6,7 @@ import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStatePr
 
 import AttendeeLoginPage from '@pages/AttendeeLoginPage/AttendeeLoginPage';
 import CreateMeetingPage from '@pages/CreateMeetingPage';
+import FixedMeetingTicketPage from '@pages/FixedMeetingTicketPage/FixedMeetingTicketPage';
 import MeetingConfirmPage from '@pages/MeetingConfirmPage';
 import MeetingLinkSharePage from '@pages/MeetingLinkSharePage';
 import MeetingRecommendPage from '@pages/MeetingRecommendPage';
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
           {
             path: ':uuid/complete',
             element: <MeetingLinkSharePage />,
+          },
+
+          {
+            path: ':uuid/fixed-meeting-ticket',
+            element: <FixedMeetingTicketPage />,
           },
         ],
       },
