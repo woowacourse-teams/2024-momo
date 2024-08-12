@@ -4,4 +4,5 @@ export const QUERY_KEY = {
   meetingTimeRecommends: 'meetingTimeRecommends',
   meetingSchedules: 'meetingSchedules',
   meetingMySchedule: 'meetingMySchedule',
+  confirmedMeetingInfo: 'confirmedMeetingInfo',
 } as const;
