@@ -1,6 +1,7 @@
 import { Global, ThemeProvider } from '@emotion/react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -39,6 +40,7 @@ enableMocking().then(() => {
       <Global styles={globalStyles} />
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
           <App />
         </QueryClientProvider>
       </ThemeProvider>
