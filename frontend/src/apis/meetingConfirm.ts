@@ -9,7 +9,15 @@ export interface ConfirmDates {
 
 interface PostMeetingConfirmRequest {
   uuid: string;
+
   requests: ConfirmDates;
+}
+
+export interface GetConfirmedMeetingInfoResponse extends ConfirmDates {
+  meetingName: string;
+  availableAttendeeNames: string[];
+  startDayOfWeek: string;
+  endDayOfWeek: string;
 }
 
 export const postMeetingConfirm = async ({ uuid, requests }: PostMeetingConfirmRequest) => {
@@ -19,6 +27,16 @@ export const postMeetingConfirm = async ({ uuid, requests }: PostMeetingConfirmR
     errorMessage: '약속 시간 확정을 요청하는데 실패했어요 :(',
     body: requests,
     isAuthRequire: true,
+  });
+
+  return data;
+};
+
+export const getConfirmedMeetingInfo = async (uuid: string) => {
+  const data = await fetchClient<Promise<GetConfirmedMeetingInfoResponse>>({
+    path: `/${uuid}/confirm`,
+    method: 'GET',
+    errorMessage: '확정된 약속 정보 조회애 실패했어요 :(',
   });
 
   return data;
