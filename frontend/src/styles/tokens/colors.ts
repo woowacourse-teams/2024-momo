@@ -31,7 +31,7 @@ const PRIMITIVE_COLORS = {
 export const SEMANTIC_COLORS = {
   white: PRIMITIVE_COLORS.white,
   black: PRIMITIVE_COLORS.black,
-  primary: PRIMITIVE_COLORS.pink['300'],
+  primary: PRIMITIVE_COLORS.pink['500'],
   holiday: PRIMITIVE_COLORS.red,
   grey: {
     primary: PRIMITIVE_COLORS.grey['200'],
