@@ -1,23 +1,30 @@
-export function getYearMonthInfo(year: number, month: number) {
+import CALENDAR_PROPERTIES from '@constants/calendar';
+
+export const getCurrentDateInfo = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
+
+  return {
+    currentDate,
+    currentYear,
+    currentMonth,
+  } as const;
+};
+
+export const getYearMonthInfo = (year: number, month: number) => {
   const startDate = new Date(year, month - 1, 1);
-
-  /* 
-   로직 설명(@hwinkr)
-   - 월요일을 index 0으로 변경하기 위해서 나머지 연산자를 활용한다.
-   - 자바스크립트 Date 객체는 기본적으로 일요일이 인덱스가 0인데, 모모 달력은 월요일을 인덱스를 0으로 만들어줘야 한다.
-   - 따라서, 특정 달의 시작 날짜에 대한 인덱스에 6을 더해주고 7로 나눈 나머지를 사용하는 것으로 구현했다.
-  */
-  const firstDayIndex = (startDate.getDay() + 6) % 7;
-
+  // 일, 월, 화,,,를 인덱스 0, 1, 2로 표현(@해리)
+  const firstDayIndex = startDate.getDay();
+  // new Date(2024, 8, 0) 날짜 인덱스는 8부터 시작하기 때문에 8은 9월을 뜻함, 세 번째 인자인 0은 9월 1일의 전 날을 뜻하기 때문에 마지막 날을 의미한다. (@해리)
   const lastDayOfMonthDate = new Date(year, month, 0);
   const lastDayNumber = lastDayOfMonthDate.getDate();
-
   const daySlotCount = firstDayIndex + lastDayNumber;
 
-  return { year, month, firstDayIndex, daySlotCount } as const;
-}
+  return { firstDayIndex, daySlotCount } as const;
+};
 
-export function getDayInfo({
+export const getDayInfo = ({
   year,
   month,
   firstDayIndex,
@@ -29,18 +36,20 @@ export function getDayInfo({
   firstDayIndex: number;
   index: number;
   currentDate: Date;
-}) {
+}) => {
   const date = index - firstDayIndex + 1;
-  const isDate = index >= firstDayIndex;
-  // TODO: 추후에 padStart 사용하는 곳이 많다 보니, util 함수로 분리 필요 (@낙타)
+  const todayDate = currentDate.getDate();
   const formattedMonth = String(month).padStart(2, '0');
+  const formattedCurrentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
 
   const dateString = `${year}-${formattedMonth}-${String(date).padStart(2, '0')}`;
-  const todayString = `${year}-${formattedMonth}-${String(currentDate.getDate()).padStart(2, '0')}`;
-  const isToday = dateString === todayString;
-  // TODO : 일단은 일요일만 isHolday로 설정되도록 구현, 추후에 진짜 공휴일도 포함할 것인지 논의 필요, 찾아보니 라이브러리가 있더라구요.(@해리)
-  // TODO : 매직넘버 의미있는 상수화 필요(@해리)
-  const isHoliday = index % 7 === 6;
+  const todayString = `${year}-${formattedCurrentMonth}-${String(todayDate).padStart(2, '0')}`;
 
-  return { date, dateString, isDate, isToday, isHoliday } as const;
-}
+  const isDate = index >= firstDayIndex;
+  const isToday = dateString === todayString;
+  const isHoliday = index % CALENDAR_PROPERTIES.daysInOneWeek === 0;
+  const isSaturday = index % CALENDAR_PROPERTIES.daysInOneWeek === 6;
+  const isPrevDay = formattedMonth === formattedCurrentMonth && date < todayDate;
+
+  return { date, dateString, isDate, isToday, isSaturday, isHoliday, isPrevDay } as const;
+};
