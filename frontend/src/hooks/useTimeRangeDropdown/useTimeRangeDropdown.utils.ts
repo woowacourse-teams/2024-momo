@@ -31,9 +31,7 @@ export function generateEndTimeOptions(startTime: string) {
 
   for (let i = startHours + 1; i <= MAXIMUM_TIME; i++) {
     const label = formatHours(i).padStart(2, '0');
-
-    // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-    times.push({ value: `${String(i === 24 ? 0 : i).padStart(2, '0')}:00`, label: label + ':00' });
+    times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
   return times;
