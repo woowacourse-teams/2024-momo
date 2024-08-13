@@ -27,6 +27,8 @@ import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -134,19 +136,43 @@ class MeetingControllerTest {
                 .header(HttpHeaders.LOCATION, containsString("/meeting/"));
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {"8:00,22:00", "08:00,2:00", "00:00,24:00"})
     @DisplayName("유효하지 않은 시간형식을 요청하면 400 상태코드를 반환한다.")
-    @Test
-    void throwExceptionTimeFormatIsInvalid() {
+    void throwExceptionTimeFormatIsInvalid(String startTime, String endTime) {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        System.out.println("tomorrow : " + tomorrow);
         LocalDate dayAfterTomorrow = today.plusDays(2);
         MeetingCreateRequest request = new MeetingCreateRequest(
                 "momoHost",
                 "momo",
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
-                "8:00",
+                startTime,
+                endTime);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"빙봉해리낙타,1234", "빙봉해리낙,12345hi234324"})
+    @DisplayName("닉네임이 5자 초과거나 비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
+    void createByInvalidHost(String hostName, String hostPassword) {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                hostName,
+                hostPassword,
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
                 "22:00");
 
         RestAssured.given().log().all()
