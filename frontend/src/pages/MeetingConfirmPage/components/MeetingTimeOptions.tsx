@@ -39,6 +39,7 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
   const [selectedMeeting, setSelectedMeeting] = useState<SelectedMeeting>({} as SelectedMeeting);
   const navigate = useNavigate();
 
+  // TODO: stores/servers/confirm/mutation.ts 파일로 분리
   const { mutate } = useMutation({
     mutationFn: postMeetingConfirm,
     onSuccess: () => {
