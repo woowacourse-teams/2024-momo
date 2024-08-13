@@ -355,6 +355,25 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("날짜시간의 요청 형식이 맞지 않다면 응답코드 400을 반환한다.")
+    @Test
+    void confirmInvalidRequest() {
+        Meeting meeting = createLockedMovieMeeting();
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        String token = getToken(guest, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow + " " + "3:00", tomorrow + " " + "3:30");
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("주최자가 잠겨있는 약속의 확정된 약속을 취소하면 확정된 약속이 삭제되고 잠김이 해제된다. 204 상태 코드를 응답 받는다.")
     @Test
     void cancelConfirmedMeeting() {

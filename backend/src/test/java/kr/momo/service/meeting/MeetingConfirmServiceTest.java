@@ -87,10 +87,8 @@ class MeetingConfirmServiceTest {
         LocalDateTime startDateTime = confirmedMeeting.getStartDateTime();
         LocalDateTime endDateTime = confirmedMeeting.getEndDateTime();
         assertAll(
-                () -> assertThat(startDateTime)
-                        .isEqualTo(LocalDateTime.of(validRequest.startDate(), validRequest.startTime())),
-                () -> assertThat(endDateTime)
-                        .isEqualTo(LocalDateTime.of(validRequest.endDate(), validRequest.endTime()))
+                () -> assertThat(startDateTime).isEqualTo(validRequest.toStartDateTime()),
+                () -> assertThat(endDateTime).isEqualTo(validRequest.toEndDateTime())
         );
     }
 

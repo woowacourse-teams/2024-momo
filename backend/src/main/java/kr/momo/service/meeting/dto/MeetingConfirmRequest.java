@@ -1,24 +1,34 @@
 package kr.momo.service.meeting.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import kr.momo.controller.validator.DateTimeFormatConstraint;
 
 public record MeetingConfirmRequest(
 
         @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
-        LocalDate startDate,
+        @DateTimeFormatConstraint
+        @Schema(description = "시작 날짜 시간")
+        String startDateTime,
+
         @NotNull
-        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime startTime,
-        @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
-        LocalDate endDate,
-        @NotNull
-        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime endTime
+        @DateTimeFormatConstraint
+        @Schema(description = "종료 날짜 시간")
+        String endDateTime
 ) {
+
+        private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        public MeetingConfirmRequest(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+                this(startDateTime.format(dateTimeFormatter), endDateTime.format(dateTimeFormatter));
+        }
+
+        public LocalDateTime toStartDateTime() {
+                return LocalDateTime.parse(startDateTime, dateTimeFormatter);
+        }
+
+        public LocalDateTime toEndDateTime() {
+                return LocalDateTime.parse(endDateTime, dateTimeFormatter);
+        }
 }
