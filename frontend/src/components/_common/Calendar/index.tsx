@@ -1,62 +1,81 @@
 import useCalendarInfo from '@hooks/useCalendarInfo/useCalendarInfo';
 
 import {
+  s_baseDayOfWeek,
+  s_baseDaySlot,
+  s_baseDaySlotText,
   s_calendarContainer,
   s_calendarContent,
   s_dayOfWeek,
   s_dayOfWeekContainer,
-  s_daySlot,
   s_daySlotButton,
+  s_daySlotText,
   s_monthHeader,
   s_monthNavigation,
-  s_selectedDaySlot,
 } from './Calendar.styles';
 
-const DAY_OF_WEEK = ['월', '화', '수', '목', '금', '토', '일'] as const;
+const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
-// TODO : 선택된 날짜에 대한 강조 색을 외부에서 주입받을 수 있도록 props 수정 예정 (@해리)
 interface CalendarProps {
   hasDate: (date: string) => boolean;
   onDateClick: (date: string) => void;
 }
 
 export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
-  const { yearMonthInfo, handleGetDayInfo, handlePrevMonth, handleNextMonth } = useCalendarInfo();
+  const { yearMonthInfo, handleGetDayInfo, handlePrevMonth, handleNextMonth, isCurrentDate } =
+    useCalendarInfo();
   const { year, month, daySlotCount } = yearMonthInfo;
 
   return (
     <div css={s_calendarContainer} aria-label={`${year}년 ${month}월 달력`}>
       <header css={s_monthHeader}>
         {/* TODO : 캘린더 헤더 버튼 스타일 수정 예정(@해리) */}
-        <button css={s_monthNavigation} onClick={handlePrevMonth}>
+        <button
+          css={s_monthNavigation}
+          onClick={handlePrevMonth}
+          aria-label="지난 달"
+          disabled={isCurrentDate}
+        >
           {'<'}
         </button>
         <span>
           {year}년 {month}월
         </span>
-        <button css={s_monthNavigation} onClick={handleNextMonth}>
+        <button css={s_monthNavigation} onClick={handleNextMonth} aria-label="다음 달">
           {'>'}
         </button>
       </header>
       <section css={[s_calendarContent, s_dayOfWeekContainer]}>
-        {DAY_OF_WEEK.map((day) => (
-          <div key={day} css={s_dayOfWeek}>
+        {DAY_OF_WEEK.map((day, index) => (
+          <div key={day} css={[s_baseDayOfWeek, s_dayOfWeek(index)]}>
             {day}
           </div>
         ))}
       </section>
       <section css={s_calendarContent}>
         {Array.from({ length: daySlotCount }, (_, index) => {
-          // TODO : isToday 변수를 활용한 스타일 변경 논의 필요 (@해리)
-          const { date, dateString, isDate, isToday, isHoliday } = handleGetDayInfo(index);
+          const { date, dateString, isDate, isToday, isHoliday, isSaturday, isPrevDay } =
+            handleGetDayInfo(index);
           const isSelectedDate = hasDate(dateString);
 
           return isDate ? (
-            <button key={dateString} onClick={() => onDateClick(dateString)} css={s_daySlotButton}>
-              <span css={[s_daySlot(isHoliday), s_selectedDaySlot(isSelectedDate)]}>{date}</span>
+            <button
+              key={dateString}
+              onClick={() => onDateClick(dateString)}
+              disabled={isPrevDay}
+              css={[s_baseDaySlot, s_daySlotButton]}
+            >
+              <span
+                css={[
+                  s_baseDaySlotText,
+                  s_daySlotText(isHoliday, isSelectedDate, isToday, isSaturday, isPrevDay),
+                ]}
+              >
+                {date}
+              </span>
             </button>
           ) : (
-            <div key={dateString} css={s_daySlotButton}></div>
+            <div key={dateString} css={s_baseDaySlot}></div>
           );
         })}
       </section>
