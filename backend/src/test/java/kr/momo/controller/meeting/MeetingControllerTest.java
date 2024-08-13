@@ -134,7 +134,7 @@ class MeetingControllerTest {
                 .header(HttpHeaders.LOCATION, containsString("/meeting/"));
     }
 
-    @DisplayName("유효하지 않은 값을 요청하면 400 상태코드를 반환한다.")
+    @DisplayName("유효하지 않은 시간형식을 요청하면 400 상태코드를 반환한다.")
     @Test
     void throwExceptionTimeFormatIsInvalid() {
         LocalDate today = LocalDate.now();
@@ -279,7 +279,7 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
-    private String getToken(Attendee attendee, Meeting meeting) {
+    private String getToken(Attendee attendee, Meeting meeting) {;
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
 
         return RestAssured.given().log().all()

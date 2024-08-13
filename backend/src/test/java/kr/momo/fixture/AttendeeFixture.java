@@ -11,7 +11,7 @@ public enum AttendeeFixture {
     HOST_JAZZ("jazz", "hostPw!123", Role.HOST),
     GUEST_DAON("daon", "daonPw!123", Role.GUEST),
     GUEST_BAKEY("bakey", "bakeyPw!123", Role.GUEST),
-    GUEST_PEDRO("pedro", "pedroPw!123", Role.GUEST),
+    GUEST_PEDRO("pedro", "pedroPw!12", Role.GUEST),
     GUEST_MARK("mark", "mark!123", Role.GUEST);
 
     private final String name;
