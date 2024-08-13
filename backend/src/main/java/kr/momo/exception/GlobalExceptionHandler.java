@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
 
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "예기치 못한 서버 에러가 발생했습니다.";
     private static final String INVALID_REQUEST_FORMAT_MESSAGE = "유효하지 않은 요청입니다.";
+    private static final String INVALID_REQUEST_FORMAT_ERROR_CODE = "INVALID_FORMAT_REQUEST";
     private static final String EXCEPTION_LOG_FORMAT = "Exception Handler [{}]";
 
     @ExceptionHandler
@@ -29,13 +30,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.warn(ex.getMessage(), ex);
+        String traceId = MDC.get(LogFilter.TRACE_ID);
+        log.warn(EXCEPTION_LOG_FORMAT, traceId, ex);
 
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, INVALID_REQUEST_FORMAT_MESSAGE
+        );
+        problemDetail.setProperty("details", getErrors(ex));
+        return new CustomProblemDetail(problemDetail, INVALID_REQUEST_FORMAT_ERROR_CODE);
+    }
+
+    private List<String> getErrors(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> "%s:%s".formatted(error.getField(), error.getDefaultMessage()))
                 .toList();
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errors.toString());
-        return new CustomProblemDetail(problemDetail, INVALID_REQUEST_FORMAT_MESSAGE);
     }
 
     @ExceptionHandler
