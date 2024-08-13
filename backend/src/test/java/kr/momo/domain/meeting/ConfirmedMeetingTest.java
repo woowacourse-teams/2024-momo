@@ -33,6 +33,7 @@ class ConfirmedMeetingTest {
         List<Schedule> schedules = List.of(
                 new Schedule(attendee1, new AvailableDate(today, meeting), Timeslot.TIME_0000),
                 new Schedule(attendee1, new AvailableDate(today, meeting), Timeslot.TIME_0030),
+                new Schedule(attendee1, new AvailableDate(today, meeting), Timeslot.TIME_0100),
                 new Schedule(attendee2, new AvailableDate(today, meeting), Timeslot.TIME_0000)
         );
 
