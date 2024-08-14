@@ -15,6 +15,11 @@ import org.springframework.http.MediaType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiErrorResponse {
 
+    String ERROR_CODE_TABLE_HEADER = """
+            | 에러 코드 | 에러 메시지 |
+            | --- | --- |
+            """;
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Operation
