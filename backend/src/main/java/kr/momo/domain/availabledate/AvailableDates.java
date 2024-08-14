@@ -1,11 +1,11 @@
 package kr.momo.domain.availabledate;
 
-import static java.util.Comparator.comparing;
-
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AvailableDateErrorCode;
@@ -14,24 +14,17 @@ import lombok.Getter;
 @Getter
 public class AvailableDates {
 
-    private final List<AvailableDate> availableDates;
+    private final SortedSet<AvailableDate> availableDates;
 
     public AvailableDates(List<LocalDate> dates, Meeting meeting) {
-        validateUniqueDates(dates);
         this.availableDates = dates.stream()
                 .map(date -> new AvailableDate(date, meeting))
-                .toList();
+                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AvailableDate::getDate))));
     }
 
     public AvailableDates(List<AvailableDate> availableDates) {
-        this.availableDates = availableDates;
-    }
-
-    private void validateUniqueDates(List<LocalDate> dates) {
-        Set<LocalDate> dateSet = new HashSet<>(dates);
-        if (dateSet.size() != dates.size()) {
-            throw new MomoException(AvailableDateErrorCode.DUPLICATED_DATE);
-        }
+        this.availableDates = availableDates.stream()
+                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AvailableDate::getDate))));
     }
 
     public boolean isAnyBefore(LocalDate other) {
@@ -53,7 +46,6 @@ public class AvailableDates {
 
     public boolean isNotConsecutiveDay(LocalDate startDateInclusive, LocalDate endDateInclusive) {
         long availableDateRangeCount = availableDates.stream()
-                .sorted(comparing(AvailableDate::getDate))
                 .dropWhile(date -> date.isBefore(startDateInclusive))
                 .takeWhile(date -> !date.isAfter(endDateInclusive))
                 .count();
