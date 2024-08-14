@@ -162,16 +162,38 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"빙봉해리낙타,1234", "빙봉해리낙,12345hi234324"})
-    @DisplayName("닉네임이 5자 초과거나 비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
-    void createByInvalidHost(String hostName, String hostPassword) {
+    @DisplayName("닉네임이 5자 초과면 400 상태 코드를 응답한다.")
+    @Test
+    void createByInvalidNickname() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfterTomorrow = today.plusDays(2);
         MeetingCreateRequest request = new MeetingCreateRequest(
-                hostName,
-                hostPassword,
+                "빙봉해리낙타",
+                "1234",
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
+                "22:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
+    void createByInvalidHost() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "빙봉해리낙",
+                "12345hi234324",
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
@@ -307,7 +329,7 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
-    private String getToken(Attendee attendee, Meeting meeting) {;
+    private String getToken(Attendee attendee, Meeting meeting) {
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
 
         return RestAssured.given().log().all()
