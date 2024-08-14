@@ -1,0 +1,75 @@
+name: Backend Prod CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ['main']
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      manual: ${{ steps.manual-check.outputs.manual }}
+    steps:
+      - id: manual-check
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "manual=true" >> "$GITHUB_OUTPUT"
+
+      - uses: dorny/paths-filter@v3
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+          list-files: 'csv'
+
+  be-test:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.backend == 'true' || needs.detect-changes.outputs.manual == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant gradlew execute permission
+        run: chmod +x ./gradlew
+
+      - name: Test with Gradle
+        run: ./gradlew clean test
+
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            backend/build/test-results/test/TEST-*.xml
+
+      - name: Add comments to PR
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: |
+            backend/build/test-results/test/TEST-*.xml
