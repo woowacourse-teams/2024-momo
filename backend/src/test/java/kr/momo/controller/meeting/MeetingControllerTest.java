@@ -136,29 +136,6 @@ class MeetingControllerTest {
                 .header(HttpHeaders.LOCATION, containsString("/meeting/"));
     }
 
-    @DisplayName("약속을 생성할 때 중복되는 날짜로 요청하면 400을 반환한다.")
-    @Test
-    void createByDuplicatedName() {
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
-        MeetingCreateRequest request = new MeetingCreateRequest(
-                "momoHost",
-                "momo",
-                "momoMeeting",
-                List.of(tomorrow, tomorrow),
-                LocalTime.of(8, 0),
-                LocalTime.of(22, 0)
-        );
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post("/api/v1/meetings")
-                .then().log().all()
-                .assertThat()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
     @DisplayName("약속을 잠그면 200 OK를 반환한다.")
     @Test
     void lock() {

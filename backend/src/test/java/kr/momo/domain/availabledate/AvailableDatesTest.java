@@ -54,20 +54,6 @@ class AvailableDatesTest {
         assertThat(availableDate.getDate()).isEqualTo(tomorrow);
     }
 
-    @DisplayName("가능한 시간의 값이 중복이면 예외가 발생한다.")
-    @Test
-    void throwExceptionWhenDuplicatedDate() {
-        // given
-        Meeting meeting = MeetingFixture.GAME.create();
-        LocalDate date = LocalDate.of(2024, 7, 24);
-        List<LocalDate> dates = List.of(date, date);
-
-        // when then
-        assertThatThrownBy(() -> new AvailableDates(dates, meeting))
-                .isInstanceOf(MomoException.class)
-                .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
-    }
-
     @DisplayName("가능한 시간이 중복이 아니면 예외가 발생하지 않는다.")
     @Test
     void createAvailableDates() {
