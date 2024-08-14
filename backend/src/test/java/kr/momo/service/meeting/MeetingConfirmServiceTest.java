@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,13 +202,16 @@ class MeetingConfirmServiceTest {
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0000));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0030));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0100));
+        schedules.add(new Schedule(attendee, today, Timeslot.TIME_0130));
         Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0000));
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
         scheduleRepository.saveAll(schedules);
-        MeetingConfirmResponse confirmed = meetingConfirmService.create(
-                meeting.getUuid(), attendee.getId(), validRequest
+        validRequest = new MeetingConfirmRequest(
+                today.getDate(), LocalTime.of(0, 0),
+                today.getDate(), LocalTime.of(1, 30)
         );
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
 
         ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
 

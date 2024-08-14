@@ -57,15 +57,14 @@ public class ConfirmedMeeting extends BaseEntity {
                 .collect(groupingBy(Schedule::getAttendee, counting()));
 
         long confirmedTimeSlotCount = countTimeSlotOfConfirmedMeeting();
-
         return groupAttendeeByScheduleCount.keySet().stream()
                 .filter(key -> groupAttendeeByScheduleCount.get(key) == confirmedTimeSlotCount)
                 .toList();
     }
 
-    public boolean isScheduleWithinDateTimeRange(Schedule schedule) {
+    private boolean isScheduleWithinDateTimeRange(Schedule schedule) {
         LocalDateTime dateTime = schedule.dateTime();
-        return !(dateTime.isBefore(startDateTime) || dateTime.isAfter(endDateTime));
+        return !dateTime.isBefore(startDateTime) && dateTime.isBefore(endDateTime);
     }
 
     private long countTimeSlotOfConfirmedMeeting() {
