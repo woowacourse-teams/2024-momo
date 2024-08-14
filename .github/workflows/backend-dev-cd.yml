@@ -68,7 +68,7 @@ jobs:
 
       # Docker 이미지 빌드
       - name: Docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/momo-api
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/momo-api .
 
       # DockerHub 로그인
       - name: Docker login
