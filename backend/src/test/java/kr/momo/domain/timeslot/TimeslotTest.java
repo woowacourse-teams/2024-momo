@@ -30,4 +30,31 @@ class TimeslotTest {
 
         assertThat(timeslot.getLocalTime()).isEqualTo(localTime);
     }
+
+
+    @DisplayName("시간슬롯의 시작 시각은 해당 슬롯의 대표값과 같다.")
+    @Test
+    void timeSlotStartTime() {
+        // given
+        Timeslot timeslot = Timeslot.TIME_0130;
+
+        // when
+        LocalTime startTime = timeslot.startTime();
+
+        // then
+        assertThat(startTime).isEqualTo(LocalTime.of(1, 30));
+    }
+
+    @DisplayName("시간슬롯의 끝 시각은 해당 슬롯의 대표값에 슬롯 길이를 더한 시각과 같다.")
+    @Test
+    void timeSlotEndTime() {
+        // given
+        Timeslot timeslot = Timeslot.TIME_2330;
+
+        // when
+        LocalTime endTime = timeslot.endTime();
+
+        // then
+        assertThat(endTime).isEqualTo(LocalTime.of(0, 0));
+    }
 }
