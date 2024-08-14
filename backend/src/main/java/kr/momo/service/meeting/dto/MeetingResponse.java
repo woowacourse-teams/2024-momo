@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.exception.MomoException;

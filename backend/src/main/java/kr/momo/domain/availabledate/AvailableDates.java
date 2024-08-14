@@ -40,8 +40,8 @@ public class AvailableDates {
     }
 
     public boolean notExistsByDate(LocalDate other) {
-        return availableDates.stream()
-                .noneMatch(availableDate -> availableDate.isSameDate(other));
+        Meeting meeting = availableDates.first().getMeeting();
+        return !availableDates.contains(new AvailableDate(other, meeting));
     }
 
     public boolean isNotConsecutiveDay(LocalDate startDateInclusive, LocalDate endDateInclusive) {
