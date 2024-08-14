@@ -28,8 +28,8 @@ public class AvailableDates {
     }
 
     public boolean isAnyBefore(LocalDate other) {
-        return availableDates.stream()
-                .anyMatch(date -> date.isBefore(other));
+        LocalDate minimumDate = availableDates.first().getDate();
+        return minimumDate.isBefore(other);
     }
 
     public AvailableDate findByDate(LocalDate other) {
