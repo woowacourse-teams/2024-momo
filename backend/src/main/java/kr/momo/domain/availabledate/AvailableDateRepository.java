@@ -7,6 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AvailableDateRepository extends JpaRepository<AvailableDate, Long> {
 
     List<AvailableDate> findAllByMeeting(Meeting meeting);
-
-    List<AvailableDate> findAllByMeetingOrderByDate(Meeting meeting);
 }
