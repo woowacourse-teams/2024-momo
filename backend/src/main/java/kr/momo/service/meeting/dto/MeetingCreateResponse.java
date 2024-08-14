@@ -27,11 +27,11 @@ public record MeetingCreateResponse(
         List<LocalDate> availableDates,
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        @Schema(description = "선택 가능한 가장 이른 시각")
+        @Schema(type = "String", pattern = "HH:mm", description = "선택 가능한 가장 이른 시각")
         LocalTime earliestTime,
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        @Schema(description = "선택 가능한 가장 늦은 시각")
+        @Schema(type = "String", pattern = "HH:mm", description = "선택 가능한 가장 늦은 시각")
         LocalTime lastTime,
 
         @JsonIgnore
