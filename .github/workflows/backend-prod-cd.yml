@@ -110,7 +110,7 @@ jobs:
       # 3. 도커 컨테이너 실행
       - name: docker run new container
         run: >-
-          docker run --name momo-api
+          docker run --name momo-api-prod
           --rm -d -p 8080:8080
           --volume=$HOME/security:/momo/security:ro
           --volume=$HOME/logs:/momo/logs
