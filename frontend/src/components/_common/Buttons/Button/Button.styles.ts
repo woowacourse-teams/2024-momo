@@ -70,6 +70,10 @@ export const s_variant = {
       border: none;
     }
   `,
+  transparent: css`
+    background-color: transparent;
+    border: none;
+  `,
   kakao: css`
     background-color: #f9e000;
     border: none;
