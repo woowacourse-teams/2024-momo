@@ -8,6 +8,7 @@ import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
+import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
@@ -38,12 +39,14 @@ public class MeetingService {
     public MeetingCreateResponse create(MeetingCreateRequest request) {
         LocalDate today = LocalDate.now(clock);
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        saveAvailableDates(request.availableMeetingDates(), meeting, today);
+        AvailableDates meetingDates = new AvailableDates(
+                saveAvailableDates(request.availableMeetingDates(), meeting, today)
+        );
 
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());
 
-        return MeetingCreateResponse.from(meeting, attendee, token);
+        return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
     private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
@@ -51,12 +54,12 @@ public class MeetingService {
         return meetingRepository.save(meeting);
     }
 
-    private void saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
+    private List<AvailableDate> saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
         AvailableDates availableDates = new AvailableDates(dates, meeting);
         if (availableDates.isAnyBefore(date)) {
             throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
         }
-        availableDateRepository.saveAll(availableDates.getAvailableDates());
+        return availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
