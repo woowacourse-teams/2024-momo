@@ -73,8 +73,8 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                today.getDate(), meeting.startTimeslotTime(),
-                today.getDate(), meeting.startTimeslotTime().plusMinutes(90)
+                today.getDate(), meeting.earliestTime(),
+                today.getDate(), meeting.earliestTime().plusMinutes(90)
         );
     }
 
@@ -106,8 +106,8 @@ class MeetingConfirmServiceTest {
     @DisplayName("존재하지 않은 참가자가 잠겨있는 약속 일정을 확정 시 예외가 발생한다.")
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidAttendee() {
-        long InvalidAttendeeId = 9999L;
-        assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), InvalidAttendeeId, validRequest))
+        long invalidAttendeeId = 9999L;
+        assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), invalidAttendeeId, validRequest))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.INVALID_ATTENDEE.message());
     }

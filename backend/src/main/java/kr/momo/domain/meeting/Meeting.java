@@ -64,11 +64,11 @@ public class Meeting extends BaseEntity {
         return timeslotInterval.getValidatedTimeslot(other);
     }
 
-    public LocalTime startTimeslotTime() {
-        return timeslotInterval.getStartTimeslot().getLocalTime();
+    public LocalTime earliestTime() {
+        return timeslotInterval.getStartTimeslot().startTime();
     }
 
-    public LocalTime endTimeslotTime() {
-        return timeslotInterval.getEndTimeslot().getLocalTime();
+    public LocalTime lastTime() {
+        return timeslotInterval.getEndTimeslot().endTime();
     }
 }
