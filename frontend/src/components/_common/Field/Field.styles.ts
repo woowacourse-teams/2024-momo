@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
+import { PRIMITIVE_COLORS } from '@styles/tokens/colors';
 
 export const s_field = css`
   display: flex;
@@ -15,4 +16,9 @@ export const s_label = css`
 export const s_description = css`
   ${theme.typography.captionMedium}
   color: ${theme.colors.grey.dark};
+`;
+
+export const s_errorText = css`
+  ${theme.typography.captionMedium}
+  color: ${PRIMITIVE_COLORS.red};
 `;
