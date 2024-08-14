@@ -128,4 +128,24 @@ class AvailableDatesTest {
                         true)
         );
     }
+
+    @DisplayName("정렬되지 않은 순으로 날짜를 전달해도 정렬된 상태로 반환한다.")
+    @Test
+    void sortedAvailableDates() {
+        // given
+        LocalDate today = LocalDate.now();
+        List<LocalDate> dates = List.of(
+                today.plusDays(3),
+                today.plusDays(1),
+                today.plusDays(2)
+        );
+        AvailableDates availableDates = new AvailableDates(dates, MeetingFixture.GAME.create());
+
+        // when
+        List<LocalDate> actual = availableDates.asList();
+
+        // then
+        List<LocalDate> expected = actual.stream().sorted().toList();
+        assertThat(actual).isEqualTo(expected);
+    }
 }
