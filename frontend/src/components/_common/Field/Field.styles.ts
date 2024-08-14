@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 
+import theme from '@styles/theme';
+
 export const s_field = css`
   display: flex;
   flex-direction: column;
@@ -7,12 +9,10 @@ export const s_field = css`
 `;
 
 export const s_label = css`
-  font-size: 2.4rem;
-  font-weight: 700;
+  ${theme.typography.subTitleBold}
 `;
 
 export const s_description = css`
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: #8c8989;
+  ${theme.typography.captionMedium}
+  color: ${theme.colors.grey.dark};
 `;
