@@ -41,9 +41,7 @@ public record MeetingResponse(
 ) {
 
     public static MeetingResponse of(Meeting meeting, AvailableDates availableDates, List<Attendee> attendees) {
-        List<LocalDate> dates = availableDates.getAvailableDates().stream()
-                .map(AvailableDate::getDate)
-                .toList();
+        List<LocalDate> dates = availableDates.asList();
 
         List<String> attendeeNames = attendees.stream()
                 .map(Attendee::name)
