@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
+import PasswordInput from '@components/PasswordInput';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
@@ -45,9 +46,8 @@ export default function AttendeeLoginPage() {
           <Input placeholder="이름을 입력하세요." value={attendeeName} onChange={onNameChange} />
         </Field>
         <Field labelText="비밀번호" id="password">
-          <Input
+          <PasswordInput
             placeholder="비밀번호를 입력하세요."
-            type="password"
             value={password}
             onChange={onPasswordChange}
           />

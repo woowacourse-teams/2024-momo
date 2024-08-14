@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import PasswordInput from '@components/PasswordInput';
 import TimeRangeSelector from '@components/TimeRangeSelector';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
@@ -73,7 +74,7 @@ export default function CreateMeetingPage() {
           labelText="비밀번호"
           description="약속에서 사용할 비밀번호를 4자 이내로 입력해 주세요."
         >
-          <Input
+          <PasswordInput
             id="비밀번호"
             type="password"
             maxLength={4}
