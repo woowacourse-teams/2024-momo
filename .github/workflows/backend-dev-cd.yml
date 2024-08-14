@@ -68,7 +68,7 @@ jobs:
 
       # Docker 이미지 빌드
       - name: Docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/momo-api .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev .
 
       # DockerHub 로그인
       - name: Docker login
@@ -79,7 +79,7 @@ jobs:
 
       # Docker Hub 이미지 푸시
       - name: Docker Hub push
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/momo-api
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev
 
   be-depoly:
     needs: be-build
@@ -101,7 +101,7 @@ jobs:
 
       # 1. 최신 도커 이미지 pull
       - name: docker pull
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/momo-api
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev
 
       # 2. 기존 컨테이너 중지
       - name: docker stop container
@@ -110,12 +110,12 @@ jobs:
       # 3. 도커 컨테이너 실행
       - name: docker run new container
         run: >-
-          docker run --name momo-api
+          docker run --name momo-api-dev
           --rm -d -p 8080:8080
           --volume=$HOME/security:/momo/security:ro
           --volume=$HOME/logs:/momo/logs
           --env SPRING_PROFILE=dev
-          ${{ secrets.DOCKERHUB_USERNAME }}/momo-api
+          ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev
 
       # 4. 미사용 이미지를 정리
       - name: delete old docker image
