@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,19 +70,33 @@ class AttendeeControllerTest {
         );
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"빙봉해리낙타,1234", "빙봉해리낙,12345hi234324"})
-    @DisplayName("닉네임이 5자 초과거나 비밀번호가 10자 초과하여 로그인 또는 회원가입을 하면 400 상태 코드를 응답한다.")
-    void loginByInvalidParameterRequest(String nickname, String password) {
+    @DisplayName("닉네임이 5자 초과면 400 상태 코드를 응답한다.")
+    @Test
+    void createByInvalidNickname() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
 
-        AttendeeLoginRequest request = new AttendeeLoginRequest(nickname, password);
+        AttendeeLoginRequest request = new AttendeeLoginRequest("빙봉해리낙타", "1234");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then()
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
+    void createByInvalidHost() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+
+        AttendeeLoginRequest request = new AttendeeLoginRequest("빙봉해리낙", "12345hi234324");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -99,7 +112,7 @@ class AttendeeControllerTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
-                .then()
+                .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
