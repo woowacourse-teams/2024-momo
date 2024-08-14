@@ -30,8 +30,12 @@ const useInput = (rules?: ValidationRules) => {
 
   const onValueChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setValue(newValue);
     const validationError = validateInputValue(newValue);
+
+    if (newValue.length <= 1 || !validationError) {
+      setValue(newValue);
+    }
+
     setError(validationError);
   };
 
