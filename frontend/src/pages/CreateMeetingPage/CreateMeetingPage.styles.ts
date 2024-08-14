@@ -8,12 +8,6 @@ export const s_formContainer = css`
   gap: 2.4rem;
 `;
 
-export const s_dropdownContainer = css`
-  display: flex;
-  gap: 1.2rem;
-  justify-content: flex-start;
-`;
-
 export const s_confirmContainer = css`
   display: flex;
   align-items: center;
