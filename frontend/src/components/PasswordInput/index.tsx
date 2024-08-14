@@ -12,7 +12,7 @@ import { s_inputContainer } from './PasswordInput.styles';
 export default function PasswordInput({ value, onChange, placeholder = '' }: InputProps) {
   const [isPasswordShow, setIsPasswordShow] = useState(false);
 
-  const toggleShowPassword = () => {
+  const handleShowPasswordToggle = () => {
     setIsPasswordShow(!isPasswordShow);
   };
 
@@ -25,7 +25,7 @@ export default function PasswordInput({ value, onChange, placeholder = '' }: Inp
         onChange={onChange}
         placeholder={placeholder}
       />
-      <Button variant="transparent" size="m" type="button" onClick={toggleShowPassword}>
+      <Button variant="transparent" size="m" type="button" onClick={handleShowPasswordToggle}>
         {isPasswordShow ? <PasswordHide /> : <PasswordShow />}
       </Button>
     </div>
