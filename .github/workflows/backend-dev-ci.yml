@@ -1,4 +1,4 @@
-name: Backend CI
+name: Backend Dev CI
 
 on:
   workflow_dispatch:
@@ -17,9 +17,9 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
-      manual: ${{ steps.manualcheck.outputs.manual }}
+      manual: ${{ steps.manual-check.outputs.manual }}
     steps:
-      - id: manualcheck
+      - id: manual-check
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "manual=true" >> "$GITHUB_OUTPUT"
 

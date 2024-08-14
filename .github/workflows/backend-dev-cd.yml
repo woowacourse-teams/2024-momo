@@ -1,4 +1,4 @@
-name: Backend CD
+name: Backend Dev CD
 
 on:
   workflow_dispatch:
@@ -13,9 +13,9 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
-      manual: ${{ steps.manualcheck.outputs.manual }}
+      manual: ${{ steps.manual-check.outputs.manual }}
     steps:
-      - id: manualcheck
+      - id: manual-check
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "manual=true" >> "$GITHUB_OUTPUT"
 
@@ -83,7 +83,7 @@ jobs:
 
   be-depoly:
     needs: be-build
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, ARM64, dev]
     defaults:
       run:
         shell: bash
