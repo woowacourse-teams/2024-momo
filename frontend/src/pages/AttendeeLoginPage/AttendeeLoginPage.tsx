@@ -20,9 +20,21 @@ export default function AttendeeLoginPage() {
   const navigate = useNavigate();
   const { uuid } = useParams<{ uuid: string }>();
 
-  const { value: attendeeName, onValueChange: onNameChange } = useInput();
-  const { value: password, onValueChange: onPasswordChange } = useInput();
+  const {
+    value: attendeeName,
+    onValueChange: handleAttendeeNameChange,
+    error: attendeeNameError,
+  } = useInput({ minLength: 1, maxLength: 5 });
 
+  const {
+    value: attendeePassword,
+    onValueChange: handleAttendeePasswordChange,
+    error: attendeePasswordError,
+  } = useInput({
+    minLength: 1,
+    maxLength: 10,
+    pattern: /^[a-zA-Z0-9!@#$%]+$/,
+  });
   const handleLoginButtonClick = async () => {
     if (!uuid) {
       console.error('UUID is missing');
@@ -31,7 +43,7 @@ export default function AttendeeLoginPage() {
 
     const { userName } = await postUserLogin({
       uuid,
-      request: { attendeeName, password },
+      request: { attendeeName, password: attendeePassword },
     });
 
     setIsLoggedIn(true);
@@ -42,14 +54,20 @@ export default function AttendeeLoginPage() {
   return (
     <div css={s_container}>
       <div css={s_inputContainer}>
-        <Field labelText="이름" id="name">
-          <Input placeholder="이름을 입력하세요." value={attendeeName} onChange={onNameChange} />
+        <Field labelText="닉네임" id="name" error={attendeeNameError}>
+          <Input
+            maxLength={5}
+            placeholder="닉네임을 입력하세요."
+            value={attendeeName}
+            onChange={handleAttendeeNameChange}
+          />
         </Field>
-        <Field labelText="비밀번호" id="password">
+        <Field labelText="비밀번호" id="password" error={attendeePasswordError}>
           <PasswordInput
+            maxLength={10}
             placeholder="비밀번호를 입력하세요."
-            value={password}
-            onChange={onPasswordChange}
+            value={attendeePassword}
+            onChange={handleAttendeePasswordChange}
           />
         </Field>
       </div>

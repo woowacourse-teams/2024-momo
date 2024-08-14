@@ -17,9 +17,31 @@ import { s_confirm, s_confirmContainer, s_formContainer } from './CreateMeetingP
 export default function CreateMeetingPage() {
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
 
-  const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
-  const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
-  const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
+  const {
+    value: meetingName,
+    onValueChange: handleMeetingNameChange,
+    error: meetingNameError,
+  } = useInput({
+    minLength: 1,
+    maxLength: 10,
+  });
+
+  const {
+    value: hostName,
+    onValueChange: handleHostNameChange,
+    error: hostNameError,
+  } = useInput({ minLength: 1, maxLength: 5 });
+
+  const {
+    value: hostPassword,
+    onValueChange: handleHostPasswordChange,
+    error: hostPasswordError,
+  } = useInput({
+    minLength: 1,
+    maxLength: 10,
+    pattern: /^[a-zA-Z0-9!@#$%]+$/,
+  });
+
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
@@ -51,11 +73,12 @@ export default function CreateMeetingPage() {
         <Field
           id="약속이름"
           labelText="약속 이름"
-          description="약속 이름은 20자 이내로 입력해 주세요."
+          description="약속 이름은 1~10자 사이로 입력해 주세요."
+          error={meetingNameError}
         >
           <Input
             id="약속이름"
-            maxLength={20}
+            maxLength={10}
             value={meetingName}
             onChange={handleMeetingNameChange}
           />
@@ -64,7 +87,8 @@ export default function CreateMeetingPage() {
         <Field
           id="닉네임"
           labelText="닉네임"
-          description="약속에서 사용할 닉네임을 5자 이내로 입력해 주세요."
+          description="닉네임을 1~5자 사이로 입력해 주세요."
+          error={hostNameError}
         >
           <Input id="닉네임" maxLength={5} value={hostName} onChange={handleHostNameChange} />
         </Field>
@@ -72,12 +96,12 @@ export default function CreateMeetingPage() {
         <Field
           id="비밀번호"
           labelText="비밀번호"
-          description="약속에서 사용할 비밀번호를 4자 이내로 입력해 주세요."
+          description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다."
+          error={hostPasswordError}
         >
           <PasswordInput
             id="비밀번호"
-            type="password"
-            maxLength={4}
+            maxLength={10}
             value={hostPassword}
             onChange={handleHostPasswordChange}
           />
