@@ -32,6 +32,18 @@ export const SEMANTIC_COLORS = {
   white: PRIMITIVE_COLORS.white,
   black: PRIMITIVE_COLORS.black,
   primary: PRIMITIVE_COLORS.pink['500'],
+  calendar: {
+    color: {
+      saturday: '#8c9eff',
+      holiday: '#fa665b',
+      today: '#4dc561',
+      selected: '#f50057',
+    },
+    backgroundColor: {
+      today: '#cff0da',
+      selected: PRIMITIVE_COLORS.pink['200'],
+    },
+  },
   holiday: PRIMITIVE_COLORS.red,
   grey: {
     primary: PRIMITIVE_COLORS.grey['200'],

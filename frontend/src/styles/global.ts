@@ -162,7 +162,9 @@ const globalStyles = css`
 
   button {
     cursor: pointer;
+    padding: 0;
     font: inherit;
+    border: none;
   }
 `;
 
