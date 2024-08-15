@@ -1,6 +1,5 @@
 package kr.momo.exception;
 
-import java.util.List;
 import kr.momo.config.filter.LogFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -36,14 +35,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, INVALID_REQUEST_FORMAT_MESSAGE
         );
-        problemDetail.setProperty("details", getErrors(ex));
-        return new CustomProblemDetail(problemDetail, INVALID_REQUEST_FORMAT_ERROR_CODE);
-    }
-
-    private List<String> getErrors(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> "%s:%s".formatted(error.getField(), error.getDefaultMessage()))
-                .toList();
+        return new CustomProblemDetail(problemDetail, INVALID_REQUEST_FORMAT_ERROR_CODE, ex);
     }
 
     @ExceptionHandler
