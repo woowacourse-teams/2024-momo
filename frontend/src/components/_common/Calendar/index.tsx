@@ -22,17 +22,21 @@ interface CalendarProps {
 }
 
 export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
-  const { yearMonthInfo, handleGetDayInfo, handlePrevMonth, handleNextMonth, isCurrentDate } =
-    useCalendarInfo();
+  const {
+    yearMonthInfo,
+    handleGetDateInfo,
+    handlePrevMonthMove,
+    handleNextMonthMove,
+    isCurrentDate,
+  } = useCalendarInfo();
   const { year, month, daySlotCount } = yearMonthInfo;
 
   return (
     <div css={s_calendarContainer} aria-label={`${year}년 ${month}월 달력`}>
       <header css={s_monthHeader}>
-        {/* TODO : 캘린더 헤더 버튼 스타일 수정 예정(@해리) */}
         <button
           css={s_monthNavigation}
-          onClick={handlePrevMonth}
+          onClick={handlePrevMonthMove}
           aria-label="지난 달"
           disabled={isCurrentDate}
         >
@@ -41,7 +45,7 @@ export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
         <span>
           {year}년 {month}월
         </span>
-        <button css={s_monthNavigation} onClick={handleNextMonth} aria-label="다음 달">
+        <button css={s_monthNavigation} onClick={handleNextMonthMove} aria-label="다음 달">
           {'>'}
         </button>
       </header>
@@ -54,28 +58,28 @@ export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
       </section>
       <section css={s_calendarContent}>
         {Array.from({ length: daySlotCount }, (_, index) => {
-          const { date, dateString, isDate, isToday, isHoliday, isSaturday, isPrevDay } =
-            handleGetDayInfo(index);
-          const isSelectedDate = hasDate(dateString);
+          const { date, fullDate, isValidDate, isToday, isHoliday, isSaturday, isPrevDate } =
+            handleGetDateInfo(index);
+          const isSelectedFullDate = hasDate(fullDate);
 
-          return isDate ? (
+          return isValidDate ? (
             <button
-              key={dateString}
-              onClick={() => onDateClick(dateString)}
-              disabled={isPrevDay}
+              key={fullDate}
+              onClick={() => onDateClick(fullDate)}
+              disabled={isPrevDate}
               css={[s_baseDaySlot, s_daySlotButton]}
             >
               <span
                 css={[
                   s_baseDaySlotText,
-                  s_daySlotText(isHoliday, isSelectedDate, isToday, isSaturday, isPrevDay),
+                  s_daySlotText({ isSelectedFullDate, isPrevDate, isHoliday, isSaturday, isToday }),
                 ]}
               >
                 {date}
               </span>
             </button>
           ) : (
-            <div key={dateString} css={s_baseDaySlot}></div>
+            <div key={fullDate} css={s_baseDaySlot}></div>
           );
         })}
       </section>
