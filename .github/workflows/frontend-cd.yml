@@ -76,7 +76,7 @@ jobs:
 
   deploy:
     needs: fe-build
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, ARM64, dev]
     env:
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID}}
     steps:
