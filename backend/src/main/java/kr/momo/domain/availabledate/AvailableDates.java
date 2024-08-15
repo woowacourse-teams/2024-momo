@@ -64,4 +64,10 @@ public class AvailableDates {
     private boolean isNotDateCountEqual(LocalDate startDateInclusive, LocalDate endDateInclusive, long count) {
         return count != endDateInclusive.toEpochDay() - startDateInclusive.toEpochDay() + 1;
     }
+
+    public List<LocalDate> asList() {
+        return availableDates.stream()
+                .map(AvailableDate::getDate)
+                .toList();
+    }
 }

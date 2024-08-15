@@ -20,11 +20,11 @@ public record MeetingResponse(
         String meetingName,
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간")
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시각")
         LocalTime firstTime,
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시간")
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시각")
         LocalTime lastTime,
 
         @Schema(description = "약속 잠금 여부")
@@ -57,8 +57,8 @@ public record MeetingResponse(
 
         return new MeetingResponse(
                 meeting.getName(),
-                meeting.startTimeslotTime(),
-                meeting.endTimeslotTime(),
+                meeting.earliestTime(),
+                meeting.lastTime(),
                 meeting.isLocked(),
                 dates,
                 attendeeNames,

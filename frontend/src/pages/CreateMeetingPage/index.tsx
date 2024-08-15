@@ -6,6 +6,7 @@ import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
+import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 import {
   generateEndTimeOptions,
@@ -51,7 +52,8 @@ export default function CreateMeetingPage() {
       meetingName: meetingName,
       availableMeetingDates: selectedDates,
       meetingStartTime: startTime,
-      meetingEndTime: endTime,
+      // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
+      meetingEndTime: endTime === INITIAL_END_TIME ? INITIAL_START_TIME : endTime,
     });
   };
 

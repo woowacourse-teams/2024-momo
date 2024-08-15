@@ -1,6 +1,8 @@
 package kr.momo.domain.timeslot;
 
+import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.TimeslotErrorCode;
@@ -77,5 +79,15 @@ public enum Timeslot {
 
     public boolean isBefore(LocalTime other) {
         return this.localTime.isBefore(other);
+    }
+
+    public LocalTime startTime() {
+        return localTime;
+    }
+
+    public LocalTime endTime() {
+        int slotLength = Timeslot.values().length;
+        Duration duration = ChronoUnit.DAYS.getDuration().dividedBy(slotLength);
+        return localTime.plusSeconds(duration.getSeconds());
     }
 }
