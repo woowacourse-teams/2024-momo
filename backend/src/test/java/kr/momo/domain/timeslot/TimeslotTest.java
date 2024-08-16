@@ -24,11 +24,11 @@ class TimeslotTest {
     @DisplayName("주어진 시간에 해당하는 시간슬롯이 존재하면 해당 시간슬롯을 반환한다.")
     @Test
     void successfulWhenTimeslotExists() {
-        LocalTime localTime = Timeslot.TIME_1200.getLocalTime();
+        LocalTime localTime = Timeslot.TIME_1200.startTime();
 
         Timeslot timeslot = Timeslot.from(localTime);
 
-        assertThat(timeslot.getLocalTime()).isEqualTo(localTime);
+        assertThat(timeslot.startTime()).isEqualTo(localTime);
     }
 
 

@@ -3,6 +3,7 @@ package kr.momo.domain.availabledate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,20 +53,6 @@ class AvailableDatesTest {
         AvailableDate availableDate = availableDates.findByDate(tomorrow);
 
         assertThat(availableDate.getDate()).isEqualTo(tomorrow);
-    }
-
-    @DisplayName("가능한 시간의 값이 중복이면 예외가 발생한다.")
-    @Test
-    void throwExceptionWhenDuplicatedDate() {
-        // given
-        Meeting meeting = MeetingFixture.GAME.create();
-        LocalDate date = LocalDate.of(2024, 7, 24);
-        List<LocalDate> dates = List.of(date, date);
-
-        // when then
-        assertThatThrownBy(() -> new AvailableDates(dates, meeting))
-                .isInstanceOf(MomoException.class)
-                .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
     }
 
     @DisplayName("가능한 시간이 중복이 아니면 예외가 발생하지 않는다.")
@@ -140,6 +127,48 @@ class AvailableDatesTest {
                         LocalDate.of(2024, 8, 1),
                         LocalDate.of(2024, 8, 3),
                         true)
+        );
+    }
+
+    @DisplayName("정렬되지 않은 순으로 날짜를 전달해도 정렬된 상태로 반환한다.")
+    @Test
+    void sortedAvailableDates() {
+        // given
+        LocalDate today = LocalDate.now();
+        List<LocalDate> dates = List.of(
+                today.plusDays(3),
+                today.plusDays(1),
+                today.plusDays(2)
+        );
+        AvailableDates availableDates = new AvailableDates(dates, MeetingFixture.GAME.create());
+
+        // when
+        List<LocalDate> actual = availableDates.asList();
+
+        // then
+        List<LocalDate> expected = actual.stream().sorted().toList();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("날짜 필드의 값만으로 존재 여부를 판단한다.")
+    @Test
+    void notExistsByDate() {
+        // given
+        Meeting meeting = MeetingFixture.GAME.create();
+        LocalDate today = LocalDate.now();
+        AvailableDate availableDate1 = new AvailableDate(today.minusDays(1), meeting);
+        AvailableDate availableDate2 = new AvailableDate(today.minusDays(2), meeting);
+        AvailableDate availableDate3 = new AvailableDate(today.minusDays(3), meeting);
+        AvailableDates availableDates = new AvailableDates(List.of(availableDate1, availableDate2, availableDate3));
+
+        // when
+        LocalDate anotherToday = LocalDate.now();
+
+        // then
+        assertAll(
+                () -> assertThat(availableDates.notExistsByDate(anotherToday)).isTrue(),
+                () -> assertThat(availableDates.notExistsByDate(anotherToday.minusDays(3))).isFalse(),
+                () -> assertThat(availableDates.notExistsByDate(anotherToday.minusDays(4))).isTrue()
         );
     }
 }

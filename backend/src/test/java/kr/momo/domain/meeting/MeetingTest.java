@@ -62,7 +62,7 @@ class MeetingTest {
         Meeting meeting = new Meeting("momo", "momo", startTime, endTime);
 
         // then
-        LocalTime meetingLastTimeSlotRepresentative = meeting.getTimeslotInterval().getEndTimeslot().getLocalTime();
+        LocalTime meetingLastTimeSlotRepresentative = meeting.getTimeslotInterval().getEndTimeslot().startTime();
         assertThat(meetingLastTimeSlotRepresentative).isEqualTo(endTime.minusMinutes(30));
     }
 

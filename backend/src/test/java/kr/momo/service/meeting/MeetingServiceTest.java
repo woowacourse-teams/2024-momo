@@ -19,7 +19,6 @@ import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
-import kr.momo.exception.code.AvailableDateErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
@@ -99,27 +98,6 @@ class MeetingServiceTest {
         assertThatThrownBy(() -> meetingService.findMeetingSharing(invalidUUID))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
-    }
-
-    @DisplayName("약속을 생성할 때 같은 약속일을 2번 이상 보내면 예외가 발생합니다.")
-    @Test
-    void throwExceptionWhenDuplicatedDates() {
-        //given
-        setFixedClock();
-        LocalDate today = LocalDate.now(clock);
-        MeetingCreateRequest request = new MeetingCreateRequest(
-                "momoHost",
-                "momo",
-                "momoMeeting",
-                List.of(today, today),
-                LocalTime.of(8, 0),
-                LocalTime.of(22, 0)
-        );
-
-        //when //then
-        assertThatThrownBy(() -> meetingService.create(request))
-                .isInstanceOf(MomoException.class)
-                .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
     }
 
     @DisplayName("약속을 생성할 때 과거 날짜를 보내면 예외가 발생합니다.")
