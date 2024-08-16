@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
+import kr.momo.controller.validator.TimeFormatConstraint;
 
 @Schema(description = "약속 생성 요청")
 public record MeetingCreateRequest(
@@ -26,12 +26,15 @@ public record MeetingCreateRequest(
         @Schema(description = "가능한 약속 날짜들", ref = "#/components/schemas/availableMeetingDates")
         List<LocalDate> availableMeetingDates,
 
-        @NotNull
-        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간", example = "01:00")
-        LocalTime meetingStartTime,
 
-        @NotNull
+        @NotBlank
+        @TimeFormatConstraint
+        @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시간", example = "01:00")
+        String meetingStartTime,
+
+        @NotBlank
+        @TimeFormatConstraint
         @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시간", example = "20:00")
-        LocalTime meetingEndTime
+        String meetingEndTime
 ) {
 }
