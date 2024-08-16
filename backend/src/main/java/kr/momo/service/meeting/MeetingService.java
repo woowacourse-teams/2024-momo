@@ -8,7 +8,6 @@ import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
-import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
@@ -37,29 +36,26 @@ public class MeetingService {
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
-        LocalDate today = LocalDate.now(clock);
         Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        AvailableDates meetingDates = new AvailableDates(
-                saveAvailableDates(request.availableMeetingDates(), meeting, today)
-        );
+        AvailableDates meetingDates = new AvailableDates(request.availableMeetingDates(), meeting);
 
+        validateNotPast(meetingDates);
+        availableDateRepository.saveAll(meetingDates.getAvailableDates());
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());
 
         return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
+    private void validateNotPast(AvailableDates meetingDates) {
+        if (meetingDates.isAnyBefore(LocalDate.now(clock))) {
+            throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
+        }
+    }
+
     private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
         Meeting meeting = new Meeting(meetingName, UUID.randomUUID().toString(), startTime, endTime);
         return meetingRepository.save(meeting);
-    }
-
-    private List<AvailableDate> saveAvailableDates(List<LocalDate> dates, Meeting meeting, LocalDate date) {
-        AvailableDates availableDates = new AvailableDates(dates, meeting);
-        if (availableDates.isAnyBefore(date)) {
-            throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
-        }
-        return availableDateRepository.saveAll(availableDates.getAvailableDates());
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
