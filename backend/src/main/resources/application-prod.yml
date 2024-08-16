@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate.on-profile: prod
+    import:
+      - ${SECURITY_PATH:classpath:security}/datasource-prod.yml
+      - ${SECURITY_PATH:classpath:security}/jwt.yml
+      - ${SECURITY_PATH:classpath:security}/cors.yml
+      - ${SECURITY_PATH:classpath:security}/logback.yml
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
