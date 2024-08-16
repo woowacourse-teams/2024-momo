@@ -73,8 +73,8 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                today.getDate(), meeting.earliestTime(),
-                today.getDate(), meeting.earliestTime().plusMinutes(90)
+                LocalDateTime.of(today.getDate(), meeting.earliestTime()),
+                LocalDateTime.of(today.getDate(), meeting.earliestTime().plusMinutes(90))
         );
     }
 
@@ -146,8 +146,8 @@ class MeetingConfirmServiceTest {
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         LocalDate invalidDate = LocalDate.now().plusDays(30);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                invalidDate, Timeslot.TIME_0100.startTime(),
-                invalidDate, Timeslot.TIME_0130.startTime()
+                LocalDateTime.of(invalidDate, Timeslot.TIME_0100.startTime()),
+                LocalDateTime.of(invalidDate, Timeslot.TIME_0130.startTime())
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -159,8 +159,8 @@ class MeetingConfirmServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidTime() {
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                today.getDate(), Timeslot.TIME_2200.startTime(),
-                today.getDate(), Timeslot.TIME_2300.startTime()
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_2200.startTime()),
+                LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.startTime())
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -206,8 +206,8 @@ class MeetingConfirmServiceTest {
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
         scheduleRepository.saveAll(schedules);
         validRequest = new MeetingConfirmRequest(
-                today.getDate(), LocalTime.of(0, 0),
-                today.getDate(), LocalTime.of(1, 30)
+                LocalDateTime.of(today.getDate(), LocalTime.of(0, 0)),
+                LocalDateTime.of(today.getDate(), LocalTime.of(1, 30))
         );
         MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
 

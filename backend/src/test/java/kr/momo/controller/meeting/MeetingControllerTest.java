@@ -3,11 +3,13 @@ package kr.momo.controller.meeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -119,7 +121,7 @@ class MeetingControllerTest {
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfterTomorrow = today.plusDays(2);
         MeetingCreateRequest request = new MeetingCreateRequest(
-                "momoHost",
+                "host",
                 "momo",
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
@@ -491,8 +493,8 @@ class MeetingControllerTest {
 
     private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
         return new MeetingConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0000.startTime(),
-                tomorrow.getDate(), Timeslot.TIME_0600.startTime()
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
+                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime())
         );
     }
 }
