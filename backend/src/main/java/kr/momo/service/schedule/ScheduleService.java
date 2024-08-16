@@ -78,8 +78,8 @@ public class ScheduleService {
     private Stream<Schedule> createSchedulesForDate(
             Meeting meeting, Attendee attendee, AvailableDates availableDates, DateTimesCreateRequest request
     ) {
-        AvailableDate date = availableDates.findByDate(request.date());
-        return request.times().stream()
+        AvailableDate date = availableDates.findByDate(request.toDate());
+        return request.toTimes().stream()
                 .map(time -> createSchedule(meeting, attendee, date, time));
     }
 

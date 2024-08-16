@@ -1,24 +1,48 @@
 package kr.momo.service.meeting.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import kr.momo.controller.validator.DateFormatConstraint;
+import kr.momo.controller.validator.TimeFormatConstraint;
 
 public record MeetingConfirmRequest(
 
         @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
-        LocalDate startDate,
+        @DateFormatConstraint
+        String startDate,
         @NotNull
-        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime startTime,
+        @TimeFormatConstraint
+        String startTime,
         @NotNull
-        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
-        LocalDate endDate,
+        @DateFormatConstraint
+        String endDate,
         @NotNull
-        @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime endTime
+        @TimeFormatConstraint
+        String endTime
 ) {
+
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    public MeetingConfirmRequest(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        this(
+                startDate.format(dateFormatter),
+                startTime.format(timeFormatter),
+                endDate.format(dateFormatter),
+                endTime.format(timeFormatter)
+        );
+    }
+
+
+    public LocalDateTime toStartDateTime() {
+        return LocalDateTime.parse(startDate + " " + startTime, dateTimeFormatter);
+    }
+
+    public LocalDateTime toEndDateTime() {
+        return LocalDateTime.parse(endDate + " " + endTime, dateTimeFormatter);
+    }
 }

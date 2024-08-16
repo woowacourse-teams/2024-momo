@@ -2,6 +2,7 @@ package kr.momo.domain.attendee;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.util.regex.Pattern;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import lombok.AccessLevel;
@@ -15,17 +16,30 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendeePassword {
 
-    @Column(nullable = false, length = 20)
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@*#$%]+$");
+
+    @Column(nullable = false, length = 10)
     private String password;
 
     public AttendeePassword(String password) {
-        validatePasswordLength(password);
+        validatePassword(password);
         this.password = password;
     }
 
+    private void validatePassword(String password) {
+        validatePasswordLength(password);
+        validatePasswordFormat(password);
+    }
+
     private void validatePasswordLength(String password) {
-        if (password.length() > 20) {
+        if (password.length() > 10) {
             throw new MomoException(AttendeeErrorCode.INVALID_PASSWORD_LENGTH);
+        }
+    }
+
+    private void validatePasswordFormat(String password) {
+        if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new MomoException(AttendeeErrorCode.INVALID_PASSWORD_FORMAT);
         }
     }
 

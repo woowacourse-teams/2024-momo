@@ -19,6 +19,8 @@ import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -66,6 +68,52 @@ class AttendeeControllerTest {
                 () -> assertThat(jwtManager.extract(token)).isEqualTo(attendee.getId()),
                 () -> assertThat(hostName).isEqualTo(request.attendeeName())
         );
+    }
+
+    @DisplayName("닉네임이 5자 초과면 400 상태 코드를 응답한다.")
+    @Test
+    void createByInvalidNickname() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+
+        AttendeeLoginRequest request = new AttendeeLoginRequest("빙봉해리낙타", "1234");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
+    void createByInvalidHost() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+
+        AttendeeLoginRequest request = new AttendeeLoginRequest("빙봉해리낙", "12345hi234324");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"낙타AB마크재", "타다온12드로"})
+    @DisplayName("비밀번호가 알파벳이나숫자로만 구성되어 있는 것이 아니라면 400 상태코드를 응답한다.")
+    void loginByInvalidPasswordFormat(String password) {
+        Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
+
+        AttendeeLoginRequest request = new AttendeeLoginRequest("빙봉", password);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/login", meeting.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("미팅에 참여한 모든 참여자를 조회하고 200 OK 상태코드를 반환한다.")

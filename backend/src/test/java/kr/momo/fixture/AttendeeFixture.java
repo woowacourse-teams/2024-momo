@@ -8,11 +8,11 @@ import kr.momo.domain.meeting.Meeting;
 
 public enum AttendeeFixture {
 
-    HOST_JAZZ("jazz", "hostPw!123", Role.HOST),
-    GUEST_DAON("daon", "daonPw!123", Role.GUEST),
-    GUEST_BAKEY("bakey", "bakeyPw!123", Role.GUEST),
-    GUEST_PEDRO("pedro", "pedroPw!123", Role.GUEST),
-    GUEST_MARK("mark", "mark!123", Role.GUEST);
+    HOST_JAZZ("jazz", "hostPw!12", Role.HOST),
+    GUEST_DAON("daon", "daonPw!12", Role.GUEST),
+    GUEST_BAKEY("bakey", "bakeyPw!12", Role.GUEST),
+    GUEST_PEDRO("pedro", "pedroPw!12", Role.GUEST),
+    GUEST_MARK("mark", "mark!12", Role.GUEST);
 
     private final String name;
     private final String password;

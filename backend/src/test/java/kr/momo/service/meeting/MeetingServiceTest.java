@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doReturn;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
@@ -111,9 +110,9 @@ class MeetingServiceTest {
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                List.of(yesterday, today),
-                LocalTime.of(8, 0),
-                LocalTime.of(22, 0)
+                List.of(yesterday.toString(), today.toString()),
+                "08:00",
+                "22:00"
         );
 
         //when //then

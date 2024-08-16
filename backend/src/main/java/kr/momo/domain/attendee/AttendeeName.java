@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendeeName {
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 5)
     private String name;
 
     public AttendeeName(String name) {
@@ -22,7 +22,7 @@ public class AttendeeName {
     }
 
     private void validateNameLength(String name) {
-        if (name.length() > 20) {
+        if (name.length() > 5) {
             throw new MomoException(AttendeeErrorCode.INVALID_NAME_LENGTH);
         }
     }

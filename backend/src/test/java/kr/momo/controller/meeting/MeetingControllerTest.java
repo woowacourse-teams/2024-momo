@@ -9,7 +9,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -29,6 +29,8 @@ import kr.momo.support.IsolateDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -119,12 +121,12 @@ class MeetingControllerTest {
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfterTomorrow = today.plusDays(2);
         MeetingCreateRequest request = new MeetingCreateRequest(
-                "momoHost",
+                "host",
                 "momo",
                 "momoMeeting",
-                List.of(tomorrow, dayAfterTomorrow),
-                LocalTime.of(8, 0),
-                LocalTime.of(22, 0));
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
+                "22:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -134,6 +136,99 @@ class MeetingControllerTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .header(HttpHeaders.LOCATION, containsString("/meeting/"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"8:00,22:00", "08:00,2:00", "00:00,24:00"})
+    @DisplayName("유효하지 않은 시간형식을 요청하면 400 상태코드를 반환한다.")
+    void throwExceptionTimeFormatIsInvalid(String startTime, String endTime) {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                startTime,
+                endTime);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("닉네임이 5자 초과면 400 상태 코드를 응답한다.")
+    @Test
+    void createByInvalidNickname() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "빙봉해리낙타",
+                "1234",
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
+                "22:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("비밀번호가 10자 초과하면 400 상태 코드를 응답한다.")
+    void createByInvalidHost() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "빙봉해리낙",
+                "12345hi234324",
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
+                "22:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 생성할 때 중복되는 날짜로 요청하면 400을 반환한다.")
+    @Test
+    void createByDuplicatedName() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), tomorrow.toString()),
+                "08:00",
+                "22:00"
+        );
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("약속을 잠그면 200 OK를 반환한다.")
@@ -310,6 +405,27 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("날짜시간의 요청 형식이 맞지 않다면 응답코드 400을 반환한다.")
+    @Test
+    void confirmInvalidRequest() {
+        Meeting meeting = createLockedMovieMeeting();
+        AvailableDate availableDate = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        String tomorrow = availableDate.getDate().format(DateTimeFormatter.ISO_DATE);
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        String token = getToken(guest, meeting);
+
+        MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow, "3:00", tomorrow, "03:00");
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("주최자가 잠겨있는 약속의 확정된 약속을 취소하면 확정된 약속이 삭제되고 잠김이 해제된다. 204 상태 코드를 응답 받는다.")
     @Test
     void cancelConfirmedMeeting() {
@@ -401,8 +517,10 @@ class MeetingControllerTest {
 
     private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
         return new MeetingConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0000.startTime(),
-                tomorrow.getDate(), Timeslot.TIME_0600.startTime()
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                tomorrow.getDate(),
+                Timeslot.TIME_0600.startTime()
         );
     }
 }
