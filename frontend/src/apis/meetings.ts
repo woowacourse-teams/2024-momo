@@ -63,7 +63,7 @@ export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeet
   };
 };
 
-export const lockMeeting = async (uuid: string): Promise<void> => {
+export const lockMeeting = async (uuid: string) => {
   const response = await fetch(`${BASE_URL}/${uuid}/lock`, {
     method: 'PATCH',
     headers: {
@@ -77,7 +77,7 @@ export const lockMeeting = async (uuid: string): Promise<void> => {
   }
 };
 
-export const unlockMeeting = async (uuid: string): Promise<void> => {
+export const unlockMeeting = async (uuid: string) => {
   const response = await fetch(`${BASE_URL}/${uuid}/unlock`, {
     method: 'PATCH',
     headers: {
