@@ -3,13 +3,11 @@ package kr.momo.controller.meeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -122,9 +120,9 @@ class MeetingControllerTest {
                 "momoHost",
                 "momo",
                 "momoMeeting",
-                List.of(tomorrow, dayAfterTomorrow),
-                LocalTime.of(8, 0),
-                LocalTime.of(22, 0));
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "08:00",
+                "22:00");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -134,6 +132,53 @@ class MeetingControllerTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value())
                 .header(HttpHeaders.LOCATION, containsString("/meeting/"));
+    }
+
+    @DisplayName("유효하지 않은 값을 요청하면 400 상태코드를 반환한다.")
+    @Test
+    void throwExceptionTimeFormatIsInvalid() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        System.out.println("tomorrow : " + tomorrow);
+        LocalDate dayAfterTomorrow = today.plusDays(2);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
+                "8:00",
+                "22:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 생성할 때 중복되는 날짜로 요청하면 400을 반환한다.")
+    @Test
+    void createByDuplicatedName() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), tomorrow.toString()),
+                "08:00",
+                "22:00"
+        );
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("약속을 잠그면 200 OK를 반환한다.")

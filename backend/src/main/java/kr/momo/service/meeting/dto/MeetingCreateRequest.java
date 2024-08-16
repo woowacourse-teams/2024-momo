@@ -24,8 +24,7 @@ public record MeetingCreateRequest(
 
         @NotNull
         @Schema(description = "가능한 약속 날짜들", ref = "#/components/schemas/availableMeetingDates")
-        List<LocalDate> availableMeetingDates,
-
+        List<String> availableMeetingDates,
 
         @NotBlank
         @TimeFormatConstraint
@@ -37,4 +36,10 @@ public record MeetingCreateRequest(
         @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시간", example = "20:00")
         String meetingEndTime
 ) {
+
+    public List<LocalDate> toAvailableMeetingDates() {
+        return availableMeetingDates.stream()
+                .map(LocalDate::parse)
+                .toList();
+    }
 }

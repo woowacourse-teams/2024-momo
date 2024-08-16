@@ -5,16 +5,30 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import kr.momo.controller.validator.DateFormatConstraint;
+import kr.momo.controller.validator.TimeFormatConstraint;
 
 @Schema(description = "일정 날짜 및 시간 생성 요청")
 public record DateTimesCreateRequest(
 
         @NotNull
+        @DateFormatConstraint
         @Schema(description = "일정 날짜")
-        LocalDate date,
+        String date,
 
         @NotNull
+        @TimeFormatConstraint
         @Schema(description = "일정 시간 리스트", example = "[\"12:00\", \"12:30\", \"16:00\"]")
-        List<LocalTime> times
+        List<String> times
 ) {
+
+    public LocalDate toDate() {
+        return LocalDate.parse(date);
+    }
+
+    public List<LocalTime> toTimes() {
+            return times.stream()
+                    .map(LocalTime::parse)
+                    .toList();
+    }
 }
