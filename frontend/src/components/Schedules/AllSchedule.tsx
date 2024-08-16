@@ -1,8 +1,9 @@
+import type { MeetingDateTime } from 'types/meeting';
+import type { MeetingAllSchedules } from 'types/schedule';
+
 import AttendeeTooltip from '@components/AttendeeTooltip';
 
-import type { MeetingAllSchedules } from '@apis/schedules';
-
-import { generateScheduleMatrix } from './Picker/SchedulePicker.utils';
+import { generateAllScheduleTable } from './Picker/SchedulePicker.utils';
 import {
   s_container,
   s_scheduleTable,
@@ -14,24 +15,21 @@ import {
 } from './Schedules.styles';
 import { formatDate, formatTime, getTooltipPosition } from './Schedules.util';
 
-interface AllSchedulesProps {
-  firstTime: string;
-  lastTime: string;
-  availableDates: string[];
-  allSchedules: MeetingAllSchedules;
+interface AllSchedulesProps extends MeetingDateTime {
+  meetingAllSchedules: MeetingAllSchedules;
 }
 
 export default function AllSchedules({
   firstTime,
   lastTime,
   availableDates,
-  allSchedules,
+  meetingAllSchedules,
 }: AllSchedulesProps) {
-  const schedules = generateScheduleMatrix({
+  const schedules = generateAllScheduleTable({
     firstTime,
     lastTime,
     availableDates,
-    meetingSchedules: allSchedules,
+    meetingAllSchedules,
   });
 
   return (
@@ -64,7 +62,7 @@ export default function AllSchedules({
                 <td key={columnIndex} css={s_td(attendeeCount)}>
                   {attendeeCount > 0 && (
                     <AttendeeTooltip
-                      allSchedules={allSchedules}
+                      allSchedules={meetingAllSchedules}
                       availableDates={availableDates}
                       rowIndex={rowIndex}
                       columnIndex={columnIndex}
