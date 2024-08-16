@@ -5,8 +5,9 @@ export const s_globalContainer = css`
   flex-direction: column;
   gap: 2.4rem;
 
-  min-width: 39.3rem;
-  max-width: 60rem;
+  min-width: 32rem;
+  max-width: 43rem;
+  width: 100vw;
   height: 100%;
 
   background-color: #fff;
