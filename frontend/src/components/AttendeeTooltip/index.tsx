@@ -1,8 +1,7 @@
+import type { MeetingAllSchedules } from 'types/schedule';
 import type { TooltipPosition } from 'types/tooltip';
 
 import Tooltip from '@components/_common/Tooltip';
-
-import type { MeetingAllSchedules } from '@apis/schedules';
 
 import {
   s_attendeeText,

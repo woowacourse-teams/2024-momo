@@ -2,14 +2,14 @@ import { css } from '@emotion/react';
 import { useContext } from 'react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { MeetingDateTime } from 'types/meeting';
+import type { MeetingSingleSchedule } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
-
-import type { MeetingSingleSchedule } from '@apis/schedules';
 
 import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
 
@@ -26,31 +26,28 @@ import {
   s_timeText,
 } from '../Schedules.styles';
 import { formatDate, formatTime } from '../Schedules.util';
-import { convertToSchedule, generateScheduleMatrix } from './SchedulePicker.utils';
+import { convertToSchedule, generateSingleScheduleTable } from './SchedulePicker.utils';
 
-interface SchedulePickerProps {
-  firstTime: string;
-  lastTime: string;
-  availableDates: string[];
-  meetingSchedules: MeetingSingleSchedule;
+interface SchedulePickerProps extends MeetingDateTime {
+  meetingSingleSchedule: MeetingSingleSchedule;
 }
 
 export default function SchedulePicker({
   firstTime,
   lastTime,
   availableDates,
-  meetingSchedules,
+  meetingSingleSchedule,
 }: SchedulePickerProps) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
-  const schedules = generateScheduleMatrix({
+  const schedules = generateSingleScheduleTable({
     firstTime,
     lastTime,
     availableDates,
-    meetingSchedules,
+    meetingSingleSchedule,
   });
 
   const {

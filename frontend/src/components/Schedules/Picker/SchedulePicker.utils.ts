@@ -1,71 +1,111 @@
-import type { MeetingAllSchedules, MeetingSingleSchedule } from '@apis/schedules';
+import type { MeetingDateTime } from 'types/meeting';
+import type {
+  MeetingAllSchedules,
+  MeetingSingeScheduleItem,
+  MeetingSingleSchedule,
+} from 'types/schedule';
 
-const generateTimeSlots = (start: string, end: string) => {
-  const startHour = Number(start.split(':')[0]);
-  const endHour = Number(end.split(':')[0]);
-  const slots: string[] = [];
-
-  for (let i = startHour; i <= endHour; i++) {
-    slots.push(`${i.toString().padStart(2, '0')}:00`);
-  }
-
-  return slots;
-};
-
-interface GenerateScheduleMatrixProps {
-  firstTime: string;
-  lastTime: string;
-  availableDates: string[];
-  meetingSchedules: MeetingAllSchedules | MeetingSingleSchedule;
+interface GenerateAllScheduleTableArgs extends MeetingDateTime {
+  meetingAllSchedules: MeetingAllSchedules;
 }
 
-export const generateScheduleMatrix = ({
-  firstTime,
-  lastTime,
-  availableDates,
-  meetingSchedules,
-}: GenerateScheduleMatrixProps) => {
-  const timeSlots = generateTimeSlots(firstTime, lastTime);
+interface GenerateSingleScheduleTableArgs extends MeetingDateTime {
+  meetingSingleSchedule: MeetingSingleSchedule;
+}
+
+/**
+ * 주어진 시작 시간과 종료 시간 사이의 시간 슬롯을 "HH:00" 형식으로 생성합니다.
+ *
+ * @param {string} startTime - 시작 시간 ("HH:MM" 형식).
+ * @param {string} endTime - 종료 시간 ("HH:MM" 형식).
+ * @returns {string[]} "HH:00" 형식의 시간 슬롯 배열.
+ *
+ * @example 아래는 해당 함수를 사용할 때, 인자와 반환값에 대한 예시입니다 :)
+ * generateTimeSlots("09:00", "12:00");
+ * -> ["09:00", "10:00", "11:00"]
+ */
+const generateTimeSlots = (startTime: string, endTime: string): string[] => {
+  const startHour = Number(startTime.split(':')[0]);
+  const endHour = Number(endTime.split(':')[0]);
+
+  return Array.from(
+    { length: endHour - startHour },
+    (_, currentHour) => `${(startHour + currentHour).toString().padStart(2, '0')}:00`,
+  );
+};
+
+/**
+ * 주어진 시간 슬롯 배열에서 각 시간 슬롯에 해당하는 인덱스를 매핑한 객체를 생성합니다.
+ *
+ * @param {string[]} timeSlots - "HH:00" 형식의 시간 슬롯 배열.
+ * @returns {Record<string, number>} 각 시간 슬롯을 키로, 해당 슬롯의 인덱스를 값으로 가지는 객체.
+ *
+ * @example
+ * const timeSlots = ["09:00", "10:00", "11:00"];
+ * const timeSlotIndex = generateTimeSlotIndex(timeSlots);
+ * -> { "09:00": 0, "10:00": 1, "11:00": 2 }
+ */
+const generateTimeSlotIndex = (timeSlots: string[]): Record<string, number> => {
   const timeSlotIndex = timeSlots.reduce(
-    (acc, slot, idx) => {
-      acc[slot] = idx;
-      return acc;
+    (accTimeSlotIndex, currentTimeSlot, index) => {
+      accTimeSlotIndex[currentTimeSlot] = index;
+      return accTimeSlotIndex;
     },
     {} as Record<string, number>,
   );
 
-  const scheduleMatrix: number[][] = Array.from({ length: timeSlots.length }, (): number[] =>
+  return timeSlotIndex;
+};
+
+export const generateAllScheduleTable = ({
+  firstTime,
+  lastTime,
+  availableDates,
+  meetingAllSchedules,
+}: GenerateAllScheduleTableArgs) => {
+  const timeSlots = generateTimeSlots(firstTime, lastTime);
+  const timeSlotIndex = generateTimeSlotIndex(timeSlots);
+  const allScheduleTable: number[][] = Array.from({ length: timeSlots.length }, (): number[] =>
     Array(availableDates.length).fill(0),
   );
 
-  if (meetingSchedules) {
-    if ('attendeeName' in meetingSchedules) {
-      meetingSchedules.schedules.forEach(({ date, times }) => {
-        const colIndex = availableDates.indexOf(date);
+  meetingAllSchedules.schedules.forEach(({ date, time, attendeeNames }) => {
+    const rowIndex = timeSlotIndex[time];
+    const colIndex = availableDates.indexOf(date);
 
-        if (colIndex !== -1) {
-          times.forEach((time) => {
-            const rowIndex = timeSlotIndex[time];
-
-            if (rowIndex !== undefined) {
-              scheduleMatrix[rowIndex][colIndex] = 1;
-            }
-          });
-        }
-      });
-    } else {
-      meetingSchedules.schedules.forEach(({ date, time, attendeeNames }) => {
-        const rowIndex = timeSlotIndex[time];
-        const colIndex = availableDates.indexOf(date);
-
-        if (rowIndex !== undefined && colIndex !== -1) {
-          scheduleMatrix[rowIndex][colIndex] = attendeeNames.length;
-        }
-      });
+    if (rowIndex && colIndex !== -1) {
+      allScheduleTable[rowIndex][colIndex] = attendeeNames.length;
     }
-  }
+  });
 
-  return scheduleMatrix;
+  return allScheduleTable;
+};
+
+export const generateSingleScheduleTable = ({
+  firstTime,
+  lastTime,
+  availableDates,
+  meetingSingleSchedule,
+}: GenerateSingleScheduleTableArgs) => {
+  const timeSlots = generateTimeSlots(firstTime, lastTime);
+  const timeSlotIndex = generateTimeSlotIndex(timeSlots);
+  const singleScheduleTable: number[][] = Array.from({ length: timeSlots.length }, (): number[] =>
+    Array(availableDates.length).fill(0),
+  );
+
+  meetingSingleSchedule.schedules.forEach(({ date, times }) => {
+    const colIndex = availableDates.indexOf(date);
+
+    times.forEach((time) => {
+      const rowIndex = timeSlotIndex[time];
+
+      if (rowIndex) {
+        singleScheduleTable[rowIndex][colIndex] = 1;
+      }
+    });
+  });
+
+  return singleScheduleTable;
 };
 
 export const convertToSchedule = (
@@ -73,9 +113,8 @@ export const convertToSchedule = (
   availableDates: string[],
   startTime: string,
   endTime: string,
-) => {
+): MeetingSingeScheduleItem[] => {
   const timeSlots = generateTimeSlots(startTime, endTime);
-
   const schedules = availableDates.map((date, colIndex) => {
     const times: string[] = [];
 
