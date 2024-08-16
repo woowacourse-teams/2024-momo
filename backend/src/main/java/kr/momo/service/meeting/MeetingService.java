@@ -36,8 +36,8 @@ public class MeetingService {
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
-        Meeting meeting = saveMeeting(request.meetingName(), request.meetingStartTime(), request.meetingEndTime());
-        AvailableDates meetingDates = new AvailableDates(request.availableMeetingDates(), meeting);
+        Meeting meeting = saveMeeting(request.meetingName(), request.toMeetingStartTime(), request.toMeetingEndTime());
+        AvailableDates meetingDates = new AvailableDates(request.toAvailableMeetingDates(), meeting);
 
         validateNotPast(meetingDates);
         availableDateRepository.saveAll(meetingDates.getAvailableDates());

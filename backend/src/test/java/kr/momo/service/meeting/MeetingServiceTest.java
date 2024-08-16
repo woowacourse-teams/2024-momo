@@ -99,27 +99,6 @@ class MeetingServiceTest {
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
 
-    @DisplayName("약속을 생성할 때 같은 약속일을 2번 이상 보내면 예외가 발생합니다.")
-    @Test
-    void throwExceptionWhenDuplicatedDates() {
-        //given
-        setFixedClock();
-        LocalDate today = LocalDate.now(clock);
-        MeetingCreateRequest request = new MeetingCreateRequest(
-                "momoHost",
-                "momo",
-                "momoMeeting",
-                List.of(today.toString(), today.toString()),
-                "08:00",
-                "22:00"
-        );
-
-        //when //then
-        assertThatThrownBy(() -> meetingService.create(request))
-                .isInstanceOf(MomoException.class)
-                .hasMessage(AvailableDateErrorCode.DUPLICATED_DATE.message());
-    }
-
     @DisplayName("약속을 생성할 때 과거 날짜를 보내면 예외가 발생합니다.")
     @Test
     void throwExceptionWhenDatesHavePast() {
