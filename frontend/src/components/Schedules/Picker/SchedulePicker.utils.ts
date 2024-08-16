@@ -73,7 +73,9 @@ export const generateAllScheduleTable = ({
     const rowIndex = timeSlotIndex[time];
     const colIndex = availableDates.indexOf(date);
 
-    allScheduleTable[rowIndex][colIndex] = attendeeNames.length;
+    if (rowIndex && colIndex !== -1) {
+      allScheduleTable[rowIndex][colIndex] = attendeeNames.length;
+    }
   });
 
   return allScheduleTable;
@@ -97,7 +99,9 @@ export const generateSingleScheduleTable = ({
     times.forEach((time) => {
       const rowIndex = timeSlotIndex[time];
 
-      singleScheduleTable[rowIndex][colIndex] = 1;
+      if (rowIndex) {
+        singleScheduleTable[rowIndex][colIndex] = 1;
+      }
     });
   });
 
