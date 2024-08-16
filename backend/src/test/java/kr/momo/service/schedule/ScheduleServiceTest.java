@@ -192,7 +192,7 @@ class ScheduleServiceTest {
     void throwsIfNoAttendeeInParticipantSchedule() {
         createAttendeeSchedule(attendee);
         String uuid = meeting.getUuid();
-        String givenAttendeeName = "NOTHING";
+        String givenAttendeeName = "NONE";
 
         assertThatThrownBy(() -> scheduleService.findSingleSchedule(uuid, givenAttendeeName))
                 .isInstanceOf(MomoException.class)

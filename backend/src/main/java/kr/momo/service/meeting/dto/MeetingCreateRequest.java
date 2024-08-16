@@ -22,7 +22,7 @@ public record MeetingCreateRequest(
         @NotBlank
         @Schema(description = "호스트 비밀번호", example = "1234")
         @Length(max = 10, message = "비밀번호는 10자 이하입니다.")
-        @Pattern(regexp = "^[a-zA-Z0-9!@*#$%]+$", message = "비밀번호는 알파벳 대소문자와 숫자만 포함해야 합니다.")
+        @Pattern(regexp = "^[a-zA-Z0-9!@*#$%]+$", message = "비밀번호는 알파벳 대소문자, 숫자, 특수문자만 포함해야 합니다.")
         String hostPassword,
 
         @NotBlank
