@@ -3,6 +3,7 @@ package kr.momo.domain.availabledate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -147,5 +148,27 @@ class AvailableDatesTest {
         // then
         List<LocalDate> expected = actual.stream().sorted().toList();
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("날짜 필드의 값만으로 존재 여부를 판단한다.")
+    @Test
+    void notExistsByDate() {
+        // given
+        Meeting meeting = MeetingFixture.GAME.create();
+        LocalDate today = LocalDate.now();
+        AvailableDate availableDate1 = new AvailableDate(today.minusDays(1), meeting);
+        AvailableDate availableDate2 = new AvailableDate(today.minusDays(2), meeting);
+        AvailableDate availableDate3 = new AvailableDate(today.minusDays(3), meeting);
+        AvailableDates availableDates = new AvailableDates(List.of(availableDate1, availableDate2, availableDate3));
+
+        // when
+        LocalDate anotherToday = LocalDate.now();
+
+        // then
+        assertAll(
+                () -> assertThat(availableDates.notExistsByDate(anotherToday)).isTrue(),
+                () -> assertThat(availableDates.notExistsByDate(anotherToday.minusDays(3))).isFalse(),
+                () -> assertThat(availableDates.notExistsByDate(anotherToday.minusDays(4))).isTrue()
+        );
     }
 }
