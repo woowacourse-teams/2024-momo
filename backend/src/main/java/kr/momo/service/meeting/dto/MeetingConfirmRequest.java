@@ -1,35 +1,49 @@
 package kr.momo.service.meeting.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import kr.momo.controller.validator.DateTimeFormatConstraint;
+import kr.momo.controller.validator.DateFormatConstraint;
+import kr.momo.controller.validator.TimeFormatConstraint;
 
 public record MeetingConfirmRequest(
 
         @NotNull
-        @DateTimeFormatConstraint
-        @Schema(description = "시작 날짜 시간")
-        String startDateTime,
-
+        @DateFormatConstraint
+        String startDate,
         @NotNull
-        @DateTimeFormatConstraint
-        @Schema(description = "종료 날짜 시간")
-        String endDateTime
+        @TimeFormatConstraint
+        String startTime,
+        @NotNull
+        @DateFormatConstraint
+        String endDate,
+        @NotNull
+        @TimeFormatConstraint
+        String endTime
 ) {
 
-        private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        public MeetingConfirmRequest(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-                this(startDateTime.format(dateTimeFormatter), endDateTime.format(dateTimeFormatter));
-        }
 
-        public LocalDateTime toStartDateTime() {
-                return LocalDateTime.parse(startDateTime, dateTimeFormatter);
-        }
+    public MeetingConfirmRequest(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        this(
+                startDate.format(dateFormatter),
+                startTime.format(timeFormatter),
+                endDate.format(dateFormatter),
+                endTime.format(timeFormatter)
+        );
+    }
 
-        public LocalDateTime toEndDateTime() {
-                return LocalDateTime.parse(endDateTime, dateTimeFormatter);
-        }
+
+    public LocalDateTime toStartDateTime() {
+        return LocalDateTime.parse(startDate + " " + startTime, dateTimeFormatter);
+    }
+
+    public LocalDateTime toEndDateTime() {
+        return LocalDateTime.parse(endDate + " " + endTime, dateTimeFormatter);
+    }
 }

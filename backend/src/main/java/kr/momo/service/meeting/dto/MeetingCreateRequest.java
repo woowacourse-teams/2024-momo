@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import kr.momo.controller.validator.DateFormatConstraint;
 import kr.momo.controller.validator.TimeFormatConstraint;
@@ -47,5 +48,13 @@ public record MeetingCreateRequest(
         return availableMeetingDates.stream()
                 .map(LocalDate::parse)
                 .toList();
+    }
+
+    public LocalTime toMeetingStartTime() {
+         return LocalTime.parse(meetingStartTime);
+    }
+
+    public LocalTime toMeetingEndTime() {
+        return LocalTime.parse(meetingEndTime);
     }
 }

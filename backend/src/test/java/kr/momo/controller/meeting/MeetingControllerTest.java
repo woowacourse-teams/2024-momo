@@ -9,7 +9,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -409,10 +409,12 @@ class MeetingControllerTest {
     @Test
     void confirmInvalidRequest() {
         Meeting meeting = createLockedMovieMeeting();
-        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate availableDate = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        String tomorrow = availableDate.getDate().format(DateTimeFormatter.ISO_DATE);
         Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         String token = getToken(guest, meeting);
-        MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow + " " + "3:00", tomorrow + " " + "3:30");
+
+        MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow, "3:00", tomorrow, "03:00");
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -515,8 +517,10 @@ class MeetingControllerTest {
 
     private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
         return new MeetingConfirmRequest(
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime()),
-                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime())
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.getLocalTime(),
+                tomorrow.getDate(),
+                Timeslot.TIME_0600.getLocalTime()
         );
     }
 }
