@@ -18,9 +18,9 @@ class TimeslotIntervalTest {
 
     @DisplayName("주어진 시간이 시간슬롯 인터벌에 포함되어 있지 않으면 예외를 발생시킨다.")
     @Test
-    public void throwsExceptionIfNotContainingInterval() {
+    void throwsExceptionIfNotContainingInterval() {
         TimeslotInterval timeslotInterval = new TimeslotInterval(Timeslot.TIME_1000, Timeslot.TIME_1800);
-        LocalTime other = Timeslot.TIME_0900.getLocalTime();
+        LocalTime other = Timeslot.TIME_0900.startTime();
 
         assertThatThrownBy(() -> timeslotInterval.getValidatedTimeslot(other))
                 .isInstanceOf(MomoException.class)
@@ -29,18 +29,18 @@ class TimeslotIntervalTest {
 
     @DisplayName("주어진 시간이 시간슬롯 인터벌에 포함되어 있으면 일치하는 타임슬롯을 반환한다.")
     @Test
-    public void successfulWhenContainingIntervalFully() {
+    void successfulWhenContainingIntervalFully() {
         TimeslotInterval timeslotInterval = new TimeslotInterval(Timeslot.TIME_1000, Timeslot.TIME_1800);
-        LocalTime other = Timeslot.TIME_1200.getLocalTime();
+        LocalTime other = Timeslot.TIME_1200.startTime();
 
         Timeslot timeslot = timeslotInterval.getValidatedTimeslot(other);
 
-        assertThat(timeslot.getLocalTime()).isEqualTo(other);
+        assertThat(timeslot.startTime()).isEqualTo(other);
     }
 
     @DisplayName("시작 끝이 같은 시간에 대한 시간슬롯 인터벌을 생성할 수 있다.")
     @Test
-    public void successfulCreationForSameStartAndEndTime() {
+    void successfulCreationForSameStartAndEndTime() {
         assertThatNoException()
                 .isThrownBy(() -> new TimeslotInterval(LocalTime.of(23, 30), LocalTime.of(23, 30)));
     }

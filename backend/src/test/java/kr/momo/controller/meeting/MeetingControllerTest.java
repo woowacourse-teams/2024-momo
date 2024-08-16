@@ -401,8 +401,8 @@ class MeetingControllerTest {
 
     private MeetingConfirmRequest getValidFindRequest(AvailableDate tomorrow) {
         return new MeetingConfirmRequest(
-                tomorrow.getDate(), Timeslot.TIME_0000.getLocalTime(),
-                tomorrow.getDate(), Timeslot.TIME_0600.getLocalTime()
+                tomorrow.getDate(), Timeslot.TIME_0000.startTime(),
+                tomorrow.getDate(), Timeslot.TIME_0600.startTime()
         );
     }
 }

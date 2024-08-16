@@ -6,9 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.TimeslotErrorCode;
-import lombok.Getter;
 
-@Getter
 public enum Timeslot {
 
     TIME_0000(LocalTime.of(0, 0)),
@@ -60,34 +58,39 @@ public enum Timeslot {
     TIME_2300(LocalTime.of(23, 0)),
     TIME_2330(LocalTime.of(23, 30));
 
-    private final LocalTime localTime;
+    private static final long DURATION_IN_MINUTE;
+    private final LocalTime startTime;
 
-    Timeslot(LocalTime localTime) {
-        this.localTime = localTime;
+    static {
+        int slotCount = Timeslot.values().length;
+        Duration duration = ChronoUnit.DAYS.getDuration().dividedBy(slotCount);
+        DURATION_IN_MINUTE = duration.toMinutes();
+    }
+
+    Timeslot(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     public static Timeslot from(LocalTime localTime) {
         return Arrays.stream(values())
-                .filter(timeslot -> timeslot.localTime.equals(localTime))
+                .filter(timeslot -> timeslot.startTime.equals(localTime))
                 .findAny()
                 .orElseThrow(() -> new MomoException(TimeslotErrorCode.INVALID_TIMESLOT));
     }
 
     public boolean isAfter(LocalTime other) {
-        return this.localTime.isAfter(other);
+        return this.startTime.isAfter(other);
     }
 
     public boolean isBefore(LocalTime other) {
-        return this.localTime.isBefore(other);
+        return this.startTime.isBefore(other);
     }
 
     public LocalTime startTime() {
-        return localTime;
+        return startTime;
     }
 
     public LocalTime endTime() {
-        int slotLength = Timeslot.values().length;
-        Duration duration = ChronoUnit.DAYS.getDuration().dividedBy(slotLength);
-        return localTime.plusSeconds(duration.getSeconds());
+        return startTime.plusMinutes(DURATION_IN_MINUTE);
     }
 }

@@ -148,8 +148,8 @@ class MeetingConfirmServiceTest {
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         LocalDate invalidDate = LocalDate.now().plusDays(30);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                invalidDate, Timeslot.TIME_0100.getLocalTime(),
-                invalidDate, Timeslot.TIME_0130.getLocalTime()
+                invalidDate, Timeslot.TIME_0100.startTime(),
+                invalidDate, Timeslot.TIME_0130.startTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -161,8 +161,8 @@ class MeetingConfirmServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidTime() {
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                today.getDate(), Timeslot.TIME_2200.getLocalTime(),
-                today.getDate(), Timeslot.TIME_2300.getLocalTime()
+                today.getDate(), Timeslot.TIME_2200.startTime(),
+                today.getDate(), Timeslot.TIME_2300.startTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
