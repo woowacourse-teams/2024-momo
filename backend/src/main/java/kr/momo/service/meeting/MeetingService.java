@@ -71,9 +71,7 @@ public class MeetingService {
     public MeetingResponse findByUUID(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        AvailableDates availableDates = new AvailableDates(
-                availableDateRepository.findAllByMeeting(meeting)
-        );
+        AvailableDates availableDates = new AvailableDates(availableDateRepository.findAllByMeeting(meeting));
         List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
 
         return MeetingResponse.of(meeting, availableDates, attendees);
