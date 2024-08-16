@@ -28,7 +28,6 @@ public record MeetingConfirmRequest(
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-
     public MeetingConfirmRequest(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         this(
                 startDate.format(dateFormatter),

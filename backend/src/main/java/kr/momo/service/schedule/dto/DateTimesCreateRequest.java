@@ -34,8 +34,8 @@ public record DateTimesCreateRequest(
     }
 
     public List<LocalTime> toTimes() {
-            return times.stream()
-                    .map(LocalTime::parse)
-                    .toList();
+        return times.stream()
+                .map(LocalTime::parse)
+                .toList();
     }
 }
