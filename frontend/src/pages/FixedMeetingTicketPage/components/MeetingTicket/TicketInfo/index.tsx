@@ -37,15 +37,18 @@ export default function TicketInfo() {
   const formattedStartFullDate = formatFullDate({ fullDate: startDate, dayOfWeek: startDayOfWeek });
   const formattedEndFullDate = formatFullDate({ fullDate: endDate, dayOfWeek: endDayOfWeek });
 
+  const dateDisplay =
+    startDate === endDate
+      ? formattedStartFullDate
+      : `${formattedStartFullDate} ~ ${formattedEndFullDate}`;
+
   return (
     <div css={s_container}>
       <div css={s_meetingName}>{meetingName}</div>
 
       <div css={s_ticketInfoContainer}>
         <div css={s_ticketInfoTitle}>날짜</div>
-        <div>
-          {formattedStartFullDate} ~ {formattedEndFullDate}
-        </div>
+        <div>{dateDisplay}</div>
       </div>
 
       <div css={s_ticketInfoContainer}>
