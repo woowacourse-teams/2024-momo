@@ -1,11 +1,14 @@
 import MomoCharacter from '@assets/images/momoCharacter.svg';
 
+import { s_characterWrapper, s_container } from './MeetingTicket.styles';
 import TicketInfo from './TicketInfo';
 
 export default function MeetingTicket() {
   return (
-    <div>
-      <MomoCharacter width={172} height={180} />
+    <div css={s_container}>
+      <div css={s_characterWrapper}>
+        <MomoCharacter width={172} height={180} />
+      </div>
       <TicketInfo />
     </div>
   );

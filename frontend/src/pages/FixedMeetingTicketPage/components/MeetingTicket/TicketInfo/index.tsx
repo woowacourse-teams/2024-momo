@@ -4,6 +4,15 @@ import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries
 
 import { formatFullDate } from '@utils/date';
 
+import {
+  s_attendeeNameTag,
+  s_attendeeNamesContainer,
+  s_container,
+  s_meetingName,
+  s_ticketInfoContainer,
+  s_ticketInfoTitle,
+} from './TicketInfo.styles';
+
 export default function TicketInfo() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
@@ -29,28 +38,32 @@ export default function TicketInfo() {
   const formattedEndFullDate = formatFullDate({ fullDate: endDate, dayOfWeek: endDayOfWeek });
 
   return (
-    <div>
-      <div>{meetingName}</div>
+    <div css={s_container}>
+      <div css={s_meetingName}>{meetingName}</div>
 
-      <div>
-        <div>날짜</div>
+      <div css={s_ticketInfoContainer}>
+        <div css={s_ticketInfoTitle}>날짜</div>
         <div>
           {formattedStartFullDate} ~ {formattedEndFullDate}
         </div>
       </div>
 
-      <div>
-        <div>시간</div>
+      <div css={s_ticketInfoContainer}>
+        <div css={s_ticketInfoTitle}>시간</div>
         <div>
           {startTime} ~ {endTime}
         </div>
       </div>
 
-      <div>
-        <div>참여자 ({availableAttendeeNames.length}명)</div>
-        {availableAttendeeNames.map((attendeeName) => (
-          <div key={attendeeName}>{attendeeName}</div>
-        ))}
+      <div css={s_ticketInfoContainer}>
+        <div css={s_ticketInfoTitle}>참여자 ({availableAttendeeNames.length}명)</div>
+        <div css={s_attendeeNamesContainer}>
+          {availableAttendeeNames.map((attendeeName) => (
+            <div css={s_attendeeNameTag} key={attendeeName}>
+              {attendeeName}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
