@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 
 import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries';
 
+import { formatFullDate } from '@utils/date';
+
 export default function TicketInfo() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
@@ -23,7 +25,9 @@ export default function TicketInfo() {
     endDayOfWeek,
   } = data;
 
-  console.log(data);
+  const formattedStartFullDate = formatFullDate({ fullDate: startDate, dayOfWeek: startDayOfWeek });
+  const formattedEndFullDate = formatFullDate({ fullDate: endDate, dayOfWeek: endDayOfWeek });
+
   return (
     <div>
       <div>{meetingName}</div>
@@ -31,18 +35,15 @@ export default function TicketInfo() {
       <div>
         <div>날짜</div>
         <div>
-          <span>
-            {startDate}({startDayOfWeek})부터
-          </span>
-          <span>
-            {endDate}({endDayOfWeek})까지
-          </span>
+          {formattedStartFullDate} ~ {formattedEndFullDate}
         </div>
       </div>
 
       <div>
         <div>시간</div>
-        <div>{`${startTime} ~ ${endTime}`}</div>
+        <div>
+          {startTime} ~ {endTime}
+        </div>
       </div>
 
       <div>

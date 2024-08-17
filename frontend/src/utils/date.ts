@@ -1,12 +1,16 @@
+type DateFormat = 'korean' | 'standard';
+
 interface FormatDateProps {
   fullDate: string; // 'YYYY-MM-DD' 형식
   dayOfWeek: string; // '월', '화', '수' 등
+  format?: DateFormat;
 }
 
-export const formatFullDate = ({ fullDate, dayOfWeek }: FormatDateProps) => {
+export const formatFullDate = ({ fullDate, dayOfWeek, format = 'standard' }: FormatDateProps) => {
   const [year, month, day] = fullDate.split('-');
 
-  return `${month}월 ${day}일(${dayOfWeek})`;
+  if (format === 'korean') return `${month}월 ${day}일(${dayOfWeek})`;
+  return `${year}/${month}/${day}(${dayOfWeek})`;
 };
 
 export const formatTime = (time: string): string => {

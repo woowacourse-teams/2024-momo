@@ -18,7 +18,7 @@ export interface DateInfo {
 }
 
 const createRecommendDateInfo = ({ fullDate, time, dayOfWeek }: DateInfo) => {
-  const meetingDateWithDay = formatFullDate({ fullDate, dayOfWeek });
+  const meetingDateWithDay = formatFullDate({ fullDate, dayOfWeek, format: 'korean' });
   const meetingTime = formatTime(time);
 
   return `${meetingDateWithDay} ${meetingTime}`;
