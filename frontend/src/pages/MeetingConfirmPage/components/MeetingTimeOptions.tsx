@@ -73,8 +73,6 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
     );
   };
 
-  console.log(JSON.stringify(selectedMeeting) === JSON.stringify({}), selectedMeeting, {});
-
   return (
     <div css={s_container}>
       <section css={s_attendeesContainer}>
