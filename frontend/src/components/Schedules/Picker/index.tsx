@@ -13,6 +13,8 @@ import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 
 import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
 
+import { formatTime } from '@utils/date';
+
 import {
   s_buttonContainer,
   s_container,
@@ -25,7 +27,7 @@ import {
   s_timeColumn,
   s_timeText,
 } from '../Schedules.styles';
-import { formatDate, formatTime } from '../Schedules.util';
+import { formatDate } from '../Schedules.util';
 import { convertToSchedule, generateSingleScheduleTable } from './SchedulePicker.utils';
 
 interface SchedulePickerProps extends MeetingDateTime {

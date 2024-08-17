@@ -1,3 +1,5 @@
+import { formatFullDate, formatTime } from '@utils/date';
+
 import {
   s_attendeeInfo,
   s_baseContainer,
@@ -9,29 +11,14 @@ import {
   s_recommendContainer,
 } from './MeetingTimeCard.styles';
 
-const formatDateWithDay = (date: string, dayOfWeek: string) => {
-  const currentDateObj = new Date(date);
-  const month = currentDateObj.getMonth() + 1;
-  const day = currentDateObj.getDate();
-
-  return `${month}월 ${day}일(${dayOfWeek})`;
-};
-
-const formatTime = (time: string) => {
-  const hour = parseInt(time);
-  const hourPrefix = hour >= 12 ? '오후' : '오전';
-
-  return `${hourPrefix} ${hour % 12 || 12}시`;
-};
-
-interface DateInfo {
-  date: string;
+export interface DateInfo {
+  fullDate: string;
   time: string;
   dayOfWeek: string;
 }
 
-const createRecommendDateInfo = ({ date, time, dayOfWeek }: DateInfo) => {
-  const meetingDateWithDay = formatDateWithDay(date, dayOfWeek);
+const createRecommendDateInfo = ({ fullDate, time, dayOfWeek }: DateInfo) => {
+  const meetingDateWithDay = formatFullDate({ fullDate, dayOfWeek });
   const meetingTime = formatTime(time);
 
   return `${meetingDateWithDay} ${meetingTime}`;
@@ -64,13 +51,13 @@ export default function MeetingTimeOptionCard({
   const currentAttendeeCount = attendeeNames.length;
 
   const startRecommendDateInfo = createRecommendDateInfo({
-    date: startDate,
+    fullDate: startDate,
     time: startTime,
     dayOfWeek: startDayOfWeek,
   });
 
   const endRecommendDateInfo = createRecommendDateInfo({
-    date: endDate,
+    fullDate: endDate,
     time: endTime,
     dayOfWeek: endDayOfWeek,
   });
