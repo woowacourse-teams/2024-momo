@@ -8,11 +8,6 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: InputVariant;
 }
 
-export default function Input({
-  variant = 'default',
-  type = 'text',
-  placeholder = '',
-  ...props
-}: InputProps) {
-  return <input css={s_input[variant]} type={type} placeholder={placeholder} {...props} />;
+export default function Input({ variant = 'default', type = 'text', ...props }: InputProps) {
+  return <input css={s_input[variant]} type={type} {...props} />;
 }
