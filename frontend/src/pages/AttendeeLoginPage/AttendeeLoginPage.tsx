@@ -54,21 +54,25 @@ export default function AttendeeLoginPage() {
   return (
     <div css={s_container}>
       <div css={s_inputContainer}>
-        <Field labelText="닉네임" id="name" errorMessage={attendeeNameErrorMessage}>
+        <Field>
+          <Field.Label id="닉네임" labelText="닉네임" />
           <Input
-            maxLength={5}
             placeholder="닉네임을 입력하세요."
             value={attendeeName}
             onChange={handleAttendeeNameChange}
           />
+          <Field.ErrorMessage errorMessage={attendeeNameErrorMessage} />
         </Field>
-        <Field labelText="비밀번호" id="password" errorMessage={attendeePasswordErrorMessage}>
+
+        <Field>
+          <Field.Label id="비밀번호" labelText="비밀번호" />
+          <Field.Description description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다." />
           <PasswordInput
-            maxLength={10}
             placeholder="비밀번호를 입력하세요."
             value={attendeePassword}
             onChange={handleAttendeePasswordChange}
           />
+          <Field.ErrorMessage errorMessage={attendeePasswordErrorMessage} />
         </Field>
       </div>
       <button css={s_button} onClick={handleLoginButtonClick}>

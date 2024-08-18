@@ -70,48 +70,34 @@ export default function CreateMeetingPage() {
     <div>
       {/* 추후 form 태그로 수정 예정 (@Largopie) */}
       <div css={s_formContainer}>
-        <Field
-          id="약속이름"
-          labelText="약속 이름"
-          description="약속 이름은 1~10자 사이로 입력해 주세요."
-          errorMessage={meetingNameErrorMessage}
-        >
-          <Input
-            id="약속이름"
-            maxLength={10}
-            value={meetingName}
-            onChange={handleMeetingNameChange}
-          />
+        <Field>
+          <Field.Label id="약속이름" labelText="약속 이름" />
+          <Field.Description description="약속 이름은 1~10자 사이로 입력해 주세요." />
+          <Input id="약속이름" value={meetingName} onChange={handleMeetingNameChange} />
+          <Field.ErrorMessage errorMessage={meetingNameErrorMessage} />
         </Field>
 
-        <Field
-          id="닉네임"
-          labelText="닉네임"
-          description="닉네임을 1~5자 사이로 입력해 주세요."
-          errorMessage={hostNameErrorMessage}
-        >
-          <Input id="닉네임" maxLength={5} value={hostName} onChange={handleHostNameChange} />
+        <Field>
+          <Field.Label id="닉네임" labelText="닉네임" />
+          <Field.Description description="닉네임을 1~5자 사이로 입력해 주세요." />
+          <Input id="닉네임" value={hostName} onChange={handleHostNameChange} />
+          <Field.ErrorMessage errorMessage={hostNameErrorMessage} />
         </Field>
 
-        <Field
-          id="비밀번호"
-          labelText="비밀번호"
-          description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다."
-          errorMessage={hostPasswordError}
-        >
-          <PasswordInput
-            id="비밀번호"
-            maxLength={10}
-            value={hostPassword}
-            onChange={handleHostPasswordChange}
-          />
+        <Field>
+          <Field.Label id="비밀번호" labelText="비밀번호" />
+          <Field.Description description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다." />
+          <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
+          <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>
 
-        <Field id="날짜선택" labelText="약속 날짜 선택">
+        <Field>
+          <Field.Label id="날짜선택" labelText="약속 날짜 선택" />
           <Calendar hasDate={hasDate} onDateClick={handleDateClick} />
         </Field>
 
-        <Field id="약속시간범위선택" labelText="약속 시간 범위 선택">
+        <Field>
+          <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
           <TimeRangeSelector
             startTime={startTime}
             endTime={endTime}
@@ -119,6 +105,7 @@ export default function CreateMeetingPage() {
             handleEndTimeChange={handleEndTimeChange}
           />
         </Field>
+
         <div css={s_confirmContainer}>
           <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
             약속 생성하기
