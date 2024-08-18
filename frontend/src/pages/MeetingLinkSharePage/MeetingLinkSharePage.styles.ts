@@ -11,6 +11,7 @@ export const s_container = css`
 
   width: 100%;
   height: 100%;
+  margin-bottom: 6rem;
 `;
 
 export const s_meetingInfo = css`
@@ -23,10 +24,6 @@ export const s_meetingInfo = css`
 
   background-color: #f7dacb;
   border-radius: 0.5rem;
-`;
-
-export const s_description = css`
-  font-weight: 500;
 `;
 
 export const s_buttonContainer = css`
@@ -103,5 +100,32 @@ export const s_check = css`
     stroke-width: 8;
 
     animation: ${drawCheck} 0.8s ease-in-out forwards;
+  }
+`;
+
+export const s_descriptionContainer = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
+export const s_description = css`
+  h2 {
+    ${theme.typography.bodyBold}
+  }
+
+  h3 {
+    ${theme.typography.captionBold}
+  }
+
+  p {
+    ${theme.typography.captionMedium}
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  span {
+    ${theme.typography.captionMedium}
   }
 `;

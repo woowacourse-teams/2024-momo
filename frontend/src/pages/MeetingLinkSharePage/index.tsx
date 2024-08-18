@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { PostMeetingResult } from 'types/meeting';
 
 import { Button } from '@components/_common/Buttons/Button';
 
 import { copyToClipboard } from '@utils/clipboard';
+import groupDates from '@utils/groupDates';
 
 import CheckIcon from '@assets/images/check.svg';
 import CopyIcon from '@assets/images/copy.svg';
@@ -19,6 +21,7 @@ import {
   s_copyButtonContainer,
   s_copyContainer,
   s_description,
+  s_descriptionContainer,
   s_meetingInfo,
   s_urlText,
 } from './MeetingLinkSharePage.styles';
@@ -30,7 +33,16 @@ declare global {
   }
 }
 
+interface RouteState {
+  state: {
+    meetingInfo: PostMeetingResult;
+  };
+}
+
 export default function MeetingLinkSharePage() {
+  const {
+    state: { meetingInfo },
+  } = useLocation() as RouteState;
   const [copyComplete, setCopyComplete] = useState(false);
   const { Kakao } = window;
   const navigate = useNavigate();
@@ -48,8 +60,7 @@ export default function MeetingLinkSharePage() {
     });
   };
 
-  const handleCopyClick = () => {
-    copyToClipboard(LINK);
+  const handleCopyClick = async () => {
     setCopyComplete(true);
     setTimeout(() => setCopyComplete(false), 2500);
   };
@@ -60,12 +71,43 @@ export default function MeetingLinkSharePage() {
     }
   }, [Kakao]);
 
+  console.log(groupDates(meetingInfo.availableDates));
+
   return (
     <div css={s_container}>
       <LogoSunglass width="160" height="160" />
       <div css={s_meetingInfo}>
-        {/* TODO: '${약속 명} 약속을 만들었어요 :)'로 변경 논의 후 적용 (@Yoonkyoungme) */}
-        <div css={s_description}>약속을 만들었어요 :)</div>
+        <div css={s_descriptionContainer}>
+          <div css={s_description}>
+            <h2>약속명</h2>
+            <p>{meetingInfo.meetingName}</p>
+          </div>
+          <div css={s_description}>
+            <h2>주최자</h2>
+            <p>{meetingInfo.userName}</p>
+          </div>
+          <div css={s_description}>
+            <h2>시작시간</h2>
+            <p>{meetingInfo.firstTime}</p>
+          </div>
+          <div css={s_description}>
+            <h2>끝시간</h2>
+            <p>{meetingInfo.lastTime}</p>
+          </div>
+          <div css={s_description}>
+            <h2>가능시간</h2>
+            <p>
+              {Object.entries(groupDates(meetingInfo.availableDates)).map(([month, dates]) =>
+                dates.length ? (
+                  <div key={month + 1}>
+                    <h3>{month + 1}월</h3>
+                    <span>{dates.join(', ')}</span>
+                  </div>
+                ) : null,
+              )}
+            </p>
+          </div>
+        </div>
         <div css={s_buttonContainer}>
           <div css={s_copyContainer}>
             <span css={s_urlText}>{LINK}</span>
@@ -73,7 +115,7 @@ export default function MeetingLinkSharePage() {
               {copyComplete ? (
                 <CheckIcon css={s_check} width="24" height="24" />
               ) : (
-                <button css={s_copyButton} onClick={handleCopyClick}>
+                <button css={s_copyButton} onClick={() => copyToClipboard(LINK, handleCopyClick)}>
                   <CopyIcon width="24" height="24" />
                 </button>
               )}
