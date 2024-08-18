@@ -18,7 +18,14 @@ export const s_description = css`
   color: ${theme.colors.grey.dark};
 `;
 
-export const s_errorText = css`
+export const s_errorMessageWrapper = css`
+  display: flex;
+  min-height: 2rem;
+`;
+
+export const s_errorMessage = css`
+  display: flex;
+  align-items: center;
   ${theme.typography.captionMedium}
   color: ${PRIMITIVE_COLORS.red};
 `;
