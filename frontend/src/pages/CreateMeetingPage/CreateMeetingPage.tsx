@@ -59,16 +59,26 @@ export default function CreateMeetingPage() {
     );
   };
 
+  const isFormValid = () => {
+    const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
+
+    return !errorMessages.some((errorMessage) => errorMessage !== null);
+  };
+
   const handleMeetingCreateButtonClick = () => {
-    postMeetingMutation.mutate({
-      hostName: hostName,
-      hostPassword: hostPassword,
-      meetingName: meetingName,
-      availableMeetingDates: selectedDates,
-      meetingStartTime: startTime.value,
-      // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-      meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
-    });
+    const isAvailableButtonClick = isFormValid();
+
+    if (isAvailableButtonClick) {
+      postMeetingMutation.mutate({
+        hostName: hostName,
+        hostPassword: hostPassword,
+        meetingName: meetingName,
+        availableMeetingDates: selectedDates,
+        meetingStartTime: startTime.value,
+        // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
+        meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
+      });
+    }
   };
 
   return (
