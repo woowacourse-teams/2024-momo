@@ -3,13 +3,11 @@ package kr.momo.domain.attendee;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import lombok.Getter;
@@ -45,39 +43,6 @@ public class AttendeeGroup {
 
     public int size() {
         return attendees.size();
-    }
-
-    public List<AttendeeGroup> findAttendeeGroupCombinationsOverSize(int minSize) {
-        if (minSize < 1 || minSize > attendees.size()) {
-            throw new MomoException(AttendeeErrorCode.INVALID_ATTENDEE_SIZE);
-        }
-
-        List<AttendeeGroup> array = new ArrayList<>();
-        for (int i = attendees.size(); i >= minSize; i--) {
-            array.addAll(generateCombinations(i));
-        }
-        return array;
-    }
-
-    private List<AttendeeGroup> generateCombinations(int groupSize) {
-        return IntStream.range(0, (1 << attendees.size()))
-                .filter(mask -> Integer.bitCount(mask) == groupSize)
-                .mapToObj(this::createGroupFromMask)
-                .toList();
-    }
-
-    private AttendeeGroup createGroupFromMask(int mask) {
-        List<Attendee> group = new ArrayList<>();
-        for (int i = 0; i < attendees.size(); i++) {
-            if ((mask & (1 << i)) != 0) {
-                group.add(attendees.get(i));
-            }
-        }
-        return new AttendeeGroup(group);
-    }
-
-    public boolean isSameSize(AttendeeGroup attendeeGroup) {
-        return attendees.size() == attendeeGroup.size();
     }
 
     public Optional<Attendee> findHost() {
