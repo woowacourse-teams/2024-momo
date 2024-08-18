@@ -86,7 +86,9 @@ export default function CreateMeetingPage() {
 
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
-          <Field.Description description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다." />
+          <Field.Description
+            description={`비밀번호를 1~10자 사이로 입력해 주세요.\n사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다.`}
+          />
           <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
           <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>

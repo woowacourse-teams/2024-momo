@@ -14,8 +14,9 @@ export const s_label = css`
 `;
 
 export const s_description = css`
-  ${theme.typography.captionMedium}
   color: ${theme.colors.grey.dark};
+  white-space: pre-line; /* 줄 바꿈을 인식 */
+  ${theme.typography.captionMedium}
 `;
 
 export const s_errorMessageWrapper = css`
