@@ -12,7 +12,7 @@ import { s_inputContainer } from './PasswordInput.styles';
 export default function PasswordInput({ value, onChange, placeholder = '' }: InputProps) {
   const [isPasswordShow, setIsPasswordShow] = useState(false);
 
-  const handleShowPasswordToggle = () => {
+  const handlePasswordVisibilityToggle = () => {
     setIsPasswordShow(!isPasswordShow);
   };
 
@@ -24,8 +24,15 @@ export default function PasswordInput({ value, onChange, placeholder = '' }: Inp
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        aria-label="비밀번호 입력"
       />
-      <Button variant="transparent" size="m" type="button" onClick={handleShowPasswordToggle}>
+      <Button
+        variant="transparent"
+        size="m"
+        type="button"
+        onClick={handlePasswordVisibilityToggle}
+        aria-label={isPasswordShow ? '비밀번호 숨기기' : '비밀번호 보이기'}
+      >
         {isPasswordShow ? <PasswordHide /> : <PasswordShow />}
       </Button>
     </div>
