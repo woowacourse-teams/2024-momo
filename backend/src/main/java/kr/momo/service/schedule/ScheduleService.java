@@ -1,18 +1,9 @@
 package kr.momo.service.schedule;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
@@ -23,6 +14,8 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.schedule.DateAndTimeslot;
+import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleBatchRepository;
 import kr.momo.domain.schedule.ScheduleRepository;
@@ -128,89 +121,35 @@ public class ScheduleService {
     public List<RecommendedScheduleResponse> recommendSchedules(String uuid, String recommendType, List<String> names) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        AttendeeGroup filteredGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting))
+                .filterAttendeesByName(names);
 
-        AttendeeGroup allAttendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
-        AttendeeGroup filteredAttendeeGroup = allAttendeeGroup.filterAttendeesByName(names);
-        List<AttendeeGroup> groupCombinations = filteredAttendeeGroup.findAttendeeGroupCombinationsOverSize(1);
+        List<LocalDateTime> intersectedDateTimes = mapContinuousSchedulesToResponses(filteredGroup);
+        List<DateTimeInterval> mergedDateTimes = DateTimeInterval.mergeContinuousDateTime(intersectedDateTimes);
 
-        List<RecommendedScheduleResponse> recommendResponses = new ArrayList<>();
-        for (AttendeeGroup group : groupCombinations) {
-            List<RecommendedScheduleResponse> recommendResponse = mapContinuousSchedulesToResponses(group);
-            List<RecommendedScheduleResponse> response = sortedAndFilterByRecommendType(
-                    recommendType, group.size(), recommendResponse
-            );
-            recommendResponses.addAll(response);
-        }
-
-        return recommendResponses;
-    }
-
-    private List<RecommendedScheduleResponse> mapContinuousSchedulesToResponses(AttendeeGroup targetGroup) {
-        List<LocalDateTime> dateTimesOfSchedules = filterCommonScheduleDateTimes(targetGroup);
-
-        Iterator<LocalDateTime> iterator = dateTimesOfSchedules.iterator();
-        if (!iterator.hasNext()) {
-            return Collections.emptyList();
-        }
-
-        return mergeContinuousDateTimeAndMapToResponse(targetGroup, iterator);
-    }
-
-    private List<LocalDateTime> filterCommonScheduleDateTimes(AttendeeGroup targetGroup) {
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(targetGroup.getAttendees());
-        Map<LocalDateTime, AttendeeGroup> attendeeGroupMap = groupingAttendeesByDateTime(schedules);
-        return filterAndSortCommonDateTimes(attendeeGroupMap, targetGroup);
-    }
-
-    private Map<LocalDateTime, AttendeeGroup> groupingAttendeesByDateTime(List<Schedule> schedules) {
-        return schedules.stream()
-                .collect(groupingBy(
-                        Schedule::dateTime,
-                        mapping(Schedule::getAttendee, collectingAndThen(toList(), AttendeeGroup::new))
-                ));
-    }
-
-    private List<LocalDateTime> filterAndSortCommonDateTimes(
-            Map<LocalDateTime, AttendeeGroup> attendeeMap, AttendeeGroup targetGroup
-    ) {
-        return attendeeMap.entrySet().stream()
-                .filter(e -> e.getValue().isSameSize(targetGroup))
-                .map(Entry::getKey)
-                .sorted()
+        List<DateTimeInterval> sortedResult = sorted(recommendType, mergedDateTimes);
+        return sortedResult.stream()
+                .map(sr -> RecommendedScheduleResponse.of(sr.startDateTime(), sr.endDateTime(), filteredGroup))
                 .toList();
     }
 
-    private List<RecommendedScheduleResponse> mergeContinuousDateTimeAndMapToResponse(
-            AttendeeGroup targetGroup, Iterator<LocalDateTime> iterator
-    ) {
-        List<RecommendedScheduleResponse> responses = new ArrayList<>();
-
-        LocalDateTime startDateTime = iterator.next();
-        LocalDateTime currentDateTime = startDateTime;
-
-        while (iterator.hasNext()) {
-            LocalDateTime nextDateTime = iterator.next();
-
-            if (isContinuousDateTime(currentDateTime, nextDateTime)) {
-                responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, targetGroup));
-                startDateTime = nextDateTime;
-            }
-            currentDateTime = nextDateTime;
-        }
-        responses.add(RecommendedScheduleResponse.of(startDateTime, currentDateTime, targetGroup));
-        return responses;
-    }
-
-    private List<RecommendedScheduleResponse> sortedAndFilterByRecommendType(
-            String recommendType, int groupSize, List<RecommendedScheduleResponse> recommendedScheduleResponses
-    ) {
-        return recommendedScheduleResponses.stream()
-                .filter(response -> response.attendeeNames().size() == groupSize)
-                .sorted(ScheduleRecommender.from(recommendType).getComparator())
+    private List<LocalDateTime> mapContinuousSchedulesToResponses(AttendeeGroup filteredGroup) {
+        return scheduleRepository.findAllDateAndTimeslotByEssentialAttendeeIds(
+                        filteredGroup.getAttendees(), filteredGroup.size()).stream()
+                .map(DateAndTimeslot::toDateTime)
                 .toList();
     }
 
-    private boolean isContinuousDateTime(LocalDateTime now, LocalDateTime next) {
-        return !(now.plusMinutes(30).equals(next));
+    private List<DateTimeInterval> sorted(String recommendType, List<DateTimeInterval> mergedDateTimes) {
+        // TOOD: Comparator 추상화
+        Comparator<DateTimeInterval> comparator;
+        if (recommendType.equals(ScheduleRecommender.EARLIEST_ORDER.getType())) {
+            comparator = Comparator.comparing(DateTimeInterval::startDateTime);
+        } else {
+            comparator = Comparator.comparing(DateTimeInterval::duration).reversed();
+        }
+        mergedDateTimes.sort(comparator);
+
+        return mergedDateTimes;
     }
 }

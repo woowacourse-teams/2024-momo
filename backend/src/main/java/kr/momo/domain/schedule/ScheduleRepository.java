@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
@@ -20,4 +21,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Transactional
     @Query("DELETE FROM Schedule s WHERE s.attendee = :attendee")
     void deleteByAttendee(Attendee attendee);
+
+    @Query("""
+                SELECT
+                    new kr.momo.domain.schedule.DateAndTimeslot(ad.date, s.timeslot)
+                FROM Schedule s
+                JOIN s.availableDate ad
+                WHERE s.attendee IN :essentialAttendees
+                GROUP BY ad.date, s.timeslot
+                HAVING COUNT(s.attendee.id) = :groupSize
+                ORDER BY ad.date ASC, s.timeslot ASC
+            """)
+    List<DateAndTimeslot> findAllDateAndTimeslotByEssentialAttendeeIds(
+            @Param("essentialAttendees") List<Attendee> essentialAttendees, @Param("groupSize") int groupSize
+    );
 }

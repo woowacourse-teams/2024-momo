@@ -65,7 +65,7 @@ class AttendeeGroupTest {
         // given
         int limit = 3;
         List<Attendee> attendees = IntStream.range(0, n)
-                .mapToObj(i -> new Attendee(null, String.valueOf(i), "", null))
+                .mapToObj(i -> new Attendee(null, String.valueOf(i), "1234", null))
                 .toList();
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendees);
 
