@@ -12,6 +12,8 @@ import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdo
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
+
 import { s_confirm, s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
@@ -22,24 +24,27 @@ export default function CreateMeetingPage() {
     onValueChange: handleMeetingNameChange,
     errorMessage: meetingNameErrorMessage,
   } = useInput({
-    minLength: 1,
-    maxLength: 10,
+    minLength: INPUT_FIELD_RULES.meetingName.minLength,
+    maxLength: INPUT_FIELD_RULES.meetingName.maxLength,
   });
 
   const {
     value: hostName,
     onValueChange: handleHostNameChange,
     errorMessage: hostNameErrorMessage,
-  } = useInput({ minLength: 1, maxLength: 5 });
+  } = useInput({
+    minLength: INPUT_FIELD_RULES.nickname.minLength,
+    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+  });
 
   const {
     value: hostPassword,
     onValueChange: handleHostPasswordChange,
     errorMessage: hostPasswordError,
   } = useInput({
-    minLength: 1,
-    maxLength: 10,
-    pattern: /^[a-zA-Z0-9!@#$%]+$/,
+    minLength: INPUT_FIELD_RULES.password.minLength,
+    maxLength: INPUT_FIELD_RULES.password.maxLength,
+    pattern: INPUT_FIELD_RULES.password.pattern,
   });
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
@@ -72,23 +77,21 @@ export default function CreateMeetingPage() {
       <div css={s_formContainer}>
         <Field>
           <Field.Label id="약속이름" labelText="약속 이름" />
-          <Field.Description description="약속 이름은 1~10자 사이로 입력해 주세요." />
+          <Field.Description description={FIELD_DESCRIPTIONS.meetingName} />
           <Input id="약속이름" value={meetingName} onChange={handleMeetingNameChange} />
           <Field.ErrorMessage errorMessage={meetingNameErrorMessage} />
         </Field>
 
         <Field>
           <Field.Label id="닉네임" labelText="닉네임" />
-          <Field.Description description="닉네임을 1~5자 사이로 입력해 주세요." />
+          <Field.Description description={FIELD_DESCRIPTIONS.nickname} />
           <Input id="닉네임" value={hostName} onChange={handleHostNameChange} />
           <Field.ErrorMessage errorMessage={hostNameErrorMessage} />
         </Field>
 
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
-          <Field.Description
-            description={`비밀번호를 1~10자 사이로 입력해 주세요.\n사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다.`}
-          />
+          <Field.Description description={FIELD_DESCRIPTIONS.password} />
           <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
           <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>

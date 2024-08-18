@@ -11,6 +11,8 @@ import useInput from '@hooks/useInput/useInput';
 
 import { postUserLogin } from '@apis/users';
 
+import { INPUT_FIELD_RULES } from '@constants/inputFields';
+
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
@@ -24,16 +26,19 @@ export default function AttendeeLoginPage() {
     value: attendeeName,
     onValueChange: handleAttendeeNameChange,
     errorMessage: attendeeNameErrorMessage,
-  } = useInput({ minLength: 1, maxLength: 5 });
+  } = useInput({
+    minLength: INPUT_FIELD_RULES.nickname.minLength,
+    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+  });
 
   const {
     value: attendeePassword,
     onValueChange: handleAttendeePasswordChange,
     errorMessage: attendeePasswordErrorMessage,
   } = useInput({
-    minLength: 1,
-    maxLength: 10,
-    pattern: /^[a-zA-Z0-9!@#$%]+$/,
+    minLength: INPUT_FIELD_RULES.password.minLength,
+    maxLength: INPUT_FIELD_RULES.password.maxLength,
+    pattern: INPUT_FIELD_RULES.password.pattern,
   });
   const handleLoginButtonClick = async () => {
     if (!uuid) {
