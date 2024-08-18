@@ -9,9 +9,9 @@ interface ValidationRules {
 
 const useInput = (rules?: ValidationRules) => {
   const [value, setValue] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const validateInputValue = (input: string): string | null => {
+  const getValidationError = (input: string): string | null => {
     if (!rules) return null;
 
     if (rules.minLength && input.length < rules.minLength) {
@@ -28,21 +28,18 @@ const useInput = (rules?: ValidationRules) => {
     return null;
   };
 
-  const onValueChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    const validationError = validateInputValue(newValue);
+    const validationError = getValidationError(newValue);
 
-    if (newValue.length <= 1 || !validationError) {
-      setValue(newValue);
-    }
-
-    setError(validationError);
+    setValue(newValue);
+    setErrorMessage(validationError);
   };
 
   return {
     value,
-    error,
-    onValueChange,
+    errorMessage,
+    onValueChange: handleValueChange,
   };
 };
 

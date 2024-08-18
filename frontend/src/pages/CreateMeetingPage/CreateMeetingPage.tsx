@@ -20,7 +20,7 @@ export default function CreateMeetingPage() {
   const {
     value: meetingName,
     onValueChange: handleMeetingNameChange,
-    error: meetingNameError,
+    errorMessage: meetingNameErrorMessage,
   } = useInput({
     minLength: 1,
     maxLength: 10,
@@ -29,13 +29,13 @@ export default function CreateMeetingPage() {
   const {
     value: hostName,
     onValueChange: handleHostNameChange,
-    error: hostNameError,
+    errorMessage: hostNameErrorMessage,
   } = useInput({ minLength: 1, maxLength: 5 });
 
   const {
     value: hostPassword,
     onValueChange: handleHostPasswordChange,
-    error: hostPasswordError,
+    errorMessage: hostPasswordError,
   } = useInput({
     minLength: 1,
     maxLength: 10,
@@ -74,7 +74,7 @@ export default function CreateMeetingPage() {
           id="약속이름"
           labelText="약속 이름"
           description="약속 이름은 1~10자 사이로 입력해 주세요."
-          error={meetingNameError}
+          errorMessage={meetingNameErrorMessage}
         >
           <Input
             id="약속이름"
@@ -88,7 +88,7 @@ export default function CreateMeetingPage() {
           id="닉네임"
           labelText="닉네임"
           description="닉네임을 1~5자 사이로 입력해 주세요."
-          error={hostNameError}
+          errorMessage={hostNameErrorMessage}
         >
           <Input id="닉네임" maxLength={5} value={hostName} onChange={handleHostNameChange} />
         </Field>
@@ -97,7 +97,7 @@ export default function CreateMeetingPage() {
           id="비밀번호"
           labelText="비밀번호"
           description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다."
-          error={hostPasswordError}
+          errorMessage={hostPasswordError}
         >
           <PasswordInput
             id="비밀번호"

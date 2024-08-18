@@ -23,13 +23,13 @@ export default function AttendeeLoginPage() {
   const {
     value: attendeeName,
     onValueChange: handleAttendeeNameChange,
-    error: attendeeNameError,
+    errorMessage: attendeeNameErrorMessage,
   } = useInput({ minLength: 1, maxLength: 5 });
 
   const {
     value: attendeePassword,
     onValueChange: handleAttendeePasswordChange,
-    error: attendeePasswordError,
+    errorMessage: attendeePasswordErrorMessage,
   } = useInput({
     minLength: 1,
     maxLength: 10,
@@ -54,7 +54,7 @@ export default function AttendeeLoginPage() {
   return (
     <div css={s_container}>
       <div css={s_inputContainer}>
-        <Field labelText="닉네임" id="name" error={attendeeNameError}>
+        <Field labelText="닉네임" id="name" errorMessage={attendeeNameErrorMessage}>
           <Input
             maxLength={5}
             placeholder="닉네임을 입력하세요."
@@ -62,7 +62,7 @@ export default function AttendeeLoginPage() {
             onChange={handleAttendeeNameChange}
           />
         </Field>
-        <Field labelText="비밀번호" id="password" error={attendeePasswordError}>
+        <Field labelText="비밀번호" id="password" errorMessage={attendeePasswordErrorMessage}>
           <PasswordInput
             maxLength={10}
             placeholder="비밀번호를 입력하세요."
