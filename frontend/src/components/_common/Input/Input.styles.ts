@@ -12,7 +12,6 @@ const baseInputStyle = css`
 export const s_input = {
   default: css`
     ${baseInputStyle}
-    border: 1px solid ${theme.colors.grey.dark};
   `,
   transparent: css`
     ${baseInputStyle}
