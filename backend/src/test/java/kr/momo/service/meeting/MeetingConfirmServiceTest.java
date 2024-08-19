@@ -73,8 +73,10 @@ class MeetingConfirmServiceTest {
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
         validRequest = new MeetingConfirmRequest(
-                today.getDate(), meeting.earliestTime(),
-                today.getDate(), meeting.earliestTime().plusMinutes(90)
+                today.getDate(),
+                meeting.earliestTime(),
+                today.getDate(),
+                meeting.earliestTime().plusMinutes(90)
         );
     }
 
@@ -87,10 +89,8 @@ class MeetingConfirmServiceTest {
         LocalDateTime startDateTime = confirmedMeeting.getStartDateTime();
         LocalDateTime endDateTime = confirmedMeeting.getEndDateTime();
         assertAll(
-                () -> assertThat(startDateTime)
-                        .isEqualTo(LocalDateTime.of(validRequest.startDate(), validRequest.startTime())),
-                () -> assertThat(endDateTime)
-                        .isEqualTo(LocalDateTime.of(validRequest.endDate(), validRequest.endTime()))
+                () -> assertThat(startDateTime).isEqualTo(validRequest.toStartDateTime()),
+                () -> assertThat(endDateTime).isEqualTo(validRequest.toEndDateTime())
         );
     }
 
@@ -148,8 +148,10 @@ class MeetingConfirmServiceTest {
     void confirmScheduleThrowsExceptionWhen_InvalidDate() {
         LocalDate invalidDate = LocalDate.now().plusDays(30);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                invalidDate, Timeslot.TIME_0100.getLocalTime(),
-                invalidDate, Timeslot.TIME_0130.getLocalTime()
+                invalidDate,
+                Timeslot.TIME_0100.startTime(),
+                invalidDate,
+                Timeslot.TIME_0130.startTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -161,8 +163,10 @@ class MeetingConfirmServiceTest {
     @Test
     void confirmScheduleThrowsExceptionWhen_InvalidTime() {
         MeetingConfirmRequest request = new MeetingConfirmRequest(
-                today.getDate(), Timeslot.TIME_2200.getLocalTime(),
-                today.getDate(), Timeslot.TIME_2300.getLocalTime()
+                today.getDate(),
+                Timeslot.TIME_2200.startTime(),
+                today.getDate(),
+                Timeslot.TIME_2300.startTime()
         );
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), attendee.getId(), request))
@@ -208,11 +212,13 @@ class MeetingConfirmServiceTest {
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
         scheduleRepository.saveAll(schedules);
         validRequest = new MeetingConfirmRequest(
-                today.getDate(), LocalTime.of(0, 0),
-                today.getDate(), LocalTime.of(1, 30)
+                today.getDate(),
+                LocalTime.of(0, 0),
+                today.getDate(),
+                LocalTime.of(1, 30)
         );
-        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
 
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
         ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
 
         assertAll(

@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { PostMeetingResult } from 'types/meeting';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
-import type { MeetingInfo } from '@apis/meetings';
 import { lockMeeting, postMeeting, unlockMeeting } from '@apis/meetings';
 
 import { QUERY_KEY } from '@constants/queryKeys';
@@ -15,7 +15,7 @@ export const usePostMeetingMutation = () => {
   const authContext = useContext(AuthContext);
   const { setIsLoggedIn, setUserName } = authContext.actions;
 
-  const [meetingInfo, setMeetingInfo] = useState<MeetingInfo>({
+  const [meetingInfo, setMeetingInfo] = useState<PostMeetingResult>({
     uuid: '',
     userName: '',
   });

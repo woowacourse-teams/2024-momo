@@ -8,7 +8,7 @@ export const s_baseContainer = css`
   padding: 0.8rem 1.2rem;
 
   opacity: 0.7;
-  background-color: ${theme.colors.timeTable.selected.light};
+  background-color: ${theme.colors.pink.light};
   border-radius: 0.8rem;
 `;
 

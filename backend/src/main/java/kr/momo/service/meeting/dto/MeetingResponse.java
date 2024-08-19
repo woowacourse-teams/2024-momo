@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.exception.MomoException;
@@ -41,9 +40,7 @@ public record MeetingResponse(
 ) {
 
     public static MeetingResponse of(Meeting meeting, AvailableDates availableDates, List<Attendee> attendees) {
-        List<LocalDate> dates = availableDates.getAvailableDates().stream()
-                .map(AvailableDate::getDate)
-                .toList();
+        List<LocalDate> dates = availableDates.asList();
 
         List<String> attendeeNames = attendees.stream()
                 .map(Attendee::name)

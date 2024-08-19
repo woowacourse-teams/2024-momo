@@ -2,6 +2,8 @@ import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { MeetingDateTime } from 'types/meeting';
+import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
@@ -13,7 +15,6 @@ import {
 
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
-import type { MeetingAllSchedules, MeetingSingleSchedule } from '@apis/schedules';
 import { handleGetMeetingSchedules } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
@@ -26,11 +27,8 @@ import {
 } from './Schedules.styles';
 import SingleSchedule from './SingleSchedule';
 
-interface SchedulesViewerProps {
+interface SchedulesViewerProps extends MeetingDateTime {
   isLocked: boolean;
-  firstTime: string;
-  lastTime: string;
-  availableDates: string[];
   meetingAttendees: string[];
 }
 
@@ -115,21 +113,23 @@ export default function SchedulesViewer({
             </button>
           </div>
         )}
-        {selectedAttendee === '' ? (
-          <AllSchedules
-            firstTime={firstTime}
-            lastTime={lastTime}
-            availableDates={currentDates}
-            allSchedules={meetingSchedules as MeetingAllSchedules}
-          />
-        ) : (
-          <SingleSchedule
-            firstTime={firstTime}
-            lastTime={lastTime}
-            availableDates={currentDates}
-            singleSchedule={meetingSchedules as MeetingSingleSchedule}
-          />
-        )}
+        {selectedAttendee === ''
+          ? meetingSchedules && (
+              <AllSchedules
+                firstTime={firstTime}
+                lastTime={lastTime}
+                availableDates={currentDates}
+                meetingAllSchedules={meetingSchedules as MeetingAllSchedules}
+              />
+            )
+          : meetingSchedules && (
+              <SingleSchedule
+                firstTime={firstTime}
+                lastTime={lastTime}
+                availableDates={currentDates}
+                meetingSingleSchedule={meetingSchedules as MeetingSingleSchedule}
+              />
+            )}
       </section>
       <div css={s_buttonContainer}>
         <button disabled={isLocked} onClick={handleScheduleUpdate}>

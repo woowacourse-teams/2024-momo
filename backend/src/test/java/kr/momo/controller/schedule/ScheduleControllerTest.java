@@ -78,7 +78,7 @@ class ScheduleControllerTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().cookie("ACCESS_TOKEN");
 
-        List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
+        List<LocalTime> times = List.of(Timeslot.TIME_0100.startTime(), Timeslot.TIME_0130.startTime());
         List<DateTimesCreateRequest> dateTimes = List.of(
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)

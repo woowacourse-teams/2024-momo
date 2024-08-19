@@ -1,6 +1,7 @@
-import type { MeetingSingleSchedule } from '@apis/schedules';
+import type { MeetingDateTime } from 'types/meeting';
+import type { MeetingSingleSchedule } from 'types/schedule';
 
-import { generateScheduleMatrix } from './Picker/SchedulePicker.utils';
+import { generateSingleScheduleTable } from './Picker/SchedulePicker.utils';
 import {
   s_container,
   s_scheduleTable,
@@ -12,24 +13,21 @@ import {
 } from './Schedules.styles';
 import { formatDate, formatTime } from './Schedules.util';
 
-interface SingleScheduleProps {
-  firstTime: string;
-  lastTime: string;
-  availableDates: string[];
-  singleSchedule: MeetingSingleSchedule;
+interface SingleScheduleProps extends MeetingDateTime {
+  meetingSingleSchedule: MeetingSingleSchedule;
 }
 
 export default function SingleSchedule({
   firstTime,
   lastTime,
   availableDates,
-  singleSchedule,
+  meetingSingleSchedule,
 }: SingleScheduleProps) {
-  const schedules = generateScheduleMatrix({
+  const schedules = generateSingleScheduleTable({
     firstTime,
     lastTime,
     availableDates,
-    meetingSchedules: singleSchedule,
+    meetingSingleSchedule,
   });
 
   return (

@@ -53,7 +53,7 @@ public class Schedule extends BaseEntity {
     }
 
     public LocalDateTime dateTime() {
-        return LocalDateTime.of(availableDate.getDate(), timeslot.getLocalTime());
+        return LocalDateTime.of(availableDate.getDate(), timeslot.startTime());
     }
 
     public LocalDate date() {
@@ -61,7 +61,7 @@ public class Schedule extends BaseEntity {
     }
 
     public LocalTime time() {
-        return timeslot.getLocalTime();
+        return timeslot.startTime();
     }
 
     public String attendeeName() {

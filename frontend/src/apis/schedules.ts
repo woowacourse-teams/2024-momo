@@ -1,40 +1,18 @@
+import type {
+  MeetingAllSchedules,
+  MeetingAllSchedulesItem,
+  MeetingSingeScheduleItem,
+  MeetingSingleSchedule,
+} from 'types/schedule';
+
 import { fetchClient } from './_common/fetchClient';
-
-interface SingleAttendeeTimeSlot {
-  date: string;
-  times: string[];
-}
-
-interface AllAttendeeTimeSlot {
-  date: string;
-  time: string;
-  attendeeNames: string[];
-}
-
-interface MeetingAllSchedulesResponse {
-  schedules: AllAttendeeTimeSlot[];
-}
-
-export interface MeetingAllSchedules {
-  schedules: AllAttendeeTimeSlot[];
-}
-
-interface MeetingSingleScheduleResponse {
-  attendeeName: string;
-  schedules: SingleAttendeeTimeSlot[];
-}
-
-export interface MeetingSingleSchedule {
-  attendeeName: string;
-  schedules: SingleAttendeeTimeSlot[];
-}
 
 export const postSchedule = async ({
   uuid,
   requestData,
 }: {
   uuid: string;
-  requestData: SingleAttendeeTimeSlot[];
+  requestData: MeetingSingeScheduleItem[];
 }) => {
   const path = `/${uuid}/schedules`;
 
@@ -57,6 +35,10 @@ export const createMeetingSchedulesRequestUrl = (uuid: string, attendeeName: str
   return `/${uuid}/schedules?${params.toString()}`;
 };
 
+interface MeetingAllSchedulesResponse {
+  schedules: MeetingAllSchedulesItem[];
+}
+
 const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules> => {
   const path = `/${uuid}/schedules`;
 
@@ -70,6 +52,11 @@ const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules
     schedules: data.schedules,
   };
 };
+
+interface MeetingSingleScheduleResponse {
+  attendeeName: string;
+  schedules: MeetingSingeScheduleItem[];
+}
 
 const getMeetingSingleSchedule = async ({
   attendeeName,

@@ -74,7 +74,7 @@ class ScheduleServiceTest {
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
 
-        List<LocalTime> times = List.of(Timeslot.TIME_0100.getLocalTime(), Timeslot.TIME_0130.getLocalTime());
+        List<LocalTime> times = List.of(Timeslot.TIME_0100.startTime(), Timeslot.TIME_0130.startTime());
 
         dateTimes = List.of(
                 new DateTimesCreateRequest(today.getDate(), times),
@@ -147,15 +147,15 @@ class ScheduleServiceTest {
         assertThat(response.schedules()).containsExactlyInAnyOrder(
                 new AttendeesScheduleResponse(
                         today.getDate(),
-                        Timeslot.TIME_0100.getLocalTime(),
+                        Timeslot.TIME_0100.startTime(),
                         List.of(attendee.name(), attendee2.name())),
                 new AttendeesScheduleResponse(
                         today.getDate(),
-                        Timeslot.TIME_0130.getLocalTime(),
+                        Timeslot.TIME_0130.startTime(),
                         List.of(attendee2.name())),
                 new AttendeesScheduleResponse(
                         tomorrow.getDate(),
-                        Timeslot.TIME_0100.getLocalTime(),
+                        Timeslot.TIME_0100.startTime(),
                         List.of(attendee.name()))
         );
     }
@@ -192,7 +192,7 @@ class ScheduleServiceTest {
     void throwsIfNoAttendeeInParticipantSchedule() {
         createAttendeeSchedule(attendee);
         String uuid = meeting.getUuid();
-        String givenAttendeeName = "NOTHING";
+        String givenAttendeeName = "NONE";
 
         assertThatThrownBy(() -> scheduleService.findSingleSchedule(uuid, givenAttendeeName))
                 .isInstanceOf(MomoException.class)
@@ -245,53 +245,53 @@ class ScheduleServiceTest {
 
         assertThat(responses).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.startTime()),
                         new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.startTime()),
                         new AttendeeGroup(List.of(daon))
                 )
         );
@@ -317,53 +317,53 @@ class ScheduleServiceTest {
 
         assertThat(responses).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0100.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0130.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.startTime()),
                         new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.startTime()),
                         new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0300.startTime()),
                         new AttendeeGroup(List.of(daon))
                 )
         );
@@ -388,38 +388,38 @@ class ScheduleServiceTest {
 
         assertThat(responses).containsExactly(
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
                         new AttendeeGroup(List.of(jazz, daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2230.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2230.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1700.getLocalTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1800.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1700.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1800.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0400.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0400.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.startTime()),
                         new AttendeeGroup(List.of(jazz))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.getLocalTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0030.startTime()),
                         new AttendeeGroup(List.of(daon))
                 ),
                 RecommendedScheduleResponse.of(
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.getLocalTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0200.getLocalTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0200.startTime()),
                         new AttendeeGroup(List.of(daon))
                 )
         );

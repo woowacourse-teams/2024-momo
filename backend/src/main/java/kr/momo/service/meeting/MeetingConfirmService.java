@@ -35,8 +35,8 @@ public class MeetingConfirmService {
 
     @Transactional
     public MeetingConfirmResponse create(String uuid, long attendeeId, MeetingConfirmRequest request) {
-        LocalDateTime startDateTime = LocalDateTime.of(request.startDate(), request.startTime());
-        LocalDateTime endDateTime = LocalDateTime.of(request.endDate(), request.endTime());
+        LocalDateTime startDateTime = request.toStartDateTime();
+        LocalDateTime endDateTime = request.toEndDateTime();
 
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));

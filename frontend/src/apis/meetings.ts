@@ -1,8 +1,10 @@
+import type { MeetingBase, PostMeetingResult } from 'types/meeting';
+
 import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
 
-interface GetMeetingBaseResponse {
+interface MeetingBaseResponse {
   meetingName: string;
   firstTime: string;
   lastTime: string;
@@ -10,41 +12,12 @@ interface GetMeetingBaseResponse {
   hostName: string;
   availableDates: string[];
   attendeeNames: string[];
-}
-
-export interface MeetingBase {
-  meetingName: string;
-  firstTime: string;
-  lastTime: string;
-  isLocked: boolean;
-  hostName: string;
-  availableDates: string[];
-  attendeeNames: string[];
-}
-
-export interface MeetingRequest {
-  hostName: string;
-  hostPassword: string;
-  meetingName: string;
-  availableMeetingDates: string[];
-  meetingStartTime: string;
-  meetingEndTime: string;
-}
-
-interface PostMeetingResponse {
-  uuid: string;
-  hostName: string;
-}
-
-export interface MeetingInfo {
-  uuid: string;
-  userName: string;
 }
 
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   const path = `/${uuid}`;
 
-  const data = await fetchClient<GetMeetingBaseResponse>({
+  const data = await fetchClient<MeetingBaseResponse>({
     path,
     method: 'GET',
     errorMessage: '약속 정보를 조회하는 중 문제가 발생했어요 :(',
@@ -61,7 +34,21 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   };
 };
 
-export const postMeeting = async (request: MeetingRequest): Promise<MeetingInfo> => {
+interface PostMeetingRequest {
+  hostName: string;
+  hostPassword: string;
+  meetingName: string;
+  availableMeetingDates: string[];
+  meetingStartTime: string;
+  meetingEndTime: string;
+}
+
+interface PostMeetingResponse {
+  uuid: string;
+  hostName: string;
+}
+
+export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeetingResult> => {
   const data = await fetchClient<PostMeetingResponse>({
     path: '',
     method: 'POST',

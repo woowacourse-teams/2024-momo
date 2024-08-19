@@ -3,16 +3,9 @@ spring:
   profiles:
     active: local  # Default Active Profile
     group:
-      local: local  # Add 'local-remoteDB' to connect Remote MySQL
-      dev: dev
-
-springdoc:
-  api-docs:
-    path: /api/v3/api-docs
-  swagger-ui:
-    path: /api/docs
-    tags-sorter: alpha
-    operations-sorter: alpha
+      local: local, api-docs  # Add 'local-remoteDB' to connect Remote MySQL
+      dev: dev, api-docs
+      prod: prod
 
 server:
   port: 8080
