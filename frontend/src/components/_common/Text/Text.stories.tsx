@@ -50,7 +50,7 @@ export const Default: Story = {
 export const CaptionText: Story = {
   render: (args) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-      <InformationIcon />
+      <InformationIcon width="12" height="12" />
       <Text {...args} />
     </div>
   ),
