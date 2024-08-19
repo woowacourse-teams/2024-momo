@@ -1,26 +1,17 @@
 import { useState } from 'react';
 
+import TimeRangeSelector from '@components/TimeRangeSelector';
 import Calendar from '@components/_common/Calendar';
-import Dropdown from '@components/_common/Dropdown';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
-import {
-  generateEndTimeOptions,
-  generateStartTimeOptions,
-} from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.utils';
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
-import {
-  s_confirm,
-  s_confirmContainer,
-  s_dropdownContainer,
-  s_formContainer,
-} from './CreateMeetingPage.styles';
+import { s_confirm, s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
@@ -30,12 +21,7 @@ export default function CreateMeetingPage() {
   const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
-  const {
-    startTime,
-    endTime,
-    onStartTimeChange: handleStartTimeChange,
-    onEndTimeChange: handleEndTimeChange,
-  } = useTimeRangeDropdown();
+  const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
 
   const hasDate = (date: string) => selectedDates.includes(date);
 
@@ -51,9 +37,9 @@ export default function CreateMeetingPage() {
       hostPassword: hostPassword,
       meetingName: meetingName,
       availableMeetingDates: selectedDates,
-      meetingStartTime: startTime,
+      meetingStartTime: startTime.value,
       // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-      meetingEndTime: endTime === INITIAL_END_TIME ? INITIAL_START_TIME : endTime,
+      meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
     });
   };
 
@@ -101,19 +87,12 @@ export default function CreateMeetingPage() {
         </Field>
 
         <Field id="약속시간범위선택" labelText="약속 시간 범위 선택">
-          <div css={s_dropdownContainer}>
-            <Dropdown
-              value={startTime}
-              onChange={(e) => handleStartTimeChange(e.target.value)}
-              options={generateStartTimeOptions(endTime)}
-            />
-            ~
-            <Dropdown
-              value={endTime}
-              onChange={(e) => handleEndTimeChange(e.target.value)}
-              options={generateEndTimeOptions(startTime)}
-            />
-          </div>
+          <TimeRangeSelector
+            startTime={startTime}
+            endTime={endTime}
+            handleStartTimeChange={handleStartTimeChange}
+            handleEndTimeChange={handleEndTimeChange}
+          />
         </Field>
         <div css={s_confirmContainer}>
           <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
