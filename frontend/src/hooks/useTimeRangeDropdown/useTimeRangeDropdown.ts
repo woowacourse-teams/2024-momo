@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { INITIAL_END_TIME, INITIAL_START_TIME } from './constants';
 import {
+  addHoursToCurrentTime,
   generateEndTimeOptions,
   generateStartTimeOptions,
-  getTimeAfterOneHour,
   isTimeSelectable,
 } from './useTimeRangeDropdown.utils';
 
@@ -16,7 +16,7 @@ export default function useTimeRangeDropdown() {
   // startTime을 선택하면 endTime은 (startTime + 1시간)으로 설정됩니다.
   const handleStartTimeChange = (time: string) => {
     setStartTime(time);
-    setEndTime(getTimeAfterOneHour(time));
+    setEndTime(addHoursToCurrentTime(time, 1));
   };
 
   // endTime의 onChange 핸들러 함수
