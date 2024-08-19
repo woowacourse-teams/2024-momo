@@ -4,6 +4,8 @@ import type useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeD
 
 import { s_dropdownContainer } from './TimeRangeSelector.styles';
 
+const TIME_RANGE_SEPARATOR = '~';
+
 export default function TimeRangeSelector({
   startTime,
   endTime,
@@ -17,7 +19,7 @@ export default function TimeRangeSelector({
         onChange={(e) => handleStartTimeChange(e.target.value)}
         options={startTime.options}
       />
-      ~
+      {TIME_RANGE_SEPARATOR}
       <Dropdown
         value={endTime.value}
         onChange={(e) => handleEndTimeChange(e.target.value)}
