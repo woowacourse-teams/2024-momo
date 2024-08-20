@@ -10,25 +10,9 @@ const meta: Meta<typeof AttendeeTooltip> = {
     layout: 'centered',
   },
   argTypes: {
-    allSchedules: {
+    attendeeNames: {
       control: { type: 'object' },
-      description: '전체 스케줄 데이터',
-    },
-    availableDates: {
-      control: { type: 'object' },
-      description: '사용 가능한 날짜 배열',
-    },
-    rowIndex: {
-      control: { type: 'number' },
-      description: '행 인덱스',
-    },
-    columnIndex: {
-      control: { type: 'number' },
-      description: '열 인덱스',
-    },
-    firstTime: {
-      control: { type: 'text' },
-      description: '첫 시간',
+      description: '참여자 이름 배열',
     },
     position: {
       control: {
@@ -59,13 +43,7 @@ type Story = StoryObj<typeof AttendeeTooltip>;
 
 export const Playground: Story = {
   args: {
-    allSchedules: {
-      schedules: [{ date: '2024-08-04', time: '10:00', attendeeNames: ['해뤼', '놕톼', '뷩봉'] }],
-    },
-    availableDates: ['2024-08-04'],
-    rowIndex: 0,
-    columnIndex: 0,
-    firstTime: '10:00',
+    attendeeNames: ['낙톼', '해뤼', '뷩봉', '돠욘', '폐듀료', '쟤증', '뫜크', '백희'],
     position: 'top',
   },
   render: (args) => {
@@ -90,14 +68,7 @@ export const Playground: Story = {
         <tbody>
           <tr>
             <td css={s_td}>
-              <AttendeeTooltip
-                allSchedules={args.allSchedules}
-                availableDates={args.availableDates}
-                rowIndex={args.rowIndex}
-                columnIndex={args.columnIndex}
-                firstTime={args.firstTime}
-                position={args.position}
-              />
+              <AttendeeTooltip attendeeNames={args.attendeeNames} position={args.position} />
             </td>
           </tr>
         </tbody>
