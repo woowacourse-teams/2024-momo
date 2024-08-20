@@ -38,12 +38,4 @@ public record RecommendedScheduleResponse(
                 attendeeNames
         );
     }
-
-    public LocalDateTime startDateTime() {
-        return LocalDateTime.of(startDate, startTime);
-    }
-
-    public LocalDateTime endDateTime() {
-        return LocalDateTime.of(endDate, endTime);
-    }
 }
