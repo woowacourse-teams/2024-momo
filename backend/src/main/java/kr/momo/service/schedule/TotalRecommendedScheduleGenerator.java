@@ -55,27 +55,7 @@ public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGen
     }
 
     private List<CandidateSchedule> mergeContinuousDateTime(List<CandidateSchedule> sortedSchedules) {
-        if (sortedSchedules.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        Iterator<CandidateSchedule> iterator = sortedSchedules.iterator();
-
-        List<CandidateSchedule> responses = new ArrayList<>();
-        CandidateSchedule startDateTime = iterator.next();
-        CandidateSchedule currentDateTime = startDateTime;
-
-        while (iterator.hasNext()) {
-            CandidateSchedule nextDateTime = iterator.next();
-
-            if (isDiscontinuous(currentDateTime, nextDateTime)) {
-                responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(), startDateTime.attendeeGroup()));
-                startDateTime = nextDateTime;
-            }
-            currentDateTime = nextDateTime;
-        }
-        responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(), startDateTime.attendeeGroup()));
-        return responses;
+        return CandidateSchedule.mergeContinuousDateTime(sortedSchedules, this::isDiscontinuous);
     }
 
 
