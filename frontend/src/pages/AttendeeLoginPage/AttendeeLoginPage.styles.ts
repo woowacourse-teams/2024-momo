@@ -16,6 +16,7 @@ export const s_inputContainer = css`
   flex-direction: column;
   gap: 1rem;
 
+  width: 100%;
   padding: 1.6rem;
 
   background-color: #f7dacb;
