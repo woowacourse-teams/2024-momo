@@ -52,5 +52,5 @@ export function getTableCellIndex(event: Event) {
     return null;
   }
 
-  return { rowIndex, colIndex: colIndex - 1 };
+  return { rowIndex, colIndex }; // 시간의 범위를 나타낸 tr, td를 제거했기 때문에 -1을 할 필요가 없어짐 (@해리)
 }
