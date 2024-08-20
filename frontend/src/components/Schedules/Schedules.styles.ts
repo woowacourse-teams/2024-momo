@@ -15,6 +15,10 @@ export const s_scheduleTableContainer = css`
   display: flex;
   width: 90%;
   min-height: fit-content;
+
+  span::selection {
+    user-select: none;
+  }
 `;
 
 export const s_scheduleTable = css`
