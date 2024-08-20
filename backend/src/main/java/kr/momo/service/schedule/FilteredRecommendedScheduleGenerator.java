@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
+import kr.momo.domain.schedule.CandidateSchedule;
 import kr.momo.domain.schedule.DateAndTimeslot;
-import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,27 +17,29 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
     private final ScheduleRepository scheduleRepository;
 
     @Override
-    public List<DateTimeInterval> recommend(String uuid, AttendeeGroup filteredGroup, String recommendType) {
-        List<LocalDateTime> intersectedDateTimes = mapContinuousSchedulesToResponses(filteredGroup);
-        List<DateTimeInterval> mergedDateTimes = DateTimeInterval.mergeContinuousDateTime(intersectedDateTimes);
+    public List<CandidateSchedule> recommend(AttendeeGroup filteredGroup, String recommendType) {
+        List<LocalDateTime> intersectedDateTimes = mergeContinuousTime(filteredGroup);
+
+        // TODO: CandidateSchedule에 group 정보를 어디서 넣어줄 것인가?
+        List<CandidateSchedule> mergedDateTimes = CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, filteredGroup);
 
         return sorted(recommendType, mergedDateTimes);
     }
 
-    private List<LocalDateTime> mapContinuousSchedulesToResponses(AttendeeGroup filteredGroup) {
+    private List<LocalDateTime> mergeContinuousTime(AttendeeGroup filteredGroup) {
         return scheduleRepository.findAllDateAndTimeslotByEssentialAttendeeIds(
-                filteredGroup.getAttendees(), filteredGroup.size()).stream()
+                        filteredGroup.getAttendees(), filteredGroup.size()).stream()
                 .map(DateAndTimeslot::toDateTime)
                 .toList();
     }
 
-    private List<DateTimeInterval> sorted(String recommendType, List<DateTimeInterval> mergedDateTimes) {
+    private List<CandidateSchedule> sorted(String recommendType, List<CandidateSchedule> mergedDateTimes) {
         // TODO: Comparator 추상화
-        Comparator<DateTimeInterval> comparator;
+        Comparator<CandidateSchedule> comparator;
         if (recommendType.equals(ScheduleRecommender.EARLIEST_ORDER.getType())) {
-            comparator = Comparator.comparing(DateTimeInterval::startDateTime);
+            comparator = Comparator.comparing(CandidateSchedule::startDateTime);
         } else {
-            comparator = Comparator.comparing(DateTimeInterval::duration).reversed();
+            comparator = Comparator.comparing(CandidateSchedule::duration).reversed();
         }
         mergedDateTimes.sort(comparator);
 

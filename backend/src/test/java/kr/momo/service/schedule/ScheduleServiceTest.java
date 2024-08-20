@@ -386,10 +386,33 @@ class ScheduleServiceTest {
                         LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
                         LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.endTime()),
                         new AttendeeGroup(List.of(jazz, daon))
+                ),
+                RecommendedScheduleResponse.of(
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1700.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_1800.endTime()),
+                        new AttendeeGroup(List.of(jazz))
+                ),
+                RecommendedScheduleResponse.of(
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0400.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0500.endTime()),
+                        new AttendeeGroup(List.of(jazz))
+                ),
+                RecommendedScheduleResponse.of(
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2230.startTime()),
+                        LocalDateTime.of(today.getDate(), Timeslot.TIME_2230.endTime()),
+                        new AttendeeGroup(List.of(jazz))
+                ),
+                RecommendedScheduleResponse.of(
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0100.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0100.endTime()),
+                        new AttendeeGroup(List.of(jazz))
+                ),
+                RecommendedScheduleResponse.of(
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0200.startTime()),
+                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0200.endTime()),
+                        new AttendeeGroup(List.of(daon))
                 )
         );
-
-
     }
 
     private List<Schedule> addNextDaySchedule(

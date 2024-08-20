@@ -146,7 +146,6 @@ class ScheduleControllerTest {
     @DisplayName("추천 타입과 참가자에 맞춰 추천 약속을 조회한다.")
     @Test
     void recommendSchedules() {
-
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())

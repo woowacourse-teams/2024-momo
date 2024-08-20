@@ -25,7 +25,7 @@ public record DateTimesResponse(
 ) {
     public static List<DateTimesResponse> from(List<Schedule> schedules) {
         Map<LocalDate, List<LocalTime>> results = schedules.stream()
-                .collect(Collectors.groupingBy(Schedule::date, mapping(Schedule::time, toList())));
+                .collect(Collectors.groupingBy(Schedule::date, mapping(Schedule::startTime, toList())));
 
         return results.keySet().stream()
                 .map(date -> new DateTimesResponse(date, results.get(date)))

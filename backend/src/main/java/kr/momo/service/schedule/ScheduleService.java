@@ -12,7 +12,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
-import kr.momo.domain.schedule.DateTimeInterval;
+import kr.momo.domain.schedule.CandidateSchedule;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleBatchRepository;
 import kr.momo.domain.schedule.ScheduleRepository;
@@ -125,10 +125,10 @@ public class ScheduleService {
         RecommendedScheduleGenerator recommender = recommendedScheduleGeneratorFactory.getRecommenderOf(
                 attendeeGroup,filteredGroup
         );
-        List<DateTimeInterval> recommendedResult = recommender.recommend(uuid, filteredGroup, recommendType);
+        List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
 
         return recommendedResult.stream()
-                .map(sr -> RecommendedScheduleResponse.of(sr.startDateTime(), sr.endDateTime(), filteredGroup))
+                .map(sr -> RecommendedScheduleResponse.of(sr.startDateTime(), sr.endDateTime(), sr.attendeeGroup()))
                 .toList();
     }
 }
