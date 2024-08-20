@@ -1,6 +1,5 @@
 package kr.momo.service.schedule;
 
-import java.util.Comparator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.CandidateSchedule;
@@ -14,13 +13,15 @@ import org.springframework.stereotype.Component;
 public class FilteredRecommendedScheduleGenerator implements RecommendedScheduleGenerator {
 
     private final ScheduleRepository scheduleRepository;
+    private final RecommendedScheduleSorterFactory recommendedScheduleSorterFactory;
 
     @Override
     public List<CandidateSchedule> recommend(AttendeeGroup filteredGroup, String recommendType) {
         List<CandidateSchedule> intersectedDateTimes = findAllScheduleAvailableByEveryAttendee(filteredGroup);
         List<CandidateSchedule> mergedDateTimes = mergeContinuousDateTime(intersectedDateTimes);
+        sort(recommendType, mergedDateTimes);
 
-        return sorted(recommendType, mergedDateTimes);
+        return mergedDateTimes;
     }
 
     private List<CandidateSchedule> findAllScheduleAvailableByEveryAttendee(AttendeeGroup filteredGroup) {
@@ -40,16 +41,8 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
         return !now.dateTimeInterval().isSequential(next.dateTimeInterval());
     }
 
-    private List<CandidateSchedule> sorted(String recommendType, List<CandidateSchedule> mergedDateTimes) {
-        // TODO: Comparator 추상화
-        Comparator<CandidateSchedule> comparator;
-        if (recommendType.equals(RecommendedScheduleSortStandard.EARLIEST_ORDER.getType())) {
-            comparator = Comparator.comparing(CandidateSchedule::startDateTime);
-        } else {
-            comparator = Comparator.comparing(CandidateSchedule::duration).reversed();
-        }
-        mergedDateTimes.sort(comparator);
-
-        return mergedDateTimes;
+    private void sort(String recommendType, List<CandidateSchedule> mergedDateTimes) {
+        RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
+        recommendedScheduleSorterFactory.getSorterOf(sortStandard).sort(mergedDateTimes);
     }
 }

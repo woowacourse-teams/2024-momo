@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGenerator {
 
     private final ScheduleRepository scheduleRepository;
+    private final RecommendedScheduleSorterFactory recommendedScheduleSorterFactory;
 
     @Override
     public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType) {
@@ -25,14 +26,9 @@ public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGen
 
         List<CandidateSchedule> intersectedDateTimes = findAllScheduleAvailableByEachAttendee(group);
         List<CandidateSchedule> mergedDateTimes = mergeContinuousDateTime(intersectedDateTimes);
+        sort(recommendType, mergedDateTimes);
 
-
-        // 같은 날짜 병합하고 정렬. 근데 같은 날짜는 이미 병합해서 나올지도?
-
-        // 1. 같은 날짜 병합돼서 오는지 확인 (완료)
-        // 2. 병합된 날짜를 정렬해서 반환 (완료)
-        // 3. endTime에 30분 더해서 줘야 됨 (완료)
-        return sorted(recommendType, mergedDateTimes);
+        return mergedDateTimes;
     }
 
     private List<CandidateSchedule> findAllScheduleAvailableByEachAttendee(AttendeeGroup group) {
@@ -55,7 +51,6 @@ public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGen
         return CandidateSchedule.mergeContinuousDateTime(sortedSchedules, this::isDiscontinuous);
     }
 
-
     private boolean isDiscontinuous(CandidateSchedule now, CandidateSchedule next) {
         AttendeeGroup currentGroup = now.attendeeGroup();
         AttendeeGroup nextGroup = next.attendeeGroup();
@@ -64,18 +59,8 @@ public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGen
         return !(isSameGroup && isSequential);
     }
 
-    private List<CandidateSchedule> sorted(String recommendType, List<CandidateSchedule> mergedDateTimes) {
-        // TODO: Comparator 추상화
-        Comparator<CandidateSchedule> comparator;
-        if (recommendType.equals(RecommendedScheduleSortStandard.EARLIEST_ORDER.getType())) {
-            comparator = Comparator.comparing(CandidateSchedule::groupSize, Comparator.reverseOrder())
-                    .thenComparing(CandidateSchedule::startDateTime);
-        } else {
-            comparator = Comparator.comparing(CandidateSchedule::groupSize, Comparator.reverseOrder())
-                    .thenComparing(CandidateSchedule::duration, Comparator.reverseOrder());
-        }
-        mergedDateTimes.sort(comparator);
-
-        return mergedDateTimes;
+    private void sort(String recommendType, List<CandidateSchedule> mergedDateTimes) {
+        RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
+        recommendedScheduleSorterFactory.getSorterOf(sortStandard).sort(mergedDateTimes);
     }
 }
