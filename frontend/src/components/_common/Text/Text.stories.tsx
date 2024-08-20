@@ -49,6 +49,7 @@ export const Default: Story = {
 
 export const CaptionText: Story = {
   render: (args) => (
+    // 아이콘 + 텍스트를 조합해서 사용하는 쪽에서 gap을 결정해서 사용하면 됩니다. (@해리)
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
       <InformationIcon width="12" height="12" />
       <Text {...args} />
@@ -62,26 +63,19 @@ export const CaptionText: Story = {
 };
 
 export const WelcomeText: Story = {
-  render: (args) => (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Text {...args} variant="accent">
-        페드로
-      </Text>
-      <Text {...args}>님 반가워요 👋🏻</Text>
-    </div>
+  render: () => (
+    <Text>
+      <Text.Accent>페드로</Text.Accent>님 반가워요 👋🏻
+    </Text>
   ),
 };
 
 export const TitleText: Story = {
-  render: (args) => (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Text {...args} variant="accent" typo="titleMedium">
-        모모 런칭데이 회식
-      </Text>
-      <Text {...args} typo="titleMedium">
-        약속 참여자들이 선택한 시간대를 알려드릴게요
-      </Text>
-    </div>
+  render: () => (
+    <Text typo="titleMedium">
+      <Text.Accent>모모 런칭데이 회식</Text.Accent>
+      약속 참여자들이 선택한 시간대를 알려드릴게요
+    </Text>
   ),
 };
 
