@@ -1,25 +1,20 @@
 import { css } from '@emotion/react';
-import type { CSSProperties } from 'react';
 
 import theme from '@styles/theme';
 
-const COLOR_VARIANTS = {
-  1: '#FFEBE8',
-  2: '#FFD4D1',
-  3: '#FFBABC',
-  4: '#FFA9B4',
-  5: '#FF8DA6',
-  6: '#DB678B',
-  7: '#B74775',
-  8: '#932C61',
-  9: '#7A1B54',
-} as Record<number, CSSProperties['color']>;
-
 export const s_container = css`
-  overflow-x: auto;
   display: flex;
-  justify-content: flex-start;
-  width: 100%;
+  flex-direction: column;
+`;
+
+export const s_relativeContainer = css`
+  position: relative;
+`;
+
+export const s_scheduleTableContainer = css`
+  display: flex;
+  width: 90%;
+  min-height: fit-content;
 `;
 
 export const s_scheduleTable = css`
@@ -29,57 +24,61 @@ export const s_scheduleTable = css`
   border-spacing: 0;
   border-collapse: separate;
 
-  width: auto;
+  width: 100%;
 `;
 
-export const s_tableHeaderCell = css`
-  width: 10rem;
-  max-width: 10rem;
-  padding: 10px;
-
-  font-size: 1.2rem;
-  font-weight: normal;
-  color: #666;
-  text-align: center;
+export const s_scheduleTableBody = css`
+  display: flex;
+  flex-direction: column;
 `;
 
-export const s_tableTimeHeaderCell = css`
-  width: 6rem;
-  max-width: 6rem;
+export const s_scheduleTableRow = css`
+  display: flex;
+  border-left: 0.1rem solid #d4d4d8;
 `;
 
-export const s_td = (variants: number) => css`
-  width: 10rem;
-  max-width: 10rem;
-  height: 4rem;
+const getColorByRatio = (ratio: number) => {
+  const pinkShades = theme.colors.pink;
 
-  background-color: ${COLOR_VARIANTS[variants]};
-  border: 0.1rem solid #eee;
+  if (ratio <= 0.1) return pinkShades.lightest;
+  if (ratio <= 0.2) return pinkShades.light;
+  if (ratio <= 0.3) return pinkShades.mediumLight;
+  if (ratio <= 0.4) return pinkShades.medium;
+  if (ratio <= 0.5) return pinkShades.mediumDark;
+  if (ratio <= 0.6) return pinkShades.dark;
+  if (ratio <= 0.7) return pinkShades.darker;
+  if (ratio <= 0.8) return pinkShades.darkest;
+  if (ratio <= 0.9) return pinkShades.deep;
+
+  return pinkShades.deepDark;
+};
+
+export const s_cellColorByRatio = (ratio: number) => css`
+  background-color: ${ratio > 0 ? getColorByRatio(ratio) : '#f4f4f5'};
 `;
 
-export const s_timeColumn = css`
-  position: relative;
-  width: 6rem;
-  max-width: 6rem;
+export const s_cellColorBySelected = (isSelected: number) => css`
+  background-color: ${isSelected ? theme.colors.primary : '#f4f4f5'};
 `;
 
-export const s_timeText = css`
-  position: absolute;
-  top: -0.7rem;
+export const s_baseTimeCell = (isHalfHour: boolean, isLastRow: boolean) => css`
+  flex: 1;
 
-  padding: 0 0.2rem;
+  max-width: 6.4rem;
+  height: 2.4rem;
 
-  font-size: 1.2rem;
-  color: #888;
-  text-align: start;
-
-  background-color: white;
+  border-top: 0.1rem ${isHalfHour ? 'dashed' : 'solid'} #d4d4d8;
+  border-right: 0.1rem solid #d4d4d8;
+  ${isLastRow &&
+  css`
+    border-bottom: 0.1rem ${isHalfHour ? 'solid' : 'dashed'} #d4d4d8;
+  `}
 `;
 
 export const s_datesControlButtonContainer = css`
   position: absolute;
   z-index: 2;
-  top: 0.5rem;
+  top: 4.2rem;
 
   display: flex;
   justify-content: space-between;
@@ -92,8 +91,8 @@ export const s_datesControlButtonContainer = css`
 export const s_datesControlButton = css`
   cursor: pointer;
 
-  width: 3.2rem;
-  height: 3.2rem;
+  width: 2.8rem;
+  height: 2.8rem;
 
   font-weight: bold;
   color: ${theme.colors.primary};
@@ -108,8 +107,8 @@ export const s_datesControlButton = css`
     opacity: 0.4;
   }
 
-  &:first-of-type {
-    margin-left: 5rem;
+  &:last-of-type {
+    margin-right: 5rem;
   }
 `;
 
@@ -118,4 +117,46 @@ export const s_buttonContainer = css`
   justify-content: flex-end;
   width: 100%;
   margin-top: 1rem;
+`;
+
+export const s_pinkProgressiveBar = css`
+  width: 100%;
+  height: 1.2rem;
+
+  background-image: repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent 9%,
+      rgb(255 255 255 / 50%) 10%,
+      rgb(255 255 255 / 50%) 10%
+    ),
+    linear-gradient(
+      to right,
+      ${theme.colors.pink.lightest} 0%,
+      ${theme.colors.pink.light} 10%,
+      ${theme.colors.pink.mediumLight} 20%,
+      ${theme.colors.pink.medium} 30%,
+      ${theme.colors.pink.mediumDark} 40%,
+      ${theme.colors.pink.dark} 50%,
+      ${theme.colors.pink.darker} 60%,
+      ${theme.colors.pink.darkest} 70%,
+      ${theme.colors.pink.deep} 80%,
+      ${theme.colors.pink.deepDark} 100%
+    );
+  background-size:
+    100% 100%,
+    100% 100%;
+  border-radius: 10px;
+`;
+
+export const s_percentageContainer = css`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1.2rem;
+`;
+
+export const s_percentage = css`
+  ${theme.typography.captionMedium}
+  color: #d4d4d8
 `;
