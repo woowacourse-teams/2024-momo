@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { PostMeetingResult } from 'types/meeting';
 
 import { Button } from '@components/_common/Buttons/Button';
+
+import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 
 import { copyToClipboard } from '@utils/clipboard';
 import groupDates from '@utils/groupDates';
@@ -11,6 +13,8 @@ import CheckIcon from '@assets/images/check.svg';
 import CopyIcon from '@assets/images/copy.svg';
 import KakaoIcon from '@assets/images/kakao.svg';
 import LogoSunglass from '@assets/images/logoSunglass.svg';
+
+import { MEETING_INVITE_TEMPLATE_ID } from '@constants/kakao';
 
 import {
   s_availableDatesContainer,
@@ -27,13 +31,6 @@ import {
   s_urlText,
 } from './MeetingLinkSharePage.styles';
 
-declare global {
-  export interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Kakao: any;
-  }
-}
-
 interface RouteState {
   state: {
     meetingInfo: PostMeetingResult;
@@ -45,32 +42,25 @@ export default function MeetingLinkSharePage() {
     state: { meetingInfo },
   } = useLocation() as RouteState;
   const [copyComplete, setCopyComplete] = useState(false);
-  const { Kakao } = window;
   const navigate = useNavigate();
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
   const LINK = `${window.location.protocol}//${window.location.host}/meeting/${uuid}`;
 
-  // TODO: 약속명이 있다면, ${userName}을 templateArgs에 같이 삽입(@낙타)
-  const handleShareButton = () => {
-    Kakao.Share.sendCustom({
-      templateId: Number(process.env.KAKAO_MESSAGE_TEMPLATE_ID),
-      templateArgs: {
-        uuid: uuid,
-      },
-    });
-  };
+  const { onShareKakaoTalk: handleShareKakaoTalk } = useKakaoTalkShare();
 
   const handleCopyClick = async () => {
     setCopyComplete(true);
     setTimeout(() => setCopyComplete(false), 2500);
   };
 
-  useEffect(() => {
-    if (!Kakao.isInitialized()) {
-      Kakao.init(process.env.KAKAO_KEY);
-    }
-  }, [Kakao]);
+  const handleKakaoButtonClick = () => {
+    handleShareKakaoTalk(MEETING_INVITE_TEMPLATE_ID, {
+      path: uuid,
+      hostName: meetingInfo.userName,
+      meetingName: meetingInfo.meetingName,
+    });
+  };
 
   return (
     <div css={s_container}>
@@ -126,7 +116,7 @@ export default function MeetingLinkSharePage() {
           >
             시간 등록하러 가기
           </Button>
-          <Button size="full" variant="kakao" css={s_button} onClick={handleShareButton}>
+          <Button size="full" variant="kakao" css={s_button} onClick={handleKakaoButtonClick}>
             <KakaoIcon width="24" height="24" />
             카카오톡으로 공유하기
           </Button>
