@@ -123,10 +123,11 @@ public class ScheduleService {
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(names);
 
         ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
-                attendeeGroup,filteredGroup
+                attendeeGroup, filteredGroup
         );
         List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
 
+        // TODO: rank도 함께 응답
         return recommendedResult.stream()
                 .map(sr -> RecommendedScheduleResponse.of(sr.startDateTime(), sr.endDateTime(), sr.attendeeGroup()))
                 .toList();

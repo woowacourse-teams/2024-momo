@@ -86,6 +86,10 @@ public enum Timeslot {
         return this.startTime.isBefore(other);
     }
 
+    public boolean isLast() {
+        return this == TIME_2330;
+    }
+
     public LocalTime startTime() {
         return startTime;
     }
