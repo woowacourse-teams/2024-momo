@@ -69,7 +69,7 @@ class MeetingServiceTest {
 
         assertAll(
                 () -> assertThat(response.firstTime()).isEqualTo(meeting.earliestTime()),
-                () -> assertThat(response.lastTime()).isEqualTo(meeting.lastTime()),
+                () -> assertThat(response.lastTime()).isEqualTo(meeting.lastTime().toString()),
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
                 () -> assertThat(response.isLocked()).isFalse(),
                 () -> assertThat(response.availableDates()).hasSize(availableDates.size()),

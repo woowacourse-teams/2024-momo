@@ -43,7 +43,7 @@ public record MeetingResponse(
         List<LocalDate> dates = availableDates.asList();
         List<String> attendeeNames = getAttendeeNames(attendees);
         String hostName = getHostName(attendees);
-        String lastTimeFormat = getMeetingLastTime(meeting.earliestTime());
+        String lastTimeFormat = getMeetingLastTime(meeting.lastTime());
 
         return new MeetingResponse(
                 meeting.getName(),
