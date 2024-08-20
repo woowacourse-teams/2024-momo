@@ -135,7 +135,7 @@ export const generateSingleScheduleTable = ({
     times.forEach((time) => {
       const rowIndex = timeSlotIndex[time];
 
-      if (rowIndex) {
+      if (colIndex != -1 && rowIndex !== undefined) {
         singleScheduleTable[rowIndex][colIndex] = 1;
       }
     });
