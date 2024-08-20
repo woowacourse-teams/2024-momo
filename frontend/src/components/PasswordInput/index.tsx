@@ -25,6 +25,7 @@ export default function PasswordInput({ value, onChange, placeholder = '' }: Inp
         onChange={onChange}
         placeholder={placeholder}
         aria-label="비밀번호 입력"
+        autoComplete="new-password"
       />
       <Button
         variant="transparent"
