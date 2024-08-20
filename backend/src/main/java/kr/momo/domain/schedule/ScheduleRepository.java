@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
@@ -16,6 +17,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByAttendeeIn(List<Attendee> attendees);
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM Schedule s WHERE s.attendee = :attendee")
     void deleteByAttendee(Attendee attendee);
 }
