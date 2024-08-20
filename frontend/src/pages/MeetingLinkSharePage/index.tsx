@@ -96,14 +96,12 @@ export default function MeetingLinkSharePage() {
           <div css={s_description}>
             <h2>가능시간</h2>
             <p>
-              {Object.entries(groupDates(meetingInfo.availableDates)).map(([month, dates]) =>
-                dates.length ? (
-                  <div css={s_availableDatesContainer} key={month}>
-                    <h3>{month}월</h3>
-                    <span>{dates.join(', ')}</span>
-                  </div>
-                ) : null,
-              )}
+              {Object.entries(groupDates(meetingInfo.availableDates)).map(([month, dates]) => (
+                <div css={s_availableDatesContainer} key={month}>
+                  <h3>{month}월</h3>
+                  <span>{dates.join(', ')}</span>
+                </div>
+              ))}
             </p>
           </div>
         </div>
