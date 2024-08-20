@@ -28,5 +28,5 @@ export const s_errorMessage = css`
   display: flex;
   align-items: center;
   ${theme.typography.captionMedium}
-  color: ${PRIMITIVE_COLORS.red};
+  color: ${PRIMITIVE_COLORS.red[300]};
 `;
