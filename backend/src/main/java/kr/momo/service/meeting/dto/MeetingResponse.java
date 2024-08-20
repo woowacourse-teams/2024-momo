@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.availabledate.AvailableDates;
@@ -20,11 +21,10 @@ public record MeetingResponse(
 
         @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         @Schema(type = "string", pattern = "HH:mm", description = "약속 시작 시각")
-        LocalTime firstTime,
+        String firstTime,
 
-        @JsonFormat(shape = Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시각")
-        LocalTime lastTime,
+        String lastTime,
 
         @Schema(description = "약속 잠금 여부")
         boolean isLocked,
@@ -39,27 +39,44 @@ public record MeetingResponse(
         String hostName
 ) {
 
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String LAST_TIME_MIDNIGHT_FORMAT = "24:00";
+
     public static MeetingResponse of(Meeting meeting, AvailableDates availableDates, List<Attendee> attendees) {
         List<LocalDate> dates = availableDates.asList();
-
-        List<String> attendeeNames = attendees.stream()
-                .map(Attendee::name)
-                .toList();
-
-        String hostName = attendees.stream()
-                .filter(Attendee::isHost)
-                .map(Attendee::name)
-                .findFirst()
-                .orElseThrow(() -> new MomoException(MeetingErrorCode.MEETING_LOAD_FAILURE));
+        List<String> attendeeNames = mapToAttendeeNames(attendees);
+        String hostName = findHostNames(attendees);
+        String lastTimeFormat = getMeetingLastTime(meeting.lastTime());
 
         return new MeetingResponse(
                 meeting.getName(),
-                meeting.earliestTime(),
-                meeting.lastTime(),
+                meeting.earliestTime().format(timeFormatter),
+                lastTimeFormat,
                 meeting.isLocked(),
                 dates,
                 attendeeNames,
                 hostName
         );
+    }
+
+    private static List<String> mapToAttendeeNames(List<Attendee> attendees) {
+        return attendees.stream()
+                .map(Attendee::name)
+                .toList();
+    }
+
+    private static String findHostNames(List<Attendee> attendees) {
+        return attendees.stream()
+                .filter(Attendee::isHost)
+                .map(Attendee::name)
+                .findFirst()
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.MEETING_LOAD_FAILURE));
+    }
+
+    private static String getMeetingLastTime(LocalTime time) {
+        if (LocalTime.MIDNIGHT.equals(time)) {
+            return LAST_TIME_MIDNIGHT_FORMAT;
+        }
+        return time.format(timeFormatter);
     }
 }
