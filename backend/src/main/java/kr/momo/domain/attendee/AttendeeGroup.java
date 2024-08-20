@@ -41,6 +41,10 @@ public class AttendeeGroup {
                 .collect(collectingAndThen(toList(), AttendeeGroup::new));
     }
 
+    public boolean containsAll(AttendeeGroup group) {
+        return new HashSet<>(attendees).containsAll(group.getAttendees());
+    }
+
     public int size() {
         return attendees.size();
     }

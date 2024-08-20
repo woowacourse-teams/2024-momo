@@ -12,8 +12,7 @@ public class ScheduleRecommenderFactory {
     private final Map<String, ScheduleRecommender> candidates;
 
     public ScheduleRecommender getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup) {
-        // TODO: containsAll 로 체크해야 함
-        if (attendeeGroup.size() == filteredGroup.size()) {
+        if (filteredGroup.containsAll(attendeeGroup)) {
             return candidates.get(fetchBeanName(TotalScheduleRecommender.class));
         }
         return candidates.get(fetchBeanName(FilteredScheduleRecommender.class));
