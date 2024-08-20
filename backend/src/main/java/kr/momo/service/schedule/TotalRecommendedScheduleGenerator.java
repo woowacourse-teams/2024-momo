@@ -66,14 +66,14 @@ public class TotalRecommendedScheduleGenerator implements RecommendedScheduleGen
             AttendeeGroup nextGroup = dateTimeAttendeeGroupMap.get(nextTime);
 
             if (isDiscontinuous(currentTime, nextTime, currentGroup, nextGroup)) {
-                responses.add(new CandidateSchedule(startTime.startDateTime(), currentTime.endDateTime(), startGroup));
+                responses.add(CandidateSchedule.of(startTime.startDateTime(), currentTime.endDateTime(), startGroup));
                 startTime = nextTime;
                 startGroup = nextGroup;
             }
             currentTime = nextTime;
             currentGroup = nextGroup;
         }
-        responses.add(new CandidateSchedule(startTime.startDateTime(), currentTime.endDateTime(), startGroup));
+        responses.add(CandidateSchedule.of(startTime.startDateTime(), currentTime.endDateTime(), startGroup));
 
         return responses;
     }

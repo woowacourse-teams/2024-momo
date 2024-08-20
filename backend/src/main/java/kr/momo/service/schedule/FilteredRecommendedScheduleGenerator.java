@@ -1,11 +1,9 @@
 package kr.momo.service.schedule;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.CandidateSchedule;
-import kr.momo.domain.schedule.DateAndTimeslot;
 import kr.momo.domain.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,18 +16,16 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
 
     @Override
     public List<CandidateSchedule> recommend(AttendeeGroup filteredGroup, String recommendType) {
-        List<LocalDateTime> intersectedDateTimes = findAllDateTimeAvailableByEveryAttendee(filteredGroup);
-
-        // TODO: CandidateSchedule에 group 정보를 어디서 넣어줄 것인가?
-        List<CandidateSchedule> mergedDateTimes = CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, filteredGroup);
+        List<CandidateSchedule> intersectedDateTimes = findAllDateTimeAvailableByEveryAttendee(filteredGroup);
+        List<CandidateSchedule> mergedDateTimes = CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes);
 
         return sorted(recommendType, mergedDateTimes);
     }
 
-    private List<LocalDateTime> findAllDateTimeAvailableByEveryAttendee(AttendeeGroup filteredGroup) {
+    private List<CandidateSchedule> findAllDateTimeAvailableByEveryAttendee(AttendeeGroup filteredGroup) {
         return scheduleRepository.findAllDateAndTimeslotByEssentialAttendees(
                         filteredGroup.getAttendees(), filteredGroup.size()).stream()
-                .map(DateAndTimeslot::toDateTime)
+                .map(datetimeSlot -> new CandidateSchedule(datetimeSlot.toDateTimeInterval(), filteredGroup))
                 .toList();
     }
 

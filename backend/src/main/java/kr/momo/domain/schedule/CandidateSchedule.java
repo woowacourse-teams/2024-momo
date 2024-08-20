@@ -7,47 +7,57 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.timeslot.Timeslot;
 
 public record CandidateSchedule(
-        LocalDateTime startDateTime, LocalDateTime endDateTime, AttendeeGroup attendeeGroup
+        DateTimeInterval dateTimeInterval, AttendeeGroup attendeeGroup
 ) {
 
-    public CandidateSchedule(DateTimeInterval dateTimeInterval, AttendeeGroup attendeeGroup) {
-        this(dateTimeInterval.startDateTime(), dateTimeInterval.endDateTime(), attendeeGroup);
+    public static CandidateSchedule of(
+            LocalDateTime startDateTime, LocalDateTime endDateTime, AttendeeGroup attendeeGroup
+    ) {
+        return new CandidateSchedule(new DateTimeInterval(startDateTime, endDateTime), attendeeGroup);
     }
 
-    public static List<CandidateSchedule> mergeContinuousDateTime(List<LocalDateTime> dateTimes, AttendeeGroup group) {
-        if (dateTimes.isEmpty()) {
+    public static List<CandidateSchedule> mergeContinuousDateTime(List<CandidateSchedule> schedules) {
+        if (schedules.isEmpty()) {
             return Collections.emptyList();
         }
 
-        Iterator<LocalDateTime> iterator = dateTimes.iterator();
+        Iterator<CandidateSchedule> iterator = schedules.iterator();
 
         List<CandidateSchedule> responses = new ArrayList<>();
-        LocalDateTime startDateTime = iterator.next();
-        LocalDateTime currentDateTime = startDateTime;
+        CandidateSchedule startDateTime = iterator.next();
+        CandidateSchedule currentDateTime = startDateTime;
 
         while (iterator.hasNext()) {
-            LocalDateTime nextDateTime = iterator.next();
+            CandidateSchedule nextDateTime = iterator.next();
 
-            if (isContinuousDateTime(currentDateTime, nextDateTime)) {
-                // TODO: Timeslot.DURATION_IN_MINUTE을 굳이 DateTimeInterval이 알아야 하는가?
-                responses.add(new CandidateSchedule(startDateTime, currentDateTime.plusMinutes(Timeslot.DURATION_IN_MINUTE), group));
+            if (isDiscontinuous(currentDateTime.dateTimeInterval(), nextDateTime.dateTimeInterval())) {
+                responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
+                        startDateTime.attendeeGroup()));
                 startDateTime = nextDateTime;
             }
             currentDateTime = nextDateTime;
         }
-        responses.add(new CandidateSchedule(startDateTime, currentDateTime.plusMinutes(Timeslot.DURATION_IN_MINUTE), group));
+        responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
+                startDateTime.attendeeGroup()));
         return responses;
     }
 
-    private static boolean isContinuousDateTime(LocalDateTime now, LocalDateTime next) {
-        return !(now.plusMinutes(Timeslot.DURATION_IN_MINUTE).equals(next));
+    private static boolean isDiscontinuous(DateTimeInterval now, DateTimeInterval next) {
+        return !now.isSequential(next);
+    }
+
+    public LocalDateTime startDateTime() {
+        return dateTimeInterval.startDateTime();
+    }
+
+    public LocalDateTime endDateTime() {
+        return dateTimeInterval.endDateTime();
     }
 
     public Duration duration() {
-        return Duration.between(startDateTime, endDateTime);
+        return dateTimeInterval.duration();
     }
 
     public int groupSize() {
