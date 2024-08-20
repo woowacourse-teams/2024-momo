@@ -99,8 +99,8 @@ export default function MeetingLinkSharePage() {
             <p>
               {Object.entries(groupDates(meetingInfo.availableDates)).map(([month, dates]) =>
                 dates.length ? (
-                  <div key={month + 1}>
-                    <h3>{Number(month) + 1}월</h3>
+                  <div key={month}>
+                    <h3>{month}월</h3>
                     <span>{dates.join(', ')}</span>
                   </div>
                 ) : null,
