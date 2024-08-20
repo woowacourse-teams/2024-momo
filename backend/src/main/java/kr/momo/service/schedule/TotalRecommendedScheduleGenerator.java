@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TotalRecommendedScheduleGenerator extends RecommendedScheduleGenerator {
 
+    private static final long MAXIMUM_RECOMMEND_COUNT = 10;
+
     protected TotalRecommendedScheduleGenerator(
             ScheduleRepository scheduleRepository, RecommendedScheduleSorterFactory recommendedScheduleSorterFactory
     ) {
@@ -46,5 +48,10 @@ public class TotalRecommendedScheduleGenerator extends RecommendedScheduleGenera
         boolean isSameGroup = currentGroup.equals(nextGroup);
         boolean isSequential = current.dateTimeInterval().isSequential(next.dateTimeInterval());
         return !(isSameGroup && isSequential);
+    }
+
+    @Override
+    long getMaxRecommendCount() {
+        return MAXIMUM_RECOMMEND_COUNT;
     }
 }

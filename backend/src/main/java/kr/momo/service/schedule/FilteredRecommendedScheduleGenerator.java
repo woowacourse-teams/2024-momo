@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FilteredRecommendedScheduleGenerator extends RecommendedScheduleGenerator {
 
+    private static final long MAXIMUM_RECOMMEND_COUNT = 5;
+
     public FilteredRecommendedScheduleGenerator(
             RecommendedScheduleSorterFactory recommendedScheduleSorterFactory, ScheduleRepository scheduleRepository
     ) {
@@ -33,5 +35,10 @@ public class FilteredRecommendedScheduleGenerator extends RecommendedScheduleGen
     @Override
     protected boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next) {
         return !current.dateTimeInterval().isSequential(next.dateTimeInterval());
+    }
+
+    @Override
+    long getMaxRecommendCount() {
+        return MAXIMUM_RECOMMEND_COUNT;
     }
 }

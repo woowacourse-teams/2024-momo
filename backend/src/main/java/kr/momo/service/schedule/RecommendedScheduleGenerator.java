@@ -24,10 +24,14 @@ public abstract class RecommendedScheduleGenerator {
         RecommendedScheduleSorter sorter = recommendedScheduleSorterFactory.getSorterOf(sortStandard);
         sorter.sort(mergedCandidateSchedules);
 
-        return mergedCandidateSchedules;
+        return mergedCandidateSchedules.stream()
+                .limit(getMaxRecommendCount())
+                .toList();
     }
 
     abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group);
 
     abstract boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next);
+
+    abstract long getMaxRecommendCount();
 }
