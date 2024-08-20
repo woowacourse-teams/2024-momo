@@ -66,6 +66,6 @@ const TYPOGRAPHY = {
     fontWeight: FontWeight['light'],
     lineHeight: '1.3',
   },
-};
+} as const; // 공통 Text 컴포넌트에서 size props의 타입을 정의하기 위해서 as const 사용하는 것으로 수정(@해리)
 
 export default TYPOGRAPHY;
