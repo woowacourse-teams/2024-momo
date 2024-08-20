@@ -1,4 +1,4 @@
-import type { MeetingBase, PostMeetingResult } from 'types/meeting';
+import type { PostMeetingResult } from 'types/meeting';
 
 import { BASE_URL } from '@constants/api';
 
@@ -12,6 +12,34 @@ interface MeetingBaseResponse {
   hostName: string;
   availableDates: string[];
   attendeeNames: string[];
+}
+
+export interface MeetingBase {
+  meetingName: string;
+  firstTime: string;
+  lastTime: string;
+  isLocked: boolean;
+  hostName: string;
+  availableDates: string[];
+  attendeeNames: string[];
+}
+
+export interface MeetingRequest {
+  hostName: string;
+  hostPassword: string;
+  meetingName: string;
+  availableMeetingDates: string[];
+  meetingStartTime: string;
+  meetingEndTime: string;
+}
+
+interface PostMeetingResponse {
+  uuid: string;
+  hostName: string;
+  meetingName: string;
+  earliestTime: string;
+  lastTime: string;
+  availableDates: string[];
 }
 
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
@@ -46,6 +74,10 @@ interface PostMeetingRequest {
 interface PostMeetingResponse {
   uuid: string;
   hostName: string;
+  meetingName: string;
+  earliestTime: string;
+  lastTime: string;
+  availableDates: string[];
 }
 
 export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeetingResult> => {
@@ -60,6 +92,10 @@ export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeet
   return {
     uuid: data.uuid,
     userName: data.hostName,
+    meetingName: data.meetingName,
+    firstTime: data.earliestTime,
+    lastTime: data.lastTime,
+    availableDates: data.availableDates,
   };
 };
 
