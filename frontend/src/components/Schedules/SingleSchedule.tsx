@@ -1,6 +1,8 @@
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule } from 'types/schedule';
 
+import { formatTime } from '@utils/date';
+
 import { generateSingleScheduleTable } from './Picker/SchedulePicker.utils';
 import {
   s_container,
@@ -11,7 +13,7 @@ import {
   s_timeColumn,
   s_timeText,
 } from './Schedules.styles';
-import { formatDate, formatTime } from './Schedules.util';
+import { formatDate } from './Schedules.util';
 
 interface SingleScheduleProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;

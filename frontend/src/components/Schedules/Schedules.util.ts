@@ -12,13 +12,6 @@ export const formatDate = (dateString: string) => {
   } as const;
 };
 
-export const formatTime = (time: string) => {
-  const hour = parseInt(time);
-  const hourPrefix = hour >= 12 ? '오후' : '오전';
-
-  return `${hourPrefix} ${hour % 12 || 12}시`;
-};
-
 export const getTooltipPosition = (
   rowIndex: number,
   columnIndex: number,

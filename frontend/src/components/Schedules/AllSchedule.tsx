@@ -3,6 +3,8 @@ import type { MeetingAllSchedules } from 'types/schedule';
 
 import AttendeeTooltip from '@components/AttendeeTooltip';
 
+import { formatTime } from '@utils/date';
+
 import { generateAllScheduleTable } from './Picker/SchedulePicker.utils';
 import {
   s_container,
@@ -13,7 +15,7 @@ import {
   s_timeColumn,
   s_timeText,
 } from './Schedules.styles';
-import { formatDate, formatTime, getTooltipPosition } from './Schedules.util';
+import { formatDate, getTooltipPosition } from './Schedules.util';
 
 interface AllSchedulesProps extends MeetingDateTime {
   meetingAllSchedules: MeetingAllSchedules;
