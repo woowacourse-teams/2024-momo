@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import PasswordInput from '@components/PasswordInput';
 import TimeRangeSelector from '@components/TimeRangeSelector';
+import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
@@ -14,7 +15,7 @@ import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
 
-import { s_confirm, s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
+import { s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
@@ -63,7 +64,6 @@ export default function CreateMeetingPage() {
     const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
     const hasErrors = errorMessages.some((errorMessage) => errorMessage !== null);
 
-    return !errorMessages.some((errorMessage) => errorMessage !== null);
     if (hasErrors) {
       return false;
     }
@@ -77,19 +77,15 @@ export default function CreateMeetingPage() {
   };
 
   const handleMeetingCreateButtonClick = () => {
-    const isAvailableButtonClick = isFormValid();
-
-    if (isAvailableButtonClick) {
-      postMeetingMutation.mutate({
-        hostName: hostName,
-        hostPassword: hostPassword,
-        meetingName: meetingName,
-        availableMeetingDates: selectedDates,
-        meetingStartTime: startTime.value,
-        // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-        meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
-      });
-    }
+    postMeetingMutation.mutate({
+      hostName: hostName,
+      hostPassword: hostPassword,
+      meetingName: meetingName,
+      availableMeetingDates: selectedDates,
+      meetingStartTime: startTime.value,
+      // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
+      meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
+    });
   };
 
   return (
@@ -133,9 +129,14 @@ export default function CreateMeetingPage() {
         </Field>
 
         <div css={s_confirmContainer}>
-          <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
+          <Button
+            variant="primary"
+            size="m"
+            onClick={handleMeetingCreateButtonClick}
+            disabled={!isFormValid()}
+          >
             약속 생성하기
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '@contexts/AuthProvider';
 
 import PasswordInput from '@components/PasswordInput';
+import { Button } from '@components/_common/Buttons/Button';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
@@ -13,7 +14,7 @@ import { postUserLogin } from '@apis/users';
 
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
 
-import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
+import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
   const authContext = useContext(AuthContext);
@@ -96,9 +97,14 @@ export default function AttendeeLoginPage() {
           <Field.ErrorMessage errorMessage={attendeePasswordErrorMessage} />
         </Field>
       </div>
-      <button css={s_button} onClick={handleLoginButtonClick}>
+      <Button
+        variant="primary"
+        size="full"
+        onClick={handleLoginButtonClick}
+        disabled={!isFormValid()}
+      >
         로그인
-      </button>
+      </Button>
     </div>
   );
 }
