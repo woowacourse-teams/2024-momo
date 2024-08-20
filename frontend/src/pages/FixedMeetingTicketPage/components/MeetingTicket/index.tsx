@@ -7,7 +7,7 @@ export default function MeetingTicket() {
   return (
     <div css={s_container}>
       <div css={s_characterWrapper}>
-        <MomoCharacter width={172} height={180} />
+        <MomoCharacter width={180} height={180} />
       </div>
       <TicketInfo />
     </div>

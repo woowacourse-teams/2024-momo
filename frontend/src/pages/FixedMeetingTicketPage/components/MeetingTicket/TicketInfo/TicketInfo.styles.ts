@@ -21,7 +21,7 @@ export const s_meetingName = css`
 export const s_ticketInfoContainer = css`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 `;
 
 export const s_ticketInfoTitle = css`
@@ -31,7 +31,7 @@ export const s_ticketInfoTitle = css`
 export const s_attendeeNamesContainer = css`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
 `;
 
 export const s_attendeeNameTag = css`
