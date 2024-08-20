@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
+import PasswordInput from '@components/PasswordInput';
 import TimeRangeSelector from '@components/TimeRangeSelector';
+import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
@@ -11,14 +13,41 @@ import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdo
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
-import { s_confirm, s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
+
+import { s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
 
-  const { value: meetingName, onValueChange: handleMeetingNameChange } = useInput('');
-  const { value: hostName, onValueChange: handleHostNameChange } = useInput('');
-  const { value: hostPassword, onValueChange: handleHostPasswordChange } = useInput('');
+  const {
+    value: meetingName,
+    onValueChange: handleMeetingNameChange,
+    errorMessage: meetingNameErrorMessage,
+  } = useInput({
+    minLength: INPUT_FIELD_RULES.meetingName.minLength,
+    maxLength: INPUT_FIELD_RULES.meetingName.maxLength,
+  });
+
+  const {
+    value: hostName,
+    onValueChange: handleHostNameChange,
+    errorMessage: hostNameErrorMessage,
+  } = useInput({
+    minLength: INPUT_FIELD_RULES.nickname.minLength,
+    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+  });
+
+  const {
+    value: hostPassword,
+    onValueChange: handleHostPasswordChange,
+    errorMessage: hostPasswordError,
+  } = useInput({
+    minLength: INPUT_FIELD_RULES.password.minLength,
+    maxLength: INPUT_FIELD_RULES.password.maxLength,
+    pattern: INPUT_FIELD_RULES.password.pattern,
+  });
+
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
@@ -29,6 +58,22 @@ export default function CreateMeetingPage() {
     setSelectedDates((prevDates) =>
       hasDate(date) ? prevDates.filter((d) => d !== date) : [...prevDates, date],
     );
+  };
+
+  const isFormValid = () => {
+    const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
+    const hasErrors = errorMessages.some((errorMessage) => errorMessage !== null);
+
+    if (hasErrors) {
+      return false;
+    }
+
+    const requiredFields = [meetingName, hostName, hostPassword];
+    const areRequiredFieldsFilled = requiredFields.every((field) => field !== '');
+    const areDatesSelected = selectedDates.length > 0;
+    const isAllFieldsFilled = areRequiredFieldsFilled && areDatesSelected;
+
+    return isAllFieldsFilled;
   };
 
   const handleMeetingCreateButtonClick = () => {
@@ -47,46 +92,34 @@ export default function CreateMeetingPage() {
     <div>
       {/* 추후 form 태그로 수정 예정 (@Largopie) */}
       <div css={s_formContainer}>
-        <Field
-          id="약속이름"
-          labelText="약속 이름"
-          description="약속 이름은 20자 이내로 입력해 주세요."
-        >
-          <Input
-            id="약속이름"
-            maxLength={20}
-            value={meetingName}
-            onChange={handleMeetingNameChange}
-          />
+        <Field>
+          <Field.Label id="약속이름" labelText="약속 이름" />
+          <Field.Description description={FIELD_DESCRIPTIONS.meetingName} />
+          <Input id="약속이름" value={meetingName} onChange={handleMeetingNameChange} />
+          <Field.ErrorMessage errorMessage={meetingNameErrorMessage} />
         </Field>
 
-        <Field
-          id="닉네임"
-          labelText="닉네임"
-          description="약속에서 사용할 닉네임을 5자 이내로 입력해 주세요."
-        >
-          <Input id="닉네임" maxLength={5} value={hostName} onChange={handleHostNameChange} />
+        <Field>
+          <Field.Label id="닉네임" labelText="닉네임" />
+          <Field.Description description={FIELD_DESCRIPTIONS.nickname} />
+          <Input id="닉네임" value={hostName} onChange={handleHostNameChange} />
+          <Field.ErrorMessage errorMessage={hostNameErrorMessage} />
         </Field>
 
-        <Field
-          id="비밀번호"
-          labelText="비밀번호"
-          description="약속에서 사용할 비밀번호를 4자 이내로 입력해 주세요."
-        >
-          <Input
-            id="비밀번호"
-            type="password"
-            maxLength={4}
-            value={hostPassword}
-            onChange={handleHostPasswordChange}
-          />
+        <Field>
+          <Field.Label id="비밀번호" labelText="비밀번호" />
+          <Field.Description description={FIELD_DESCRIPTIONS.password} />
+          <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
+          <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>
 
-        <Field id="날짜선택" labelText="약속 날짜 선택">
+        <Field>
+          <Field.Label id="날짜선택" labelText="약속 날짜 선택" />
           <Calendar hasDate={hasDate} onDateClick={handleDateClick} />
         </Field>
 
-        <Field id="약속시간범위선택" labelText="약속 시간 범위 선택">
+        <Field>
+          <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
           <TimeRangeSelector
             startTime={startTime}
             endTime={endTime}
@@ -94,10 +127,16 @@ export default function CreateMeetingPage() {
             handleEndTimeChange={handleEndTimeChange}
           />
         </Field>
+
         <div css={s_confirmContainer}>
-          <button css={s_confirm} onClick={handleMeetingCreateButtonClick}>
+          <Button
+            variant="primary"
+            size="m"
+            onClick={handleMeetingCreateButtonClick}
+            disabled={!isFormValid()}
+          >
             약속 생성하기
-          </button>
+          </Button>
         </div>
       </div>
     </div>
