@@ -1,8 +1,6 @@
 import { css } from '@emotion/react';
 import type { TooltipPosition } from 'types/tooltip';
 
-// import theme from '@styles/theme';
-
 export const tooltipContainer = css`
   position: relative;
   width: 100%;
