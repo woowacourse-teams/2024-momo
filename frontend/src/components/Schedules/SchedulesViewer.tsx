@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
