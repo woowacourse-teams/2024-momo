@@ -1,6 +1,8 @@
 import { css } from '@emotion/react';
 import type { TooltipPosition } from 'types/tooltip';
 
+// import theme from '@styles/theme';
+
 export const tooltipContainer = css`
   position: relative;
   width: 100%;
@@ -9,13 +11,6 @@ export const tooltipContainer = css`
 
 export const tooltipContent = css`
   position: absolute;
-
-  padding: 1.2rem;
-
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 0.8rem;
-  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);
 `;
 
 export const getTooltipPosition = (position: TooltipPosition, targetRect: DOMRect | undefined) => {
