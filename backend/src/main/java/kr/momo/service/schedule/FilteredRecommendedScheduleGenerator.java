@@ -1,9 +1,6 @@
 package kr.momo.service.schedule;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.CandidateSchedule;
@@ -46,7 +43,7 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
     private List<CandidateSchedule> sorted(String recommendType, List<CandidateSchedule> mergedDateTimes) {
         // TODO: Comparator 추상화
         Comparator<CandidateSchedule> comparator;
-        if (recommendType.equals(ScheduleRecommender.EARLIEST_ORDER.getType())) {
+        if (recommendType.equals(RecommendedScheduleSortStandard.EARLIEST_ORDER.getType())) {
             comparator = Comparator.comparing(CandidateSchedule::startDateTime);
         } else {
             comparator = Comparator.comparing(CandidateSchedule::duration).reversed();

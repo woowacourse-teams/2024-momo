@@ -1,7 +1,7 @@
 package kr.momo.service.schedule;
 
-import static kr.momo.service.schedule.ScheduleRecommender.EARLIEST_ORDER;
-import static kr.momo.service.schedule.ScheduleRecommender.LONG_TERM_ORDER;
+import static kr.momo.service.schedule.RecommendedScheduleSortStandard.EARLIEST_ORDER;
+import static kr.momo.service.schedule.RecommendedScheduleSortStandard.LONG_TERM_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
