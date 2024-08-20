@@ -11,7 +11,7 @@ import useInput from '@hooks/useInput/useInput';
 
 import { postUserLogin } from '@apis/users';
 
-import { INPUT_FIELD_RULES } from '@constants/inputFields';
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
 
 import { s_button, s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
@@ -40,6 +40,21 @@ export default function AttendeeLoginPage() {
     maxLength: INPUT_FIELD_RULES.password.maxLength,
     pattern: INPUT_FIELD_RULES.password.pattern,
   });
+
+  const isFormValid = () => {
+    const errorMessages = [attendeeNameErrorMessage, attendeePasswordErrorMessage];
+    const hasErrors = errorMessages.some((errorMessage) => errorMessage !== null);
+
+    if (hasErrors) {
+      return false;
+    }
+
+    const requiredFields = [attendeeName, attendeePassword];
+    const isAllFieldsFilled = requiredFields.every((field) => field !== '');
+
+    return isAllFieldsFilled;
+  };
+
   const handleLoginButtonClick = async () => {
     if (!uuid) {
       console.error('UUID is missing');
@@ -61,6 +76,7 @@ export default function AttendeeLoginPage() {
       <div css={s_inputContainer}>
         <Field>
           <Field.Label id="닉네임" labelText="닉네임" />
+          <Field.Description description={FIELD_DESCRIPTIONS.nickname} />
           <Input
             placeholder="닉네임을 입력하세요."
             value={attendeeName}
@@ -71,7 +87,7 @@ export default function AttendeeLoginPage() {
 
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
-          <Field.Description description="비밀번호를 1~10자 사이로 입력해 주세요. 사용 가능한 문자는 알파벳, 숫자, 특수문자(!@#$%)입니다." />
+          <Field.Description description={FIELD_DESCRIPTIONS.password} />
           <PasswordInput
             placeholder="비밀번호를 입력하세요."
             value={attendeePassword}

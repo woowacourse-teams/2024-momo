@@ -61,8 +61,19 @@ export default function CreateMeetingPage() {
 
   const isFormValid = () => {
     const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
+    const hasErrors = errorMessages.some((errorMessage) => errorMessage !== null);
 
     return !errorMessages.some((errorMessage) => errorMessage !== null);
+    if (hasErrors) {
+      return false;
+    }
+
+    const requiredFields = [meetingName, hostName, hostPassword];
+    const areRequiredFieldsFilled = requiredFields.every((field) => field !== '');
+    const areDatesSelected = selectedDates.length > 0;
+    const isAllFieldsFilled = areRequiredFieldsFilled && areDatesSelected;
+
+    return isAllFieldsFilled;
   };
 
   const handleMeetingCreateButtonClick = () => {
