@@ -1,7 +1,9 @@
 import { css } from '@emotion/react';
 
+// note : Header z-index 관련 문제 해결
 export const s_header = css`
   position: sticky;
+  z-index: 3;
   top: 0;
 
   display: flex;
