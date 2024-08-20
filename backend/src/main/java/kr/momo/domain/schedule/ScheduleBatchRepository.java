@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ScheduleBatchRepository {
 
-    private static final int BATCH_SIZE = 1000;
-
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
@@ -41,7 +39,7 @@ public class ScheduleBatchRepository {
 
             @Override
             public int getBatchSize() {
-                return BATCH_SIZE;
+                return schedules.size();
             }
         });
     }
