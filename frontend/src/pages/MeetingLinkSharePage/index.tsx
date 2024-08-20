@@ -13,6 +13,7 @@ import KakaoIcon from '@assets/images/kakao.svg';
 import LogoSunglass from '@assets/images/logoSunglass.svg';
 
 import {
+  s_availableDatesContainer,
   s_button,
   s_buttonContainer,
   s_check,
@@ -90,14 +91,14 @@ export default function MeetingLinkSharePage() {
           </div>
           <div css={s_description}>
             <h2>끝시간</h2>
-            <p>{meetingInfo.lastTime}</p>
+            <p>{meetingInfo.lastTime === '00:00' ? '24:00' : meetingInfo.lastTime}</p>
           </div>
           <div css={s_description}>
             <h2>가능시간</h2>
             <p>
               {Object.entries(groupDates(meetingInfo.availableDates)).map(([month, dates]) =>
                 dates.length ? (
-                  <div key={month}>
+                  <div css={s_availableDatesContainer} key={month}>
                     <h3>{month}월</h3>
                     <span>{dates.join(', ')}</span>
                   </div>

@@ -129,3 +129,9 @@ export const s_description = css`
     ${theme.typography.captionMedium}
   }
 `;
+
+export const s_availableDatesContainer = css`
+  display: grid;
+  grid-template-columns: 1fr 10fr;
+  gap: 0.4rem;
+`;
