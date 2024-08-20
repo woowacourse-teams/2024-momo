@@ -26,7 +26,7 @@ class RecommendedScheduleGeneratorFactoryTest {
     @DisplayName("미팅에 참여하는 전체 그룹과 필터링된 그룹에 따라 적절한 추천 스케줄 생성기를 반환한다.")
     @ParameterizedTest
     @MethodSource("foo")
-    void findProperRecommenderBeanTest(List<String> attendeeNames, Class<?> expected) {
+    void extractProperSortedDiscreteScheduleOfRecommenderBeanTest(List<String> attendeeNames, Class<?> expected) {
         // Given
         Meeting meeting = MeetingFixture.DRINK.create();
         List<Attendee> attendees = List.of(
