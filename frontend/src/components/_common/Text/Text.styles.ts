@@ -11,7 +11,6 @@ const TEXT_COLOR_STYLES: Record<TextVariant, CSSProperties['color']> = {
   default: theme.colors.black,
   warning: '#EF4545',
   caption: '#71717a',
-  accent: theme.colors.pink.medium,
 };
 
 const TEXT_TYPOGRAPHIES: Record<keyof typeof TYPOGRAPHY, SerializedStyles> = {
