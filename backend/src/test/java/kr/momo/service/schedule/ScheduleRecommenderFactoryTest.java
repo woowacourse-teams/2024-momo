@@ -18,10 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-class RecommendedScheduleGeneratorFactoryTest {
+class ScheduleRecommenderFactoryTest {
 
     @Autowired
-    private RecommendedScheduleGeneratorFactory recommendedScheduleGeneratorFactory;
+    private ScheduleRecommenderFactory scheduleRecommenderFactory;
 
     @DisplayName("미팅에 참여하는 전체 그룹과 필터링된 그룹에 따라 적절한 추천 스케줄 생성기를 반환한다.")
     @ParameterizedTest
@@ -38,7 +38,7 @@ class RecommendedScheduleGeneratorFactoryTest {
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(attendeeNames);
 
         // When & Then
-        assertThat(recommendedScheduleGeneratorFactory.getRecommenderOf(attendeeGroup, filteredGroup))
+        assertThat(scheduleRecommenderFactory.getRecommenderOf(attendeeGroup, filteredGroup))
                 .isInstanceOf(expected);
     }
 
@@ -46,11 +46,11 @@ class RecommendedScheduleGeneratorFactoryTest {
         return Stream.of(
                 Arguments.of(
                         List.of("jazz", "daon"),
-                        FilteredRecommendedScheduleGenerator.class
+                        FilteredScheduleRecommender.class
                 ),
                 Arguments.of(
                         List.of("jazz", "daon", "pedro"),
-                        TotalRecommendedScheduleGenerator.class
+                        TotalScheduleRecommender.class
                 )
         );
     }

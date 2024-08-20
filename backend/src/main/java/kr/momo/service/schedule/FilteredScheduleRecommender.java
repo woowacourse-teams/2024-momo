@@ -8,11 +8,11 @@ import kr.momo.domain.schedule.ScheduleRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FilteredRecommendedScheduleGenerator extends RecommendedScheduleGenerator {
+public class FilteredScheduleRecommender extends ScheduleRecommender {
 
     private static final long MAXIMUM_RECOMMEND_COUNT = 5;
 
-    public FilteredRecommendedScheduleGenerator(
+    public FilteredScheduleRecommender(
             RecommendedScheduleSorterFactory recommendedScheduleSorterFactory, ScheduleRepository scheduleRepository
     ) {
         super(scheduleRepository, recommendedScheduleSorterFactory);

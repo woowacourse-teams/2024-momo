@@ -38,8 +38,8 @@ public class ScheduleService {
     private final AttendeeRepository attendeeRepository;
     private final ScheduleRepository scheduleRepository;
     private final AvailableDateRepository availableDateRepository;
-    private final RecommendedScheduleGeneratorFactory recommendedScheduleGeneratorFactory;
     private final ScheduleBatchRepository scheduleBatchRepository;
+    private final ScheduleRecommenderFactory scheduleRecommenderFactory;
 
     @Transactional
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
@@ -122,7 +122,7 @@ public class ScheduleService {
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(names);
 
-        RecommendedScheduleGenerator recommender = recommendedScheduleGeneratorFactory.getRecommenderOf(
+        ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
                 attendeeGroup,filteredGroup
         );
         List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);

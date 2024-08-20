@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public abstract class RecommendedScheduleGenerator {
+public abstract class ScheduleRecommender {
 
     protected final ScheduleRepository scheduleRepository;
     private final RecommendedScheduleSorterFactory recommendedScheduleSorterFactory;

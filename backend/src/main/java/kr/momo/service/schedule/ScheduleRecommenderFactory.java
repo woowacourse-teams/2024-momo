@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecommendedScheduleGeneratorFactory {
+public class ScheduleRecommenderFactory {
 
-    private final Map<String, RecommendedScheduleGenerator> candidates;
+    private final Map<String, ScheduleRecommender> candidates;
 
-    public RecommendedScheduleGenerator getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup) {
+    public ScheduleRecommender getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup) {
         // TODO: containsAll 로 체크해야 함
         if (attendeeGroup.size() == filteredGroup.size()) {
-            return candidates.get(fetchBeanName(TotalRecommendedScheduleGenerator.class));
+            return candidates.get(fetchBeanName(TotalScheduleRecommender.class));
         }
-        return candidates.get(fetchBeanName(FilteredRecommendedScheduleGenerator.class));
+        return candidates.get(fetchBeanName(FilteredScheduleRecommender.class));
     }
 
     private String fetchBeanName(Class<?> clazz) {
