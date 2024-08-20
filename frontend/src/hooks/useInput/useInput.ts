@@ -11,7 +11,7 @@ const useInput = (rules?: ValidationRules) => {
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const getValidationError = (input: string): string | null => {
+  const getValidationError = (input: string) => {
     if (!rules) return null;
 
     if (rules.minLength && input.length < rules.minLength) {
