@@ -9,7 +9,7 @@ interface UseTimePickReturn {
   tableValue: number[][];
 }
 
-const DATES_PER_PAGE = 3;
+const DATES_PER_PAGE = 5;
 
 type UsePagedTimePickHook = (
   availableDates: string[],

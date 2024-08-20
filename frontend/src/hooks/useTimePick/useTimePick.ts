@@ -21,7 +21,7 @@ export default function useTimePick(initialTableValue: number[][], currentDatePa
   const getActualIndex = useCallback(
     (index: TimePickTableIndex) => {
       const { rowIndex, colIndex } = index;
-      const actualColIndex = colIndex + currentDatePage * 3;
+      const actualColIndex = colIndex + currentDatePage * 5;
       return { rowIndex, colIndex: actualColIndex };
     },
     [currentDatePage],

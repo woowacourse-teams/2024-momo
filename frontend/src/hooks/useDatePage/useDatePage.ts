@@ -31,7 +31,7 @@ type UseDatePageHook = (availableDates: string[]) => UseDatePageReturn;
  * @property {boolean} isLastPage - 현재 페이지가 마지막 페이지인지 여부
  */
 
-const DATES_PER_PAGE = 3;
+const DATES_PER_PAGE = 5;
 
 const useDatePage: UseDatePageHook = (availableDates) => {
   const [currentDatePage, setCurrentDatePage] = useState(0);
