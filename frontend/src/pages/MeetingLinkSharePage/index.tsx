@@ -71,8 +71,6 @@ export default function MeetingLinkSharePage() {
     }
   }, [Kakao]);
 
-  console.log(groupDates(meetingInfo.availableDates));
-
   return (
     <div css={s_container}>
       <LogoSunglass width="160" height="160" />
