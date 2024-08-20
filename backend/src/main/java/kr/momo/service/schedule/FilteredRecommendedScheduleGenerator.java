@@ -1,9 +1,13 @@
 package kr.momo.service.schedule;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.CandidateSchedule;
+import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,7 +21,7 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
     @Override
     public List<CandidateSchedule> recommend(AttendeeGroup filteredGroup, String recommendType) {
         List<CandidateSchedule> intersectedDateTimes = findAllDateTimeAvailableByEveryAttendee(filteredGroup);
-        List<CandidateSchedule> mergedDateTimes = CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes);
+        List<CandidateSchedule> mergedDateTimes = mergeContinuousDateTime(intersectedDateTimes);
 
         return sorted(recommendType, mergedDateTimes);
     }
@@ -27,6 +31,36 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
                         filteredGroup.getAttendees(), filteredGroup.size()).stream()
                 .map(datetimeSlot -> new CandidateSchedule(datetimeSlot.toDateTimeInterval(), filteredGroup))
                 .toList();
+    }
+
+    private List<CandidateSchedule> mergeContinuousDateTime(List<CandidateSchedule> schedules) {
+        if (schedules.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Iterator<CandidateSchedule> iterator = schedules.iterator();
+
+        List<CandidateSchedule> responses = new ArrayList<>();
+        CandidateSchedule startDateTime = iterator.next();
+        CandidateSchedule currentDateTime = startDateTime;
+
+        while (iterator.hasNext()) {
+            CandidateSchedule nextDateTime = iterator.next();
+
+            if (isDiscontinuous(currentDateTime.dateTimeInterval(), nextDateTime.dateTimeInterval())) {
+                responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
+                        startDateTime.attendeeGroup()));
+                startDateTime = nextDateTime;
+            }
+            currentDateTime = nextDateTime;
+        }
+        responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
+                startDateTime.attendeeGroup()));
+        return responses;
+    }
+
+    private boolean isDiscontinuous(DateTimeInterval now, DateTimeInterval next) {
+        return !now.isSequential(next);
     }
 
     private List<CandidateSchedule> sorted(String recommendType, List<CandidateSchedule> mergedDateTimes) {
