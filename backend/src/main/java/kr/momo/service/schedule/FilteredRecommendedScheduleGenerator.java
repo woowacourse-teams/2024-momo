@@ -18,7 +18,7 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
 
     @Override
     public List<CandidateSchedule> recommend(AttendeeGroup filteredGroup, String recommendType) {
-        List<LocalDateTime> intersectedDateTimes = mergeContinuousTime(filteredGroup);
+        List<LocalDateTime> intersectedDateTimes = findAllDateTimeAvailableByEveryAttendee(filteredGroup);
 
         // TODO: CandidateSchedule에 group 정보를 어디서 넣어줄 것인가?
         List<CandidateSchedule> mergedDateTimes = CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, filteredGroup);
@@ -26,8 +26,8 @@ public class FilteredRecommendedScheduleGenerator implements RecommendedSchedule
         return sorted(recommendType, mergedDateTimes);
     }
 
-    private List<LocalDateTime> mergeContinuousTime(AttendeeGroup filteredGroup) {
-        return scheduleRepository.findAllDateAndTimeslotByEssentialAttendeeIds(
+    private List<LocalDateTime> findAllDateTimeAvailableByEveryAttendee(AttendeeGroup filteredGroup) {
+        return scheduleRepository.findAllDateAndTimeslotByEssentialAttendees(
                         filteredGroup.getAttendees(), filteredGroup.size()).stream()
                 .map(DateAndTimeslot::toDateTime)
                 .toList();
