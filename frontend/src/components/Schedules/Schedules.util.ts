@@ -135,7 +135,7 @@ export const generateSingleScheduleTable = ({
     times.forEach((time) => {
       const rowIndex = timeSlotIndex[time];
 
-      if (colIndex != -1 && rowIndex !== undefined) {
+      if (rowIndex !== undefined && colIndex !== -1) {
         singleScheduleTable[rowIndex][colIndex] = 1;
       }
     });
@@ -144,26 +144,85 @@ export const generateSingleScheduleTable = ({
   return singleScheduleTable;
 };
 
-export const convertToSchedule = (
-  selectedScheduleTable: number[][],
+const generateAvailableSchedules = (
   availableDates: string[],
-  startTime: string,
-  endTime: string,
+  selectedScheduleTable: number[][],
+  timeSlots: string[],
 ): MeetingSingeScheduleItem[] => {
-  const timeSlots = generateTimeSlots(startTime, endTime);
-  const schedules = availableDates.map((date, colIndex) => {
-    const times: string[] = [];
+  return availableDates
+    .map((date, colIndex) => {
+      const times: string[] = [];
 
-    selectedScheduleTable.forEach((row, rowIndex) => {
-      if (row[colIndex]) {
-        times.push(timeSlots[rowIndex]);
-      }
-    });
+      selectedScheduleTable.forEach((row, rowIndex) => {
+        if (row[colIndex]) {
+          times.push(timeSlots[rowIndex]);
+        }
+      });
 
-    return { date, times };
-  });
+      return { date, times };
+    })
+    .filter((schedule) => schedule.times.length > 0);
+};
 
-  return schedules.filter((schedule) => schedule.times.length > 0);
+const generateUnavailableSchedules = (
+  availableDates: string[],
+  selectedScheduleTable: number[][],
+  timeSlots: string[],
+): MeetingSingeScheduleItem[] => {
+  return availableDates
+    .map((date, colIndex) => {
+      const times: string[] = [];
+
+      selectedScheduleTable.forEach((row, rowIndex) => {
+        if (!row[colIndex]) {
+          times.push(timeSlots[rowIndex]);
+        }
+      });
+
+      return { date, times };
+    })
+    .filter((schedule) => schedule.times.length > 0);
+};
+
+interface ConvertToScheduleArgs extends MeetingDateTime {
+  selectedScheduleTable: number[][];
+  selectMode: 'available' | 'unavailable';
+}
+
+/**
+ * 사용자가 선택한 시간 테이블을 기반으로 약속에 참여할 수 있는 시간을 계산하여 반환합니다.
+ * 이 함수는 선택 모드(`selectMode`)에 따라 사용자가 선택한 시간을 전체 시간 범위에서 필터링하여 결과를 생성합니다.
+ *
+ * @param {Object} args - 함수에 전달되는 인자를 포함하는 객체.
+ * @param {number[][]} args.selectedScheduleTable - 2차원 배열로, 각 셀은 사용자가 선택한 시간을 나타냅니다.
+ * (배열의 값은 1(선택됨) 또는 0(선택되지 않음)입니다.)
+ * @param {string[]} args.availableDates - 약속을 잡을 수 있는 날짜 목록, 각 날짜는 "YYYY-MM-DD" 형식입니다.
+ * @param {string} args.firstTime - 일정의 시작 시간 ("HH:MM" 형식).
+ * @param {string} args.lastTime - 일정의 종료 시간 ("HH:MM" 형식).
+ * @param {'available' | 'unavailable'} args.selectMode - 시간 선택 모드를 표현합니다.
+ * ('available'이면 사용자가 선택한 시간(되는 시간)을 포함하고,
+ * 'unavailable'이면 선택되지 않은 시간(안되는 시간)을 포함합니다.)
+ *
+ * @returns {MeetingSingeScheduleItem[]} 각 날짜별로 약속 가능한 시간 슬롯이 포함된 객체 배열, 시간 슬롯이 없는 날짜는 결과에서 제외됩니다.
+ *
+ * @example
+ * 해당 함수에 대한 예시는 주석이 너무 길어질 것을 우려해 작성하지는 않겠습니다 (@해리)
+ */
+
+export const convertToSchedule = ({
+  availableDates,
+  firstTime,
+  lastTime,
+  selectedScheduleTable,
+  selectMode,
+}: ConvertToScheduleArgs): MeetingSingeScheduleItem[] => {
+  const timeSlots = generateTimeSlots(firstTime, lastTime);
+
+  if (selectMode === 'available') {
+    return generateAvailableSchedules(availableDates, selectedScheduleTable, timeSlots);
+  }
+
+  return generateUnavailableSchedules(availableDates, selectedScheduleTable, timeSlots);
 };
 
 export const getTooltipPosition = (
