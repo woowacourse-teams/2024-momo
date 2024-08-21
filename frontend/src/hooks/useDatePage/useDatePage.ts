@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { DATES_PER_PAGE } from '@constants/date';
+
 interface UseDatePageReturn {
   currentDatePage: number;
   currentDates: string[];
@@ -30,8 +32,6 @@ type UseDatePageHook = (availableDates: string[]) => UseDatePageReturn;
  * @property {boolean} isFirstPage - 현재 페이지가 첫 페이지인지 여부
  * @property {boolean} isLastPage - 현재 페이지가 마지막 페이지인지 여부
  */
-
-const DATES_PER_PAGE = 5;
 
 const useDatePage: UseDatePageHook = (availableDates) => {
   const [currentDatePage, setCurrentDatePage] = useState(0);
