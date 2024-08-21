@@ -13,6 +13,7 @@ import kr.momo.domain.meeting.Meeting;
 
 public record ConfirmedMeetingResponse(
         String meetingName,
+        String hostName,
         List<String> availableAttendeeNames,
         @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
         LocalDate startDate,
@@ -27,10 +28,11 @@ public record ConfirmedMeetingResponse(
 ) {
 
     public static ConfirmedMeetingResponse from(
-            Meeting meeting, List<Attendee> attendees, ConfirmedMeeting confirmedMeeting
+            Meeting meeting, Attendee host, List<Attendee> attendees, ConfirmedMeeting confirmedMeeting
     ) {
         return new ConfirmedMeetingResponse(
                 meeting.getName(),
+                host.name(),
                 attendees.stream().map(Attendee::name).toList(),
                 confirmedMeeting.getStartDateTime().toLocalDate(),
                 confirmedMeeting.getStartDateTime().toLocalTime(),

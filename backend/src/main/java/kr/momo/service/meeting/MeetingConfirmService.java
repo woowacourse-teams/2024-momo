@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
@@ -107,12 +108,13 @@ public class MeetingConfirmService {
         ConfirmedMeeting confirmedMeeting = confirmedMeetingRepository.findByMeeting(meeting)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_CONFIRMED));
 
-        List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
-        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
+        AttendeeGroup attendees = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
+        Attendee host = attendees.findHost()
+                .orElseThrow(() -> new MomoException(AttendeeErrorCode.HOST_NOT_FOUND));
+        List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees.getAttendees());
+        List<Attendee> availableAttendees = confirmedMeeting.availableAttendeesOf(schedules);
 
-        attendees = confirmedMeeting.availableAttendeesOf(schedules);
-
-        return ConfirmedMeetingResponse.from(meeting, attendees, confirmedMeeting);
+        return ConfirmedMeetingResponse.from(meeting, host, availableAttendees, confirmedMeeting);
     }
 
     @Transactional
