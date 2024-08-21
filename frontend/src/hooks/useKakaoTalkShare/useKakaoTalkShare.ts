@@ -16,7 +16,7 @@ interface KakaoTalkShareInfo {
 export default function useKakaoTalkShare() {
   const { Kakao } = window;
 
-  const onShareKakaoTalk = (templateId: number, shareInfo: KakaoTalkShareInfo) => {
+  const handleKakaoTalkShare = (templateId: number, shareInfo: KakaoTalkShareInfo) => {
     Kakao.Share.sendCustom({
       templateId: templateId,
       templateArgs: {
@@ -33,5 +33,5 @@ export default function useKakaoTalkShare() {
     }
   }, [Kakao]);
 
-  return { onShareKakaoTalk };
+  return { handleKakaoTalkShare };
 }

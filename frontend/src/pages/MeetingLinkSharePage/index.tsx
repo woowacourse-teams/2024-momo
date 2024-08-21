@@ -47,7 +47,7 @@ export default function MeetingLinkSharePage() {
   const uuid = params.uuid!;
   const LINK = `${window.location.protocol}//${window.location.host}/meeting/${uuid}`;
 
-  const { onShareKakaoTalk: handleShareKakaoTalk } = useKakaoTalkShare();
+  const { handleKakaoTalkShare } = useKakaoTalkShare();
 
   const handleCopyClick = async () => {
     setCopyComplete(true);
@@ -55,7 +55,7 @@ export default function MeetingLinkSharePage() {
   };
 
   const handleKakaoButtonClick = () => {
-    handleShareKakaoTalk(MEETING_INVITE_TEMPLATE_ID, {
+    handleKakaoTalkShare(MEETING_INVITE_TEMPLATE_ID, {
       path: uuid,
       hostName: meetingInfo.userName,
       meetingName: meetingInfo.meetingName,
