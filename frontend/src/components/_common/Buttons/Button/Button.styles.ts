@@ -41,9 +41,16 @@ export const s_baseButton = (borderRadius: number | string) => css`
   border-radius: ${borderRadius};
 
   :disabled {
-    pointer-events: none;
     cursor: not-allowed;
-    opacity: 0.6;
+    color: ${theme.colors.white};
+    background: ${theme.colors.grey.primary};
+    border: none;
+
+    &:hover {
+      color: ${theme.colors.white};
+      background: ${theme.colors.grey.primary};
+      border: none;
+    }
   }
 `;
 
@@ -69,6 +76,10 @@ export const s_variant = {
       background-color: ${theme.colors.primary};
       border: none;
     }
+  `,
+  transparent: css`
+    background-color: transparent;
+    border: none;
   `,
   kakao: css`
     background-color: #f9e000;

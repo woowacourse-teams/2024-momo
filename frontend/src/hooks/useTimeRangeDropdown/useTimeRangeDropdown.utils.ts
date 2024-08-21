@@ -10,12 +10,11 @@ function formatHours(hour: number) {
   return hour > 12 ? `오후 ${hour - 12}` : `오전 ${hour}`;
 }
 
-// 0시 ~ endTime까지의 시간만 선택 가능한 함수. 시작 시간 options에 사용
-export function generateStartTimeOptions(endTime: string) {
+// 0시 ~ 11:00까지의 시간만 선택 가능한 함수. 시작 시간 options에 사용
+export function generateStartTimeOptions() {
   const times: Option[] = [];
-  const endHours = Number(endTime.split(':')[0]);
 
-  for (let i = MINIMUM_TIME; i < endHours; i++) {
+  for (let i = MINIMUM_TIME; i < MAXIMUM_TIME; i++) {
     const label = formatHours(i);
 
     times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
@@ -31,6 +30,7 @@ export function generateEndTimeOptions(startTime: string) {
 
   for (let i = startHours + 1; i <= MAXIMUM_TIME; i++) {
     const label = formatHours(i).padStart(2, '0');
+
     times.push({ value: `${String(i).padStart(2, '0')}:00`, label: label + ':00' });
   }
 
@@ -46,4 +46,11 @@ export function isTimeSelectable(startTime: string, endTime: string) {
   if (endHours === startHours && endMinutes < startMinutes) return false;
 
   return true;
+}
+
+// 현재 시간에서 1시간 더한 시간을 반화해주는 함수(@낙타)
+export function addHoursToCurrentTime(currentTime: string, hours: number) {
+  const [currentHours, currentMinutes] = currentTime.split(':').map(Number);
+
+  return currentHours + hours + ':' + currentMinutes;
 }

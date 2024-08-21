@@ -4,9 +4,9 @@ import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
-import AttendeeLoginPage from '@pages/AttendeeLoginPage/AttendeeLoginPage';
+import AttendeeLoginPage from '@pages/AttendeeLoginPage';
 import CreateMeetingPage from '@pages/CreateMeetingPage';
-import FixedMeetingTicketPage from '@pages/FixedMeetingTicketPage/FixedMeetingTicketPage';
+import FixedMeetingTicketPage from '@pages/FixedMeetingTicketPage';
 import MeetingConfirmPage from '@pages/MeetingConfirmPage';
 import MeetingLinkSharePage from '@pages/MeetingLinkSharePage';
 import MeetingRecommendPage from '@pages/MeetingRecommendPage';

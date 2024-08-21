@@ -8,71 +8,51 @@ describe('useTimeRangeDropdown', () => {
   it(`초기 시작 시간(startTime)은 ${INITIAL_START_TIME}, 끝 시간(emdTime)은 ${INITIAL_END_TIME}으로 설정된다.`, () => {
     const { result } = renderHook(() => useTimeRangeDropdown());
 
-    expect(result.current.startTime).toBe(INITIAL_START_TIME);
-    expect(result.current.endTime).toBe(INITIAL_END_TIME);
+    expect(result.current.startTime.value).toBe(INITIAL_START_TIME);
+    expect(result.current.endTime.value).toBe(INITIAL_END_TIME);
   });
 
-  it('선택한 시작 시간(startTime)이 끝 시간(endTime)보다 느리다면 선택한 시간값으로 변경되지 않는다.', () => {
+  it('시작 시간(startTime)을 선택하면 끝 시간(endTime)은 시작 시간(startTime)의 1시간 이후로 설정된다.', () => {
     const CHANGE_TIME = '01:00';
+    const CHANGE_TIME_AFTER_HOUR = '02:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onEndTimeChange('00:00');
+      result.current.handleStartTimeChange(CHANGE_TIME);
     });
 
-    act(() => {
-      result.current.onStartTimeChange(CHANGE_TIME);
-    });
-
-    expect(result.current.startTime).not.toBe(CHANGE_TIME);
-  });
-
-  it('선택한 시작 시간(startTime)이 끝 시간(endTime)보다 빠르다면 값이 선택한 시간값으로 변경된다.', () => {
-    const CHANGE_TIME = '01:00';
-    const { result } = renderHook(() => useTimeRangeDropdown());
-
-    act(() => {
-      result.current.onEndTimeChange('23:00');
-    });
-
-    act(() => {
-      result.current.onStartTimeChange(CHANGE_TIME);
-    });
-
-    expect(result.current.startTime).toBe(CHANGE_TIME);
+    expect(result.current.endTime.value).not.toBe(CHANGE_TIME_AFTER_HOUR);
   });
 
   it('선택한 끝 시간(endTime)이 시작 시간(startTime)보다 빠르다면 선택한 시간값으로 변경되지 않는다.', () => {
-    const CHANGE_TIME = '01:00';
+    const CHANGE_START_TIME = '04:00';
+    const CHANGE_END_TIME = '01:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onEndTimeChange('15:00');
+      result.current.handleStartTimeChange(CHANGE_START_TIME);
     });
 
     act(() => {
-      result.current.onStartTimeChange('12:00');
+      result.current.handleEndTimeChange(CHANGE_END_TIME);
     });
 
-    act(() => {
-      result.current.onEndTimeChange(CHANGE_TIME);
-    });
-
-    expect(result.current.endTime).not.toBe(CHANGE_TIME);
+    expect(result.current.endTime.value).not.toBe(CHANGE_END_TIME);
   });
 
   it('선택한 끝 시간(endTime)이 시작 시간(startTime)보다 느리다면 선택한 시간값으로 변경된다.', () => {
-    const CHANGE_TIME = '12:00';
+    const CHANGE_START_TIME = '11:00';
+    const CHANGE_END_TIME = '12:00';
     const { result } = renderHook(() => useTimeRangeDropdown());
 
     act(() => {
-      result.current.onStartTimeChange('00:00');
+      result.current.handleStartTimeChange(CHANGE_START_TIME);
     });
 
     act(() => {
-      result.current.onEndTimeChange(CHANGE_TIME);
+      result.current.handleEndTimeChange(CHANGE_END_TIME);
     });
 
-    expect(result.current.endTime).toBe(CHANGE_TIME);
+    expect(result.current.endTime.value).toBe(CHANGE_END_TIME);
   });
 });

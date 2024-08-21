@@ -4,6 +4,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = () => ({
   entry: './src/index.tsx',
@@ -62,6 +63,9 @@ module.exports = () => ({
   },
 
   plugins: [
+    new webpack.ProvidePlugin({
+      React: 'react',
+    }),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),

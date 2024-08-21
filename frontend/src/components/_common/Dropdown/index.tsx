@@ -11,9 +11,9 @@ interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: Option[];
 }
 
-export default function Dropdown({ options, ...props }: DropdownProps) {
+export default function Dropdown({ options, value, onChange }: DropdownProps) {
   return (
-    <select {...props} css={s_dropdown}>
+    <select value={value} onChange={onChange} css={s_dropdown}>
       {options.map(({ value, label }) => (
         <option key={value} value={value}>
           {label}

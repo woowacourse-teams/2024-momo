@@ -114,7 +114,7 @@ jobs:
           --rm -d -p 8080:8080
           --volume=$HOME/security:/momo/security:ro
           --volume=$HOME/logs:/momo/logs
-          --env SPRING_PROFILE=dev
+          --env SPRING_PROFILE=prod
           ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-prod
 
       # 4. 미사용 이미지를 정리
