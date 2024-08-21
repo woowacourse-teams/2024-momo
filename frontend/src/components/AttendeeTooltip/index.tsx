@@ -23,8 +23,8 @@ export default function AttendeeTooltip({ attendeeNames, position }: AttendeeToo
         <div css={s_attendeeTooltipContainer}>
           <p css={s_tooltipTitle}>참여할 수 있어요</p>
           <div css={s_attendeesContainer}>
-            {attendeeNames.map((name, index) => (
-              <p key={index} css={s_attendeeText}>
+            {attendeeNames.map((name) => (
+              <p key={name} css={s_attendeeText}>
                 {name}
               </p>
             ))}
