@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 // 테이블의 시간 범위가 길어지는 경우, Header가 가리는 문제를 해결하기 위해 z-index 수정(@해리)
 export const s_header = css`
   position: sticky;
-  z-index: 3;
+  z-index: 1;
   top: 0;
 
   display: flex;
