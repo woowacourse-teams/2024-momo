@@ -95,7 +95,12 @@ export default function CreateMeetingPage() {
         <Field>
           <Field.Label id="약속이름" labelText="약속 이름" />
           <Field.Description description={FIELD_DESCRIPTIONS.meetingName} />
-          <Input id="약속이름" value={meetingName} onChange={handleMeetingNameChange} />
+          <Input
+            id="약속이름"
+            value={meetingName}
+            onChange={handleMeetingNameChange}
+            autoComplete="off"
+          />
           <Field.ErrorMessage errorMessage={meetingNameErrorMessage} />
         </Field>
 

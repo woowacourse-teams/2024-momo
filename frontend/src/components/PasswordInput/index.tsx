@@ -25,6 +25,7 @@ export default function PasswordInput({ value, onChange, placeholder = '' }: Inp
         onChange={onChange}
         placeholder={placeholder}
         aria-label="비밀번호 입력"
+        autoComplete="new-password"
       />
       <Button
         variant="transparent"
@@ -33,7 +34,11 @@ export default function PasswordInput({ value, onChange, placeholder = '' }: Inp
         onClick={handlePasswordVisibilityToggle}
         aria-label={isPasswordShow ? '비밀번호 숨기기' : '비밀번호 보이기'}
       >
-        {isPasswordShow ? <PasswordHide /> : <PasswordShow />}
+        {isPasswordShow ? (
+          <PasswordHide width="20" height="20" />
+        ) : (
+          <PasswordShow width="20" height="20" />
+        )}
       </Button>
     </div>
   );
