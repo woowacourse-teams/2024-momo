@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 import useDatePage from '@hooks/useDatePage/useDatePage';
 import useTimePick from '@hooks/useTimePick/useTimePick';
 
+import { DATES_PER_PAGE } from '@constants/date';
+
 interface UseTimePickReturn {
   tableRef: React.MutableRefObject<HTMLTableElement | null>;
   currentTableValue: number[][];
   tableValue: number[][];
 }
-
-const DATES_PER_PAGE = 3;
 
 type UsePagedTimePickHook = (
   availableDates: string[],

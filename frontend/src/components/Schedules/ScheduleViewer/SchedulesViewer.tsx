@@ -1,9 +1,6 @@
-import { css } from '@emotion/react';
-import { useQuery } from '@tanstack/react-query';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
-import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
@@ -15,17 +12,13 @@ import {
 
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
-import { handleGetMeetingSchedules } from '@apis/schedules';
-
-import { QUERY_KEY } from '@constants/queryKeys';
-
-import AllSchedules from './AllSchedule';
 import {
   s_buttonContainer,
   s_datesControlButton,
   s_datesControlButtonContainer,
-} from './Schedules.styles';
-import SingleSchedule from './SingleSchedule';
+  s_relativeContainer,
+} from '../Schedules.styles';
+import ScheduleTable from './ScheduleTable';
 
 interface SchedulesViewerProps extends MeetingDateTime {
   isLocked: boolean;
@@ -58,12 +51,6 @@ export default function SchedulesViewer({
     handleAttendeeChange,
   } = useSelectSchedule(availableDates);
 
-  const { data: meetingSchedules } = useQuery({
-    queryKey: [QUERY_KEY.meetingSchedules, selectedAttendee],
-    queryFn: () => handleGetMeetingSchedules({ uuid, attendeeName: selectedAttendee }),
-    staleTime: 0,
-  });
-
   const handleScheduleUpdate = () => {
     if (!isLoggedIn) {
       alert('로그인 해주세요');
@@ -90,11 +77,8 @@ export default function SchedulesViewer({
           </button>
         ))}
       </section>
-      <section
-        css={css`
-          position: relative;
-        `}
-      >
+      <div css={s_relativeContainer}>
+        {/* 버튼 관련 스타일은 다음 이슈에서 해결 예정(@해리) */}
         {isMultiPage && (
           <div css={s_datesControlButtonContainer}>
             <button
@@ -113,24 +97,14 @@ export default function SchedulesViewer({
             </button>
           </div>
         )}
-        {selectedAttendee === ''
-          ? meetingSchedules && (
-              <AllSchedules
-                firstTime={firstTime}
-                lastTime={lastTime}
-                availableDates={currentDates}
-                meetingAllSchedules={meetingSchedules as MeetingAllSchedules}
-              />
-            )
-          : meetingSchedules && (
-              <SingleSchedule
-                firstTime={firstTime}
-                lastTime={lastTime}
-                availableDates={currentDates}
-                meetingSingleSchedule={meetingSchedules as MeetingSingleSchedule}
-              />
-            )}
-      </section>
+        <ScheduleTable
+          firstTime={firstTime}
+          lastTime={lastTime}
+          currentDates={currentDates}
+          meetingAttendees={meetingAttendees}
+          selectedAttendee={selectedAttendee}
+        />
+      </div>
       <div css={s_buttonContainer}>
         <button disabled={isLocked} onClick={handleScheduleUpdate}>
           수정하기
