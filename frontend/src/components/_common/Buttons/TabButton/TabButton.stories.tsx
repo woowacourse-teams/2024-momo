@@ -10,7 +10,6 @@ import TabButton from '.';
 const meta = {
   title: 'Components/Button/TabButton',
   component: TabButton,
-  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
