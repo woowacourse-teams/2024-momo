@@ -27,11 +27,7 @@
             <encoder>
                 <pattern>${FILE_PATTERN}</pattern>
             </encoder>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>INFO</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
+            <filter class="kr.momo.config.filter.InfoLogFilter"/>
         </appender>
 
         <!-- Rolling File Appender for WARN level -->
