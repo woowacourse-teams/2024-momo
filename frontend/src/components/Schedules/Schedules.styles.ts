@@ -198,4 +198,8 @@ export const s_circleButton = css`
   border: 1px solid ${theme.colors.primary};
   border-radius: 50%;
   box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;
