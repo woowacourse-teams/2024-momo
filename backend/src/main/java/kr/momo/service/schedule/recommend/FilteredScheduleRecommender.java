@@ -34,8 +34,8 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    protected boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next) {
-        return !current.dateTimeInterval().isSequential(next.dateTimeInterval());
+    protected boolean isContinuous(CandidateSchedule current, CandidateSchedule next) {
+        return current.dateTimeInterval().isSequential(next.dateTimeInterval());
     }
 
     @Override

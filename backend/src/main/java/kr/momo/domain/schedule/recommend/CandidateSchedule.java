@@ -21,14 +21,14 @@ public record CandidateSchedule(
 
     public static List<CandidateSchedule> mergeContinuousDateTime(
             List<CandidateSchedule> sortedSchedules,
-            BiPredicate<CandidateSchedule, CandidateSchedule> isDiscontinuous
+            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous
     ) {
         List<CandidateSchedule> mergedSchedules = new ArrayList<>();
         int idx = 0;
         while (idx < sortedSchedules.size()) {
             int headIdx = idx;
             List<CandidateSchedule> subList = Stream.iterate(headIdx, i -> i < sortedSchedules.size(), i -> i + 1)
-                    .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isDiscontinuous))
+                    .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isContinuous))
                     .map(sortedSchedules::get)
                     .toList();
             subList.stream()
@@ -42,11 +42,11 @@ public record CandidateSchedule(
     private static boolean isSequential(
             int idx,
             List<CandidateSchedule> sortedSchedules,
-            BiPredicate<CandidateSchedule, CandidateSchedule> isDiscontinuous
+            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous
     ) {
         CandidateSchedule prev = sortedSchedules.get(idx - 1);
         CandidateSchedule current = sortedSchedules.get(idx);
-        return !isDiscontinuous.test(prev, current);
+        return isContinuous.test(prev, current);
     }
 
     private static CandidateSchedule merge(CandidateSchedule start, CandidateSchedule end) {

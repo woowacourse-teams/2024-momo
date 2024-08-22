@@ -43,12 +43,12 @@ public class TotalScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    protected boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next) {
+    protected boolean isContinuous(CandidateSchedule current, CandidateSchedule next) {
         AttendeeGroup currentGroup = current.attendeeGroup();
         AttendeeGroup nextGroup = next.attendeeGroup();
         boolean isSameGroup = currentGroup.equals(nextGroup);
         boolean isSequential = current.dateTimeInterval().isSequential(next.dateTimeInterval());
-        return !(isSameGroup && isSequential);
+        return isSameGroup && isSequential;
     }
 
     @Override

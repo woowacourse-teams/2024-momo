@@ -27,12 +27,12 @@ public abstract class ScheduleRecommender {
 
     private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group) {
         List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group);
-        return CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, this::isDiscontinuous);
+        return CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, this::isContinuous);
     }
 
     abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group);
 
-    abstract boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next);
+    abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
 
     private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
         RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
