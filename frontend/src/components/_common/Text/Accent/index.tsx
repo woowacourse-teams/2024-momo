@@ -1,7 +1,7 @@
 import { s_accentTextStyle } from './Accent.styles';
 
 interface AccentProps {
-  text: string;
+  text: string | number;
 }
 
 export default function Accent({ text }: AccentProps) {
