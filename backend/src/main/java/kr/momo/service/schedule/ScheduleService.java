@@ -129,9 +129,6 @@ public class ScheduleService {
         );
         List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
 
-        // TODO: rank도 함께 응답
-        return recommendedResult.stream()
-                .map(sr -> RecommendedScheduleResponse.of(sr.startDateTime(), sr.endDateTime(), sr.attendeeGroup()))
-                .toList();
+        return RecommendedScheduleResponse.fromCandidateSchedules(recommendedResult);
     }
 }
