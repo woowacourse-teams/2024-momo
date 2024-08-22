@@ -22,13 +22,13 @@ const ACTIVE_TAB_BUTTON_STYLES: TabButtonStyles = {
 const INACTIVE_TAB_BUTTON_STYLES: TabButtonStyles = {
   default: css`
     color: #a1a1aa;
-    background-color: e4e4e7;
+    background-color: #e4e4e7;
   `,
   outlinedFloating: css`
     color: #a1a1aa;
-    background-color: e4e4e7;
+    background-color: #e4e4e7;
     border-radius: 999rem;
-    box-shadow: inset 0 0 0 1px #e4e4e7;
+    box-shadow: inset 0 0 0 1px #a1a1aa;
   `,
 };
 
