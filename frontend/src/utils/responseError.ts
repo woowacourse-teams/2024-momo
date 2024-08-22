@@ -11,6 +11,7 @@ export class ResponseError extends Error {
 
   constructor({ detail, code, title, status }: ResponseErrorArgs) {
     super();
+
     this.message = detail;
     this.code = code;
     this.name = title;
