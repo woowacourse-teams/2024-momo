@@ -15,8 +15,8 @@ export default function SchedulePickerContainer({
 }: MeetingDateTime) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
-  const { state } = useContext(AuthContext);
-  const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, state.userName);
+  const { userName } = useContext(AuthContext).state;
+  const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, userName);
 
   return (
     meetingSchedules &&
