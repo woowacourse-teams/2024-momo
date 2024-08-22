@@ -25,9 +25,9 @@ class ScheduleRecommenderFactoryTest {
 
     @DisplayName("미팅에 참여하는 전체 그룹과 필터링된 그룹에 따라 적절한 추천 스케줄 생성기를 반환한다.")
     @ParameterizedTest
-    @MethodSource("foo")
-    void extractProperSortedDiscreteScheduleOfRecommenderBeanTest(List<String> attendeeNames, Class<?> expected) {
-        // Given
+    @MethodSource("attendeeNamesAndRecommenderPair")
+    void extractProperRecommenderBeanTest(List<String> attendeeNames, Class<?> expected) {
+        // given
         Meeting meeting = MeetingFixture.DRINK.create();
         List<Attendee> attendees = List.of(
                 AttendeeFixture.HOST_JAZZ.create(meeting),
@@ -37,12 +37,12 @@ class ScheduleRecommenderFactoryTest {
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendees);
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(attendeeNames);
 
-        // When & Then
+        // when & then
         assertThat(scheduleRecommenderFactory.getRecommenderOf(attendeeGroup, filteredGroup))
                 .isInstanceOf(expected);
     }
 
-    static Stream<Arguments> foo() {
+    static Stream<Arguments> attendeeNamesAndRecommenderPair() {
         return Stream.of(
                 Arguments.of(
                         List.of("jazz", "daon"),
