@@ -1,7 +1,4 @@
-import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { AuthContext } from '@contexts/AuthProvider';
+import { useParams } from 'react-router-dom';
 
 import PasswordInput from '@components/PasswordInput';
 import { Button } from '@components/_common/Buttons/Button';
@@ -10,18 +7,15 @@ import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 
-import { postUserLogin } from '@apis/users';
+import { usePostLoginMutation } from '@stores/servers/user/mutations';
 
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
 
 import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
-  const authContext = useContext(AuthContext);
-  const { setIsLoggedIn, setUserName } = authContext.actions;
-
-  const navigate = useNavigate();
   const { uuid } = useParams<{ uuid: string }>();
+  const { mutate: postLoginMutate } = usePostLoginMutation();
 
   const {
     value: attendeeName,
@@ -62,14 +56,10 @@ export default function AttendeeLoginPage() {
       return;
     }
 
-    const { userName } = await postUserLogin({
+    postLoginMutate({
       uuid,
       request: { attendeeName, password: attendeePassword },
     });
-
-    setIsLoggedIn(true);
-    setUserName(userName);
-    navigate(`/meeting/${uuid}`);
   };
 
   return (

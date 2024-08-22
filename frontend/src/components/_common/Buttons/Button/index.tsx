@@ -1,4 +1,7 @@
+import type { SerializedStyles } from '@emotion/react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+
+import Spinner from '@components/_common/Spinner';
 
 import { s_baseButton, s_size, s_variant } from './Button.styles';
 
@@ -10,14 +13,18 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size: ButtonSize;
   borderRadius?: number | string;
   variant?: ButtonVariant;
+  isLoading?: boolean;
+  customCss?: SerializedStyles;
 }
 
 export function Button({
-  variant,
-  borderRadius = '0.8rem',
   children,
   size,
+  borderRadius = '0.8rem',
+  variant,
   disabled,
+  isLoading = false,
+  customCss,
   type = 'button',
   onClick,
 }: ButtonProps) {
@@ -26,8 +33,9 @@ export function Button({
   if (variant) cssProps.push(s_variant[variant]);
 
   return (
-    <button disabled={disabled} css={cssProps} type={type} onClick={onClick}>
-      {children}
+    <button disabled={disabled} css={[cssProps, customCss]} type={type} onClick={onClick}>
+      {isLoading && <Spinner backgroundColor={'#f4f4f5'} />}
+      {!isLoading && children}
     </button>
   );
 }

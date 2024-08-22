@@ -9,6 +9,15 @@ export const s_container = css`
 
 export const s_relativeContainer = css`
   position: relative;
+  flex: 1;
+  max-height: fit-content;
+`;
+
+export const s_selectModeButtonsContainer = css`
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 1.2rem;
 `;
 
 export const s_scheduleTableContainer = css`
@@ -19,6 +28,15 @@ export const s_scheduleTableContainer = css`
   span::selection {
     user-select: none;
   }
+`;
+
+export const s_attendeesContainer = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 1.2rem;
+
+  width: 100%;
+  margin-bottom: 1.2rem;
 `;
 
 export const s_scheduleTable = css`
@@ -61,8 +79,18 @@ export const s_cellColorByRatio = (ratio: number) => css`
   background-color: ${ratio > 0 ? getColorByRatio(ratio) : '#f4f4f5'};
 `;
 
-export const s_cellColorBySelected = (isSelected: number) => css`
+export const s_singleCellColor = (isSelected: number) => css`
   background-color: ${isSelected ? theme.colors.primary : '#f4f4f5'};
+`;
+
+export const s_cellColorBySelected = (isSelected: number, unavailableMode = false) => css`
+  background-color: ${unavailableMode
+    ? isSelected
+      ? theme.colors.pink.deepDark
+      : '#f4f4f5'
+    : isSelected
+      ? theme.colors.green.deep
+      : '#f4f4f5'};
 `;
 
 export const s_baseTimeCell = (isHalfHour: boolean, isLastRow: boolean) => css`
@@ -79,41 +107,33 @@ export const s_baseTimeCell = (isHalfHour: boolean, isLastRow: boolean) => css`
   `}
 `;
 
-export const s_datesControlButtonContainer = css`
-  position: absolute;
-  z-index: 2;
-  top: 4.2rem;
+export const s_bottomFixedButtonContainer = css`
+  position: sticky; /* 절대 위치로 부모 컨테이너 내에서 배치 */
+  bottom: 0;
+  left: 0;
 
   display: flex;
+  gap: 1.6rem;
+  align-items: center;
   justify-content: space-between;
 
-  width: 100%;
+  /* 
+  position : sticky는 문서의 흐름에 영향을 받기 때문에 부모 태그의 padding 스타일 속성을 상속받게 됨
+  따라서, 부모의 padding인 0 1.6rem을 무시하는 스타일 속성 추가 (@해리) 
+  */
+  width: calc(100% + 1.6rem * 2);
+  height: 6rem;
+  margin: 1.6rem 0 0 -1.6rem;
+  padding: 0 1.6rem;
 
-  -webkit-box-pack: justify;
+  background-color: #fff;
+  box-shadow: 0 -4px 4px rgb(0 0 0 / 25%);
 `;
 
-export const s_datesControlButton = css`
-  cursor: pointer;
-
-  width: 2.8rem;
-  height: 2.8rem;
-
-  font-weight: bold;
-  color: ${theme.colors.primary};
-
-  background-color: ${theme.colors.white};
-  border: 0.1rem solid ${theme.colors.primary};
-  border-radius: 50%;
-  box-shadow: 0 0.4rem 0.4rem rgb(0 0 0 / 10%);
-
-  :disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
-  }
-
-  &:last-of-type {
-    margin-right: 5rem;
-  }
+export const s_fullButtonContainer = css`
+  display: flex;
+  flex: 1;
+  gap: 0.4rem;
 `;
 
 export const s_buttonContainer = css`
@@ -157,10 +177,31 @@ export const s_percentageContainer = css`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 1.2rem;
+  margin-top: 0.2rem;
 `;
 
 export const s_percentage = css`
   ${theme.typography.captionMedium}
   color: #d4d4d8
+`;
+
+export const s_circleButton = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 4.8rem;
+  height: 4.8rem;
+
+  color: ${theme.colors.primary};
+
+  background-color: transparent;
+  border: 1px solid ${theme.colors.primary};
+  border-radius: 50%;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;

@@ -29,9 +29,12 @@ public interface MeetingControllerDocs {
     @ApiErrorResponse.BadRequest(ERROR_CODE_TABLE_HEADER + """
             | INVALID_NAME_LENGTH | 이름 길이는 1자 이상 5자 이하 까지 가능합니다. |
             | INVALID_PASSWORD_LENGTH | 비밀번호 길이는 1자 이상 10자 이하 까지 가능합니다. |
+            | PAST_NOT_PERMITTED | 과거 날짜로는 약속을 생성할 수 없습니다. |
+            """)
+    @ApiErrorResponse.InternalServerError(ERROR_CODE_TABLE_HEADER + """
+            | UUID_GENERATION_FAILURE | 약속 생성 과정 중 키 생성에 실패했습니다. 잠시 후 다시 시도해주세요. |
             """)
     ResponseEntity<MomoApiResponse<MeetingCreateResponse>> create(@RequestBody @Valid MeetingCreateRequest request);
-
 
     @Operation(
             summary = "약속 확정",
@@ -49,7 +52,7 @@ public interface MeetingControllerDocs {
             """)
     @ApiErrorResponse.Unauthorized(ERROR_CODE_TABLE_HEADER + """
             | UNAUTHORIZED_TOKEN | 유효하지 않은 토큰입니다. |
-             """)
+            """)
     @ApiErrorResponse.Forbidden(ERROR_CODE_TABLE_HEADER + """
             | ACCESS_DENIED | 접근이 거부되었습니다. |
             """)
@@ -74,6 +77,9 @@ public interface MeetingControllerDocs {
     @ApiErrorResponse.NotFound(ERROR_CODE_TABLE_HEADER + """
             | NOT_FOUND_MEETING | 존재하지 않는 약속 정보 입니다. |
             | NOT_CONFIRMED | 아직 확정되지 않은 약속입니다. |
+            """)
+    @ApiErrorResponse.InternalServerError(ERROR_CODE_TABLE_HEADER + """
+            | HOST_NOT_FOUND | 약속의 주최자 정보를 찾을 수 없습니다. 관리자에게 문의하세요. |
             """)
     MomoApiResponse<ConfirmedMeetingResponse> findConfirmedMeeting(
             @PathVariable @Schema(description = "약속 UUID") String uuid

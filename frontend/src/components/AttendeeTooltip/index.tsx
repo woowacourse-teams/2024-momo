@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import type { TooltipPosition } from 'types/tooltip';
 
 import Tooltip from '@components/_common/Tooltip';
@@ -31,6 +32,20 @@ export default function AttendeeTooltip({ attendeeNames, position }: AttendeeToo
           </div>
         </div>
       }
+      visibleStyles={css`
+        background-image: linear-gradient(
+          45deg,
+          #33272a 25%,
+          transparent 25%,
+          transparent 50%,
+          #33272a 50%,
+          #33272a 75%,
+          transparent 75%,
+          transparent
+        );
+        background-size: 0.8rem 0.8rem;
+        border: 0.2rem solid #33272a;
+      `}
     >
       <div css={s_tooltipTrigger} />
     </Tooltip>

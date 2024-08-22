@@ -106,10 +106,10 @@ const globalStyles = css`
     width: 100%;
     min-height: 100vh;
 
-    font-family: 'Spoqa Han Sans Neo', sans-serif;
+    font-family: Pretendard, sans-serif;
     font-size: 1.6rem;
 
-    background-color: #6b6666;
+    background-color: #fff;
   }
 
   article,

@@ -1,3 +1,5 @@
+import { ResponseError } from '@utils/responseError';
+
 import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
@@ -14,7 +16,6 @@ export const postUserLogin = async ({ uuid, request }: UserLoginRequest) => {
   const data = await fetchClient<string>({
     path: `/${uuid}/login`,
     method: 'POST',
-    errorMessage: '로그인하는 도중 문제가 발생했습니다 :( 다시 시도해 주세요.',
     body: request,
     isAuthRequire: true,
   });
@@ -39,7 +40,9 @@ export const postUserLogout = async (uuid: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('로그아웃하는 도중 문제가 발생했습니다 :( 다시 시도해 주세요.');
+      const data = await response.json();
+
+      throw new ResponseError(data);
     }
   } catch (error) {
     console.error('로그아웃 중 문제가 발생했습니다:', error);

@@ -1,6 +1,6 @@
 package kr.momo.controller.schedule;
 
-import static kr.momo.service.schedule.ScheduleRecommender.EARLIEST_ORDER;
+import static kr.momo.domain.schedule.recommend.RecommendedScheduleSortStandard.EARLIEST_ORDER;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -146,7 +146,6 @@ class ScheduleControllerTest {
     @DisplayName("추천 타입과 참가자에 맞춰 추천 약속을 조회한다.")
     @Test
     void recommendSchedules() {
-
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
                 .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())

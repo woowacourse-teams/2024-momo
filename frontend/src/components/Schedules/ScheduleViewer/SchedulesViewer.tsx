@@ -1,27 +1,32 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import {
-  s_attendeesContainer,
-  s_tabButton,
-} from '@pages/MeetingTimePickPage/MeetingTimePickPage.styles';
+import { Button } from '@components/_common/Buttons/Button';
+import TabButton from '@components/_common/Buttons/TabButton';
 
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
+import Check from '@assets/images/attendeeCheck.svg';
+import Pen from '@assets/images/pen.svg';
+
+import DateControlButtons from '../DateControlButtons';
+import ScheduleOverview from '../ScheduleOverview';
 import {
-  s_buttonContainer,
-  s_datesControlButton,
-  s_datesControlButtonContainer,
+  s_attendeesContainer,
+  s_bottomFixedButtonContainer,
+  s_circleButton,
+  s_fullButtonContainer,
   s_relativeContainer,
 } from '../Schedules.styles';
 import ScheduleTable from './ScheduleTable';
 
 interface SchedulesViewerProps extends MeetingDateTime {
   isLocked: boolean;
+  hostName: string;
   meetingAttendees: string[];
 }
 
@@ -29,6 +34,7 @@ export default function SchedulesViewer({
   isLocked,
   firstTime,
   lastTime,
+  hostName,
   availableDates,
   meetingAttendees,
 }: SchedulesViewerProps) {
@@ -38,7 +44,7 @@ export default function SchedulesViewer({
   const navigate = useNavigate();
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
-  const { isLoggedIn } = useContext(AuthContext).state;
+  const { isLoggedIn, userName } = useContext(AuthContext).state;
 
   const {
     currentDates,
@@ -64,38 +70,35 @@ export default function SchedulesViewer({
   return (
     <>
       <section css={s_attendeesContainer} aria-label="약속 참가자들 정보">
-        <button css={s_tabButton(true)} onClick={() => handleAttendeeChange('')}>
+        <TabButton
+          tabButtonVariants="outlinedFloating"
+          onClick={() => handleAttendeeChange('')}
+          isActive={selectedAttendee === ''}
+        >
+          {selectedAttendee === '' && <Check width="12" height="12" />}
           전체
-        </button>
+        </TabButton>
         {meetingAttendees.map((attendee) => (
-          <button
+          <TabButton
             key={attendee}
-            css={s_tabButton(true)}
+            tabButtonVariants="outlinedFloating"
             onClick={() => handleAttendeeChange(attendee)}
+            isActive={selectedAttendee === attendee}
           >
+            {selectedAttendee === attendee && <Check width="12" height="12" />}
             {attendee}
-          </button>
+          </TabButton>
         ))}
       </section>
+      <ScheduleOverview selectedAttendee={selectedAttendee} />
       <div css={s_relativeContainer}>
-        {/* 버튼 관련 스타일은 다음 이슈에서 해결 예정(@해리) */}
         {isMultiPage && (
-          <div css={s_datesControlButtonContainer}>
-            <button
-              css={s_datesControlButton}
-              onClick={() => decreaseDatePage()}
-              disabled={isFirstPage}
-            >
-              {'<'}
-            </button>
-            <button
-              css={s_datesControlButton}
-              onClick={() => increaseDatePage()}
-              disabled={isLastPage}
-            >
-              {'>'}
-            </button>
-          </div>
+          <DateControlButtons
+            decreaseDatePage={decreaseDatePage}
+            increaseDatePage={increaseDatePage}
+            isFirstPage={isFirstPage}
+            isLastPage={isLastPage}
+          />
         )}
         <ScheduleTable
           firstTime={firstTime}
@@ -105,11 +108,22 @@ export default function SchedulesViewer({
           selectedAttendee={selectedAttendee}
         />
       </div>
-      <div css={s_buttonContainer}>
-        <button disabled={isLocked} onClick={handleScheduleUpdate}>
-          수정하기
+      <footer css={s_bottomFixedButtonContainer}>
+        <div css={s_fullButtonContainer}>
+          {hostName === userName ? (
+            <Button size="full" variant="primary" onClick={() => navigate('confirm')}>
+              약속 시간 확정하기
+            </Button>
+          ) : (
+            <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
+              약속 시간 추천받기
+            </Button>
+          )}
+        </div>
+        <button disabled={isLocked} onClick={handleScheduleUpdate} css={s_circleButton}>
+          <Pen width="28" height="28" />
         </button>
-      </div>
+      </footer>
     </>
   );
 }

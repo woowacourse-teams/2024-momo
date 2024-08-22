@@ -29,7 +29,6 @@ export const getMeetingTimeRecommends = async ({
   const data = await fetchClient<MeetingRecommend[]>({
     path,
     method: 'GET',
-    errorMessage: '약속 시간 추천을 가져오는데 실패했어요 :(',
   });
 
   return data;
@@ -49,7 +48,6 @@ export const getMeetingAttendees = async ({
   const data = await fetchClient<GetMeetingAttendeesResponse>({
     path,
     method: 'GET',
-    errorMessage: '약속 참여자들의 정보를 가져오는데 실패했어요 :(',
   });
 
   return data;

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 public class CookieManager {
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    private static final String SAME_SITE_OPTION = "None";
     private static final long SESSION_COOKIE_AGE = -1;
     private static final long EXPIRED_COOKIE_AGE = 0;
 
@@ -32,7 +31,6 @@ public class CookieManager {
                 .secure(true)
                 .domain(cookieDomain)
                 .path(path)
-                .sameSite(SAME_SITE_OPTION)
                 .maxAge(maxAge)
                 .build()
                 .toString();

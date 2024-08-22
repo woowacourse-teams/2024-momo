@@ -7,7 +7,7 @@ const baseInputStyle = css`
   height: 4.4rem;
   padding: 0.8rem;
   outline-color: ${theme.colors.primary};
-  ${theme.typography.bodyLight}
+  ${theme.typography.bodyMedium}
 `;
 
 export const s_input = {
