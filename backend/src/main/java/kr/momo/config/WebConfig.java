@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInfoInterceptor).addPathPatterns(BASE_URL);
-        registry.addInterceptor(loggingInterceptor).addPathPatterns(BASE_URL);
+        registry.addInterceptor(userInfoInterceptor).addPathPatterns(BASE_URL).order(1);
+        registry.addInterceptor(loggingInterceptor).addPathPatterns(BASE_URL).order(2);
     }
 }
