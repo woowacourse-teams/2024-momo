@@ -45,7 +45,7 @@ public record RecommendedScheduleResponse(
     public static List<RecommendedScheduleResponse> fromCandidateSchedules(List<CandidateSchedule> candidateSchedules) {
         return IntStream.range(0, candidateSchedules.size())
                 .mapToObj(idx -> RecommendedScheduleResponse.of(
-                        idx+1,
+                        idx + 1,
                         candidateSchedules.get(idx).startDateTime(),
                         candidateSchedules.get(idx).endDateTime(),
                         candidateSchedules.get(idx).attendeeGroup()
