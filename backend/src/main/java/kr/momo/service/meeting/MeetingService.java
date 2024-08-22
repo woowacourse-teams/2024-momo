@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
@@ -13,6 +12,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.UuidGenerator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
@@ -29,8 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetingService {
 
+    private static final int MAX_UUID_GENERATION_ATTEMPTS = 5;
+    private static final int SHORT_UUID_LENGTH = 8;
+
     private final JwtManager jwtManager;
     private final Clock clock;
+    private final UuidGenerator uuidGenerator;
     private final MeetingRepository meetingRepository;
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
@@ -49,15 +53,32 @@ public class MeetingService {
         return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
+    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
+        String uuid = generateUniqueUuid();
+        Meeting meeting = new Meeting(meetingName, uuid, startTime, endTime);
+        return meetingRepository.save(meeting);
+    }
+
+    private String generateUniqueUuid() {
+        String uuid;
+        int attempts = 0;
+
+        do {
+            uuid = uuidGenerator.generateUuid(SHORT_UUID_LENGTH);
+            attempts++;
+        } while (meetingRepository.existsByUuid(uuid) && attempts < MAX_UUID_GENERATION_ATTEMPTS);
+
+        if (attempts >= MAX_UUID_GENERATION_ATTEMPTS) {
+            throw new MomoException(MeetingErrorCode.UUID_GENERATION_FAILURE);
+        }
+
+        return uuid;
+    }
+
     private void validateNotPast(AvailableDates meetingDates) {
         if (meetingDates.isAnyBefore(LocalDate.now(clock))) {
             throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
         }
-    }
-
-    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
-        Meeting meeting = new Meeting(meetingName, UUID.randomUUID().toString(), startTime, endTime);
-        return meetingRepository.save(meeting);
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
