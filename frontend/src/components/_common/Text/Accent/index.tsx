@@ -1,10 +1,9 @@
-import type { PropsWithChildren } from 'react';
-
-
 import { s_accentTextStyle } from './Accent.styles';
 
-interface AccentProps extends PropsWithChildren {}
+interface AccentProps {
+  text: string;
+}
 
-export default function Accent({ children }: AccentProps) {
-  return <strong css={s_accentTextStyle}>{children}</strong>;
+export default function Accent({ text }: AccentProps) {
+  return <strong css={s_accentTextStyle}>{text}</strong>;
 }

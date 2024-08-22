@@ -36,6 +36,7 @@ export const s_textStyles = ({
 }) => {
   return css`
     color: ${TEXT_COLOR_STYLES[variant]};
+    white-space: pre-line;
     vertical-align: middle;
     ${TEXT_TYPOGRAPHIES[typo]}
   `;

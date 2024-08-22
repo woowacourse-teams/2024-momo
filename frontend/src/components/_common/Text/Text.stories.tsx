@@ -65,7 +65,7 @@ export const CaptionText: Story = {
 export const WelcomeText: Story = {
   render: () => (
     <Text>
-      <Text.Accent>페드로</Text.Accent>님 반가워요 👋🏻
+      <Text.Accent text="페드로" />님 반가워요 👋🏻
     </Text>
   ),
 };
@@ -73,7 +73,7 @@ export const WelcomeText: Story = {
 export const TitleText: Story = {
   render: () => (
     <Text typo="titleMedium">
-      <Text.Accent>모모 런칭데이 회식</Text.Accent>
+      <Text.Accent text="모모 런칭데이 회식" />
       약속 참여자들이 선택한 시간대를 알려드릴게요
     </Text>
   ),
