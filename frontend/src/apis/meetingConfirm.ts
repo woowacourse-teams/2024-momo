@@ -35,7 +35,6 @@ export const getConfirmedMeetingInfo = async (uuid: string) => {
   const data = await fetchClient<Promise<GetConfirmedMeetingInfoResponse>>({
     path: `/${uuid}/confirm`,
     method: 'GET',
-    errorMessage: '확정된 약속 정보 조회애 실패했어요 :(',
   });
 
   return data;
