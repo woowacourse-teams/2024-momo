@@ -35,16 +35,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<DateAndTimeslot> findAllDateAndTimeslotByEssentialAttendees(
             @Param("essentialAttendees") List<Attendee> essentialAttendees, @Param("groupSize") int groupSize
     );
-
-    @Query("""
-                SELECT
-                    new kr.momo.domain.schedule.DateAndTimeslot(ad.date, s.timeslot)
-                FROM Schedule s
-                JOIN s.availableDate ad
-                WHERE s.attendee IN :attendees
-                GROUP BY ad.date, s.timeslot
-                HAVING COUNT(s.attendee.id) = :groupSize
-                ORDER BY ad.date ASC, s.timeslot ASC
-            """)
-    List<DateAndTimeslot> findAllDateAndTimeslotByAttendeeIds(@Param("attendees") List<Attendee> attendees);
 }
