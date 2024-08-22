@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 class EarliestFirstSorterTest {
 
-    @DisplayName("참여자 수 오름차순으로 정렬 후 시작 시간 오름차순으로 정렬한다.")
+    @DisplayName("참여자 수 내림차순으로 정렬 후 시작 시간 오름차순으로 정렬한다.")
     @Test
     void sort() {
         // given
