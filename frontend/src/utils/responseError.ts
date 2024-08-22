@@ -1,4 +1,4 @@
-interface ResponseErrorProps {
+interface ResponseErrorArgs {
   detail: string;
   status: number;
   code: string;
@@ -9,7 +9,7 @@ export class ResponseError extends Error {
   code;
   status;
 
-  constructor({ detail, code, title, status }: ResponseErrorProps) {
+  constructor({ detail, code, title, status }: ResponseErrorArgs) {
     super();
     this.message = detail;
     this.code = code;
