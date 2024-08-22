@@ -5,7 +5,7 @@ import Text from '@components/_common/Text';
 
 import QuestionMomoCharacter from '@assets/images/questionMomoCharacter.svg';
 
-import { CREATE_MEETING_PATH } from '@constants/routes/meeting';
+import { MEETING_CREATE_PATH } from '@constants/routes/meeting';
 
 import { s_container, s_textContainer } from './NotFound.styles';
 
@@ -22,7 +22,7 @@ export default function NotFoundPage() {
         <Text typo="bodyBold">원하시는 페이지를 찾을 수 없어요 :(</Text>
       </div>
 
-      <Button onClick={() => navigate(CREATE_MEETING_PATH)} variant="primary" size="full">
+      <Button onClick={() => navigate(MEETING_CREATE_PATH)} variant="primary" size="full">
         약속 생성하러가기
       </Button>
     </div>
