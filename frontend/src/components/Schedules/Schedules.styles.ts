@@ -34,7 +34,9 @@ export const s_attendeesContainer = css`
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem 1.2rem;
+
   width: 100%;
+  margin-bottom: 1.2rem;
 `;
 
 export const s_scheduleTable = css`
