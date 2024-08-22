@@ -60,14 +60,19 @@ public class MeetingService {
     }
 
     private String generateUniqueUuid() {
-        for (int attempts = 0; attempts < MAX_UUID_GENERATION_ATTEMPTS; attempts++) {
-            String uuid = uuidGenerator.generateUuid(SHORT_UUID_LENGTH);
-            if (!meetingRepository.existsByUuid(uuid)) {
-                return uuid;
-            }
+        String uuid;
+        int attempts = 0;
+
+        do {
+            uuid = uuidGenerator.generateUuid(SHORT_UUID_LENGTH);
+            attempts++;
+        } while (meetingRepository.existsByUuid(uuid) && attempts < MAX_UUID_GENERATION_ATTEMPTS);
+
+        if (attempts >= MAX_UUID_GENERATION_ATTEMPTS) {
+            throw new MomoException(MeetingErrorCode.UUID_GENERATION_FAILURE);
         }
 
-        throw new MomoException(MeetingErrorCode.UUID_GENERATION_FAILURE);
+        return uuid;
     }
 
     private void validateNotPast(AvailableDates meetingDates) {
