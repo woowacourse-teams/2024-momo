@@ -12,9 +12,8 @@ public class LogGenerator {
     public void logRequest(String traceId, HttpServletRequest request) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
-        String remoteAddr = request.getRemoteAddr();
 
-        log.info("REQUEST [{}][{} {}][{}]", traceId, httpMethod, requestURI, remoteAddr);
+        log.info("REQUEST [{}][{} {}]", traceId, httpMethod, requestURI);
     }
 
     public void logResponse(String traceId, long duration, HttpServletRequest request, HttpServletResponse response) {
