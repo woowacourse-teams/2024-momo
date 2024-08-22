@@ -23,11 +23,11 @@ export default function ErrorPage({ error }: ErrorPageProps) {
       <QuestionMomoCharacter width="128" height="180" />
       <div css={s_textContainer}>
         <Text typo="titleBold">
-          <Text.Accent>{responseError?.name}</Text.Accent>
+          <Text.Accent text={responseError.name} />
         </Text>
         <Text typo="bodyBold">{responseError?.message}</Text>
         <Text typo="bodyBold">
-          <Text.Accent>{responseError?.status}</Text.Accent>
+          <Text.Accent text={responseError?.status} />
         </Text>
       </div>
 
