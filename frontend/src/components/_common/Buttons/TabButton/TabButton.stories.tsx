@@ -29,7 +29,7 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<Partial<typeof TabButton>>;
 
 export const Primary: Story = {
   args: {
@@ -50,7 +50,7 @@ export const Playground: Story = {
 
 export const AttendeeFilteringButton: Story = {
   args: {},
-  render: (args) => (
+  render: () => (
     <div
       css={css`
         display: flex;
@@ -79,7 +79,7 @@ export const AttendeeFilteringButton: Story = {
 
 export const TimeSelectModeButton: Story = {
   args: {},
-  render: (args) => (
+  render: () => (
     <div
       css={css`
         display: flex;
