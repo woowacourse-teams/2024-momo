@@ -7,15 +7,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import kr.momo.controller.MomoApiResponse;
 import kr.momo.controller.annotation.ApiErrorResponse;
 import kr.momo.controller.annotation.ApiSuccessResponse;
 import kr.momo.controller.auth.AuthAttendee;
 import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
+import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Schedule", description = "일정 API")
 public interface ScheduleControllerDocs {
@@ -78,5 +81,26 @@ public interface ScheduleControllerDocs {
     MomoApiResponse<AttendeeScheduleResponse> findMySchedule(
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @AuthAttendee @Schema(hidden = true) long id
+    );
+
+    @Operation(
+            summary = "추천 일정 조회",
+            description = """
+                    참여자 수를 기준으로 계산된 추천 일정을 조회하는 API입니다.<br>
+                    추천 기준에 따라 이른 시간 순 혹은 길게 볼 수 있는 순으로 추천합니다.
+                    - earliest: 이른 시간 순
+                    - longTerm: 길게 볼 수 있는 순
+                    
+                    추천 연산에 사용할 참여자 이름을 명시하여 필터링할 수 있습니다.<br>
+                    약속 내의 모든 참여자가 전달된 경우 일부 참여자들이 참여할 수 있는 일정을 함께 추천하며,<br>
+                    이외의 경우 전달된 참여자들이 모두 참여할 수 있는 일정이 추천됩니다.
+                    """)
+    @ApiSuccessResponse.Ok("추천 일정 조회 성공")
+    MomoApiResponse<List<RecommendedScheduleResponse>> recommendSchedules(
+            @PathVariable @Schema(description = "약속 UUID") String uuid,
+            @RequestParam @Schema(description = "추천 기준(이른 시간 순 / 길게 볼 수 있는 순)", example = "earliest")
+            String recommendType,
+            @RequestParam @Schema(description = "추천 대상 참여자 이름", example = "페드로, 재즈, 모모")
+            List<String> attendeeNames
     );
 }
