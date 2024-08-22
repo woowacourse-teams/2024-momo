@@ -15,23 +15,27 @@ public abstract class ScheduleRecommender {
     private final RecommendedScheduleSorterFactory recommendedScheduleSorterFactory;
 
     public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType) {
-        List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group);
-        List<CandidateSchedule> mergedCandidateSchedules = CandidateSchedule.mergeContinuousDateTime(
-                intersectedDateTimes, this::isDiscontinuous
-        );
-
-        RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
-        RecommendedScheduleSorter sorter = recommendedScheduleSorterFactory.getSorterOf(sortStandard);
-        sorter.sort(mergedCandidateSchedules);
-
+        List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group);
+        sortSchedules(mergedCandidateSchedules, recommendType);
         return mergedCandidateSchedules.stream()
                 .limit(getMaxRecommendCount())
                 .toList();
     }
 
+    private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group) {
+        List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group);
+        return CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, this::isDiscontinuous);
+    }
+
     abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group);
 
     abstract boolean isDiscontinuous(CandidateSchedule current, CandidateSchedule next);
+
+    private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
+        RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
+        RecommendedScheduleSorter sorter = recommendedScheduleSorterFactory.getSorterOf(sortStandard);
+        sorter.sort(mergedCandidateSchedules);
+    }
 
     abstract long getMaxRecommendCount();
 }
