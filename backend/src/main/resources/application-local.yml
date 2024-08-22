@@ -31,3 +31,16 @@ security:
 
 log:
   directory: ./logs
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: prometheus
+    jmx:
+      exposure:
+        exclude: "*"
+  endpoint:
+    prometheus:
+      enabled: true
