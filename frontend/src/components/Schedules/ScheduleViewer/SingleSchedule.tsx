@@ -1,8 +1,7 @@
-import React from 'react';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule } from 'types/schedule';
 
-import { s_baseTimeCell, s_cellColorBySelected, s_scheduleTableRow } from '../Schedules.styles';
+import { s_baseTimeCell, s_scheduleTableRow, s_singleCellColor } from '../Schedules.styles';
 import { generateSingleScheduleTable } from '../Schedules.util';
 
 interface SingleScheduleProps extends MeetingDateTime {
@@ -33,7 +32,7 @@ export default function SingleSchedule({
             return (
               <td
                 key={columnIndex}
-                css={[s_baseTimeCell(isHalfHour, isLastRow), s_cellColorBySelected(isSelected)]}
+                css={[s_baseTimeCell(isHalfHour, isLastRow), s_singleCellColor(isSelected)]}
               ></td>
             );
           })}
