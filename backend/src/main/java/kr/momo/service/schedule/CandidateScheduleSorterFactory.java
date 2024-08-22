@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RecommendedScheduleSorterFactory {
+public class CandidateScheduleSorterFactory {
 
-    private final Map<String, RecommendedScheduleSorter> candidates;
+    private final Map<String, CandidateScheduleSorter> candidates;
 
-    public RecommendedScheduleSorter getSorterOf(RecommendedScheduleSortStandard standard) {
+    public CandidateScheduleSorter getSorterOf(RecommendedScheduleSortStandard standard) {
         if (standard == RecommendedScheduleSortStandard.EARLIEST_ORDER) {
             return candidates.get(fetchBeanName(EarliestFirstSorter.class));
         }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class EarliestFirstSorter implements RecommendedScheduleSorter {
+public class EarliestFirstSorter implements CandidateScheduleSorter {
 
     @Override
     public void sort(List<CandidateSchedule> unorderedSchedules) {

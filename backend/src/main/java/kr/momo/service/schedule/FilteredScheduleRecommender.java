@@ -13,9 +13,9 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
     private static final long MAXIMUM_RECOMMEND_COUNT = 5;
 
     public FilteredScheduleRecommender(
-            RecommendedScheduleSorterFactory recommendedScheduleSorterFactory, ScheduleRepository scheduleRepository
+            CandidateScheduleSorterFactory candidateScheduleSorterFactory, ScheduleRepository scheduleRepository
     ) {
-        super(scheduleRepository, recommendedScheduleSorterFactory);
+        super(scheduleRepository, candidateScheduleSorterFactory);
     }
 
     @Override

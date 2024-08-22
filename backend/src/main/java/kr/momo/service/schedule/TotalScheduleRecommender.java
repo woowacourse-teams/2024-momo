@@ -17,9 +17,9 @@ public class TotalScheduleRecommender extends ScheduleRecommender {
     private static final long MAXIMUM_RECOMMEND_COUNT = 10;
 
     protected TotalScheduleRecommender(
-            ScheduleRepository scheduleRepository, RecommendedScheduleSorterFactory recommendedScheduleSorterFactory
+            ScheduleRepository scheduleRepository, CandidateScheduleSorterFactory candidateScheduleSorterFactory
     ) {
-        super(scheduleRepository, recommendedScheduleSorterFactory);
+        super(scheduleRepository, candidateScheduleSorterFactory);
     }
 
     @Override

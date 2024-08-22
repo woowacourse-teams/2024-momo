@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public abstract class ScheduleRecommender {
 
     protected final ScheduleRepository scheduleRepository;
-    private final RecommendedScheduleSorterFactory recommendedScheduleSorterFactory;
+    private final CandidateScheduleSorterFactory candidateScheduleSorterFactory;
 
     public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType) {
         List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group);
@@ -33,7 +33,7 @@ public abstract class ScheduleRecommender {
 
     private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
         RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
-        RecommendedScheduleSorter sorter = recommendedScheduleSorterFactory.getSorterOf(sortStandard);
+        CandidateScheduleSorter sorter = candidateScheduleSorterFactory.getSorterOf(sortStandard);
         sorter.sort(mergedCandidateSchedules);
     }
 
