@@ -14,6 +14,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class UserInfoInterceptor implements HandlerInterceptor {
 
+    public static final String USER_INFO = "userInfo";
+
     private static final String ANONYMOUS = "ANONYMOUS";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
@@ -27,7 +29,7 @@ public class UserInfoInterceptor implements HandlerInterceptor {
             userInfo = String.valueOf(jwtManager.extract(userInfo));
         }
 
-        request.setAttribute("userInfo", userInfo);
+        request.setAttribute(USER_INFO, userInfo);
         return true;
     }
 

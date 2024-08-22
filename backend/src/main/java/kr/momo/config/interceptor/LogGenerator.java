@@ -14,7 +14,7 @@ public class LogGenerator {
     public void logRequest(String traceId, HttpServletRequest request) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
-        String userInfo = request.getAttribute("userInfo").toString();
+        String userInfo = request.getAttribute(UserInfoInterceptor.USER_INFO).toString();
 
         log.info("REQUEST [{}][USERID:{}][{} {}]", traceId, userInfo, httpMethod, requestURI);
     }
