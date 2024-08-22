@@ -113,9 +113,9 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
         ]}
       />
       {meetingTimeRecommends &&
-        meetingTimeRecommends.map((recommendInfo, index) => (
+        meetingTimeRecommends.map((recommendInfo) => (
           <MeetingTimeOptionCard
-            key={recommendInfo.startDate + index}
+            key={recommendInfo.rank}
             isSelected={checkSelectedMeeting(recommendInfo)}
             onSelect={() => handleMeetingSelect(recommendInfo)}
             attendeeCount={attendeeNames.length}
