@@ -13,7 +13,7 @@ export const s_container = css`
 const baseCircleButton = css`
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.8rem;
   align-items: center;
   justify-content: center;
 
@@ -46,5 +46,5 @@ export const s_kakaoCircleButton = css`
 `;
 
 export const s_buttonText = css`
-  ${theme.typography.bodyMedium}
+  ${theme.typography.captionMedium}
 `;

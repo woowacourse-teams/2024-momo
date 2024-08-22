@@ -56,12 +56,10 @@ function ActionButtonGroup({ uuid, data }: ActionButtonGroupProps) {
         <KakaoIcon width="48" height="48" />
       </button>
 
-      {hostName === userName && (
-        <button css={s_cancelCircleButton} onClick={() => handleFixedMeetingCancel()}>
-          <CancelIcon width="16" height="16" />
-          <div css={s_buttonText}>확정 취소</div>
-        </button>
-      )}
+      <button css={s_cancelCircleButton} onClick={() => handleFixedMeetingCancel()}>
+        <CancelIcon width="20" height="20" />
+        <div css={s_buttonText}>확정 취소</div>
+      </button>
     </div>
   );
 }
