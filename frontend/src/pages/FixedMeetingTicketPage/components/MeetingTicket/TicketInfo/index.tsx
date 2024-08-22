@@ -1,9 +1,6 @@
-import { useParams } from 'react-router-dom';
-
-import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries';
-
 import { formatFullDate } from '@utils/date';
 
+import type { MeetingTicketProps } from '../index';
 import {
   s_attendeeNameTag,
   s_attendeeNamesContainer,
@@ -13,16 +10,7 @@ import {
   s_ticketInfoTitle,
 } from './TicketInfo.styles';
 
-export default function TicketInfo() {
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
-
-  const { data } = useGetConfirmedMeetingInfoQuery(uuid);
-
-  if (!data) {
-    return null;
-  }
-
+export default function TicketInfo({ data }: MeetingTicketProps) {
   const {
     meetingName,
     availableAttendeeNames,

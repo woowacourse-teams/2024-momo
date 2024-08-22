@@ -32,9 +32,9 @@ export const useGetMeetingRecommendsQuery = ({
     refetchOnWindowFocus: false,
   });
 
-export const useGetMyScheduleQuery = (uuid: string) =>
+export const useGetMyScheduleQuery = (uuid: string, userName: string) =>
   useQuery({
-    queryKey: [QUERY_KEY.meetingMySchedule],
+    queryKey: [QUERY_KEY.meetingMySchedule, { userName }],
     queryFn: () => getMeetingMySchedule(uuid),
     staleTime: 0,
   });

@@ -13,14 +13,14 @@ interface Typography extends CSSObject {
 
 interface Size {
   width?: CSSProperties['width'];
-  height: CSSProperties['height'];
+  height?: CSSProperties['height'];
   padding: CSSProperties['padding'];
   typography: Typography;
 }
 
 const buttonSize: Record<ButtonSize, Size> = {
   xs: { height: '2rem', padding: '0.4rem', typography: theme.typography.captionBold },
-  s: { height: '2.4rem', padding: '0.4rem', typography: theme.typography.captionBold },
+  s: { padding: '0.8rem 1.2rem', typography: theme.typography.captionBold },
   m: { height: '3.6rem', padding: '0.8rem', typography: theme.typography.bodyBold },
   full: {
     width: '100%',

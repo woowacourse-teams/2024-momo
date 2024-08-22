@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import kr.momo.domain.BaseEntity;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,15 +52,16 @@ public class ConfirmedMeeting extends BaseEntity {
         this.endDateTime = endDateTime;
     }
 
-    public List<Attendee> availableAttendeesOf(List<Schedule> schedules) {
+    public AttendeeGroup availableAttendeesOf(List<Schedule> schedules) {
         Map<Attendee, Long> groupAttendeeByScheduleCount = schedules.stream()
                 .filter(this::isScheduleWithinDateTimeRange)
                 .collect(groupingBy(Schedule::getAttendee, counting()));
 
         long confirmedTimeSlotCount = countTimeSlotOfConfirmedMeeting();
-        return groupAttendeeByScheduleCount.keySet().stream()
+        List<Attendee> availableAttendees = groupAttendeeByScheduleCount.keySet().stream()
                 .filter(key -> groupAttendeeByScheduleCount.get(key) == confirmedTimeSlotCount)
                 .toList();
+        return new AttendeeGroup(availableAttendees);
     }
 
     private boolean isScheduleWithinDateTimeRange(Schedule schedule) {
