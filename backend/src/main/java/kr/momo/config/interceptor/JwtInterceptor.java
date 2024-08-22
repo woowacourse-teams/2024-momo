@@ -12,7 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
-public class UserInfoInterceptor implements HandlerInterceptor {
+public class JwtInterceptor implements HandlerInterceptor {
 
     public static final String USER_INFO = "userInfo";
 

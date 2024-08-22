@@ -1,7 +1,7 @@
 package kr.momo.config;
 
 import java.util.List;
-import kr.momo.config.interceptor.UserInfoInterceptor;
+import kr.momo.config.interceptor.JwtInterceptor;
 import kr.momo.config.interceptor.LoggingInterceptor;
 import kr.momo.controller.auth.AuthArgumentResolver;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String BASE_URL = "/api/v1/**";
 
     private final AuthArgumentResolver authArgumentResolver;
-    private final UserInfoInterceptor userInfoInterceptor;
+    private final JwtInterceptor jwtInterceptor;
     private final LoggingInterceptor loggingInterceptor;
 
     @Override
@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInfoInterceptor).addPathPatterns(BASE_URL).order(1);
+        registry.addInterceptor(jwtInterceptor).addPathPatterns(BASE_URL).order(1);
         registry.addInterceptor(loggingInterceptor).addPathPatterns(BASE_URL).order(2);
     }
 }
