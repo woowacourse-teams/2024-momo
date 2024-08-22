@@ -1,6 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import {
+  s_attendeesContainer,
+  s_tipInfo,
+} from '@pages/MeetingConfirmPage/MeetingTimeConfirmPage.styles';
 
 import MeetingTimeOptionCard from '@components/MeetingTimeCard/MeetingTimeOptionCard';
 import { Button } from '@components/_common/Buttons/Button';
@@ -12,7 +17,6 @@ import useMeetingTimeRecommendFilter from '@hooks/useMeetingTimeRecommendFilter/
 import { postMeetingConfirm } from '@apis/meetingConfirm';
 import type { MeetingRecommend } from '@apis/meetingRecommend';
 
-import { s_attendeesContainer, s_tipInfo } from '../MeetingTimeConfirmPage.styles';
 import { s_container } from './MeetingTimeOptions.styles';
 
 interface MeetingTimeOptionsProps {
