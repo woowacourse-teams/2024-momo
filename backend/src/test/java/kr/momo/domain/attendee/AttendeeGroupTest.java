@@ -1,5 +1,6 @@
 package kr.momo.domain.attendee;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -25,5 +26,19 @@ class AttendeeGroupTest {
         assertThatThrownBy(() -> new AttendeeGroup(attendees))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.DUPLICATED_ATTENDEE_NAME.message());
+    }
+
+    @DisplayName("현재 그룹이 다른 그룹의 모든 참가자를 포함하는지 확인한다.")
+    @Test
+    void containsAllTest() {
+        // given
+        Attendee jazz = AttendeeFixture.HOST_JAZZ.create(MeetingFixture.DINNER.create());
+        Attendee daon = AttendeeFixture.GUEST_DAON.create(MeetingFixture.DINNER.create());
+        Attendee bakey = AttendeeFixture.GUEST_BAKEY.create(MeetingFixture.DINNER.create());
+        AttendeeGroup group = new AttendeeGroup(List.of(jazz, daon, bakey));
+        AttendeeGroup subGroup = new AttendeeGroup(List.of(jazz, daon));
+
+        // when & then
+        assertThat(group.containsAll(subGroup)).isTrue();
     }
 }
