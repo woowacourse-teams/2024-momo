@@ -58,7 +58,8 @@ public enum Timeslot {
     TIME_2300(LocalTime.of(23, 0)),
     TIME_2330(LocalTime.of(23, 30));
 
-    private static final long DURATION_IN_MINUTE;
+    public static final long DURATION_IN_MINUTE;
+
     private final LocalTime startTime;
 
     static {
@@ -84,6 +85,10 @@ public enum Timeslot {
 
     public boolean isBefore(LocalTime other) {
         return this.startTime.isBefore(other);
+    }
+
+    public boolean isLast() {
+        return this == TIME_2330;
     }
 
     public LocalTime startTime() {

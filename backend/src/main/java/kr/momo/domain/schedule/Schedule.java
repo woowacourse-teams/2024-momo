@@ -52,6 +52,10 @@ public class Schedule extends BaseEntity {
         this.timeslot = timeslot;
     }
 
+    public DateTimeInterval dateTimeInterval() {
+        return new DateTimeInterval(dateTime(), dateTime().plusMinutes(Timeslot.DURATION_IN_MINUTE));
+    }
+
     public LocalDateTime dateTime() {
         return LocalDateTime.of(availableDate.getDate(), timeslot.startTime());
     }
@@ -60,7 +64,7 @@ public class Schedule extends BaseEntity {
         return availableDate.getDate();
     }
 
-    public LocalTime time() {
+    public LocalTime startTime() {
         return timeslot.startTime();
     }
 
