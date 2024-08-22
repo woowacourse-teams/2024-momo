@@ -1,4 +1,4 @@
-package kr.momo.config.filter;
+package kr.momo.config.interceptor;
 
 import java.util.UUID;
 import org.springframework.stereotype.Component;

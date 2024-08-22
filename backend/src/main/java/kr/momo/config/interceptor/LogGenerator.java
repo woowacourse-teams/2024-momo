@@ -1,4 +1,4 @@
-package kr.momo.config.filter;
+package kr.momo.config.interceptor;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
 package kr.momo.config;
 
 import java.util.List;
-import kr.momo.config.filter.LogInterceptor;
+import kr.momo.config.interceptor.LogInterceptor;
 import kr.momo.controller.auth.AuthArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
