@@ -5,8 +5,6 @@ import type { MeetingDateTime } from 'types/meeting';
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import { s_attendeesContainer } from '@pages/MeetingTimePickPage/MeetingTimePickPage.styles';
-
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 
@@ -18,6 +16,7 @@ import Pen from '@assets/images/pen.svg';
 import DateControlButtons from '../DateControlButtons';
 import ScheduleOverview from '../ScheduleOverview';
 import {
+  s_attendeesContainer,
   s_bottomFixedButtonContainer,
   s_circleButton,
   s_fullButtonContainer,
@@ -27,6 +26,7 @@ import ScheduleTable from './ScheduleTable';
 
 interface SchedulesViewerProps extends MeetingDateTime {
   isLocked: boolean;
+  hostName: string;
   meetingAttendees: string[];
 }
 
@@ -34,6 +34,7 @@ export default function SchedulesViewer({
   isLocked,
   firstTime,
   lastTime,
+  hostName,
   availableDates,
   meetingAttendees,
 }: SchedulesViewerProps) {
@@ -43,7 +44,7 @@ export default function SchedulesViewer({
   const navigate = useNavigate();
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
-  const { isLoggedIn } = useContext(AuthContext).state;
+  const { isLoggedIn, userName } = useContext(AuthContext).state;
 
   const {
     currentDates,
@@ -109,9 +110,15 @@ export default function SchedulesViewer({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
-          <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
-            약속 시간 추천받기
-          </Button>
+          {hostName === userName ? (
+            <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
+              약속 시간 추천받기
+            </Button>
+          ) : (
+            <Button size="full" variant="primary" onClick={() => navigate('confirm')}>
+              약속 시간 확정하기
+            </Button>
+          )}
         </div>
         <button disabled={isLocked} onClick={handleScheduleUpdate} css={s_circleButton}>
           <Pen width="28" height="28" />
