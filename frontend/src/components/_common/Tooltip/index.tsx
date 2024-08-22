@@ -1,3 +1,4 @@
+import type { SerializedStyles } from '@emotion/react';
 import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -5,18 +6,24 @@ import type { TooltipPosition } from 'types/tooltip';
 
 import {
   getTooltipPosition,
+  s_tooltipTrigger,
   tooltipContainer,
   tooltipContent,
-  tooltipTrigger,
 } from './Tooltip.styles';
 
 interface TooltipProps {
   content: ReactNode;
   children: ReactNode;
   position?: TooltipPosition;
+  visibleStyles?: SerializedStyles;
 }
 
-export default function Tooltip({ content, children, position = 'top' }: TooltipProps) {
+export default function Tooltip({
+  content,
+  children,
+  position = 'top',
+  visibleStyles,
+}: TooltipProps) {
   const [visible, setVisible] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +42,7 @@ export default function Tooltip({ content, children, position = 'top' }: Tooltip
   return (
     <div css={tooltipContainer}>
       <div
-        css={tooltipTrigger}
+        css={s_tooltipTrigger(visible, visibleStyles)}
         onMouseEnter={showTooltip}
         onMouseLeave={hideTooltip}
         ref={triggerRef}
