@@ -22,8 +22,17 @@ public class LogGenerator {
     public void logResponse(String traceId, long duration, HttpServletRequest request, HttpServletResponse response) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
+        String userInfo = request.getAttribute(JwtInterceptor.USER_INFO).toString();
         int status = response.getStatus();
 
-        log.info("RESPONSE [{}][{} {}][{} ms][Status: {}]", traceId, httpMethod, requestURI, duration, status);
+        log.info(
+                "RESPONSE [{}][USERID:{}][{} {}][{} ms][Status: {}]",
+                traceId,
+                userInfo,
+                httpMethod,
+                requestURI,
+                duration,
+                status
+        );
     }
 }
