@@ -8,13 +8,15 @@ import lombok.Getter;
 @Getter
 public enum RecommendedScheduleSortStandard {
 
-    EARLIEST_ORDER("earliest"),
-    LONG_TERM_ORDER("longTerm");
+    EARLIEST_ORDER("earliest", new EarliestFirstSorter()),
+    LONG_TERM_ORDER("longTerm", new LongTermFirstSorter());
 
     private final String type;
+    private final CandidateScheduleSorter sorter;
 
-    RecommendedScheduleSortStandard(String type) {
+    RecommendedScheduleSortStandard(String type, CandidateScheduleSorter sorter) {
         this.type = type;
+        this.sorter = sorter;
     }
 
     public static RecommendedScheduleSortStandard from(String type) {

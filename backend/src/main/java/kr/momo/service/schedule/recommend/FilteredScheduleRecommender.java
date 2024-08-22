@@ -5,7 +5,6 @@ import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateAndTimeslot;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
-import kr.momo.domain.schedule.recommend.CandidateScheduleSorterFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,10 +12,8 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
 
     private static final long MAXIMUM_RECOMMEND_COUNT = 5;
 
-    public FilteredScheduleRecommender(
-            CandidateScheduleSorterFactory candidateScheduleSorterFactory, ScheduleRepository scheduleRepository
-    ) {
-        super(scheduleRepository, candidateScheduleSorterFactory);
+    public FilteredScheduleRecommender(ScheduleRepository scheduleRepository) {
+        super(scheduleRepository);
     }
 
     @Override

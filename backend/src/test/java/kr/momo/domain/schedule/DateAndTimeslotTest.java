@@ -1,7 +1,7 @@
 package kr.momo.domain.schedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import kr.momo.domain.timeslot.Timeslot;

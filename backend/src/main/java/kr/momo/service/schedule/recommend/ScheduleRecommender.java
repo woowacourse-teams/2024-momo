@@ -5,7 +5,6 @@ import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
 import kr.momo.domain.schedule.recommend.CandidateScheduleSorter;
-import kr.momo.domain.schedule.recommend.CandidateScheduleSorterFactory;
 import kr.momo.domain.schedule.recommend.RecommendedScheduleSortStandard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 public abstract class ScheduleRecommender {
 
     protected final ScheduleRepository scheduleRepository;
-    private final CandidateScheduleSorterFactory candidateScheduleSorterFactory;
 
     public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType) {
         List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group);
@@ -36,7 +34,7 @@ public abstract class ScheduleRecommender {
 
     private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
         RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
-        CandidateScheduleSorter sorter = candidateScheduleSorterFactory.getSorterOf(sortStandard);
+        CandidateScheduleSorter sorter = sortStandard.getSorter();
         sorter.sort(mergedCandidateSchedules);
     }
 

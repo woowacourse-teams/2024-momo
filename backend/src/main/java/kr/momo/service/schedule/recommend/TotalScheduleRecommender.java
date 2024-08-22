@@ -9,7 +9,6 @@ import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
-import kr.momo.domain.schedule.recommend.CandidateScheduleSorterFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,10 +16,8 @@ public class TotalScheduleRecommender extends ScheduleRecommender {
 
     private static final long MAXIMUM_RECOMMEND_COUNT = 10;
 
-    protected TotalScheduleRecommender(
-            ScheduleRepository scheduleRepository, CandidateScheduleSorterFactory candidateScheduleSorterFactory
-    ) {
-        super(scheduleRepository, candidateScheduleSorterFactory);
+    protected TotalScheduleRecommender(ScheduleRepository scheduleRepository) {
+        super(scheduleRepository);
     }
 
     @Override
