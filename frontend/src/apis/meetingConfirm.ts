@@ -16,6 +16,7 @@ interface PostMeetingConfirmRequest {
 }
 
 export interface GetConfirmedMeetingInfoResponse extends ConfirmDates {
+  hostName: string;
   meetingName: string;
   availableAttendeeNames: string[];
   startDayOfWeek: string;
