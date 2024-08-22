@@ -81,12 +81,9 @@ public class AttendeeGroup {
     }
 
     public Optional<Attendee> findHost() {
-        for (Attendee attendee : attendees) {
-            if (attendee.isHost()) {
-                return Optional.of(attendee);
-            }
-        }
-        return Optional.empty();
+        return attendees.stream()
+                .dropWhile(attendee -> !attendee.isHost())
+                .findFirst();
     }
 
     @Override
