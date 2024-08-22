@@ -64,7 +64,15 @@ public class Schedule extends BaseEntity {
         return timeslot.startTime();
     }
 
+    public Long attendeeId() {
+        return attendee.getId();
+    }
+
     public String attendeeName() {
         return attendee.name();
+    }
+
+    public Long availableDateId() {
+        return availableDate.getId();
     }
 }

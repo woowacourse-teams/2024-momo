@@ -8,6 +8,7 @@ import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
+import kr.momo.domain.availabledate.AvailableDateBatchRepository;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
@@ -33,6 +34,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
+    private final AvailableDateBatchRepository availableDateBatchRepository;
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
@@ -40,7 +42,7 @@ public class MeetingService {
         AvailableDates meetingDates = new AvailableDates(request.toAvailableMeetingDates(), meeting);
 
         validateNotPast(meetingDates);
-        availableDateRepository.saveAll(meetingDates.getAvailableDates());
+        availableDateBatchRepository.batchInsert(meetingDates.getAvailableDates());
         Attendee attendee = saveHostAttendee(meeting, request.hostName(), request.hostPassword());
         String token = jwtManager.generate(attendee.getId());
 

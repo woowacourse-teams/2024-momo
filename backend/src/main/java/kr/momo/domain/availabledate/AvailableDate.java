@@ -55,4 +55,8 @@ public class AvailableDate extends BaseEntity {
     public boolean isEqual(LocalDate other) {
         return date.isEqual(other);
     }
+
+    public Long meetingId() {
+        return meeting.getId();
+    }
 }

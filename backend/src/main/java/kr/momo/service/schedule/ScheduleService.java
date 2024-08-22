@@ -24,6 +24,7 @@ import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.schedule.Schedule;
+import kr.momo.domain.schedule.ScheduleBatchRepository;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
@@ -47,6 +48,7 @@ public class ScheduleService {
     private final AttendeeRepository attendeeRepository;
     private final ScheduleRepository scheduleRepository;
     private final AvailableDateRepository availableDateRepository;
+    private final ScheduleBatchRepository scheduleBatchRepository;
 
     @Transactional
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
@@ -57,9 +59,9 @@ public class ScheduleService {
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));
 
-        scheduleRepository.deleteAllByAttendee(attendee);
+        scheduleRepository.deleteByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
-        scheduleRepository.saveAll(schedules);
+        scheduleBatchRepository.batchInsert(schedules);
     }
 
     private void validateMeetingUnLocked(Meeting meeting) {
