@@ -24,7 +24,6 @@ export const postMeetingConfirm = async ({ uuid, requests }: PostMeetingConfirmR
   const data = await fetchClient({
     path: `/${uuid}/confirm`,
     method: 'POST',
-    errorMessage: '약속 시간 확정을 요청하는데 실패했어요 :(',
     body: requests,
     isAuthRequire: true,
   });
