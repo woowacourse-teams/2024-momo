@@ -13,7 +13,7 @@ public enum AttendeeErrorCode implements ErrorCodeType {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
     DUPLICATED_ATTENDEE_NAME(HttpStatus.BAD_REQUEST, "참여자의 이름이 중복됩니다."),
     INVALID_ATTENDEE_SIZE(HttpStatus.BAD_REQUEST, "참여자의 수는 최소 1명입니다."),
-    HOST_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "약속의 주최자 정보를 찾을 수 없습니다.");
+    HOST_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "약속의 주최자 정보를 찾을 수 없습니다. 관리자에게 문의하세요."),;
 
     private final HttpStatus httpStatus;
     private final String message;
