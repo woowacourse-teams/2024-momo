@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -14,7 +15,7 @@ public class LogGenerator {
     public void logRequest(String traceId, HttpServletRequest request) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
-        String userInfo = request.getAttribute(JwtInterceptor.USER_INFO).toString();
+        String userInfo = MDC.get(JwtInterceptor.USER_INFO);
 
         log.info("REQUEST [{}][USERID:{}][{} {}]", traceId, userInfo, httpMethod, requestURI);
     }
@@ -22,7 +23,7 @@ public class LogGenerator {
     public void logResponse(String traceId, long duration, HttpServletRequest request, HttpServletResponse response) {
         String httpMethod = request.getMethod();
         String requestURI = request.getRequestURI();
-        String userInfo = request.getAttribute(JwtInterceptor.USER_INFO).toString();
+        String userInfo = MDC.get(JwtInterceptor.USER_INFO);
         int status = response.getStatus();
 
         log.info(

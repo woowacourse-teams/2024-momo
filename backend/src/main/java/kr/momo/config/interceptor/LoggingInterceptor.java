@@ -36,6 +36,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
         long duration = System.currentTimeMillis() - startTime;
         String traceId = MDC.get(TRACE_ID);
         logGenerator.logResponse(traceId, duration, request, response);
-        MDC.remove(TRACE_ID);
+        MDC.clear();
     }
 }

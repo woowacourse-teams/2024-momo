@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import kr.momo.service.auth.JwtManager;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -28,8 +29,8 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (isLoginUser(userInfo)) {
             userInfo = String.valueOf(jwtManager.extract(userInfo));
         }
+        MDC.put(USER_INFO, userInfo);
 
-        request.setAttribute(USER_INFO, userInfo);
         return true;
     }
 
