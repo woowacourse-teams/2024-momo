@@ -17,7 +17,7 @@ export default function NotFoundPage() {
       <QuestionMomoCharacter width="128" height="180" />
       <div css={s_textContainer}>
         <Text typo="titleBold">
-          <Text.Accent>404</Text.Accent>
+          <Text.Accent text="404" />
         </Text>
         <Text typo="bodyBold">요청하신 페이지를 찾을 수 없어요 :(</Text>
       </div>

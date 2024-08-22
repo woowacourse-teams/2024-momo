@@ -15,7 +15,7 @@ export default function LandingPage() {
   return (
     <div css={s_container}>
       <Text typo="titleBold">
-        모두 쉽게 모이자! <Text.Accent>모모</Text.Accent> 🍑
+        모두 쉽게 모이자! <Text.Accent text="모모" /> 🍑
       </Text>
       <MomoCharacter width="128" height="180" />
       <Button onClick={() => navigate(MEETING_CREATE_PATH)} variant="primary" size="full">

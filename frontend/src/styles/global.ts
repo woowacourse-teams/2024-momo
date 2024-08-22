@@ -109,7 +109,7 @@ const globalStyles = css`
     font-family: 'Spoqa Han Sans Neo', sans-serif;
     font-size: 1.6rem;
 
-    background-color: #6b6666;
+    background-color: #fff;
   }
 
   article,
