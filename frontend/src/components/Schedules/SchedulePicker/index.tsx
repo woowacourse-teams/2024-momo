@@ -99,23 +99,23 @@ export default function SchedulePicker({
 
   return (
     <>
+      <div css={s_selectModeButtonsContainer}>
+        <TabButton
+          isActive={selectMode === 'available'}
+          onClick={() => handleSelectModeChange('available')}
+        >
+          {TIME_SELECT_MODE.available}
+        </TabButton>
+        <p>/</p>
+        <TabButton
+          isActive={selectMode === 'unavailable'}
+          onClick={() => handleSelectModeChange('unavailable')}
+        >
+          {TIME_SELECT_MODE.unavailable}
+        </TabButton>
+        <Text typo="bodyBold">시간으로 선택하기</Text>
+      </div>
       <div css={s_relativeContainer}>
-        <div css={s_selectModeButtonsContainer}>
-          <TabButton
-            isActive={selectMode === 'available'}
-            onClick={() => handleSelectModeChange('available')}
-          >
-            {TIME_SELECT_MODE.available}
-          </TabButton>
-          <p>/</p>
-          <TabButton
-            isActive={selectMode === 'unavailable'}
-            onClick={() => handleSelectModeChange('unavailable')}
-          >
-            {TIME_SELECT_MODE.unavailable}
-          </TabButton>
-          <Text typo="bodyBold">시간으로 선택하기</Text>
-        </div>
         {isMultiPage && (
           <DateControlButtons
             decreaseDatePage={decreaseDatePage}
@@ -155,6 +155,9 @@ export default function SchedulePicker({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
+          <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
+            취소하기
+          </Button>
           <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
             등록하기
           </Button>

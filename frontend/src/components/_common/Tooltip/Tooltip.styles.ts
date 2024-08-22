@@ -1,3 +1,4 @@
+import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
 import type { TooltipPosition } from 'types/tooltip';
 
@@ -80,7 +81,11 @@ export const getTooltipPosition = (position: TooltipPosition, targetRect: DOMRec
   return positions[position] || positions.top;
 };
 
-export const tooltipTrigger = css`
+export const s_tooltipTrigger = (
+  isVisible: boolean,
+  visibleStyles: SerializedStyles | undefined,
+) => css`
   cursor: pointer;
   height: 100%;
+  ${isVisible && visibleStyles}
 `;
