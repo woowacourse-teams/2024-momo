@@ -8,5 +8,5 @@ export const s_container = css`
   justify-content: center;
 
   width: 100%;
-  height: calc(100vh - 10rem);
+  height: 100%;
 `;
