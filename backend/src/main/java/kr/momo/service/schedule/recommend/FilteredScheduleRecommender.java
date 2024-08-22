@@ -39,7 +39,7 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    long getMaxRecommendCount() {
+    protected long getMaxRecommendCount() {
         return MAXIMUM_RECOMMEND_COUNT;
     }
 }
