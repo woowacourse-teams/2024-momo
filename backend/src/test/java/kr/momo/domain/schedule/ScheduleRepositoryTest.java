@@ -105,7 +105,7 @@ class ScheduleRepositoryTest {
         saveAttendeeSchedule(bakey, today, createTimeslotRange(Timeslot.TIME_1100, Timeslot.TIME_1800));
         saveAttendeeSchedule(bakey, today, createTimeslotRange(Timeslot.TIME_1900, Timeslot.TIME_2330));
         saveAttendeeSchedule(bakey, tomorrow, createTimeslotRange(Timeslot.TIME_0000, Timeslot.TIME_1930));
-        // mark: 오늘 0900 ~ 1000 / 내일 0000 ~ 2030
+        // mark: 오늘 0900 ~ 1430 / 내일 0000 ~ 2030
         saveAttendeeSchedule(mark, today, createTimeslotRange(Timeslot.TIME_0900, Timeslot.TIME_1430));
         saveAttendeeSchedule(mark, tomorrow, createTimeslotRange(Timeslot.TIME_0000, Timeslot.TIME_2030));
         // 전원 가능한 타임슬롯: 오늘 1200 ~ 1430 / 내일 1600 ~ 1930
