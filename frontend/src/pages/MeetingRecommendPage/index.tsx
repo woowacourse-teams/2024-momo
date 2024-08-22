@@ -23,10 +23,7 @@ export default function MeetingRecommendPage() {
   return (
     <div css={s_container} aria-label="약속 시간 추천 페이지">
       <section css={s_pageHeader}>
-        <Text typo="titleBold">
-          가장 만나기 좋은 약속시간
-          <Text.Accent> TOP5</Text.Accent>
-        </Text>
+        <Text typo="titleBold">가장 만나기 좋은 약속시간</Text>
       </section>
       {attendeeNames && <MeetingTimeRecommends uuid={uuid} attendeeNames={attendeeNames} />}
     </div>

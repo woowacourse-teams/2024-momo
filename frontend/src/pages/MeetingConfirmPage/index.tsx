@@ -23,10 +23,7 @@ export default function MeetingConfirmPage() {
   return (
     <div css={s_container} aria-label="약속 시간 확정 페이지">
       <section css={s_pageHeader}>
-        <Text typo="titleBold">
-          가장 만나기 좋은 약속시간
-          <Text.Accent> TOP5</Text.Accent>
-        </Text>
+        <Text typo="titleBold">가장 만나기 좋은 약속시간</Text>
       </section>
       {attendeeNames && <MeetingTimeOptions uuid={uuid} attendeeNames={attendeeNames} />}
     </div>
