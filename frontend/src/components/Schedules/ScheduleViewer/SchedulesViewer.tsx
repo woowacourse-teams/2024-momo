@@ -111,12 +111,12 @@ export default function SchedulesViewer({
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
           {hostName === userName ? (
-            <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
-              약속 시간 추천받기
-            </Button>
-          ) : (
             <Button size="full" variant="primary" onClick={() => navigate('confirm')}>
               약속 시간 확정하기
+            </Button>
+          ) : (
+            <Button size="full" variant="primary" onClick={() => navigate('recommend')}>
+              약속 시간 추천받기
             </Button>
           )}
         </div>
