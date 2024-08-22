@@ -7,7 +7,7 @@ import QuestionMomoCharacter from '@assets/images/questionMomoCharacter.svg';
 
 import { MEETING_CREATE_PATH } from '@constants/routes/meeting';
 
-import { s_container, s_textContainer } from './NotFound.styles';
+import { s_container, s_textContainer } from './NotFoundPage.styles';
 
 export default function NotFoundPage() {
   const navigate = useNavigate();

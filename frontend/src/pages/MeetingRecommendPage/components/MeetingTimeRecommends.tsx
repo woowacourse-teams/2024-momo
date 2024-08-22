@@ -1,9 +1,10 @@
 import MeetingRecommendCard from '@components/MeetingTimeCard/MeetingTimeRecommendCard';
+import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
 
 import useMeetingTimeRecommendFilter from '@hooks/useMeetingTimeRecommendFilter/useMeetingTimeRecommendFilter';
 
-import { s_attendeesContainer, s_tabButton, s_tipInfo } from '../MeetingRecommendPage.styles';
+import { s_attendeesContainer, s_tipInfo } from '../MeetingRecommendPage.styles';
 import { s_container } from './MeetingTimeRecommends.styles';
 
 interface MeetingRecommendsProps {
@@ -24,17 +25,22 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
   return (
     <div css={s_container}>
       <section css={s_attendeesContainer}>
-        <button css={s_tabButton(isSelectedAllAttendee)} onClick={() => toggleAttendee('전체')}>
+        <TabButton
+          tabButtonVariants="outlinedFloating"
+          isActive={isSelectedAllAttendee}
+          onClick={() => toggleAttendee('전체')}
+        >
           전체
-        </button>
+        </TabButton>
         {attendeeNames.map((attendee) => (
-          <button
-            key={attendee}
-            css={s_tabButton(checkSelectedAttendee(attendee))}
+          <TabButton
+            tabButtonVariants="outlinedFloating"
+            isActive={checkSelectedAttendee(attendee)}
             onClick={() => toggleAttendee(attendee)}
+            key={attendee}
           >
             {attendee}
-          </button>
+          </TabButton>
         ))}
       </section>
       <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
