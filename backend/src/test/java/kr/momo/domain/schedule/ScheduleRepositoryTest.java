@@ -24,10 +24,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-@SpringBootTest
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class ScheduleRepositoryTest {
@@ -40,9 +39,6 @@ class ScheduleRepositoryTest {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private MeetingRepository meetingRepository;
 
     @Autowired
     private AttendeeRepository attendeeRepository;
@@ -73,7 +69,7 @@ class ScheduleRepositoryTest {
         scheduleRepository.deleteByAttendee(attendee);
 
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM schedule", Integer.class);
-        assertThat(count).isEqualTo(0);
+        assertThat(count).isZero();
     }
 
     @DisplayName("참여자들이 모두 참여할 수 있는 시간대를 일정 오름차순 정렬된 상태로 조회한다.")
