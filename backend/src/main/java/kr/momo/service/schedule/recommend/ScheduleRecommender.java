@@ -27,7 +27,7 @@ public abstract class ScheduleRecommender {
 
     private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group) {
         List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group);
-        return CandidateSchedule.mergeContinuousDateTime(intersectedDateTimes, this::isContinuous);
+        return CandidateSchedule.mergeContinuous(intersectedDateTimes, this::isContinuous);
     }
 
     abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group);

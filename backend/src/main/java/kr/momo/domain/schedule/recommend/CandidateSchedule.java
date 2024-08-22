@@ -19,7 +19,7 @@ public record CandidateSchedule(
         return new CandidateSchedule(new DateTimeInterval(startDateTime, endDateTime), attendeeGroup);
     }
 
-    public static List<CandidateSchedule> mergeContinuousDateTime(
+    public static List<CandidateSchedule> mergeContinuous(
             List<CandidateSchedule> sortedSchedules,
             BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous
     ) {
