@@ -24,7 +24,7 @@ public class TotalScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group) {
+    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group) {
         return findAllScheduleAvailableByEachAttendee(group);
     }
 
