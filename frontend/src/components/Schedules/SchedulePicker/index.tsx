@@ -155,6 +155,9 @@ export default function SchedulePicker({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
+          <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
+            취소하기
+          </Button>
           <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
             등록하기
           </Button>

@@ -131,7 +131,9 @@ export const s_bottomFixedButtonContainer = css`
 `;
 
 export const s_fullButtonContainer = css`
+  display: flex;
   flex: 1;
+  gap: 0.4rem;
 `;
 
 export const s_buttonContainer = css`
