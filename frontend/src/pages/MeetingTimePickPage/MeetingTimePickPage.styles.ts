@@ -22,10 +22,8 @@ export const s_toggleButtonContainer = css`
 `;
 
 export const s_contentDivider = css`
-  width: 100%;
   width: calc(100% + 1.6rem * 2);
   height: 0.4rem;
   margin: 1.6rem 0 0 -1.6rem;
-
   background-color: #f6f6f6;
 `;
