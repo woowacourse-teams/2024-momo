@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@components/_common/Buttons/Button';
 
-import SadMomoCharacter from '@assets/images/SadMomoCharacter.svg';
+import SadMomoCharacter from '@assets/images/sadMomoCharacter.svg';
 
 import { s_container } from './UnconfirmedMessage.styles';
 
