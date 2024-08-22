@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import type { GetConfirmedMeetingInfoResponse } from '@apis/meetingConfirm';
 
 import { useCancelFixedMeetingMutation } from '@stores/servers/confirm/mutations';
 
@@ -15,6 +16,12 @@ import {
 function ActionButtonGroup() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
+interface ActionButtonGroupProps {
+  uuid: string;
+  data: GetConfirmedMeetingInfoResponse;
+}
+
+function ActionButtonGroup({ uuid, data }: ActionButtonGroupProps) {
 
   const { mutate: cancelFixedMeeting } = useCancelFixedMeetingMutation(uuid);
 
