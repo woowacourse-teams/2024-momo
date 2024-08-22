@@ -1,4 +1,4 @@
-package kr.momo.service.schedule;
+package kr.momo.service.schedule.recommend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

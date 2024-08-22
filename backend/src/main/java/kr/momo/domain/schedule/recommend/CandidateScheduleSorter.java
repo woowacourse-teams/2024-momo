@@ -1,7 +1,6 @@
-package kr.momo.service.schedule;
+package kr.momo.domain.schedule.recommend;
 
 import java.util.List;
-import kr.momo.domain.schedule.CandidateSchedule;
 
 public interface CandidateScheduleSorter {
 

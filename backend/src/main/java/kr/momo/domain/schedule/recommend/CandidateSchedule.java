@@ -1,4 +1,4 @@
-package kr.momo.domain.schedule;
+package kr.momo.domain.schedule.recommend;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.AttendeeGroup;
+import kr.momo.domain.schedule.DateTimeInterval;
 
 public record CandidateSchedule(
         DateTimeInterval dateTimeInterval, AttendeeGroup attendeeGroup

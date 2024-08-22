@@ -1,4 +1,4 @@
-package kr.momo.service.schedule;
+package kr.momo.service.schedule.recommend;
 
 import java.util.Map;
 import kr.momo.domain.attendee.AttendeeGroup;

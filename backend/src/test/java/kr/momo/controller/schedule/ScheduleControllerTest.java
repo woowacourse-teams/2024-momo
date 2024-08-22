@@ -1,6 +1,6 @@
 package kr.momo.controller.schedule;
 
-import static kr.momo.service.schedule.RecommendedScheduleSortStandard.EARLIEST_ORDER;
+import static kr.momo.domain.schedule.recommend.RecommendedScheduleSortStandard.EARLIEST_ORDER;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

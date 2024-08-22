@@ -1,4 +1,4 @@
-package kr.momo.service.schedule;
+package kr.momo.domain.schedule.recommend;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

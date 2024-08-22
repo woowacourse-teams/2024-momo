@@ -1,14 +1,15 @@
-package kr.momo.service.schedule;
+package kr.momo.service.schedule.recommend;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.schedule.CandidateSchedule;
 import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
+import kr.momo.domain.schedule.recommend.CandidateSchedule;
+import kr.momo.domain.schedule.recommend.CandidateScheduleSorterFactory;
 import org.springframework.stereotype.Component;
 
 @Component

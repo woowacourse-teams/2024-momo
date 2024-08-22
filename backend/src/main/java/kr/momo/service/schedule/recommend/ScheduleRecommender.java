@@ -1,9 +1,12 @@
-package kr.momo.service.schedule;
+package kr.momo.service.schedule.recommend;
 
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.schedule.CandidateSchedule;
 import kr.momo.domain.schedule.ScheduleRepository;
+import kr.momo.domain.schedule.recommend.CandidateSchedule;
+import kr.momo.domain.schedule.recommend.CandidateScheduleSorter;
+import kr.momo.domain.schedule.recommend.CandidateScheduleSorterFactory;
+import kr.momo.domain.schedule.recommend.RecommendedScheduleSortStandard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
