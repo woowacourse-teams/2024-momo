@@ -14,7 +14,7 @@ const ACTIVE_TAB_BUTTON_STYLES: TabButtonStyles = {
   `,
   outlinedFloating: css`
     background-color: #ffc2d0;
-    border-radius: 999rem;
+    border-radius: 8rem;
     box-shadow: inset 0 0 0 1px ${theme.colors.primary};
   `,
 };
