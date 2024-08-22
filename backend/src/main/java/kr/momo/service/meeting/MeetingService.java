@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
@@ -22,12 +21,16 @@ import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class MeetingService {
+
+    private static final int MAX_UUID_GENERATION_ATTEMPTS = 5;
+    private static final int SHORT_UUID_LENGTH = 8;
 
     private final JwtManager jwtManager;
     private final Clock clock;
@@ -49,15 +52,27 @@ public class MeetingService {
         return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
+    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
+        String uuid = generateUniqueUuid();
+        Meeting meeting = new Meeting(meetingName, uuid, startTime, endTime);
+        return meetingRepository.save(meeting);
+    }
+
+    private String generateUniqueUuid() {
+        for (int attempts = 0; attempts < MAX_UUID_GENERATION_ATTEMPTS; attempts++) {
+            String uuid = RandomStringUtils.randomAlphanumeric(SHORT_UUID_LENGTH);
+            if (!meetingRepository.existsByUuid(uuid)) {
+                return uuid;
+            }
+        }
+
+        throw new MomoException(MeetingErrorCode.UUID_GENERATION_FAILURE);
+    }
+
     private void validateNotPast(AvailableDates meetingDates) {
         if (meetingDates.isAnyBefore(LocalDate.now(clock))) {
             throw new MomoException(MeetingErrorCode.PAST_NOT_PERMITTED);
         }
-    }
-
-    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
-        Meeting meeting = new Meeting(meetingName, UUID.randomUUID().toString(), startTime, endTime);
-        return meetingRepository.save(meeting);
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
