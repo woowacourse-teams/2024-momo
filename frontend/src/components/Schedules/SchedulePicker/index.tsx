@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
@@ -24,6 +23,7 @@ import {
   s_bottomFixedButtonContainer,
   s_cellColorBySelected,
   s_circleButton,
+  s_fullButtonContainer,
   s_relativeContainer,
   s_scheduleTable,
   s_scheduleTableBody,
@@ -154,11 +154,7 @@ export default function SchedulePicker({
         </section>
       </div>
       <footer css={s_bottomFixedButtonContainer}>
-        <div
-          css={css`
-            flex: 1;
-          `}
-        >
+        <div css={s_fullButtonContainer}>
           <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
             등록하기
           </Button>
