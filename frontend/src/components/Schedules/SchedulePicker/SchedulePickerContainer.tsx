@@ -1,5 +1,8 @@
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
+
+import { AuthContext } from '@contexts/AuthProvider';
 
 import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
 
@@ -12,7 +15,8 @@ export default function SchedulePickerContainer({
 }: MeetingDateTime) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
-  const { data: meetingSchedules } = useGetMyScheduleQuery(uuid);
+  const { userName } = useContext(AuthContext).state;
+  const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, userName);
 
   return (
     meetingSchedules &&
