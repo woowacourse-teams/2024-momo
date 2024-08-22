@@ -1,6 +1,9 @@
+import { ErrorBoundary } from '@sentry/react';
 import { Outlet } from 'react-router-dom';
 
 import { AuthProvider } from '@contexts/AuthProvider';
+
+import ErrorPage from '@pages/ErrorPage';
 
 import Header from '@components/_common/Header';
 
@@ -12,7 +15,9 @@ export default function GlobalLayout() {
       <div css={s_globalContainer}>
         <Header />
         <div css={s_content}>
-          <Outlet />
+          <ErrorBoundary fallback={({ error }) => <ErrorPage error={error} />}>
+            <Outlet />
+          </ErrorBoundary>
         </div>
       </div>
     </AuthProvider>
