@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.timeslot.Timeslot;
@@ -37,7 +38,8 @@ class ConfirmedMeetingTest {
                 new Schedule(attendee2, new AvailableDate(today, meeting), Timeslot.TIME_0000)
         );
 
-        List<Attendee> attendees = confirmedMeeting.availableAttendeesOf(schedules);
+        AttendeeGroup availableAttendees = confirmedMeeting.availableAttendeesOf(schedules);
+        List<Attendee> attendees = availableAttendees.getAttendees();
 
         assertAll(
                 () -> assertThat(attendees).hasSize(1),

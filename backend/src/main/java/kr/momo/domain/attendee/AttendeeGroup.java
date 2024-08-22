@@ -86,6 +86,12 @@ public class AttendeeGroup {
                 .findFirst();
     }
 
+    public List<String> names() {
+        return attendees.stream()
+                .map(Attendee::name)
+                .toList();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

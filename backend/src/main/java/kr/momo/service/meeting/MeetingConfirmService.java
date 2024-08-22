@@ -112,7 +112,7 @@ public class MeetingConfirmService {
         Attendee host = attendees.findHost()
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.HOST_NOT_FOUND));
         List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees.getAttendees());
-        List<Attendee> availableAttendees = confirmedMeeting.availableAttendeesOf(schedules);
+        AttendeeGroup availableAttendees = confirmedMeeting.availableAttendeesOf(schedules);
 
         return ConfirmedMeetingResponse.from(meeting, host, availableAttendees, confirmedMeeting);
     }
