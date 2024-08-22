@@ -1,5 +1,7 @@
 import type { PostMeetingResult } from 'types/meeting';
 
+import { ResponseError } from '@utils/responseError';
+
 import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
@@ -48,7 +50,6 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   const data = await fetchClient<MeetingBaseResponse>({
     path,
     method: 'GET',
-    errorMessage: '약속 정보를 조회하는 중 문제가 발생했어요 :(',
   });
 
   return {
@@ -85,7 +86,6 @@ export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeet
     path: '',
     method: 'POST',
     body: request,
-    errorMessage: '약속을 생성하는데 문제가 발생했어요 :(',
     isAuthRequire: true,
   });
 
@@ -109,7 +109,9 @@ export const lockMeeting = async (uuid: string) => {
   });
 
   if (!response.ok) {
-    throw new Error('약속을 잠그는 중 에러가 발생했습니다.');
+    const data = await response.json();
+
+    throw new ResponseError(data);
   }
 };
 
@@ -123,6 +125,8 @@ export const unlockMeeting = async (uuid: string) => {
   });
 
   if (!response.ok) {
-    throw new Error('잠긴 약속을 해제하는 중 에러가 발생했습니다.');
+    const data = await response.json();
+
+    throw new ResponseError(data);
   }
 };

@@ -32,7 +32,16 @@ Sentry.init({
   enabled: process.env.NODE_ENV !== 'development',
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      throwOnError: true,
+    },
+    mutations: {
+      throwOnError: true,
+    },
+  },
+});
 
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
