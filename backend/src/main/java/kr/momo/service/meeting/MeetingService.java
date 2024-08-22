@@ -12,6 +12,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.UuidGenerator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
@@ -21,7 +22,6 @@ import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +34,7 @@ public class MeetingService {
 
     private final JwtManager jwtManager;
     private final Clock clock;
+    private final UuidGenerator uuidGenerator;
     private final MeetingRepository meetingRepository;
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
@@ -60,7 +61,7 @@ public class MeetingService {
 
     private String generateUniqueUuid() {
         for (int attempts = 0; attempts < MAX_UUID_GENERATION_ATTEMPTS; attempts++) {
-            String uuid = RandomStringUtils.randomAlphanumeric(SHORT_UUID_LENGTH);
+            String uuid = uuidGenerator.generateUuid(SHORT_UUID_LENGTH);
             if (!meetingRepository.existsByUuid(uuid)) {
                 return uuid;
             }

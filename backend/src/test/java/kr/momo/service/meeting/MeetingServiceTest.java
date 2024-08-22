@@ -3,11 +3,11 @@ package kr.momo.service.meeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.doReturn;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
@@ -16,6 +16,8 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.UuidGenerator;
+import kr.momo.domain.meeting.fake.FakeUuidGenerator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
@@ -30,21 +32,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class MeetingServiceTest {
 
-    private static final Clock FIXED_CLOCK = Clock.fixed(
-            Instant.parse("2024-08-01T10:15:30Z"), ZoneId.of("Asia/Seoul")
-    );
+    @TestConfiguration
+    static class TestConfig {
 
-    @SpyBean
+        @Bean
+        public UuidGenerator uuidGenerator() {
+            return new FakeUuidGenerator();
+        }
+
+        @Bean
+        public Clock fixedClock() {
+            return Clock.fixed(Instant.parse("2024-08-01T10:15:30Z"), ZoneId.of("Asia/Seoul"));
+        }
+    }
+
+    @Autowired
     private Clock clock;
 
     @Autowired
-    private MeetingService meetingService;
+    private UuidGenerator uuidGenerator;
 
     @Autowired
     private MeetingRepository meetingRepository;
@@ -54,6 +67,9 @@ class MeetingServiceTest {
 
     @Autowired
     private AttendeeRepository attendeeRepository;
+
+    @Autowired
+    private MeetingService meetingService;
 
     @DisplayName("UUID로 약속 정보를 조회한다.")
     @Test
@@ -99,11 +115,29 @@ class MeetingServiceTest {
                 .hasMessage(MeetingErrorCode.INVALID_UUID.message());
     }
 
+    @DisplayName("UUID가 이미 존재하여 최대 생성 횟수를 초과하면 예외가 발생한다.")
+    @Test
+    void throwExceptionWhenUuidAlreadyExistsAfterMaxAttempts() {
+        Meeting meeting = new Meeting("momo", uuidGenerator.generateUuid(8), LocalTime.MIDNIGHT, LocalTime.NOON);
+        meetingRepository.save(meeting);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "name",
+                "password",
+                "meetingName",
+                List.of(LocalDate.now().toString()),
+                "08:00",
+                "22:00"
+        );
+
+        assertThatThrownBy(() -> meetingService.create(request))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.UUID_GENERATION_FAILURE.message());
+    }
+
     @DisplayName("약속을 생성할 때 과거 날짜를 보내면 예외가 발생합니다.")
     @Test
     void throwExceptionWhenDatesHavePast() {
         //given
-        setFixedClock();
         LocalDate today = LocalDate.now(clock);
         LocalDate yesterday = today.minusDays(1);
         MeetingCreateRequest request = new MeetingCreateRequest(
@@ -219,11 +253,5 @@ class MeetingServiceTest {
         assertThatThrownBy(() -> meetingService.unlock(uuid, id))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
-    }
-
-    private void setFixedClock() {
-        doReturn(Instant.now(FIXED_CLOCK))
-                .when(clock)
-                .instant();
     }
 }
