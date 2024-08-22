@@ -29,10 +29,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 JOIN s.availableDate ad
                 WHERE s.attendee IN :essentialAttendees
                 GROUP BY ad.date, s.timeslot
-                HAVING COUNT(s.attendee.id) = :groupSize
+                HAVING COUNT(s.attendee.id) = :#{#essentialAttendees.size()}
                 ORDER BY ad.date ASC, s.timeslot ASC
             """)
     List<DateAndTimeslot> findAllDateAndTimeslotByEssentialAttendees(
-            @Param("essentialAttendees") List<Attendee> essentialAttendees, @Param("groupSize") int groupSize
+            @Param("essentialAttendees") List<Attendee> essentialAttendees
     );
 }

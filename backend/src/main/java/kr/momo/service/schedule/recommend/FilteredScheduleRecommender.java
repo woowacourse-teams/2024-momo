@@ -26,7 +26,7 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
 
     private List<CandidateSchedule> findAllScheduleAvailableByEveryAttendee(AttendeeGroup filteredGroup) {
         List<DateAndTimeslot> timeslotWithDates = scheduleRepository.findAllDateAndTimeslotByEssentialAttendees(
-                filteredGroup.getAttendees(), filteredGroup.size()
+                filteredGroup.getAttendees()
         );
         return timeslotWithDates.stream()
                 .map(datetimeSlot -> new CandidateSchedule(datetimeSlot.toDateTimeInterval(), filteredGroup))

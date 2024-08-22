@@ -113,7 +113,7 @@ class ScheduleRepositoryTest {
         // when
         AttendeeGroup essentialGroup = new AttendeeGroup(List.of(jazz, pedro, daon, mark, bakey));
         List<DateAndTimeslot> result = scheduleRepository.findAllDateAndTimeslotByEssentialAttendees(
-                essentialGroup.getAttendees(), essentialGroup.size()
+                essentialGroup.getAttendees()
         );
 
         // then
