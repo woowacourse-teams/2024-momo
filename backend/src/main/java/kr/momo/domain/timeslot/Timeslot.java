@@ -59,6 +59,7 @@ public enum Timeslot {
     TIME_2330(LocalTime.of(23, 30));
 
     public static final long DURATION_IN_MINUTE;
+
     private final LocalTime startTime;
 
     static {
