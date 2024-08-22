@@ -6,11 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateAndTimeslot;
 import kr.momo.domain.timeslot.Timeslot;
-import kr.momo.fixture.AttendeeFixture;
+import kr.momo.fixture.AttendeeGroupFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ class CandidateScheduleTest {
     void mergeContinuousTest() {
         // given
         LocalDate today = LocalDate.now();
-        AttendeeGroup group = createAttendeeGroup();
+        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create();
         List<CandidateSchedule> schedules = List.of(
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_1000),
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_1030),
@@ -66,7 +65,7 @@ class CandidateScheduleTest {
         // given
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        AttendeeGroup group = createAttendeeGroup();
+        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create();
         List<CandidateSchedule> schedules = List.of(
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_2300),
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_2330),
@@ -90,13 +89,6 @@ class CandidateScheduleTest {
                 () -> assertThat(mergedSchedules.get(1).dateTimeInterval().endDateTime())
                         .isEqualTo(LocalDateTime.of(tomorrow, Timeslot.TIME_1000.endTime()))
         );
-    }
-
-    private AttendeeGroup createAttendeeGroup() {
-        Attendee jazz = AttendeeFixture.HOST_JAZZ.create(null);
-        Attendee mark = AttendeeFixture.GUEST_MARK.create(null);
-        Attendee pedro = AttendeeFixture.GUEST_PEDRO.create(null);
-        return new AttendeeGroup(List.of(jazz, mark, pedro));
     }
 
     private CandidateSchedule createDiscreteCandidateSchedule(
