@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { css } from '@emotion/react';
+import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule } from 'types/schedule';
@@ -31,6 +32,11 @@ interface SchedulePickerProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;
 }
 
+const TIME_SELECT_MODE = {
+  available: '되는',
+  unavailable: '안되는',
+} as const;
+
 export default function SchedulePicker({
   firstTime,
   lastTime,
@@ -53,6 +59,7 @@ export default function SchedulePicker({
     tableRef,
     tableValue,
     currentTableValue,
+    resetTableValue,
     currentDates,
     isMultiPage,
     increaseDatePage,
@@ -66,12 +73,42 @@ export default function SchedulePicker({
   );
 
   const handleOnToggle = () => {
-    const convert = convertToSchedule(tableValue, availableDates, firstTime, lastTime);
+    const convert = convertToSchedule({
+      availableDates,
+      firstTime,
+      lastTime,
+      selectedScheduleTable: tableValue,
+      selectMode,
+    });
+
     postScheduleMutate({ uuid, requestData: convert });
+  };
+
+  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
+  const handleSelectModeChange = (mode: keyof typeof TIME_SELECT_MODE) => {
+    if (selectMode === mode) return;
+
+    resetTableValue();
+    setSelectMode(mode);
   };
 
   return (
     <div css={s_relativeContainer}>
+      <div
+        css={css`
+          display: flex;
+          gap: 0.4rem;
+        `}
+      >
+        <button onClick={() => handleSelectModeChange('available')}>
+          {TIME_SELECT_MODE.available}
+        </button>
+        <p>/</p>
+        <button onClick={() => handleSelectModeChange('unavailable')}>
+          {TIME_SELECT_MODE.unavailable}
+        </button>
+        <p>시간으로 선택하기</p>
+      </div>
       {isMultiPage && (
         <div css={s_datesControlButtonContainer}>
           <button
