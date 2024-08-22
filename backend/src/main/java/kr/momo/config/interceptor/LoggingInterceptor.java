@@ -11,9 +11,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class LogInterceptor implements HandlerInterceptor {
+public class LoggingInterceptor implements HandlerInterceptor {
 
     public static final String TRACE_ID = "traceId";
+    private static final String START_TIME = "startTime";
 
     private final TraceIdGenerator traceIdGenerator;
     private final LogGenerator logGenerator;
@@ -23,7 +24,7 @@ public class LogInterceptor implements HandlerInterceptor {
         String traceId = traceIdGenerator.generateShortUuid();
         MDC.put(TRACE_ID, traceId);
         logGenerator.logRequest(traceId, request);
-        request.setAttribute("startTime", System.currentTimeMillis());
+        request.setAttribute(START_TIME, System.currentTimeMillis());
         return true;
     }
 
@@ -31,7 +32,7 @@ public class LogInterceptor implements HandlerInterceptor {
     public void afterCompletion(
             HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex
     ) {
-        long startTime = (Long) request.getAttribute("startTime");
+        long startTime = (Long) request.getAttribute(START_TIME);
         long duration = System.currentTimeMillis() - startTime;
         String traceId = MDC.get(TRACE_ID);
         logGenerator.logResponse(traceId, duration, request, response);

@@ -1,7 +1,8 @@
 package kr.momo.config;
 
 import java.util.List;
-import kr.momo.config.interceptor.LogInterceptor;
+import kr.momo.config.interceptor.UserInfoInterceptor;
+import kr.momo.config.interceptor.LoggingInterceptor;
 import kr.momo.controller.auth.AuthArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+    private static final String BASE_URL = "/api/v1/**";
+
     private final AuthArgumentResolver authArgumentResolver;
-    private final LogInterceptor logInterceptor;
+    private final UserInfoInterceptor userInfoInterceptor;
+    private final LoggingInterceptor loggingInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -23,6 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor).addPathPatterns("/api/v1/**");
+        registry.addInterceptor(userInfoInterceptor).addPathPatterns(BASE_URL);
+        registry.addInterceptor(loggingInterceptor).addPathPatterns(BASE_URL);
     }
 }

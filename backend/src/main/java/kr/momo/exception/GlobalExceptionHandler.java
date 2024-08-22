@@ -1,6 +1,6 @@
 package kr.momo.exception;
 
-import kr.momo.config.interceptor.LogInterceptor;
+import kr.momo.config.interceptor.LoggingInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ProblemDetail handleMomoException(MomoException ex) {
-        String traceId = MDC.get(LogInterceptor.TRACE_ID);
+        String traceId = MDC.get(LoggingInterceptor.TRACE_ID);
         log.warn(EXCEPTION_LOG_FORMAT, traceId, ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(ex.httpStatus(), ex.message());
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        String traceId = MDC.get(LogInterceptor.TRACE_ID);
+        String traceId = MDC.get(LoggingInterceptor.TRACE_ID);
         log.warn(EXCEPTION_LOG_FORMAT, traceId, ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ProblemDetail handleInternalException(Exception ex) {
-        String traceId = MDC.get(LogInterceptor.TRACE_ID);
+        String traceId = MDC.get(LoggingInterceptor.TRACE_ID);
         log.error(EXCEPTION_LOG_FORMAT, traceId, ex);
 
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
