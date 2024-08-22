@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import kr.momo.exception.MomoException;
@@ -77,6 +78,18 @@ public class AttendeeGroup {
 
     public boolean isSameSize(AttendeeGroup attendeeGroup) {
         return attendees.size() == attendeeGroup.size();
+    }
+
+    public Optional<Attendee> findHost() {
+        return attendees.stream()
+                .dropWhile(attendee -> !attendee.isHost())
+                .findFirst();
+    }
+
+    public List<String> names() {
+        return attendees.stream()
+                .map(Attendee::name)
+                .toList();
     }
 
     @Override
