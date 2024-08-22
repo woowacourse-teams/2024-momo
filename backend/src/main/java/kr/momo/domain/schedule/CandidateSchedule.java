@@ -3,10 +3,9 @@ package kr.momo.domain.schedule;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 import kr.momo.domain.attendee.AttendeeGroup;
 
 public record CandidateSchedule(
@@ -20,31 +19,37 @@ public record CandidateSchedule(
     }
 
     public static List<CandidateSchedule> mergeContinuousDateTime(
-            List<CandidateSchedule> sortedSchedules, BiPredicate<CandidateSchedule, CandidateSchedule> isDiscontinuous
+            List<CandidateSchedule> sortedSchedules,
+            BiPredicate<CandidateSchedule, CandidateSchedule> isDiscontinuous
     ) {
-        if (sortedSchedules.isEmpty()) {
-            return Collections.emptyList();
+        List<CandidateSchedule> mergedSchedules = new ArrayList<>();
+        int idx = 0;
+        while (idx < sortedSchedules.size()) {
+            int headIdx = idx;
+            List<CandidateSchedule> subList = Stream.iterate(headIdx, i -> i < sortedSchedules.size(), i -> i + 1)
+                    .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isDiscontinuous))
+                    .map(sortedSchedules::get)
+                    .toList();
+            subList.stream()
+                    .reduce(CandidateSchedule::merge)
+                    .ifPresent(mergedSchedules::add);
+            idx += subList.size();
         }
+        return mergedSchedules;
+    }
 
-        Iterator<CandidateSchedule> iterator = sortedSchedules.iterator();
+    private static boolean isSequential(
+            int idx,
+            List<CandidateSchedule> sortedSchedules,
+            BiPredicate<CandidateSchedule, CandidateSchedule> isDiscontinuous
+    ) {
+        CandidateSchedule prev = sortedSchedules.get(idx - 1);
+        CandidateSchedule current = sortedSchedules.get(idx);
+        return !isDiscontinuous.test(prev, current);
+    }
 
-        List<CandidateSchedule> responses = new ArrayList<>();
-        CandidateSchedule startDateTime = iterator.next();
-        CandidateSchedule currentDateTime = startDateTime;
-
-        while (iterator.hasNext()) {
-            CandidateSchedule nextDateTime = iterator.next();
-
-            if (isDiscontinuous.test(currentDateTime, nextDateTime)) {
-                responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
-                        startDateTime.attendeeGroup()));
-                startDateTime = nextDateTime;
-            }
-            currentDateTime = nextDateTime;
-        }
-        responses.add(CandidateSchedule.of(startDateTime.startDateTime(), currentDateTime.endDateTime(),
-                startDateTime.attendeeGroup()));
-        return responses;
+    private static CandidateSchedule merge(CandidateSchedule start, CandidateSchedule end) {
+        return CandidateSchedule.of(start.startDateTime(), end.endDateTime(), start.attendeeGroup());
     }
 
     public LocalDateTime startDateTime() {
