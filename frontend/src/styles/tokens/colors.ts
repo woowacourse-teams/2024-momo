@@ -1,4 +1,4 @@
-const PRIMITIVE_COLORS = {
+export const PRIMITIVE_COLORS = {
   black: '#000000',
   white: '#ffffff',
   pink: {

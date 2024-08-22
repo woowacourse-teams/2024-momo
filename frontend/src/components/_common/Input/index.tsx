@@ -2,8 +2,12 @@ import type { InputHTMLAttributes } from 'react';
 
 import { s_input } from './Input.styles';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
+export type InputVariant = 'default' | 'transparent';
 
-export default function Input({ type = 'text', placeholder = '', ...props }: InputProps) {
-  return <input css={s_input} type={type} placeholder={placeholder} {...props} />;
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  variant?: InputVariant;
+}
+
+export default function Input({ variant = 'default', type = 'text', ...props }: InputProps) {
+  return <input css={s_input[variant]} type={type} {...props} />;
 }

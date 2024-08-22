@@ -18,6 +18,10 @@ export const usePostMeetingMutation = () => {
   const [meetingInfo, setMeetingInfo] = useState<PostMeetingResult>({
     uuid: '',
     userName: '',
+    meetingName: '',
+    firstTime: '',
+    lastTime: '',
+    availableDates: [],
   });
 
   const mutation = useMutation({
@@ -29,7 +33,7 @@ export const usePostMeetingMutation = () => {
       setIsLoggedIn(true);
       setUserName(userName);
 
-      navigate(`/meeting/${uuid}/complete`);
+      navigate(`/meeting/${uuid}/complete`, { state: { meetingInfo: responseData } });
     },
   });
 

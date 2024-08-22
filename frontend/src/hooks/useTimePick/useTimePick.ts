@@ -21,7 +21,7 @@ export default function useTimePick(initialTableValue: number[][], currentDatePa
   const getActualIndex = useCallback(
     (index: TimePickTableIndex) => {
       const { rowIndex, colIndex } = index;
-      const actualColIndex = colIndex + currentDatePage * 3;
+      const actualColIndex = colIndex + currentDatePage * 5;
       return { rowIndex, colIndex: actualColIndex };
     },
     [currentDatePage],
@@ -96,6 +96,11 @@ export default function useTimePick(initialTableValue: number[][], currentDatePa
     }
   }, []);
 
+  const resetTableValue = useCallback(() => {
+    const resetValue = initialTableValue.map((tableRow) => tableRow.map(() => 0)); // 모든 원소를 0으로 변경하는 방법을 사용해서 초기화합니다.(@해리)
+    setTableValue(resetValue);
+  }, [initialTableValue]);
+
   useEffect(() => {
     const node = tableRef.current?.querySelector('tbody') ?? tableRef.current;
 
@@ -120,5 +125,5 @@ export default function useTimePick(initialTableValue: number[][], currentDatePa
     };
   }, [handleTimePickStart, handlePickedTimeChange, handlePointerEnd]);
 
-  return { tableRef, tableValue } as const;
+  return { tableRef, tableValue, resetTableValue } as const;
 }

@@ -19,7 +19,6 @@ export const postSchedule = async ({
   await fetchClient({
     path,
     method: 'POST',
-    errorMessage: '약속 참여 시간을 등록하는 중 문제가 발생했어요 :(',
     body: {
       dateTimes: requestData,
     },
@@ -45,7 +44,6 @@ const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules
   const data = await fetchClient<MeetingAllSchedulesResponse>({
     path,
     method: 'GET',
-    errorMessage: '약속 참여자들의 시간 정보를 조회하는 중 문제가 발생했어요 :(',
   });
 
   return {
@@ -70,7 +68,6 @@ const getMeetingSingleSchedule = async ({
   const data = await fetchClient<MeetingSingleScheduleResponse>({
     path,
     method: 'GET',
-    errorMessage: '약속 참여자들의 시간 정보를 조회하는 중 문제가 발생했어요 :(',
   });
 
   return {
@@ -85,7 +82,6 @@ export const getMeetingMySchedule = async (uuid: string): Promise<MeetingSingleS
   const data = await fetchClient<MeetingSingleScheduleResponse>({
     path,
     method: 'GET',
-    errorMessage: '내 시간 정보를 조회하는 중 문제가 발생했어요 :(',
     isAuthRequire: true,
   });
 

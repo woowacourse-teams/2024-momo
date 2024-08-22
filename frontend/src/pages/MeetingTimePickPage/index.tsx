@@ -4,8 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
-import SchedulePickerContainer from '@components/Schedules/Picker/SchedulePickerContainer';
-import SchedulesViewer from '@components/Schedules/SchedulesViewer';
+import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
+import SchedulesViewer from '@components/Schedules/ScheduleViewer/SchedulesViewer';
 import { Button } from '@components/_common/Buttons/Button';
 import ToggleButton from '@components/_common/Buttons/ToggleButton';
 

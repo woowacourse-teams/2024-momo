@@ -61,18 +61,6 @@ const useScheduleTooltip = (
     setTooltipState((prev) => ({ ...prev, isVisible: false }));
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log(window.scrollY);
-    };
-
-    document.addEventListener('scroll', handleScroll);
-
-    return () => {
-      document.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   return {
     pageRef,
     tooltipState,

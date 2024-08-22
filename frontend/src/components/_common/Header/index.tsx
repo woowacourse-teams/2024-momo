@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
-import { postUserLogout } from '@apis/users';
+import { usePostLogoutMutation } from '@stores/servers/user/mutations';
 
 import Logo from '@assets/images/logo.svg';
 
@@ -12,22 +12,17 @@ import { s_header, s_logoContainer, s_title } from './Header.styles';
 
 export default function Header() {
   const navigate = useNavigate();
+  const { mutate: postLogoutMutate } = usePostLogoutMutation();
 
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
   const authContext = useContext(AuthContext);
-  const {
-    state: { isLoggedIn },
-    actions: { setIsLoggedIn, setUserName },
-  } = authContext;
+  const { isLoggedIn } = authContext.state;
 
   const handleAuthButtonClick = async () => {
     if (isLoggedIn) {
-      await postUserLogout(uuid);
-
-      setIsLoggedIn(false);
-      setUserName('');
+      postLogoutMutate(uuid);
 
       alert('로그아웃 되었습니다 :)');
     } else {

@@ -68,8 +68,8 @@ class MeetingServiceTest {
         MeetingResponse response = meetingService.findByUUID(meeting.getUuid());
 
         assertAll(
-                () -> assertThat(response.firstTime()).isEqualTo(meeting.earliestTime()),
-                () -> assertThat(response.lastTime()).isEqualTo(meeting.lastTime()),
+                () -> assertThat(response.firstTime()).isEqualTo(meeting.earliestTime().toString()),
+                () -> assertThat(response.lastTime()).isEqualTo(meeting.lastTime().toString()),
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
                 () -> assertThat(response.isLocked()).isFalse(),
                 () -> assertThat(response.availableDates()).hasSize(availableDates.size()),

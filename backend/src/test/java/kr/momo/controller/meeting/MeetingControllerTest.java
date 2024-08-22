@@ -409,7 +409,8 @@ class MeetingControllerTest {
     @Test
     void confirmInvalidRequest() {
         Meeting meeting = createLockedMovieMeeting();
-        AvailableDate availableDate = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate availableDate = availableDateRepository.save(
+                new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String tomorrow = availableDate.getDate().format(DateTimeFormatter.ISO_DATE);
         Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         String token = getToken(guest, meeting);
@@ -490,6 +491,7 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
+        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
 
         RestAssured.given().log().all()

@@ -11,7 +11,8 @@ export interface MeetingBase extends MeetingDateTime {
   isLocked: boolean;
 }
 
-export interface PostMeetingResult {
+export interface PostMeetingResult extends MeetingDateTime {
   uuid: string;
   userName: string;
+  meetingName: string;
 }

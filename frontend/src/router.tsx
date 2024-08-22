@@ -1,60 +1,81 @@
+import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 
 import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
-import AttendeeLoginPage from '@pages/AttendeeLoginPage/AttendeeLoginPage';
+import AttendeeLoginPage from '@pages/AttendeeLoginPage';
 import CreateMeetingPage from '@pages/CreateMeetingPage';
-import FixedMeetingTicketPage from '@pages/FixedMeetingTicketPage/FixedMeetingTicketPage';
+import FixedMeetingTicketPage from '@pages/FixedMeetingTicketPage';
+import LandingPage from '@pages/LandingPage';
 import MeetingConfirmPage from '@pages/MeetingConfirmPage';
 import MeetingLinkSharePage from '@pages/MeetingLinkSharePage';
 import MeetingRecommendPage from '@pages/MeetingRecommendPage';
 import MeetingTimePickPage from '@pages/MeetingTimePickPage';
+import NotFoundPage from '@pages/NotFoundPage';
 
-// TODO: 추후 라우팅 경로 다시 한 번 수정해야 함(@낙타)
+const meetingRoutes: RouteObject[] = [
+  {
+    index: true,
+    element: <LandingPage />,
+  },
+  {
+    path: 'create',
+    element: <CreateMeetingPage />,
+  },
+  {
+    path: ':uuid',
+    children: [
+      {
+        index: true,
+        element: (
+          <TimePickerUpdateStateProvider>
+            <MeetingTimePickPage />
+          </TimePickerUpdateStateProvider>
+        ),
+      },
+      {
+        path: 'login',
+        element: <AttendeeLoginPage />,
+      },
+      {
+        path: 'recommend',
+        element: <MeetingRecommendPage />,
+      },
+      {
+        path: 'confirm',
+        element: <MeetingConfirmPage />,
+      },
+      {
+        path: 'complete',
+        element: <MeetingLinkSharePage />,
+      },
+      {
+        path: 'fixed-meeting-ticket',
+        element: <FixedMeetingTicketPage />,
+      },
+    ],
+  },
+];
+
+// * 속성으로 설정한 페이지 외 나머지 페이지는 NotFoundPage로 이동하도록 설정
 const router = createBrowserRouter([
   {
     path: '/',
     element: <GlobalLayout />,
     children: [
       {
+        path: '*',
+        element: <NotFoundPage />,
+      },
+      {
         index: true,
-        element: <CreateMeetingPage />,
+        element: <LandingPage />,
       },
       {
         path: 'meeting',
-        children: [
-          {
-            path: ':uuid',
-            element: (
-              <TimePickerUpdateStateProvider>
-                <MeetingTimePickPage />
-              </TimePickerUpdateStateProvider>
-            ),
-          },
-          {
-            path: ':uuid/login',
-            element: <AttendeeLoginPage />,
-          },
-          {
-            path: ':uuid/recommend',
-            element: <MeetingRecommendPage />,
-          },
-          {
-            path: ':uuid/confirm',
-            element: <MeetingConfirmPage />,
-          },
-          {
-            path: ':uuid/complete',
-            element: <MeetingLinkSharePage />,
-          },
-
-          {
-            path: ':uuid/fixed-meeting-ticket',
-            element: <FixedMeetingTicketPage />,
-          },
-        ],
+        children: meetingRoutes,
       },
     ],
   },
