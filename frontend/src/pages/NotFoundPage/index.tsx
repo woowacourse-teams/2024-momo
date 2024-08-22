@@ -19,7 +19,7 @@ export default function NotFoundPage() {
         <Text typo="titleBold">
           <Text.Accent>404</Text.Accent>
         </Text>
-        <Text typo="bodyBold">원하시는 페이지를 찾을 수 없어요 :(</Text>
+        <Text typo="bodyBold">요청하신 페이지를 찾을 수 없어요 :(</Text>
       </div>
 
       <Button onClick={() => navigate(MEETING_CREATE_PATH)} variant="primary" size="full">
