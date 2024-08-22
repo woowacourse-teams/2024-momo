@@ -20,7 +20,7 @@ export default function FixedMeetingTicketPage() {
           <ActionButtonGroup uuid={uuid} data={data} />
         </>
       ) : (
-        <UnconfirmedMessage />
+        <UnconfirmedMessage uuid={uuid} />
       )}
     </div>
   );
