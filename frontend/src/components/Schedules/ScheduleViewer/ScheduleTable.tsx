@@ -1,0 +1,74 @@
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
+
+import ScheduleDateDayList from '@components/Schedules/ScheduleTableFrame/ScheduleDateDayList';
+import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
+
+import { handleGetMeetingSchedules } from '@apis/schedules';
+
+import { QUERY_KEY } from '@constants/queryKeys';
+
+import {
+  s_scheduleTable,
+  s_scheduleTableBody,
+  s_scheduleTableContainer,
+} from '../Schedules.styles';
+import AllSchedules from './AllSchedules';
+import SingleSchedule from './SingleSchedule';
+
+interface ScheduleTableProps {
+  firstTime: string;
+  lastTime: string;
+  currentDates: string[];
+  meetingAttendees: string[];
+  selectedAttendee: string;
+}
+
+export default function ScheduleTable({
+  firstTime,
+  lastTime,
+  currentDates,
+  meetingAttendees,
+  selectedAttendee,
+}: ScheduleTableProps) {
+  const params = useParams<{ uuid: string }>();
+  const uuid = params.uuid!;
+
+  const { data: meetingSchedules } = useQuery({
+    queryKey: [QUERY_KEY.meetingSchedules, selectedAttendee],
+    queryFn: () => handleGetMeetingSchedules({ uuid, attendeeName: selectedAttendee }),
+    staleTime: 0,
+  });
+
+  return (
+    <section css={s_scheduleTableContainer}>
+      <ScheduleTimeList firstTime={firstTime} lastTime={lastTime} />
+      <table css={s_scheduleTable} aria-label="약속 시간 조회 테이블">
+        <thead>
+          <ScheduleDateDayList availableDates={currentDates} />
+        </thead>
+        <tbody css={s_scheduleTableBody}>
+          {selectedAttendee === ''
+            ? meetingSchedules && (
+                <AllSchedules
+                  firstTime={firstTime}
+                  lastTime={lastTime}
+                  availableDates={currentDates}
+                  meetingAttendees={meetingAttendees}
+                  meetingAllSchedules={meetingSchedules as MeetingAllSchedules}
+                />
+              )
+            : meetingSchedules && (
+                <SingleSchedule
+                  firstTime={firstTime}
+                  lastTime={lastTime}
+                  availableDates={currentDates}
+                  meetingSingleSchedule={meetingSchedules as MeetingSingleSchedule}
+                />
+              )}
+        </tbody>
+      </table>
+    </section>
+  );
+}

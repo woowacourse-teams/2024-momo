@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 
-import { getMeetingMySchedule } from '@apis/schedules';
+import { AuthContext } from '@contexts/AuthProvider';
 
-import { QUERY_KEY } from '@constants/queryKeys';
+import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
 
 import SchedulePicker from '.';
 
@@ -15,11 +15,8 @@ export default function SchedulePickerContainer({
 }: MeetingDateTime) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
-  const { data: meetingSchedules } = useQuery({
-    queryKey: [QUERY_KEY.meetingMySchedule],
-    queryFn: () => getMeetingMySchedule(uuid),
-    staleTime: 0,
-  });
+  const { userName } = useContext(AuthContext).state;
+  const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, userName);
 
   return (
     meetingSchedules &&

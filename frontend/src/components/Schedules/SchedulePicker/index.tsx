@@ -1,38 +1,41 @@
 import { css } from '@emotion/react';
-import { useContext } from 'react';
-import React from 'react';
+import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
+import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
 import { Button } from '@components/_common/Buttons/Button';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 
 import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
 
-import { formatTime } from '@utils/date';
-
+import ScheduleDateDayList from '../ScheduleTableFrame/ScheduleDateDayList';
 import {
+  s_baseTimeCell,
   s_buttonContainer,
-  s_container,
+  s_cellColorBySelected,
   s_datesControlButton,
   s_datesControlButtonContainer,
+  s_relativeContainer,
   s_scheduleTable,
-  s_tableHeaderCell,
-  s_tableTimeHeaderCell,
-  s_td,
-  s_timeColumn,
-  s_timeText,
+  s_scheduleTableBody,
+  s_scheduleTableContainer,
+  s_scheduleTableRow,
 } from '../Schedules.styles';
-import { formatDate } from '../Schedules.util';
-import { convertToSchedule, generateSingleScheduleTable } from './SchedulePicker.utils';
+import { convertToSchedule, generateSingleScheduleTable } from '../Schedules.util';
 
 interface SchedulePickerProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;
 }
+
+const TIME_SELECT_MODE = {
+  available: '되는',
+  unavailable: '안되는',
+} as const;
 
 export default function SchedulePicker({
   firstTime,
@@ -56,6 +59,7 @@ export default function SchedulePicker({
     tableRef,
     tableValue,
     currentTableValue,
+    resetTableValue,
     currentDates,
     isMultiPage,
     increaseDatePage,
@@ -69,16 +73,42 @@ export default function SchedulePicker({
   );
 
   const handleOnToggle = () => {
-    const convert = convertToSchedule(tableValue, availableDates, firstTime, lastTime);
+    const convert = convertToSchedule({
+      availableDates,
+      firstTime,
+      lastTime,
+      selectedScheduleTable: tableValue,
+      selectMode,
+    });
+
     postScheduleMutate({ uuid, requestData: convert });
   };
 
+  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
+  const handleSelectModeChange = (mode: keyof typeof TIME_SELECT_MODE) => {
+    if (selectMode === mode) return;
+
+    resetTableValue();
+    setSelectMode(mode);
+  };
+
   return (
-    <section
-      css={css`
-        position: relative;
-      `}
-    >
+    <div css={s_relativeContainer}>
+      <div
+        css={css`
+          display: flex;
+          gap: 0.4rem;
+        `}
+      >
+        <button onClick={() => handleSelectModeChange('available')}>
+          {TIME_SELECT_MODE.available}
+        </button>
+        <p>/</p>
+        <button onClick={() => handleSelectModeChange('unavailable')}>
+          {TIME_SELECT_MODE.unavailable}
+        </button>
+        <p>시간으로 선택하기</p>
+      </div>
       {isMultiPage && (
         <div css={s_datesControlButtonContainer}>
           <button
@@ -97,44 +127,39 @@ export default function SchedulePicker({
           </button>
         </div>
       )}
-      <div css={s_container}>
+      <section css={s_scheduleTableContainer}>
+        <ScheduleTimeList firstTime={firstTime} lastTime={lastTime} />
         <table css={s_scheduleTable} ref={tableRef} aria-label="약속 시간 수정 테이블">
           <thead>
-            <tr>
-              <th css={s_tableTimeHeaderCell}></th>
-              {currentDates.map((date) => {
-                const { dayOfWeek, monthDate } = formatDate(date);
-                return (
-                  <th key={date} css={s_tableHeaderCell}>
-                    <span>{dayOfWeek}</span>
-                    <br />
-                    <span>{monthDate}</span>
-                  </th>
-                );
-              })}
-            </tr>
+            <ScheduleDateDayList availableDates={currentDates} />
           </thead>
-          <tbody>
+          <tbody css={s_scheduleTableBody}>
             {currentTableValue.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td css={s_timeColumn}>
-                  <span css={s_timeText}>
-                    {formatTime(`${rowIndex + parseInt(firstTime.slice(0, 2))}:00`)}
-                  </span>
-                </td>
-                {row.map((_, columnIndex) => (
-                  <td key={columnIndex} css={s_td(currentTableValue[rowIndex][columnIndex])} />
-                ))}
+              <tr key={rowIndex} css={s_scheduleTableRow}>
+                {row.map((isSelected, columnIndex) => {
+                  const isHalfHour = rowIndex % 2 !== 0;
+                  const isLastRow = rowIndex === schedules.length - 1;
+
+                  return (
+                    <td
+                      key={columnIndex}
+                      css={[
+                        s_baseTimeCell(isHalfHour, isLastRow),
+                        s_cellColorBySelected(isSelected),
+                      ]}
+                    ></td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
       <div css={s_buttonContainer}>
         <Button onClick={handleOnToggle} size="m" variant="primary">
           등록하기
         </Button>
       </div>
-    </section>
+    </div>
   );
 }

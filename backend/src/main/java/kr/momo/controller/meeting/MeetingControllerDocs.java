@@ -75,6 +75,9 @@ public interface MeetingControllerDocs {
             | NOT_FOUND_MEETING | 존재하지 않는 약속 정보 입니다. |
             | NOT_CONFIRMED | 아직 확정되지 않은 약속입니다. |
             """)
+    @ApiErrorResponse.InternalServerError(ERROR_CODE_TABLE_HEADER + """
+            | HOST_NOT_FOUND | 약속의 주최자 정보를 찾을 수 없습니다. 관리자에게 문의하세요. |
+            """)
     MomoApiResponse<ConfirmedMeetingResponse> findConfirmedMeeting(
             @PathVariable @Schema(description = "약속 UUID") String uuid
     );

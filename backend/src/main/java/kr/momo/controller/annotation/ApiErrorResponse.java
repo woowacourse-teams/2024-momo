@@ -75,4 +75,18 @@ public @interface ApiErrorResponse {
     @interface NotFound {
         @AliasFor(annotation = ApiResponse.class, attribute = "description") String value() default "";
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation
+    @ApiResponse(
+            responseCode = "500",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CustomProblemDetail.class)
+            )
+    )
+    @interface InternalServerError {
+        @AliasFor(annotation = ApiResponse.class, attribute = "description") String value() default "";
+    }
 }
