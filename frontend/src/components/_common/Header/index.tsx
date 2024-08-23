@@ -23,8 +23,6 @@ export default function Header() {
   const handleAuthButtonClick = async () => {
     if (isLoggedIn) {
       postLogoutMutate(uuid);
-
-      alert('로그아웃 되었습니다 :)');
     } else {
       navigate(`/meeting/${uuid}/login`);
     }
