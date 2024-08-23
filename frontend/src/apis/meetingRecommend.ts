@@ -14,6 +14,7 @@ export interface MeetingRecommend {
   endDayOfWeek: string;
   endTime: string;
   attendeeNames: string[];
+  rank: string;
 }
 export const getMeetingTimeRecommends = async ({
   uuid,
