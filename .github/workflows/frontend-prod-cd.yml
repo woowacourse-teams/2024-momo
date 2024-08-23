@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0 # 모든 히스토리를 가져옵니다
       - name: Get previous tag
         id: previoustag
-        run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)" >> $GITHUB_OUTPUT
+        run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ --always)" >> $GITHUB_OUTPUT
       - uses: dorny/paths-filter@v3
         id: filter
         with:
