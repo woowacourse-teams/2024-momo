@@ -63,10 +63,10 @@ jobs:
 
       - name: .env 파일을 생성해요 :)
         run: |
-          echo "${{ secrets.MOMO_FE_ENV }}" >> .env
+          echo "${{ secrets.MOMO_FE_ENV_DEV }}" >> .env
 
       - name: 프론트엔드 리소스를 빌드해요 :)
-        run: npm run build
+        run: npm run build:dev
 
       - name: 프론트엔드 리소스 결과물을 깃허브 레파지토리 artifacts로 업로드해요
         uses: actions/upload-artifact@v4
@@ -78,7 +78,7 @@ jobs:
     needs: fe-build
     runs-on: [self-hosted, linux, ARM64, dev]
     env:
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID}}
+      CLOUDFRONT_DISTRIBUTION_ID_DEV: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV}}
     steps:
       - name: 모모 깃허브 레파지토리 artifacts로 부터 빌드 결과물을 다운받아요 :)
         uses: actions/download-artifact@v4
@@ -88,5 +88,5 @@ jobs:
       - name: aws에 배포하고 cloudfront 캐싱을 무효화해요
         working-directory: ./frontend/dist/
         run: |
-          aws s3 sync ./ s3://techcourse-project-2024/momo --delete
-          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
+          aws s3 sync ./ s3://techcourse-project-2024/momo-dev --delete
+          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID_DEV" --paths "/*"
