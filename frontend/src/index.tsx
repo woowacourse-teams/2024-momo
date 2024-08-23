@@ -11,6 +11,8 @@ import theme from '@styles/theme';
 import App from './App';
 
 const enableMocking = async () => {
+  if (process.env.REACT_APP_ENABLE_MSW && process.env.REACT_APP_ENABLE_MSW === 'false') return;
+
   if (process.env.NODE_ENV !== 'development') {
     return;
   }
