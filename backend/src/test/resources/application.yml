@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.hibernate.orm.jdbc:
+      type: trace
+      bind: trace
+      extract: trace
+
+security:
+  jwt:
+    secret-key: ${random.value}"
+    expiration-period: 1h
+  allow-origins:
+    - http://localhost:[*]
+  cookie:
+    domain: "localhost"

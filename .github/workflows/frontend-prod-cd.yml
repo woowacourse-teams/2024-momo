@@ -1,0 +1,93 @@
+name: 모모 프론트엔드 배포 자동화 워크플로우(prod)
+
+on:
+  workflow_dispatch:
+  push:
+    tags: release-**
+
+permissions:
+  checks: write
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4 # Push 이벤트이기 때문에 checkout 해야 함
+        with:
+          ref: main
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: "main" # 해당 브랜치의 last commit과 변경점 비교
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+  fe-build:
+    needs: detect-changes # jobs들은 병렬로 실행됨, needs 키워드를 사용해서 특정 job이 완료(성공)면 실행하도록 설정
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend
+
+    steps:
+      - name: 모모 레파지토리의 코드를 가져와요 :)
+        uses: actions/checkout@v4
+
+      - name: 노드 버젼을 설정해요 :)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: 이전 의존성을 저장해둔게 있나~? 확인해요 :)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: "frontend/node_modules"
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            ${{ runner.os }}
+
+      - name: package-lock.json을 활용해서 의존성을 깨끗하게 설치해요 :)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: .env 파일을 생성해요 :)
+        run: |
+          echo "${{ secrets.MOMO_FE_ENV_PROD }}" >> .env
+
+      - name: 프론트엔드 리소스를 빌드해요 :)
+        run: npm run build:prod
+
+      - name: 프론트엔드 리소스 결과물을 깃허브 레파지토리 artifacts로 업로드해요
+        uses: actions/upload-artifact@v4
+        with:
+          name: momoResources
+          path: frontend/dist
+
+  deploy:
+    needs: fe-build
+    runs-on: [self-hosted, linux, ARM64, dev]
+    env:
+      CLOUDFRONT_DISTRIBUTION_ID_PROD: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD}}
+    steps:
+      - name: 모모 깃허브 레파지토리 artifacts로 부터 빌드 결과물을 다운받아요 :)
+        uses: actions/download-artifact@v4
+        with:
+          name: momoResources
+          path: ./frontend/dist
+      - name: aws에 배포하고 cloudfront 캐싱을 무효화해요
+        working-directory: ./frontend/dist/
+        run: |
+          aws s3 sync ./ s3://techcourse-project-2024/momo --delete
+          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID_PROD" --paths "/*"

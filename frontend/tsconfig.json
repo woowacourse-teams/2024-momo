@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    // rules
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+
+    // bundler
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+
+    // lining
+    "strict": true,
+    "jsxImportSource": "@emotion/react",
+    "removeComments": true,
+
+    //absolute path
+
+    "baseUrl": "./src",
+    "paths": {
+      "@apis/*": ["apis/*"],
+      "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
+      "@hooks/*": ["hooks/*"],
+      "@layouts/*": ["layouts/*"],
+      "@mocks/*": ["mocks/*"],
+      "@pages/*": ["pages/*"],
+      "@styles/*": ["styles/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@stores/*": ["stores/*"],
+      "@contexts/*": ["contexts/*"]
+    },
+    // test
+    "types": ["jest"]
+  },
+  "include": ["./src", "jest.setup.js"],
+  "exclude": ["/node_modules/"]
+}

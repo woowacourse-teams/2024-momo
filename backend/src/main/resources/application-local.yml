@@ -1,0 +1,46 @@
+spring:
+  config:
+    activate.on-profile: local
+    import:
+      - classpath:datasource.yml
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+security:
+  jwt:
+    secret-key: ${random.value}"
+    expiration-period: 1h
+  allow-origins:
+      - http://localhost:[*]
+  cookie:
+    domain: "localhost"
+
+log:
+  directory: ./logs
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: prometheus
+    jmx:
+      exposure:
+        exclude: "*"
+  endpoint:
+    prometheus:
+      enabled: true

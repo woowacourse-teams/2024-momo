@@ -1,0 +1,11 @@
+spring:
+  config.import: optional:classpath:property-override.yml
+  profiles:
+    active: local  # Default Active Profile
+    group:
+      local: local, api-docs  # Add 'local-remoteDB' to connect Remote MySQL
+      dev: dev, api-docs
+      prod: prod
+
+server:
+  port: 8080
