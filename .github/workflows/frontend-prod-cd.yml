@@ -1,6 +1,7 @@
-name: 모모 프론트엔드 배포 자동화 워크플로우
+name: 모모 프론트엔드 배포 자동화 워크플로우(prod)
 
 on:
+  workflow_dispatch:
   push:
     tags: release-**
 
@@ -18,11 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4 # Push 이벤트이기 때문에 checkout 해야 함
         with:
-          ref: develop
+          ref: main
       - uses: dorny/paths-filter@v3
         id: filter
         with:
-          base: "develop" # 해당 브랜치의 last commit과 변경점 비교
+          base: "main" # 해당 브랜치의 last commit과 변경점 비교
           filters: |
             backend:
               - 'backend/**'
