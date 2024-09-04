@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 
-import PasswordInput from '@components/PasswordInput';
 import { Button } from '@components/_common/Buttons/Button';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
@@ -9,7 +8,7 @@ import useInput from '@hooks/useInput/useInput';
 
 import { usePostLoginMutation } from '@stores/servers/user/mutations';
 
-import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields';
 
 import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
@@ -22,8 +21,8 @@ export default function AttendeeLoginPage() {
     onValueChange: handleAttendeeNameChange,
     errorMessage: attendeeNameErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.nickname.minLength,
-    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+    pattern: INPUT_FIELD_PATTERN.nickname,
+    errorMessage: FIELD_DESCRIPTIONS.nickname,
   });
 
   const {
@@ -31,9 +30,8 @@ export default function AttendeeLoginPage() {
     onValueChange: handleAttendeePasswordChange,
     errorMessage: attendeePasswordErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.password.minLength,
-    maxLength: INPUT_FIELD_RULES.password.maxLength,
-    pattern: INPUT_FIELD_RULES.password.pattern,
+    pattern: INPUT_FIELD_PATTERN.password,
+    errorMessage: FIELD_DESCRIPTIONS.password,
   });
 
   const isFormValid = () => {
@@ -79,7 +77,9 @@ export default function AttendeeLoginPage() {
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
           <Field.Description description={FIELD_DESCRIPTIONS.password} />
-          <PasswordInput
+          <Input
+            type="number"
+            id="비밀번호"
             placeholder="비밀번호를 입력하세요."
             value={attendeePassword}
             onChange={handleAttendeePasswordChange}
