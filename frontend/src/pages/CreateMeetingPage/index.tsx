@@ -115,6 +115,8 @@ export default function CreateMeetingPage() {
           <Input
             type="number"
             id="비밀번호"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={hostPassword}
             onChange={handleHostPasswordChange}
           />

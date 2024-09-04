@@ -80,6 +80,8 @@ export default function AttendeeLoginPage() {
           <Input
             type="number"
             id="비밀번호"
+            inputMode="numeric"
+            pattern="[0-9]*"
             placeholder="비밀번호를 입력하세요."
             value={attendeePassword}
             onChange={handleAttendeePasswordChange}
