@@ -56,15 +56,19 @@ describe('useTimeRangeDropdown', () => {
     expect(result.current.endTime.value).toBe(CHANGE_END_TIME);
   });
 
-  it('시작 시간(startTime)을 선택하면, 끝 시간은 1시간 이후로 자동 설정된다.', () => {
-    const CHANGE_START_TIME = '18:00';
-    const CHANGE_END_TIME = '19:00';
-    const { result } = renderHook(() => useTimeRangeDropdown());
+  it.each([
+    ['18:00', '19:00'],
+    ['06:00', '07:00'],
+  ])(
+    '시작 시간(startTime)을 선택하면, 끝 시간은 1시간 이후로 자동 설정된다.',
+    (startTime, endTime) => {
+      const { result } = renderHook(() => useTimeRangeDropdown());
 
-    act(() => {
-      result.current.handleStartTimeChange(CHANGE_START_TIME);
-    });
+      act(() => {
+        result.current.handleStartTimeChange(startTime);
+      });
 
-    expect(result.current.endTime.value).toBe(CHANGE_END_TIME);
-  });
+      expect(result.current.endTime.value).toBe(endTime);
+    },
+  );
 });
