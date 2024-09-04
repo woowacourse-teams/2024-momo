@@ -52,5 +52,5 @@ export function isTimeSelectable(startTime: string, endTime: string) {
 export function addHoursToCurrentTime(currentTime: string, hours: number) {
   const [currentHours, currentMinutes] = currentTime.split(':').map(Number);
 
-  return currentHours + hours + ':' + currentMinutes;
+  return currentHours + hours + ':' + String(currentMinutes).padStart(2, '0');
 }
