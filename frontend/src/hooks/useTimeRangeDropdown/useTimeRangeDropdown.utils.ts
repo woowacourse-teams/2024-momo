@@ -48,9 +48,9 @@ export function isTimeSelectable(startTime: string, endTime: string) {
   return true;
 }
 
-// 현재 시간에서 1시간 더한 시간을 반화해주는 함수(@낙타)
+// 현재 시간에서 1시간 더한 시간을 반환해주는 함수(@낙타)
 export function addHoursToCurrentTime(currentTime: string, hours: number) {
   const [currentHours, currentMinutes] = currentTime.split(':').map(Number);
 
-  return currentHours + hours + ':' + currentMinutes;
+  return `${String(currentHours + hours).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}`;
 }
