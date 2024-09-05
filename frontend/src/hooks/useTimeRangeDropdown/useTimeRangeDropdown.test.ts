@@ -48,7 +48,7 @@ describe('useTimeRangeDropdown', () => {
     ['18:00', '19:00'],
     ['06:00', '07:00'],
   ])(
-    '시작 시간(startTime)을 선택하면, 끝 시간은 1시간 이후로 자동 설정된다.',
+    '시작 시간(%s)을 선택하면, 끝 시간은 1시간 이후인 %s로 자동 설정된다.',
     (startTime, endTime) => {
       const { result } = renderHook(() => useTimeRangeDropdown());
 
