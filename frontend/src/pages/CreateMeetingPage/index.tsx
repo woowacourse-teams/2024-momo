@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import PasswordInput from '@components/PasswordInput';
 import TimeRangeSelector from '@components/TimeRangeSelector';
 import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
@@ -13,7 +12,7 @@ import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdo
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
-import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields';
 
 import { s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
 
@@ -25,8 +24,8 @@ export default function CreateMeetingPage() {
     onValueChange: handleMeetingNameChange,
     errorMessage: meetingNameErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.meetingName.minLength,
-    maxLength: INPUT_FIELD_RULES.meetingName.maxLength,
+    pattern: INPUT_FIELD_PATTERN.meetingName,
+    errorMessage: FIELD_DESCRIPTIONS.meetingName,
   });
 
   const {
@@ -34,8 +33,8 @@ export default function CreateMeetingPage() {
     onValueChange: handleHostNameChange,
     errorMessage: hostNameErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.nickname.minLength,
-    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+    pattern: INPUT_FIELD_PATTERN.nickname,
+    errorMessage: FIELD_DESCRIPTIONS.nickname,
   });
 
   const {
@@ -43,9 +42,8 @@ export default function CreateMeetingPage() {
     onValueChange: handleHostPasswordChange,
     errorMessage: hostPasswordError,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.password.minLength,
-    maxLength: INPUT_FIELD_RULES.password.maxLength,
-    pattern: INPUT_FIELD_RULES.password.pattern,
+    pattern: INPUT_FIELD_PATTERN.password,
+    errorMessage: FIELD_DESCRIPTIONS.password,
   });
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
@@ -114,7 +112,14 @@ export default function CreateMeetingPage() {
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
           <Field.Description description={FIELD_DESCRIPTIONS.password} />
-          <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
+          <Input
+            type="number"
+            id="비밀번호"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={hostPassword}
+            onChange={handleHostPasswordChange}
+          />
           <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>
 
