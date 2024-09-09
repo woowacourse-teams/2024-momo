@@ -120,9 +120,10 @@ class MeetingControllerTest {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfterTomorrow = today.plusDays(2);
+        AttendeeFixture hostJazz = AttendeeFixture.HOST_JAZZ;
         MeetingCreateRequest request = new MeetingCreateRequest(
-                "host",
-                "momo",
+                hostJazz.getName(),
+                hostJazz.getPassword(),
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",

@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendeePassword {
 
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@*#$%]+$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^\\d{4}+$");
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 5)
     private String password;
 
     public AttendeePassword(String password) {
@@ -27,14 +27,7 @@ public class AttendeePassword {
     }
 
     private void validatePassword(String password) {
-        validatePasswordLength(password);
         validatePasswordFormat(password);
-    }
-
-    private void validatePasswordLength(String password) {
-        if (password.length() > 10) {
-            throw new MomoException(AttendeeErrorCode.INVALID_PASSWORD_LENGTH);
-        }
     }
 
     private void validatePasswordFormat(String password) {

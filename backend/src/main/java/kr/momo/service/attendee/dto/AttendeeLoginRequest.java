@@ -15,8 +15,8 @@ public record AttendeeLoginRequest(
 
         @NotEmpty
         @Schema(description = "참가자 비밀번호", example = "1234")
-        @Length(max = 10, message = "비밀번호는 10자 이하입니다.")
-        @Pattern(regexp = "^[a-zA-Z0-9!@*#$%]+$", message = "비밀번호는 알파벳 대소문자와 숫자만 포함해야 합니다.")
+        @Length(max = 10, message = "비밀번호는 4자리 숫자입니다.")
+        @Pattern(regexp = "^\\d{4}+$", message = "비밀번호는 4자리 숫자여야 합니다.")
         String password
 ) {
 }

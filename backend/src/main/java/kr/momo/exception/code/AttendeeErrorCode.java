@@ -5,8 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum AttendeeErrorCode implements ErrorCodeType {
 
     INVALID_NAME_LENGTH(HttpStatus.BAD_REQUEST, "이름 길이는 최대 5글자까지 가능합니다."),
-    INVALID_PASSWORD_LENGTH(HttpStatus.BAD_REQUEST, "비밀번호 길이는 최대 10글자까지 가능합니다."),
-    INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST, "비밀번호 형식은 숫자, 문자, 특수문자만 가능합니다."),
+    INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST, "비밀번호 형식은 4자리 숫자입니다."),
     PASSWORD_MISMATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     INVALID_ATTENDEE(HttpStatus.BAD_REQUEST, "해당 약속에 참여하는 참가자 정보가 없습니다."),
     NOT_FOUND_ATTENDEE(HttpStatus.NOT_FOUND, "해당 약속에 참여하는 참가자 정보가 없습니다."),
