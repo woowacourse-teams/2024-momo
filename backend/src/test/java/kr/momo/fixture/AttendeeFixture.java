@@ -8,11 +8,11 @@ import kr.momo.domain.meeting.Meeting;
 
 public enum AttendeeFixture {
 
-    HOST_JAZZ("jazz", "hostPw!12", Role.HOST),
-    GUEST_DAON("daon", "daonPw!12", Role.GUEST),
-    GUEST_BAKEY("bakey", "bakeyPw!12", Role.GUEST),
-    GUEST_PEDRO("pedro", "pedroPw!12", Role.GUEST),
-    GUEST_MARK("mark", "mark!12", Role.GUEST);
+    HOST_JAZZ("jazz", "1234", Role.HOST),
+    GUEST_DAON("daon", "4321", Role.GUEST),
+    GUEST_BAKEY("bakey", "3422", Role.GUEST),
+    GUEST_PEDRO("pedro", "4353", Role.GUEST),
+    GUEST_MARK("mark", "1234", Role.GUEST);
 
     private final String name;
     private final String password;
@@ -26,5 +26,13 @@ public enum AttendeeFixture {
 
     public Attendee create(Meeting meeting) {
         return new Attendee(meeting, new AttendeeName(name), new AttendeePassword(password), role);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

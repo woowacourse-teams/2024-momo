@@ -60,7 +60,7 @@ class ScheduleControllerTest {
     void setUp() {
         RestAssured.port = port;
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(new Attendee(meeting, "name", "password", Role.GUEST));
+        attendee = attendeeRepository.save(new Attendee(meeting, "name", "1234", Role.GUEST));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
     }
