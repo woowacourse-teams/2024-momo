@@ -18,7 +18,7 @@ public class AttendeePassword {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^\\d{4}+$");
 
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 4)
     private String password;
 
     public AttendeePassword(String password) {
