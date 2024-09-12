@@ -14,6 +14,7 @@ import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.attendee.dto.AttendeeLoginResponse;
 import kr.momo.service.auth.JwtManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class AttendeeService {
     private final AttendeeRepository attendeeRepository;
     private final MeetingRepository meetingRepository;
     private final JwtManager jwtManager;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public AttendeeLoginResponse login(String uuid, AttendeeLoginRequest request) {
@@ -39,7 +41,7 @@ public class AttendeeService {
     }
 
     private AttendeeLoginResponse verifyPassword(Attendee attendee, AttendeePassword password) {
-        attendee.verifyPassword(password);
+        attendee.verifyPassword(password, passwordEncoder);
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 
