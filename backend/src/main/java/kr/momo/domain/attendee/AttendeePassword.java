@@ -1,6 +1,7 @@
 package kr.momo.domain.attendee;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import java.util.regex.Pattern;
 import kr.momo.exception.MomoException;
@@ -9,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Embeddable
 @Getter
@@ -18,7 +20,8 @@ public class AttendeePassword {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^\\d{4}+$");
 
-    @Column(nullable = false, length = 4)
+    @Convert(converter = PasswordConverter.class)
+    @Column(nullable = false)
     private String password;
 
     public AttendeePassword(String password) {
@@ -36,8 +39,8 @@ public class AttendeePassword {
         }
     }
 
-    public void verifyPassword(AttendeePassword other) {
-        if (!this.equals(other)) {
+    public void matchWithRawPassword(AttendeePassword rawPassword, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(rawPassword.password, password)) {
             throw new MomoException(AttendeeErrorCode.PASSWORD_MISMATCHED);
         }
     }
