@@ -28,6 +28,10 @@ public enum AttendeeFixture {
         return new Attendee(meeting, new AttendeeName(name), new AttendeePassword(password), role);
     }
 
+    public Attendee create(Meeting meeting, AttendeePassword attendeePassword) {
+        return new Attendee(meeting, new AttendeeName(name), attendeePassword, role);
+    }
+
     public String getName() {
         return name;
     }
