@@ -1,88 +1,35 @@
-import useCalendarInfo from '@hooks/useCalendarInfo/useCalendarInfo';
+import type { PropsWithChildren } from 'react';
+import { createContext } from 'react';
+// import 하지 않으면 스토리북에서 캘린더 컴포넌트가 렌더링 되지 않아 일단 추가(@해리)
+import React from 'react';
 
-import {
-  s_baseDayOfWeek,
-  s_baseDaySlot,
-  s_baseDaySlotText,
-  s_calendarContainer,
-  s_calendarContent,
-  s_dayOfWeek,
-  s_dayOfWeekContainer,
-  s_daySlotButton,
-  s_daySlotText,
-  s_monthHeader,
-  s_monthNavigation,
-} from './Calendar.styles';
+import useCalendar from '@hooks/useCalendarInfo/useCalendar';
 
-const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'] as const;
+import Body from './Body';
+import { s_calendarContainer } from './Calendar.styles';
+import { Header } from './Header';
+import WeekDays from './Weekdays';
 
-interface CalendarProps {
-  hasDate: (date: string) => boolean;
-  onDateClick: (date: string) => void;
-}
+type CalendarContextType = ReturnType<typeof useCalendar>;
 
-export default function Calendar({ hasDate, onDateClick }: CalendarProps) {
-  const {
-    yearMonthInfo,
-    handleGetDateInfo,
-    handlePrevMonthMove,
-    handleNextMonthMove,
-    isCurrentDate,
-  } = useCalendarInfo();
-  const { year, month, daySlotCount } = yearMonthInfo;
+export const CalendarContext = createContext<CalendarContextType | null>(null);
+
+function CalendarProvider({ children }: PropsWithChildren) {
+  const calendarData = useCalendar();
 
   return (
-    <div css={s_calendarContainer} aria-label={`${year}년 ${month}월 달력`}>
-      <header css={s_monthHeader}>
-        <button
-          css={s_monthNavigation}
-          onClick={handlePrevMonthMove}
-          aria-label="지난 달"
-          disabled={isCurrentDate}
-        >
-          {'<'}
-        </button>
-        <span>
-          {year}년 {month}월
-        </span>
-        <button css={s_monthNavigation} onClick={handleNextMonthMove} aria-label="다음 달">
-          {'>'}
-        </button>
-      </header>
-      <section css={[s_calendarContent, s_dayOfWeekContainer]}>
-        {DAY_OF_WEEK.map((day, index) => (
-          <div key={day} css={[s_baseDayOfWeek, s_dayOfWeek(index)]}>
-            {day}
-          </div>
-        ))}
-      </section>
-      <section css={s_calendarContent}>
-        {Array.from({ length: daySlotCount }, (_, index) => {
-          const { date, fullDate, isValidDate, isToday, isHoliday, isSaturday, isPrevDate } =
-            handleGetDateInfo(index);
-          const isSelectedFullDate = hasDate(fullDate);
-
-          return isValidDate ? (
-            <button
-              key={fullDate}
-              onClick={() => onDateClick(fullDate)}
-              disabled={isPrevDate}
-              css={[s_baseDaySlot, s_daySlotButton]}
-            >
-              <span
-                css={[
-                  s_baseDaySlotText,
-                  s_daySlotText({ isSelectedFullDate, isPrevDate, isHoliday, isSaturday, isToday }),
-                ]}
-              >
-                {date}
-              </span>
-            </button>
-          ) : (
-            <div key={fullDate} css={s_baseDaySlot}></div>
-          );
-        })}
-      </section>
-    </div>
+    <CalendarContext.Provider value={{ ...calendarData }}>{children}</CalendarContext.Provider>
   );
 }
+
+function CalendarMain({ children }: PropsWithChildren) {
+  return (
+    <CalendarProvider>
+      <div css={s_calendarContainer}>{children}</div>
+    </CalendarProvider>
+  );
+}
+
+const Calender = Object.assign(CalendarMain, { Header, WeekDays, Body });
+
+export default Calender;
