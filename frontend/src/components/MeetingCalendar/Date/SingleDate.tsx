@@ -5,10 +5,10 @@ import {
   s_baseDateText,
   s_dateContainer,
   s_dateText,
-  s_holidayText,
   s_singleDateButton,
 } from './Date.styles';
 import { getDateInfo } from './Date.utils';
+import DateExtraInfo from './DateExtraInfo';
 
 interface SingleCalendarDateProps {
   dateInfo: DateInfo;
@@ -56,7 +56,7 @@ export default function SingleDate({
       ]}
     >
       <span css={[s_baseDateText]}>{date}</span>
-      <span css={s_holidayText}>{holidayName || '\u00A0'}</span>
+      <DateExtraInfo isToday={isToday} holidayName={holidayName} />
     </button>
   ) : (
     <div key={key} css={s_dateContainer}></div>

@@ -5,12 +5,12 @@ import {
   s_baseDateText,
   s_dateContainer,
   s_dateText,
-  s_holidayText,
   s_rangeDateButton,
   s_rangeEnd,
   s_rangeStart,
 } from './Date.styles';
 import { getDateInfo } from './Date.utils';
+import DateExtraInfo from './DateExtraInfo';
 
 interface RangeDateProps {
   dateInfo: DateInfo;
@@ -71,9 +71,12 @@ export default function RangeDate({
       ]}
     >
       <span css={[s_baseDateText]}>{date}</span>
-      {isRangeStart && <span css={s_holidayText}>시작</span>}
-      {isRangeEnd && <span css={s_holidayText}>끝</span>}
-      {!isRangeStart && !isRangeEnd && <span css={s_holidayText}>{holidayName || '\u00A0'}</span>}
+      <DateExtraInfo
+        isToday={isToday}
+        isRangeStart={isRangeStart}
+        isRangeEnd={isRangeEnd}
+        holidayName={holidayName}
+      />
     </button>
   ) : (
     <div key={key} css={s_dateContainer}></div>
