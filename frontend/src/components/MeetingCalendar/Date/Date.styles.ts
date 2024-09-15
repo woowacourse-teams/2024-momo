@@ -89,7 +89,7 @@ const DAY_SLOT_TEXT_STYLES = {
   `,
 };
 
-export const s_holidayText = css`
+export const s_dateExtraInfoText = css`
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.2;
