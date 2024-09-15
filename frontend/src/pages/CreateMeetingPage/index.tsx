@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import type { DateInfo } from 'types/calendar';
 
+import RangeDate from '@components/MeetingCalendar/Date/RangeDate';
+import SingleDate from '@components/MeetingCalendar/Date/SingleDate';
+import MeetingCalendarHeader from '@components/MeetingCalendar/Header';
+import MeetingCalendarWeekdays from '@components/MeetingCalendar/Weekdays';
 import TimeRangeSelector from '@components/TimeRangeSelector';
 import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
+import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import useInput from '@hooks/useInput/useInput';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
@@ -46,17 +51,18 @@ export default function CreateMeetingPage() {
     errorMessage: FIELD_DESCRIPTIONS.password,
   });
 
-  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+  const {
+    selectedDates,
+    handleSelectedDates,
+    hasDate,
+    dateSelectMode,
+    checkIsRangeStartDate,
+    checkIsRangeEndDate,
+    isAllRangeSelected,
+    toggleDateSelectMode,
+  } = useDateSelect();
 
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
-
-  const hasDate = (date: string) => selectedDates.includes(date);
-
-  const handleDateClick = (date: string) => {
-    setSelectedDates((prevDates) =>
-      hasDate(date) ? prevDates.filter((d) => d !== date) : [...prevDates, date],
-    );
-  };
 
   const isFormValid = () => {
     const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
@@ -84,6 +90,29 @@ export default function CreateMeetingPage() {
       // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
       meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
     });
+  };
+
+  const renderDate = (dateInfo: DateInfo, today: Date) => {
+    return dateSelectMode === 'single' ? (
+      <SingleDate
+        key={dateInfo.key}
+        dateInfo={dateInfo}
+        today={today}
+        hasDate={hasDate}
+        onDateClick={handleSelectedDates}
+      />
+    ) : (
+      <RangeDate
+        key={dateInfo.key}
+        dateInfo={dateInfo}
+        today={today}
+        hasDate={hasDate}
+        onDateClick={handleSelectedDates}
+        isRangeStart={checkIsRangeStartDate(dateInfo.value)}
+        isRangeEnd={checkIsRangeEndDate(dateInfo.value)}
+        isAllRangeSelected={isAllRangeSelected}
+      />
+    );
   };
 
   return (
@@ -125,7 +154,31 @@ export default function CreateMeetingPage() {
 
         <Field>
           <Field.Label id="날짜선택" labelText="약속 날짜 선택" />
-          <Calendar hasDate={hasDate} onDateClick={handleDateClick} />
+          <Calendar>
+            <Calendar.Header
+              render={({
+                currentYear,
+                currentMonth,
+                moveToNextMonth,
+                moveToPrevMonth,
+                isCurrentMonth,
+              }) => (
+                <MeetingCalendarHeader
+                  currentYear={currentYear}
+                  currentMonth={currentMonth}
+                  moveToNextMonth={moveToNextMonth}
+                  moveToPrevMonth={moveToPrevMonth}
+                  isCurrentMonth={isCurrentMonth}
+                  dateSelectMode={dateSelectMode}
+                  toggleDateSelectMode={toggleDateSelectMode}
+                />
+              )}
+            />
+            <Calendar.WeekDays
+              render={(weekdays) => <MeetingCalendarWeekdays weekdays={weekdays} />}
+            />
+            <Calendar.Body renderDate={renderDate} />
+          </Calendar>
         </Field>
 
         <Field>
