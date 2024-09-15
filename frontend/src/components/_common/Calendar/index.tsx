@@ -3,7 +3,7 @@ import { createContext } from 'react';
 // import 하지 않으면 스토리북에서 캘린더 컴포넌트가 렌더링 되지 않아 일단 추가(@해리)
 import React from 'react';
 
-import useCalendar from '@hooks/useCalendarInfo/useCalendar';
+import useCalendar from '@hooks/useCalendar/useCalendar';
 
 import Body from './Body';
 import { s_calendarContainer } from './Calendar.styles';

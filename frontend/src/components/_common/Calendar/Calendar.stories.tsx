@@ -6,7 +6,7 @@ import SingleDate from '@components/MeetingCalendar/Date/SingleDate';
 import MeetingCalendarHeader from '@components/MeetingCalendar/Header';
 import MeetingCalendarWeekdays from '@components/MeetingCalendar/Weekdays';
 
-import useCalendar from '@hooks/useCalendarInfo/useCalendar';
+import useCalendar from '@hooks/useCalendar/useCalendar';
 import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 
 import Calendar, { CalendarContext } from './index';
