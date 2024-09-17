@@ -1,10 +1,12 @@
 const path = require('path');
+const webpack = require('webpack');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = () => ({
   entry: './src/index.tsx',
@@ -68,6 +70,9 @@ module.exports = () => ({
     }),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'public/assets/favicons', to: 'assets/favicons' }],
     }),
     new ForkTsCheckerWebpackPlugin(),
     new DotenvWebpackPlugin(),
