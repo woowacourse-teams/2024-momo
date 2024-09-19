@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
+import kr.momo.fixture.AttendeeEncryptedPasswordFixture;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
 import org.junit.jupiter.api.BeforeEach;
