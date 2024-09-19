@@ -37,13 +37,13 @@ class AttendeePasswordTest {
 
     @DisplayName("비밀번호와 동일한지 검증한다.")
     @Test
-    void matchWithRawPassword() throws Exception {
+    void verifyMatch() throws Exception {
         String rawPassword = "1234";
         AttendeePassword password = AttendeeEncryptedPasswordFixture.createAttendeePassword(rawPassword);
         AttendeePassword other = new AttendeePassword(rawPassword);
 
         assertThatNoException()
-                .isThrownBy(() -> password.matchWithRawPassword(other, passwordEncoder));
+                .isThrownBy(() -> password.verifyMatch(other, passwordEncoder));
     }
 
     @DisplayName("암호화된 비밀번호와 서로 다르면 예외를 발생시킨다.")
@@ -53,7 +53,7 @@ class AttendeePasswordTest {
         AttendeePassword password = AttendeeEncryptedPasswordFixture.createAttendeePassword(rawPassword);
         AttendeePassword other = new AttendeePassword("4321");
 
-        assertThatThrownBy(() -> password.matchWithRawPassword(other, passwordEncoder))
+        assertThatThrownBy(() -> password.verifyMatch(other, passwordEncoder))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.PASSWORD_MISMATCHED.message());
     }

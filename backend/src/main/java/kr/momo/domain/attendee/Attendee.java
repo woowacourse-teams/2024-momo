@@ -67,7 +67,7 @@ public class Attendee extends BaseEntity {
     }
 
     public void verifyPassword(AttendeePassword rawPassword, PasswordEncoder passwordEncoder) {
-        password.matchWithRawPassword(rawPassword, passwordEncoder);
+        password.verifyMatch(rawPassword, passwordEncoder);
     }
 
     public String name() {

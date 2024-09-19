@@ -30,16 +30,12 @@ public class AttendeePassword {
     }
 
     private void validatePassword(String password) {
-        validatePasswordFormat(password);
-    }
-
-    private void validatePasswordFormat(String password) {
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
             throw new MomoException(AttendeeErrorCode.INVALID_PASSWORD_FORMAT);
         }
     }
 
-    public void matchWithRawPassword(AttendeePassword rawPassword, PasswordEncoder passwordEncoder) {
+    public void verifyMatch(AttendeePassword rawPassword, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(rawPassword.password, password)) {
             throw new MomoException(AttendeeErrorCode.PASSWORD_MISMATCHED);
         }
