@@ -8,7 +8,7 @@ import {
   s_singleDateButton,
 } from './Date.styles';
 import { getDateInfo } from './Date.utils';
-import DateExtraInfo from './DateExtraInfo';
+import DateAdditionalText from './DateAdditionalText';
 
 interface SingleCalendarDateProps {
   dateInfo: DateInfo;
@@ -26,7 +26,7 @@ export default function SingleDate({
   const { key, value, status } = dateInfo;
   const {
     date,
-    currentFullDate,
+    targetFullDate,
     isHoliday,
     isToday,
     isSaturday,
@@ -34,12 +34,12 @@ export default function SingleDate({
     isPrevDate,
     holidayName,
   } = getDateInfo(value, today);
-  const isSelectedDate = hasDate(currentFullDate);
+  const isSelectedDate = hasDate(targetFullDate);
 
-  return status === 'currentMonth' ? (
+  return status === 'current' ? (
     <button
       key={key}
-      onClick={() => onDateClick(currentFullDate)}
+      onClick={() => onDateClick(targetFullDate)}
       disabled={isPrevDate}
       css={[
         s_dateContainer,
@@ -47,16 +47,16 @@ export default function SingleDate({
         s_singleDateButton(isSelectedDate),
         s_dateText({
           isSelectedDate,
+          isToday,
           isPrevDate,
+          isHoliday,
           isSunday,
           isSaturday,
-          isHoliday,
-          isToday,
         }),
       ]}
     >
       <span css={[s_baseDateText]}>{date}</span>
-      <DateExtraInfo isToday={isToday} holidayName={holidayName} />
+      <DateAdditionalText isToday={isToday} holidayName={holidayName} />
     </button>
   ) : (
     <div key={key} css={s_dateContainer}></div>

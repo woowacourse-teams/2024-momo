@@ -10,7 +10,7 @@ import {
   s_rangeStart,
 } from './Date.styles';
 import { getDateInfo } from './Date.utils';
-import DateExtraInfo from './DateExtraInfo';
+import DateAdditionalText from './DateAdditionalText';
 
 interface RangeDateProps {
   dateInfo: DateInfo;
@@ -39,7 +39,7 @@ export default function RangeDate({
   */
   const {
     date,
-    currentFullDate,
+    targetFullDate,
     isHoliday,
     isToday,
     isSaturday,
@@ -47,12 +47,12 @@ export default function RangeDate({
     isPrevDate,
     holidayName,
   } = getDateInfo(value, today);
-  const isSelectedDate = hasDate(currentFullDate);
+  const isSelectedDate = hasDate(targetFullDate);
 
-  return status === 'currentMonth' ? (
+  return status === 'current' ? (
     <button
       key={key}
-      onClick={() => onDateClick(currentFullDate)}
+      onClick={() => onDateClick(targetFullDate)}
       disabled={isPrevDate}
       css={[
         s_dateContainer,
@@ -62,16 +62,16 @@ export default function RangeDate({
         isRangeEnd && s_rangeEnd(isAllRangeSelected),
         s_dateText({
           isSelectedDate,
+          isToday,
           isPrevDate,
+          isHoliday,
           isSunday,
           isSaturday,
-          isHoliday,
-          isToday,
         }),
       ]}
     >
-      <span css={[s_baseDateText]}>{date}</span>
-      <DateExtraInfo
+      <span css={s_baseDateText}>{date}</span>
+      <DateAdditionalText
         isToday={isToday}
         isRangeStart={isRangeStart}
         isRangeEnd={isRangeEnd}
