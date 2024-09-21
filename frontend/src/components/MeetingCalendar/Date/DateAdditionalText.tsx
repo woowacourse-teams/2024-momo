@@ -4,7 +4,7 @@ const DATE_INFO_TEXTS = {
   today: '오늘',
   rangeStart: '시작',
   rangeEnd: '끝',
-  default: '\u00A0',
+  default: '',
 };
 
 interface DateInfoProps {
@@ -22,7 +22,7 @@ const getDateInfoText = ({ isToday, isRangeStart, isRangeEnd, holidayName }: Dat
   return DATE_INFO_TEXTS.default;
 };
 
-export default function DateExtraInfo({
+export default function DateAdditionalText({
   isToday,
   isRangeStart,
   isRangeEnd,
