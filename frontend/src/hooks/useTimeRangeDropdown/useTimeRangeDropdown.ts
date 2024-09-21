@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { INITIAL_END_TIME, INITIAL_START_TIME } from './constants';
+import type { UseTimeRangeDropdownResult } from './useTimeRangeDropdown.type';
 import {
   addHoursToCurrentTime,
   generateEndTimeOptions,
@@ -8,7 +9,7 @@ import {
   isTimeSelectable,
 } from './useTimeRangeDropdown.utils';
 
-export default function useTimeRangeDropdown() {
+export default function useTimeRangeDropdown(): UseTimeRangeDropdownResult {
   const [startTime, setStartTime] = useState(INITIAL_START_TIME);
   const [endTime, setEndTime] = useState(INITIAL_END_TIME);
 
