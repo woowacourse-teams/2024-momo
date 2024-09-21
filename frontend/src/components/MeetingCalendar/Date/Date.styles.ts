@@ -1,7 +1,8 @@
 import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
-import { isValidArrayType } from 'types/guards';
 import type { FlagObject } from 'types/utility';
+
+import { isValidArrayType } from '@utils/typeGuards';
 
 import theme from '@styles/theme';
 
