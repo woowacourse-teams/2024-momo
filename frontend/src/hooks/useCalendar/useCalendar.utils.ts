@@ -1,6 +1,6 @@
 import type { DateInfo, MonthStatus, MonthlyDays } from 'types/calendar';
 
-import { getDate, getMonth, getYear } from '@utils/date';
+import { getDate, getDay, getMonth, getYear } from '@utils/date';
 
 import CALENDAR_PROPERTIES from '@constants/calendar';
 
@@ -11,37 +11,47 @@ export const setFirstDate = (date: Date) => {
   return newDate;
 };
 
+export const getDaysInMonth = (date: Date) => {
+  const lastDateOfMonth = getDate(new Date(getYear(date), getMonth(date) + 1, 0));
+
+  return lastDateOfMonth;
+};
+
 export const getNumberOfWeeks = (date: Date) => {
   const firstOfMonth = setFirstDate(date);
-  const daysInMonth = new Date(getYear(date), getMonth(date) + 1, 0).getDate();
-  const dayOfWeek = firstOfMonth.getDay();
+  const daysInMonth = getDaysInMonth(date);
+  const dayOfWeek = getDay(firstOfMonth);
 
   return Math.ceil((daysInMonth + ((dayOfWeek + 7) % 7)) / 7);
 };
 
 export const getMonthlyStartIndex = (date: Date) => {
   const firstOfMonth = setFirstDate(date);
-  return (firstOfMonth.getDay() + 7) % 7;
+
+  return firstOfMonth.getDay();
 };
 
-export const getWeeklyDate = (startDate: Date, currentMonth: number): DateInfo[] =>
+const getMonthStatus = (targetDate: Date, currentMonthIndex: number): MonthStatus => {
+  const month = getMonth(targetDate);
+
+  if (month < currentMonthIndex) return 'prev';
+
+  if (month > currentMonthIndex) return 'next';
+
+  return 'current';
+};
+
+export const getWeeklyDate = (startDate: Date, currentMonthIndex: number): DateInfo[] =>
   Array.from({ length: CALENDAR_PROPERTIES.daysInOneWeek }, (_, i) => {
     const date = new Date(startDate);
     date.setDate(getDate(startDate) + i);
 
-    let status: MonthStatus;
-    if (getMonth(date) < currentMonth || (getMonth(date) === 11 && currentMonth === 0)) {
-      status = 'prevMonth';
-    } else if (getMonth(date) > currentMonth || (getMonth(date) === 0 && currentMonth === 11)) {
-      status = 'nextMonth';
-    } else {
-      status = 'currentMonth';
-    }
+    const monthStatus = getMonthStatus(date, currentMonthIndex);
 
     return {
       key: `${date}`,
       value: date,
-      status,
+      status: monthStatus,
     };
   });
 
@@ -95,7 +105,7 @@ export const getMonthlyDate = (date: Date): MonthlyDays => {
 
   return Array.from({ length: numberOfWeeks }, (_, i) => {
     const newDate = new Date(monthlyStartDate);
-    newDate.setDate(getDate(monthlyStartDate) + 7 * i);
+    newDate.setDate(getDate(monthlyStartDate) + CALENDAR_PROPERTIES.daysInOneWeek * i);
 
     return {
       key: getYear(date) * getMonth(date) + i,
