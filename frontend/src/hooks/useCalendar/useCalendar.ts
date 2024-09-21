@@ -34,6 +34,7 @@ const useCalendar = (): useCalendarReturn => {
   const moveToPrevMonth = () => {
     setCurrentFullDate(new Date(currentYear, currentMonth - 1));
   };
+
   const moveToNextMonth = () => {
     setCurrentFullDate(new Date(currentYear, currentMonth + 1));
   };
