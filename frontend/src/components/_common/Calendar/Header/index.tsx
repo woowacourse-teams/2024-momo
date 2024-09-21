@@ -1,6 +1,4 @@
 // import 하지 않으면 스토리북에서 캘린더 컴포넌트가 렌더링 되지 않아 일단 추가(@해리)
-import React from 'react';
-
 import { useCalendarContext } from '@hooks/useCalendarContext/useCalendarContext';
 
 interface HeaderProps {
@@ -18,7 +16,5 @@ export function Header({ render }: HeaderProps) {
   const { currentYear, currentMonth } = headers;
   const { moveToNextMonth, moveToPrevMonth } = view;
 
-  return (
-    <>{render({ currentYear, currentMonth, moveToNextMonth, moveToPrevMonth, isCurrentMonth })}</>
-  );
+  return render({ currentYear, currentMonth, moveToNextMonth, moveToPrevMonth, isCurrentMonth });
 }
