@@ -1,6 +1,6 @@
 export type DateSelectMode = 'single' | 'range';
 
-export type MonthStatus = 'prevMonth' | 'currentMonth' | 'nextMonth';
+export type MonthStatus = 'prev' | 'current' | 'next';
 
 export interface DateInfo {
   key: string;
