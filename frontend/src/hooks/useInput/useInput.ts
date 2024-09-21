@@ -1,12 +1,14 @@
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 
+import type { UseInputResult } from './useInput.type';
+
 interface ValidationRules {
   pattern?: RegExp;
   errorMessage?: string;
 }
 
-const useInput = (rules?: ValidationRules) => {
+const useInput = (rules?: ValidationRules): UseInputResult => {
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
