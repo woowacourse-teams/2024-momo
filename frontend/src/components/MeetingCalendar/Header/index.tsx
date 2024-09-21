@@ -51,6 +51,7 @@ export default function MeetingCalendarHeader({
         <TabButton
           isActive={dateSelectMode === 'single'}
           onClick={() => toggleDateSelectMode('single')}
+          aria-label="하나씩 선택하기"
         >
           하나씩
         </TabButton>
@@ -58,6 +59,7 @@ export default function MeetingCalendarHeader({
         <TabButton
           isActive={dateSelectMode === 'range'}
           onClick={() => toggleDateSelectMode('range')}
+          aria-label="기간으로 선택하기"
         >
           기간
         </TabButton>
