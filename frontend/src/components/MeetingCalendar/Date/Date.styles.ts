@@ -1,4 +1,6 @@
+import type { SerializedStyles } from '@emotion/react';
 import { css } from '@emotion/react';
+import { isValidArrayType } from 'types/guards';
 import type { FlagObject } from 'types/utility';
 
 import theme from '@styles/theme';
@@ -9,7 +11,7 @@ export const s_dateContainer = css`
   height: 4.8rem;
 `;
 
-export const s_baseDateButton = () => css`
+export const s_baseDateButton = css`
   cursor: pointer;
 
   position: relative;
@@ -42,32 +44,6 @@ export const s_baseDateText = css`
   ${theme.typography.bodyLight}
 `;
 
-type DateStatus =
-  | 'isSelectedDate'
-  | 'isPrevDate'
-  | 'isSunday'
-  | 'isSaturday'
-  | 'isHoliday'
-  | 'isToday';
-
-export const s_dateText = ({
-  isSelectedDate,
-  isPrevDate,
-  isSunday,
-  isSaturday,
-  isHoliday,
-  isToday,
-}: FlagObject<DateStatus>) => {
-  if (isSelectedDate) return DAY_SLOT_TEXT_STYLES.selected;
-  if (isToday) return DAY_SLOT_TEXT_STYLES.today;
-  if (isPrevDate) return DAY_SLOT_TEXT_STYLES.prevDay;
-  if (isHoliday) return DAY_SLOT_TEXT_STYLES.holiday;
-  if (isSunday) return DAY_SLOT_TEXT_STYLES.holiday;
-  if (isSaturday) return DAY_SLOT_TEXT_STYLES.saturday;
-
-  return DAY_SLOT_TEXT_STYLES.default;
-};
-
 const DAY_SLOT_TEXT_STYLES = {
   selected: css`
     color: ${theme.colors.calendar.color.selected};
@@ -87,6 +63,33 @@ const DAY_SLOT_TEXT_STYLES = {
   default: css`
     color: ${theme.colors.black};
   `,
+};
+
+type DateStatus =
+  | 'isSelectedDate'
+  | 'isPrevDate'
+  | 'isSunday'
+  | 'isSaturday'
+  | 'isHoliday'
+  | 'isToday';
+
+const dateStatusStyleMap: Record<DateStatus, SerializedStyles> = {
+  isSelectedDate: DAY_SLOT_TEXT_STYLES.selected,
+  isToday: DAY_SLOT_TEXT_STYLES.today,
+  isPrevDate: DAY_SLOT_TEXT_STYLES.prevDay,
+  isHoliday: DAY_SLOT_TEXT_STYLES.holiday,
+  isSunday: DAY_SLOT_TEXT_STYLES.holiday,
+  isSaturday: DAY_SLOT_TEXT_STYLES.saturday,
+};
+
+export const s_dateText = (dateStatusMap: FlagObject<DateStatus>) => {
+  // key가 dateStatusMap에 속하는 타입인지 확정할 수 없는 문제 발생 -> type guard 함수로 해결(@해리)
+  const dateStatusArray = Object.keys(dateStatusMap);
+  if (!isValidArrayType<string, DateStatus>(Object.keys(dateStatusMap), dateStatusArray)) return;
+
+  const status = dateStatusArray.find((key) => dateStatusMap[key]);
+
+  return status ? dateStatusStyleMap[status] : DAY_SLOT_TEXT_STYLES.default;
 };
 
 export const s_dateExtraInfoText = css`
