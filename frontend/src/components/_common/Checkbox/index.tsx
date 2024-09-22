@@ -6,6 +6,7 @@ import { s_container } from './Checkbox.styles';
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   isChecked: boolean;
   labelText: string;
+  id: string;
 }
 
 export default function Checkbox({ isChecked, id, labelText, ...props }: CheckboxProps) {

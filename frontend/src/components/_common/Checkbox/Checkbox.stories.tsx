@@ -23,7 +23,6 @@ const meta = {
         <Story
           args={{
             ...context.args,
-            id: 'checkbox',
             onChange: onToggleIsChecked,
           }}
         />
@@ -38,6 +37,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    id: 'checkbox',
     isChecked: false,
     labelText: '체크박스입니다.',
   },
