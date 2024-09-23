@@ -63,12 +63,15 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   };
 };
 
-interface PostMeetingRequest {
+export type MeetingType = 'daysOnly' | 'dateTime';
+
+export interface PostMeetingRequest {
   hostName: string;
   hostPassword: string;
   meetingName: string;
   availableMeetingDates: string[];
   meetingStartTime: string;
+  type: MeetingType;
   meetingEndTime: string;
 }
 
@@ -79,6 +82,7 @@ interface PostMeetingResponse {
   earliestTime: string;
   lastTime: string;
   availableDates: string[];
+  type: MeetingType;
 }
 
 export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeetingResult> => {
