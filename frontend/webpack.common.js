@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
@@ -86,6 +87,7 @@ module.exports = () => ({
         // ? hidden-source-map을 사용해야 삭제가 되는 것인지는 아직 모름.
       },
     }),
+    new BundleAnalyzerPlugin(),
   ],
 
   devtool: 'source-map',
