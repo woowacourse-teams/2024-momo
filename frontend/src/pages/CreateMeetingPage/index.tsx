@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import type { DateInfo } from 'types/calendar';
 
 import RangeDate from '@components/MeetingCalendar/Date/RangeDate';
@@ -12,6 +13,7 @@ import Input from '@components/_common/Input';
 
 import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import useInput from '@hooks/useInput/useInput';
+import useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
@@ -63,6 +65,7 @@ export default function CreateMeetingPage() {
   } = useDateSelect();
 
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
+  const { meetingType, isChecked, handleToggleIsChecked } = useMeetingType();
 
   const isFormValid = () => {
     const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
@@ -86,9 +89,14 @@ export default function CreateMeetingPage() {
       hostPassword: hostPassword,
       meetingName: meetingName,
       availableMeetingDates: selectedDates,
-      meetingStartTime: startTime.value,
+      meetingStartTime: isChecked ? '00:00' : startTime.value,
       // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-      meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
+      meetingEndTime: isChecked
+        ? '00:00'
+        : endTime.value === INITIAL_END_TIME
+          ? INITIAL_START_TIME
+          : endTime.value,
+      type: meetingType,
     });
   };
 
@@ -181,15 +189,33 @@ export default function CreateMeetingPage() {
           </Calendar>
         </Field>
 
-        <Field>
-          <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
-          <TimeRangeSelector
-            startTime={startTime}
-            endTime={endTime}
-            handleStartTimeChange={handleStartTimeChange}
-            handleEndTimeChange={handleEndTimeChange}
+        {/* 공통 컴포넌트가 merge 되면 수정 예정 */}
+        <div
+          css={css`
+            display: flex;
+            gap: 0.2rem;
+          `}
+        >
+          <input
+            onChange={handleToggleIsChecked}
+            id="meetingType"
+            type="checkbox"
+            checked={isChecked}
           />
-        </Field>
+          <label htmlFor="meetingType">날짜만 선택할래요</label>
+        </div>
+
+        {!isChecked && (
+          <Field>
+            <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
+            <TimeRangeSelector
+              startTime={startTime}
+              endTime={endTime}
+              handleStartTimeChange={handleStartTimeChange}
+              handleEndTimeChange={handleEndTimeChange}
+            />
+          </Field>
+        )}
 
         <div css={s_confirmContainer}>
           <Button
