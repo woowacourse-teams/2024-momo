@@ -17,19 +17,22 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - uses: actions/checkout@v4 # Push 이벤트이기 때문에 checkout 해야 함
+      - uses: actions/checkout@v4
         with:
-          ref: main
+          fetch-depth: 0 # 모든 히스토리를 가져옵니다
+      - name: Get previous tag
+        id: previoustag
+        run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ --always)" >> $GITHUB_OUTPUT
       - uses: dorny/paths-filter@v3
         id: filter
         with:
-          base: "main" # 해당 브랜치의 last commit과 변경점 비교
+          base: ${{ steps.previoustag.outputs.PREVIOUS_TAG }}
+          ref: ${{ github.ref }}
           filters: |
             backend:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-
   fe-build:
     needs: detect-changes # jobs들은 병렬로 실행됨, needs 키워드를 사용해서 특정 job이 완료(성공)면 실행하도록 설정
     if: ${{ needs.detect-changes.outputs.frontend == 'true' }}

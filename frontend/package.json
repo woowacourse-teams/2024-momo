@@ -7,7 +7,7 @@
     "prod": "webpack server --open --config webpack.prod.js",
     "dev": "webpack server --open --config webpack.dev.js",
     "build:prod": "NODE_ENV=production webpack --config webpack.prod.js && npm run sentry:sourcemaps",
-    "build:dev": "NODE_ENV=development webpack --config webpack.dev.js",
+    "build:dev": "NODE_ENV=production webpack --config webpack.prod.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload -o momo2024 -p momo-harry-test /dist",
     "lint:css": "stylelint '**/*.styles.ts' --fix",
     "test": "jest",
