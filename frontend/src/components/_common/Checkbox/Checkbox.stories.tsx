@@ -6,8 +6,6 @@ import Checkbox from '.';
 const meta = {
   title: 'Common/Checkbox',
   component: Checkbox,
-  tags: ['autodocs'],
-
   parameters: {
     layout: 'centered',
   },
