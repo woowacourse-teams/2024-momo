@@ -22,7 +22,7 @@ export const getNumberOfWeeks = (date: Date) => {
   const daysInMonth = getDaysInMonth(date);
   const dayOfWeek = getDay(firstOfMonth);
 
-  return Math.ceil((daysInMonth + ((dayOfWeek + 7) % 7)) / 7);
+  return Math.ceil((daysInMonth + dayOfWeek) / 7);
 };
 
 export const getMonthlyStartIndex = (date: Date) => {
