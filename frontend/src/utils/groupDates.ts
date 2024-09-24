@@ -1,12 +1,16 @@
 export default function groupDates(fullDates: string[]) {
-  const groupedDates: Record<number, number[]> = {};
+  const sortedFullDates = fullDates.sort(
+    (prevDate, nextDate) => new Date(prevDate).getTime() - new Date(nextDate).getTime(),
+  );
+  const groupedDates = new Map<string, number[]>();
 
-  fullDates.forEach((fullDate) => {
-    const [, month, date] = fullDate.split('-').map(Number);
+  sortedFullDates.forEach((fullDate) => {
+    const [year, month, date] = fullDate.split('-').map(Number);
+    const key = `${year}-${String(month).padStart(2, '0')}`;
 
-    if (!groupedDates[month]) groupedDates[month] = [date];
-    else groupedDates[month].push(date);
+    if (!groupedDates.has(key)) groupedDates.set(key, [date]);
+    else groupedDates.get(key)!.push(date);
   });
 
-  return groupedDates;
+  return Array.from(groupedDates.entries());
 }
