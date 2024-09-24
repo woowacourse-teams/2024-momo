@@ -4,8 +4,8 @@ const DATE_INFO_TEXTS = {
   today: '오늘',
   rangeStart: '시작',
   rangeEnd: '끝',
-  default: '',
-};
+  default: '\u00A0',
+} as const;
 
 interface DateInfoProps {
   isToday?: boolean;
