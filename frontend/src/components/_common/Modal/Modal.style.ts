@@ -13,6 +13,7 @@ const sizeSelector: Record<ModalSizeType, CSSProperties['width']> = {
 
 export const s_container = css`
   position: fixed;
+  z-index: 99;
   inset: 0;
 `;
 

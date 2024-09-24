@@ -9,7 +9,7 @@ interface ConfirmModalProps extends ModalProps {
   title: string;
   buttonPosition?: ButtonPositionType;
   onConfirm: () => void;
-  content: ReactNode;
+  children: ReactNode;
 }
 
 export default function ConfirmModal({
@@ -19,13 +19,13 @@ export default function ConfirmModal({
   title,
   position,
   size,
-  content,
+  children,
   buttonPosition = 'row',
 }: ConfirmModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} position={position} size={size}>
       <Modal.Header>{title}</Modal.Header>
-      <Modal.Main>{content}</Modal.Main>
+      <Modal.Main>{children}</Modal.Main>
       <Modal.Footer buttonPosition={buttonPosition}>
         <button onClick={onClose} css={[s_button, s_secondary]}>
           취소

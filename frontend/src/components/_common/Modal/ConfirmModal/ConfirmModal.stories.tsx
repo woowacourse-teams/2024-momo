@@ -44,7 +44,7 @@ export const Default: Story = {
     position: 'center',
     size: 'small',
     title: '입력하신 약속 정보를 확인해주세요.',
-    content: (
+    children: (
       <div>
         <p>
           <span css={{ color: theme.colors.primary }}>약속이름: </span> 해빙낙 정기토론회
@@ -71,7 +71,7 @@ export const ButtonPositionColumn: Story = {
     position: 'center',
     size: 'almostFull',
     title: '입력하신 약속 정보를 확인해주세요.',
-    content: (
+    children: (
       <div>
         <p>
           <span css={{ color: theme.colors.primary }}>약속이름: </span> 해빙낙 정기토론회
