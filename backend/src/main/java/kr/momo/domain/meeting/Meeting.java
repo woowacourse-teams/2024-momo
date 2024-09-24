@@ -3,6 +3,8 @@ package kr.momo.domain.meeting;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,14 +36,27 @@ public class Meeting extends BaseEntity {
     @Column(nullable = false)
     private boolean isLocked;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Type type;
+
     @Embedded
     private TimeslotInterval timeslotInterval;
 
-    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
+    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime, Type type) {
         this.name = name;
         this.uuid = uuid;
-        this.timeslotInterval = new TimeslotInterval(firstTime, lastTime.minusMinutes(30));
         this.isLocked = false;
+        this.type = type;
+        this.timeslotInterval = new TimeslotInterval(firstTime, lastTime.minusMinutes(30));
+    }
+
+    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
+        this(name, uuid, firstTime, lastTime, Type.DATETIME);
+    }
+
+    private boolean isDaysOnly() {
+        return type.isDaysOnly();
     }
 
     public void lock() {

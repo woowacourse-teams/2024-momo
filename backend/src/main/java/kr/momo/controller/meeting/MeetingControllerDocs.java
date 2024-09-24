@@ -27,6 +27,7 @@ public interface MeetingControllerDocs {
     @Operation(summary = "약속 생성", description = "주최자가 약속을 생성하는 API 입니다.")
     @ApiSuccessResponse.Created("약속 생성 성공")
     @ApiErrorResponse.BadRequest(ERROR_CODE_TABLE_HEADER + """
+            | INVALID_FORMAT_REQUEST | 유효하지 않은 요청입니다 |
             | INVALID_NAME_LENGTH | 이름 길이는 1자 이상 5자 이하 까지 가능합니다. |
             | INVALID_PASSWORD_LENGTH | 비밀번호 길이는 1자 이상 10자 이하 까지 가능합니다. |
             | PAST_NOT_PERMITTED | 과거 날짜로는 약속을 생성할 수 없습니다. |

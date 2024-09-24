@@ -18,6 +18,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.Type;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.ConfirmedMeetingFixture;
@@ -127,7 +128,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                Type.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -152,7 +155,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 startTime,
-                endTime);
+                endTime,
+                Type.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -175,7 +180,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                Type.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -198,7 +205,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                Type.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -220,7 +229,32 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), tomorrow.toString()),
                 "08:00",
-                "22:00"
+                "22:00",
+                Type.DATETIME
+        );
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 생성할 때 약속의 타입 없이 요청한다면 400을 반환한다.")
+    @Test
+    void createByInvalidType() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), tomorrow.toString()),
+                "08:00",
+                "22:00",
+                null
         );
 
         RestAssured.given().log().all()
