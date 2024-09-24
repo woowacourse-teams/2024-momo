@@ -1,5 +1,4 @@
 import type { InputHTMLAttributes } from 'react';
-import React from 'react';
 
 import { s_container } from './Checkbox.styles';
 
