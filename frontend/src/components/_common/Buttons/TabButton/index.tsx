@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 import { Button } from '../Button';
 import { s_tabButton } from './TabButton.styles';
@@ -8,7 +8,7 @@ interface TabButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isActive: boolean;
   onClick: () => void;
   tabButtonVariants?: TabButtonVariants;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function TabButton({
