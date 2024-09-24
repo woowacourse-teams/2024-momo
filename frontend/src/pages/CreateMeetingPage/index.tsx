@@ -10,7 +10,9 @@ import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
+import ConfirmModal from '@components/_common/Modal/ConfirmModal';
 
+import useConfirmModal from '@hooks/useConfirmModal/useConfirmModal';
 import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import useInput from '@hooks/useInput/useInput';
 import useMeetingType from '@hooks/useMeetingType/useMeetingType';
@@ -19,11 +21,22 @@ import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdo
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
+import groupDates from '@utils/groupDates';
+
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields';
 
-import { s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
+import {
+  s_availableDateDescription,
+  s_availableDatesContainer,
+  s_confirmContainer,
+  s_description,
+  s_descriptionContainer,
+  s_formContainer,
+} from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
+  const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
+
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
 
   const {
@@ -221,13 +234,52 @@ export default function CreateMeetingPage() {
           <Button
             variant="primary"
             size="m"
-            onClick={handleMeetingCreateButtonClick}
+            onClick={onToggleConfirmModal}
             disabled={!isFormValid()}
           >
             약속 생성하기
           </Button>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={onToggleConfirmModal}
+        position="center"
+        size="small"
+        title="입력하신 약속 정보를 확인해주세요."
+        onConfirm={handleMeetingCreateButtonClick}
+      >
+        <div css={s_descriptionContainer}>
+          <p css={s_description}>
+            <strong>약속명</strong>
+            {meetingName}
+          </p>
+          <p css={s_description}>
+            <strong>주최자</strong>
+            {hostName}
+          </p>
+          {!isChecked && (
+            <p css={s_description}>
+              <strong>약속 시간</strong>
+              {startTime.value} ~ {endTime.value}
+            </p>
+          )}
+          <div css={s_availableDateDescription}>
+            <strong>가능 날짜</strong>
+            {groupDates(selectedDates).map(([monthYear, dates]) => {
+              const [year, month] = monthYear.split('-');
+              return (
+                <div css={s_availableDatesContainer} key={monthYear}>
+                  <h3>
+                    {year}년 {month}월
+                  </h3>
+                  <span>{dates.join(', ')}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }
