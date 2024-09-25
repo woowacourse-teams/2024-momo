@@ -2,6 +2,7 @@ package kr.momo.service.meeting;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
@@ -36,11 +37,15 @@ public class MeetingConfirmService {
 
     @Transactional
     public MeetingConfirmResponse create(String uuid, long attendeeId, MeetingConfirmRequest request) {
-        LocalDateTime startDateTime = request.toStartDateTime();
-        LocalDateTime endDateTime = request.toEndDateTime();
-
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
+
+        LocalDateTime startDateTime = request.toStartDateTime();
+        LocalDateTime endDateTime = request.toEndDateTime();
+        if (meeting.isDaysOnly()) {
+            startDateTime = LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.MIN);
+            endDateTime = LocalDateTime.of(endDateTime.toLocalDate(), LocalTime.MAX);
+        }
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
                 .orElseThrow(() -> new MomoException(AttendeeErrorCode.INVALID_ATTENDEE));

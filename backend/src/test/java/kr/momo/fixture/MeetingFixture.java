@@ -2,6 +2,7 @@ package kr.momo.fixture;
 
 import java.time.LocalTime;
 import kr.momo.domain.meeting.Meeting;
+import kr.momo.domain.meeting.Type;
 
 public enum MeetingFixture {
 
@@ -26,5 +27,9 @@ public enum MeetingFixture {
 
     public Meeting create() {
         return new Meeting(name, uuid, firstTime, lastTime);
+    }
+
+    public Meeting create(Type type) {
+        return new Meeting(name, uuid, firstTime, lastTime, type);
     }
 }

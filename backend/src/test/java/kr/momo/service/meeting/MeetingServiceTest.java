@@ -90,7 +90,8 @@ class MeetingServiceTest {
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
                 () -> assertThat(response.isLocked()).isFalse(),
                 () -> assertThat(response.availableDates()).hasSize(availableDates.size()),
-                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()))
+                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name())),
+                () -> assertThat(response.type()).isEqualTo(meeting.getType().name())
         );
     }
 

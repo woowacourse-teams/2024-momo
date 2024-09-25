@@ -403,10 +403,122 @@ class MeetingControllerTest {
                 .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
     }
 
+    @DisplayName("주최자가 연속적인 약속 일정을 확정하면 201 상태 코드를 응답한다.")
+    @Test
+    void confirmConsecutiveMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_2330.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
+    }
+
     private Meeting createLockedMovieMeeting() {
         Meeting meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         return meetingRepository.save(meeting);
+    }
+
+    @DisplayName("주최자가 유형이 DaysOnly이며 잠겨있는 약속 일정을 확정하면 201 상태 코드를 응답한다.")
+    @Test
+    void confirmConsecutiveAndDaysOnlyMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
+    }
+
+    @DisplayName("주최자가 연속적이지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
+    @Test
+    void confirmNotConsecutiveMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("주최자가 유형이 DaysOnly이며 연속적이지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
+    @Test
+    void confirmNotConsecutiveAndDaysOnlyMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")

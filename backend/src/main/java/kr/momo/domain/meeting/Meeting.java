@@ -55,10 +55,6 @@ public class Meeting extends BaseEntity {
         this(name, uuid, firstTime, lastTime, Type.DATETIME);
     }
 
-    private boolean isDaysOnly() {
-        return type.isDaysOnly();
-    }
-
     public void lock() {
         isLocked = true;
     }
@@ -73,6 +69,10 @@ public class Meeting extends BaseEntity {
 
     public boolean isNotFullTime() {
         return timeslotInterval.isNotFullTime();
+    }
+
+    public boolean isDaysOnly() {
+        return type.isDaysOnly();
     }
 
     public Timeslot getValidatedTimeslot(LocalTime other) {
