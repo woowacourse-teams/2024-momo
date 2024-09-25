@@ -44,7 +44,7 @@ public class MeetingConfirmService {
         LocalDateTime endDateTime = request.toEndDateTime();
         if (meeting.isDaysOnly()) {
             startDateTime = LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.MIN);
-            endDateTime = LocalDateTime.of(endDateTime.toLocalDate(), LocalTime.MAX);
+            endDateTime = LocalDateTime.of(endDateTime.toLocalDate(), LocalTime.MIN);
         }
 
         Attendee attendee = attendeeRepository.findByIdAndMeeting(attendeeId, meeting)
