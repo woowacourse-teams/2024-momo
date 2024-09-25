@@ -5,7 +5,7 @@ import type { MeetingType } from '@apis/meetings';
 export default function useMeetingType() {
   const [isChecked, setIsChecked] = useState(false);
 
-  const meetingType: MeetingType = isChecked ? 'daysOnly' : 'dateTime';
+  const meetingType: MeetingType = isChecked ? 'DAYSONLY' : 'DATETIME';
 
   const handleToggleIsChecked = () => {
     setIsChecked((prev) => !prev);

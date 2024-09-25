@@ -20,19 +20,19 @@ describe('useMeetingType', () => {
     expect(result.current.isChecked).toBe(true);
   });
 
-  it('isChecked가 false라면 "dateTime"타입을 갖습니다.', () => {
+  it('isChecked가 false라면 "DATETIME"타입을 갖습니다.', () => {
     const { result } = renderHook(() => useMeetingType());
 
-    expect(result.current.meetingType).toBe('dateTime');
+    expect(result.current.meetingType).toBe('DATETIME');
   });
 
-  it('isChecked가 true라면 "daysOnly"타입을 갖습니다.', () => {
+  it('isChecked가 true라면 "DAYSONLY"타입을 갖습니다.', () => {
     const { result } = renderHook(() => useMeetingType());
 
     act(() => {
       result.current.handleToggleIsChecked();
     });
 
-    expect(result.current.meetingType).toBe('daysOnly');
+    expect(result.current.meetingType).toBe('DAYSONLY');
   });
 });

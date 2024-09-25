@@ -63,7 +63,7 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   };
 };
 
-export type MeetingType = 'daysOnly' | 'dateTime';
+export type MeetingType = 'DAYSONLY' | 'DATETIME';
 
 export interface PostMeetingRequest {
   hostName: string;

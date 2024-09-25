@@ -202,7 +202,7 @@ export default function CreateMeetingPage() {
           </Calendar>
         </Field>
 
-        {/* 공통 컴포넌트가 merge 되면 수정 예정 */}
+        {/* TODO: 공통 컴포넌트가 merge 되면 수정 예정 */}
         <div
           css={css`
             display: flex;
