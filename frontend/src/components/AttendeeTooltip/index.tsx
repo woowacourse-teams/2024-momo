@@ -33,18 +33,7 @@ export default function AttendeeTooltip({ attendeeNames, position }: AttendeeToo
         </div>
       }
       visibleStyles={css`
-        background-image: linear-gradient(
-          45deg,
-          #33272a 25%,
-          transparent 25%,
-          transparent 50%,
-          #33272a 50%,
-          #33272a 75%,
-          transparent 75%,
-          transparent
-        );
-        background-size: 0.8rem 0.8rem;
-        border: 0.2rem solid #33272a;
+        border: 0.3rem dashed #71717a;
       `}
     >
       <div css={s_tooltipTrigger} />
