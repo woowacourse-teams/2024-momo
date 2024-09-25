@@ -1,6 +1,5 @@
 package kr.momo.config;
 
-import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,10 +38,10 @@ public class DataSourceConfig {
             @Qualifier(REPLICA_SERVER) DataSource replica
     ) {
         RoutingDataSource routingDataSource = new RoutingDataSource();
-        Map<Object, Object> dataSourceMap = new HashMap<>();
-        dataSourceMap.put(SOURCE_SERVER, source);
-        dataSourceMap.put(REPLICA_SERVER, replica);
-
+        Map<Object, Object> dataSourceMap = Map.of(
+                SOURCE_SERVER, source,
+                REPLICA_SERVER, replica
+        );
         routingDataSource.setTargetDataSources(dataSourceMap);
         routingDataSource.setDefaultTargetDataSource(source);
         return routingDataSource;
