@@ -74,6 +74,9 @@ public class ScheduleService {
             Meeting meeting, Attendee attendee, AvailableDates availableDates, DateTimesCreateRequest request
     ) {
         AvailableDate date = availableDates.findByDate(request.toDate());
+        if (meeting.isDaysOnly()) {
+            return Stream.of(new Schedule(attendee, date, Timeslot.TIME_0000));
+        }
         return request.toTimes().stream()
                 .map(time -> createSchedule(meeting, attendee, date, time));
     }

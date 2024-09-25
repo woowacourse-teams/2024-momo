@@ -18,6 +18,7 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.Type;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
@@ -95,6 +96,25 @@ class ScheduleServiceTest {
         long scheduleCount = scheduleRepository.count();
 
         assertThat(scheduleCount).isEqualTo(4);
+    }
+
+    @DisplayName("days only 약속의 스케줄 생성 시 하루에 하나의 스케줄을 저장한다.")
+    @Test
+    void createDaysOnlySchedulesReplacesOldSchedules() {
+        meeting = meetingRepository.save(MeetingFixture.DRINK.create(Type.DAYSONLY));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
+        tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        dateTimes = List.of(
+                new DateTimesCreateRequest(today.getDate(), List.of(Timeslot.TIME_0000.startTime(), Timeslot.TIME_0130.startTime())),
+                new DateTimesCreateRequest(tomorrow.getDate(), List.of(Timeslot.TIME_0000.startTime()))
+        );
+        ScheduleCreateRequest request = new ScheduleCreateRequest(dateTimes);
+
+        scheduleService.create(meeting.getUuid(), attendee.getId(), request);
+        long scheduleCount = scheduleRepository.count();
+
+        assertThat(scheduleCount).as("하루에 하나의 스케줄 생성").isEqualTo(2);
     }
 
     @DisplayName("스케줄 생성 요청의 UUID가 존재하지 않으면 예외를 발생시킨다.")
