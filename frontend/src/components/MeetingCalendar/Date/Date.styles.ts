@@ -58,7 +58,7 @@ const DAY_SLOT_TEXT_STYLES = {
   saturday: css`
     color: #8c9eff;
   `,
-  prevDay: css`
+  disabled: css`
     color: ${theme.colors.grey.primary};
   `,
   default: css`
@@ -68,7 +68,7 @@ const DAY_SLOT_TEXT_STYLES = {
 
 type DateStatus =
   | 'isSelectedDate'
-  | 'isPrevDate'
+  | 'isDisabledDate'
   | 'isSunday'
   | 'isSaturday'
   | 'isHoliday'
@@ -76,8 +76,8 @@ type DateStatus =
 
 const dateStatusStyleMap: Record<DateStatus, SerializedStyles> = {
   isSelectedDate: DAY_SLOT_TEXT_STYLES.selected,
+  isDisabledDate: DAY_SLOT_TEXT_STYLES.disabled,
   isToday: DAY_SLOT_TEXT_STYLES.today,
-  isPrevDate: DAY_SLOT_TEXT_STYLES.prevDay,
   isHoliday: DAY_SLOT_TEXT_STYLES.holiday,
   isSunday: DAY_SLOT_TEXT_STYLES.holiday,
   isSaturday: DAY_SLOT_TEXT_STYLES.saturday,
