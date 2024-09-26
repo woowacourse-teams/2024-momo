@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const FontPreloadPlugin = require('webpack-font-preload-plugin');
 
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
@@ -88,6 +89,10 @@ module.exports = () => ({
       },
     }),
     new BundleAnalyzerPlugin(),
+    new FontPreloadPlugin({
+      index: 'index.html',
+      extensions: ['woff2'],
+    }),
   ],
 
   devtool: 'source-map',
