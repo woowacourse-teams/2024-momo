@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { Suspense, lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
@@ -18,12 +19,11 @@ const MeetingRecommendPage = lazy(() => import('@pages/MeetingRecommendPage'));
 const MeetingTimePickPage = lazy(() => import('@pages/MeetingTimePickPage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
 
-const SuspenseWrapper = (Component: React.FC) => (
+const SuspenseWrapper = (Component: ComponentType) => (
   <Suspense fallback={<PageMoveLoading />}>
     <Component />
   </Suspense>
 );
-
 const meetingRoutes: RouteObject[] = [
   {
     index: true,
