@@ -9,6 +9,8 @@ import {
 } from '@components/MeetingCalendar/Date/Date.styles';
 import { getDateInfo } from '@components/MeetingCalendar/Date/Date.utils';
 
+import Check from '@assets/images/attendeeCheck.svg';
+
 import { s_additionalText, s_viewer } from './SingleDate.styles';
 
 interface DateProps {
@@ -33,7 +35,7 @@ export default function SingleDateViewer({
   const additionalText = () => {
     if (!availableAttendees) return '\u00A0';
     if (selectAttendee === '' && availableAttendees) return `+${availableAttendees.length}`;
-    if (selectAttendee !== '' && availableAttendees) return availableAttendees[0];
+    if (selectAttendee !== '' && availableAttendees) return <Check width={12} height={12} />;
   };
 
   const renderTooltip = () =>
