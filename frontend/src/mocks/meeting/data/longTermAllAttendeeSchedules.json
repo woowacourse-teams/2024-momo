@@ -1,7 +1,7 @@
 {
   "data": {
     "type": "DATETIME",
-    "recommends": [
+    "recommendedSchedules": [
       {
         "startDate": "2024-07-20",
         "startDayOfWeek": "토",

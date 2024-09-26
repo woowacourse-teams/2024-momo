@@ -1,7 +1,7 @@
 {
   "data": {
-    "type": "DATETIME",
-    "recommends": [
+    "type": "DAYSONLY",
+    "recommendedSchedules": [
       {
         "startDate": "2024-07-15",
         "startDayOfWeek": "월",

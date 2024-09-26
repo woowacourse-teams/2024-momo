@@ -1,6 +1,7 @@
 {
   "data": {
     "meetingName": "momo",
+    "type": "DAYSONLY",
     "firstTime": "10:00",
     "lastTime": "18:00",
     "isLocked": false,
