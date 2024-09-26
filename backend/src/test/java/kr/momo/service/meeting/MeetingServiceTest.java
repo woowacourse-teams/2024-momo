@@ -16,6 +16,7 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.meeting.UuidGenerator;
 import kr.momo.domain.meeting.fake.FakeUuidGenerator;
 import kr.momo.exception.MomoException;
@@ -89,7 +90,8 @@ class MeetingServiceTest {
                 () -> assertThat(response.meetingName()).isEqualTo(meeting.getName()),
                 () -> assertThat(response.isLocked()).isFalse(),
                 () -> assertThat(response.availableDates()).hasSize(availableDates.size()),
-                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name()))
+                () -> assertThat(response.attendeeNames()).isEqualTo(List.of(attendee.name())),
+                () -> assertThat(response.type()).isEqualTo(meeting.getType().name())
         );
     }
 
@@ -126,7 +128,8 @@ class MeetingServiceTest {
                 "meetingName",
                 List.of(LocalDate.now().toString()),
                 "08:00",
-                "22:00"
+                "22:00",
+                MeetingType.DATETIME
         );
 
         assertThatThrownBy(() -> meetingService.create(request))
@@ -146,7 +149,8 @@ class MeetingServiceTest {
                 "momoMeeting",
                 List.of(yesterday.toString(), today.toString()),
                 "08:00",
-                "22:00"
+                "22:00",
+                MeetingType.DATETIME
         );
 
         //when //then

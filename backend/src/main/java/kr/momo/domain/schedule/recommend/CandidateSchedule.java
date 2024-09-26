@@ -8,9 +8,10 @@ import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateTimeInterval;
+import kr.momo.domain.schedule.RecommendInterval;
 
 public record CandidateSchedule(
-        DateTimeInterval dateTimeInterval, AttendeeGroup attendeeGroup
+        RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup
 ) {
 
     public static CandidateSchedule of(

@@ -24,6 +24,7 @@ import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.DateTimesResponse;
 import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
+import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.service.schedule.recommend.ScheduleRecommender;
@@ -74,6 +75,9 @@ public class ScheduleService {
             Meeting meeting, Attendee attendee, AvailableDates availableDates, DateTimesCreateRequest request
     ) {
         AvailableDate date = availableDates.findByDate(request.toDate());
+        if (meeting.isDaysOnly()) {
+            return Stream.of(new Schedule(attendee, date, Timeslot.TIME_0000));
+        }
         return request.toTimes().stream()
                 .map(time -> createSchedule(meeting, attendee, date, time));
     }
@@ -118,7 +122,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecommendedScheduleResponse> recommendSchedules(String uuid, String recommendType, List<String> names) {
+    public RecommendedSchedulesResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
@@ -127,8 +131,11 @@ public class ScheduleService {
         ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
                 attendeeGroup, filteredGroup
         );
-        List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
+        List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType,
+                meeting.getType());
 
-        return RecommendedScheduleResponse.fromCandidateSchedules(recommendedResult);
+        List<RecommendedScheduleResponse> scheduleResponses = RecommendedScheduleResponse.fromCandidateSchedules(
+                recommendedResult);
+        return RecommendedSchedulesResponse.of(meeting.getType(), scheduleResponses);
     }
 }

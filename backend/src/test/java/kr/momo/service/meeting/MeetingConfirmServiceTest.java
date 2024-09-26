@@ -233,7 +233,8 @@ class MeetingConfirmServiceTest {
                 () -> assertThat(response.endDate()).isEqualTo(confirmed.endDate()),
                 () -> assertThat(response.endTime()).isEqualTo(confirmed.endTime()),
                 () -> assertThat(response.endDayOfWeek())
-                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN))
+                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)),
+                () -> assertThat(response.type()).isEqualTo(meeting.getType().name())
         );
     }
 

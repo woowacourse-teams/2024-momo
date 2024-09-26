@@ -3,12 +3,15 @@ package kr.momo.service.meeting.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.controller.validator.DateFormatConstraint;
 import kr.momo.controller.validator.TimeFormatConstraint;
+import kr.momo.domain.meeting.MeetingType;
+import kr.momo.domain.timeslot.Timeslot;
 import org.hibernate.validator.constraints.Length;
 
 @Schema(description = "약속 생성 요청")
@@ -41,7 +44,11 @@ public record MeetingCreateRequest(
         @NotBlank
         @TimeFormatConstraint
         @Schema(type = "string", pattern = "HH:mm", description = "약속 종료 시간", example = "20:00")
-        String meetingEndTime
+        String meetingEndTime,
+
+        @NotNull
+        @Schema(description = "약속 타입", example = "DATETIME")
+        MeetingType type
 ) {
 
     public List<LocalDate> toAvailableMeetingDates() {
@@ -51,10 +58,16 @@ public record MeetingCreateRequest(
     }
 
     public LocalTime toMeetingStartTime() {
+        if (type.isDaysOnly()) {
+            return Timeslot.TIME_0000.startTime();
+        }
         return LocalTime.parse(meetingStartTime);
     }
 
     public LocalTime toMeetingEndTime() {
+        if (type.isDaysOnly()) {
+            return Timeslot.TIME_0000.startTime();
+        }
         return LocalTime.parse(meetingEndTime);
     }
 }
