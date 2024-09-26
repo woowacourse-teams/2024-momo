@@ -6,23 +6,27 @@ import java.util.Objects;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class DateTimeInterval {
+public class DateTimeInterval implements RecommendInterval {
 
     private final LocalDateTime startDateTime;
     private final LocalDateTime endDateTime;
 
-    public boolean isSequential(DateTimeInterval nextInterval) {
-        return endDateTime.equals(nextInterval.startDateTime);
+    @Override
+    public boolean isSequential(RecommendInterval nextInterval) {
+        return endDateTime.equals(nextInterval.startDateTime());
     }
 
+    @Override
     public Duration duration() {
         return Duration.between(startDateTime, endDateTime);
     }
 
+    @Override
     public LocalDateTime startDateTime() {
         return startDateTime;
     }
 
+    @Override
     public LocalDateTime endDateTime() {
         return endDateTime;
     }

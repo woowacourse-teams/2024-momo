@@ -38,7 +38,7 @@ class ScheduleRecommenderFactoryTest {
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(attendeeNames);
 
         // when & then
-        assertThat(scheduleRecommenderFactory.getRecommenderOf(attendeeGroup, filteredGroup, meeting.getType()))
+        assertThat(scheduleRecommenderFactory.getRecommenderOf(attendeeGroup, filteredGroup))
                 .isInstanceOf(expected);
     }
 

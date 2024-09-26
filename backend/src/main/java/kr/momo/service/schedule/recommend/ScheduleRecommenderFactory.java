@@ -2,7 +2,6 @@ package kr.momo.service.schedule.recommend;
 
 import java.util.Map;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.meeting.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +11,7 @@ public class ScheduleRecommenderFactory {
 
     private final Map<String, ScheduleRecommender> candidates;
 
-    public ScheduleRecommender getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup, Type type) {
-        if (type.isDaysOnly()) {
-            return candidates.get(fetchBeanName(TotalDayScheduleRecommender.class));
-        }
+    public ScheduleRecommender getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup) {
         if (filteredGroup.containsAll(attendeeGroup)) {
             return candidates.get(fetchBeanName(TotalScheduleRecommender.class));
         }
