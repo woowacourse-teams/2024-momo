@@ -33,6 +33,7 @@ import kr.momo.service.schedule.dto.AttendeesScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.DateTimesResponse;
 import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
+import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
@@ -106,7 +107,8 @@ class ScheduleServiceTest {
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         dateTimes = List.of(
-                new DateTimesCreateRequest(today.getDate(), List.of(Timeslot.TIME_0000.startTime(), Timeslot.TIME_0130.startTime())),
+                new DateTimesCreateRequest(today.getDate(),
+                        List.of(Timeslot.TIME_0000.startTime(), Timeslot.TIME_0130.startTime())),
                 new DateTimesCreateRequest(tomorrow.getDate(), List.of(Timeslot.TIME_0000.startTime()))
         );
         ScheduleCreateRequest request = new ScheduleCreateRequest(dateTimes);
@@ -259,11 +261,11 @@ class ScheduleServiceTest {
         List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
-        List<RecommendedScheduleResponse> responses = scheduleService.recommendSchedules(
+        RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
                 movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
-        assertThat(responses).containsExactly(
+        assertThat(responses.recommendedSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
                         1,
                         LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
@@ -299,11 +301,11 @@ class ScheduleServiceTest {
         List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
-        List<RecommendedScheduleResponse> responses = scheduleService.recommendSchedules(
+        RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
                 movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
-        assertThat(responses).containsExactly(
+        assertThat(responses.recommendedSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
                         1,
                         LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
@@ -396,11 +398,11 @@ class ScheduleServiceTest {
         List<Schedule> schedules = addNextDaySchedule(jazz, daon, today, tomorrow);
         scheduleRepository.saveAll(schedules);
 
-        List<RecommendedScheduleResponse> responses = scheduleService.recommendSchedules(
+        RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
                 movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
         );
 
-        assertThat(responses).containsExactly(
+        assertThat(responses.recommendedSchedules()).containsExactly(
                 RecommendedScheduleResponse.of(
                         1,
                         LocalDateTime.of(today.getDate(), Timeslot.TIME_2300.startTime()),

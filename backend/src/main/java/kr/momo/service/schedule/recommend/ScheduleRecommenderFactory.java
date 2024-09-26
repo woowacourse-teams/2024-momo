@@ -14,7 +14,6 @@ public class ScheduleRecommenderFactory {
 
     public ScheduleRecommender getRecommenderOf(AttendeeGroup attendeeGroup, AttendeeGroup filteredGroup, Type type) {
         if (type.isDaysOnly()) {
-            System.out.println("TotalDayScheduleRecommender!!!");
             return candidates.get(fetchBeanName(TotalDayScheduleRecommender.class));
         }
         if (filteredGroup.containsAll(attendeeGroup)) {

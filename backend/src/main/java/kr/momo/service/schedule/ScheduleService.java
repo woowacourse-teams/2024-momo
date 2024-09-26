@@ -24,6 +24,7 @@ import kr.momo.service.schedule.dto.AttendeeScheduleResponse;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.DateTimesResponse;
 import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
+import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.service.schedule.recommend.ScheduleRecommender;
@@ -121,7 +122,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecommendedScheduleResponse> recommendSchedules(String uuid, String recommendType, List<String> names) {
+    public RecommendedSchedulesResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
@@ -132,6 +133,8 @@ public class ScheduleService {
         );
         List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
 
-        return RecommendedScheduleResponse.fromCandidateSchedules(recommendedResult);
+        List<RecommendedScheduleResponse> scheduleResponses = RecommendedScheduleResponse.fromCandidateSchedules(
+                recommendedResult);
+        return RecommendedSchedulesResponse.of(meeting.getType(), scheduleResponses);
     }
 }
