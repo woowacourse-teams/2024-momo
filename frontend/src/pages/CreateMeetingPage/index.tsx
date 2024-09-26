@@ -174,7 +174,7 @@ export default function CreateMeetingPage() {
         </Field>
 
         <Field>
-          <Field.Label id="날짜선택" labelText="약속 날짜 선택" />
+          <Field.Label id="날짜선택" labelText="약속 후보 날짜 선택" />
           <Calendar>
             <Calendar.Header
               render={({
