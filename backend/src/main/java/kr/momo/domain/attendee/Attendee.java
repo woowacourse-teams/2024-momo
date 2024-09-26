@@ -66,6 +66,10 @@ public class Attendee extends BaseEntity {
         return !isHost();
     }
 
+    public void updatePassword(String password) {
+        this.password = new AttendeePassword(password);
+    }
+
     public void verifyPassword(AttendeeRawPassword rawPassword, PasswordEncoder passwordEncoder) {
         password.verifyMatch(rawPassword, passwordEncoder);
     }
