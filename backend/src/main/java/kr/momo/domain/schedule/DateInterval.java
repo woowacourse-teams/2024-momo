@@ -4,14 +4,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class DateInterval implements RecommendInterval {
-
-    private final LocalDate startDate;
-    private final LocalDate endDate;
-
+public record DateInterval(
+        LocalDate startDate,
+        LocalDate endDate
+) implements RecommendInterval {
 
     @Override
     public boolean isSequential(RecommendInterval nextInterval) {
