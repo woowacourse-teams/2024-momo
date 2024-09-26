@@ -20,6 +20,7 @@ export default function TicketInfo({ data }: MeetingTicketProps) {
     endDate,
     endTime,
     endDayOfWeek,
+    type,
   } = data;
 
   const formattedStartFullDate = formatFullDate({ fullDate: startDate, dayOfWeek: startDayOfWeek });
@@ -39,12 +40,14 @@ export default function TicketInfo({ data }: MeetingTicketProps) {
         <div>{dateDisplay}</div>
       </div>
 
-      <div css={s_ticketInfoContainer}>
-        <div css={s_ticketInfoTitle}>시간</div>
-        <div>
-          {startTime} ~ {endTime}
+      {type === 'DATETIME' && (
+        <div css={s_ticketInfoContainer}>
+          <div css={s_ticketInfoTitle}>시간</div>
+          <div>
+            {startTime} ~ {endTime}
+          </div>
         </div>
-      </div>
+      )}
 
       <div css={s_ticketInfoContainer}>
         <div css={s_ticketInfoTitle}>참여자 ({availableAttendeeNames.length}명)</div>

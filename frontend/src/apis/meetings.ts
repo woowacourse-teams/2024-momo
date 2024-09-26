@@ -6,6 +6,7 @@ import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
 
+export type MeetingType = 'DAYSONLY' | 'DATETIME';
 interface MeetingBaseResponse {
   meetingName: string;
   firstTime: string;
@@ -14,6 +15,7 @@ interface MeetingBaseResponse {
   hostName: string;
   availableDates: string[];
   attendeeNames: string[];
+  type: MeetingType;
 }
 
 export interface MeetingBase {
@@ -24,6 +26,7 @@ export interface MeetingBase {
   hostName: string;
   availableDates: string[];
   attendeeNames: string[];
+  type: MeetingType;
 }
 
 export interface MeetingRequest {
@@ -60,10 +63,9 @@ export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
     availableDates: data.availableDates,
     attendeeNames: data.attendeeNames,
     hostName: data.hostName,
+    type: data.type,
   };
 };
-
-export type MeetingType = 'DAYSONLY' | 'DATETIME';
 
 export interface PostMeetingRequest {
   hostName: string;

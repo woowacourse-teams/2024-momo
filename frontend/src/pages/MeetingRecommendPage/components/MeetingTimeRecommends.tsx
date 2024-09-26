@@ -14,7 +14,7 @@ interface MeetingRecommendsProps {
 
 export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRecommendsProps) {
   const {
-    meetingTimeRecommends,
+    meetingRecommendResponse,
     isSelectedAllAttendee,
     toggleAttendee,
     checkSelectedAttendee,
@@ -52,8 +52,8 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
           { value: 'longTerm', label: '길게 만나고 싶어요' },
         ]}
       />
-      {meetingTimeRecommends &&
-        meetingTimeRecommends.map((recommendInfo, index) => (
+      {meetingRecommendResponse &&
+        meetingRecommendResponse.recommends.map((recommendInfo, index) => (
           <MeetingRecommendCard
             key={recommendInfo.startDate + index}
             attendeeCount={attendeeNames.length}
