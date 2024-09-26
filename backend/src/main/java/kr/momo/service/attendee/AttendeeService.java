@@ -4,6 +4,7 @@ import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
 import kr.momo.domain.attendee.AttendeePassword;
+import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.meeting.Meeting;
@@ -14,6 +15,7 @@ import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.attendee.dto.AttendeeLoginResponse;
 import kr.momo.service.auth.JwtManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class AttendeeService {
     private final AttendeeRepository attendeeRepository;
     private final MeetingRepository meetingRepository;
     private final JwtManager jwtManager;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public AttendeeLoginResponse login(String uuid, AttendeeLoginRequest request) {
@@ -31,19 +34,20 @@ public class AttendeeService {
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
 
         AttendeeName name = new AttendeeName(request.attendeeName());
-        AttendeePassword password = new AttendeePassword(request.password());
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(request.password());
 
         return attendeeRepository.findByMeetingAndName(meeting, name)
-                .map(attendee -> verifyPassword(attendee, password))
-                .orElseGet(() -> signup(meeting, name, password));
+                .map(attendee -> verifyPassword(attendee, rawPassword))
+                .orElseGet(() -> signup(meeting, name, rawPassword));
     }
 
-    private AttendeeLoginResponse verifyPassword(Attendee attendee, AttendeePassword password) {
-        attendee.verifyPassword(password);
+    private AttendeeLoginResponse verifyPassword(Attendee attendee, AttendeeRawPassword rawPassword) {
+        attendee.verifyPassword(rawPassword, passwordEncoder);
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 
-    private AttendeeLoginResponse signup(Meeting meeting, AttendeeName name, AttendeePassword password) {
+    private AttendeeLoginResponse signup(Meeting meeting, AttendeeName name, AttendeeRawPassword rawPassword) {
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);

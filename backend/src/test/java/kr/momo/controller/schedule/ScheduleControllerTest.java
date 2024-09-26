@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
-import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
@@ -18,6 +17,7 @@ import kr.momo.domain.meeting.MeetingRepository;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
+import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -51,7 +52,11 @@ class ScheduleControllerTest {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Meeting meeting;
+    private AttendeeFixture fixture;
     private Attendee attendee;
     private AvailableDate today;
     private AvailableDate tomorrow;
@@ -59,8 +64,9 @@ class ScheduleControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        fixture = AttendeeFixture.GUEST_DAON;
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(new Attendee(meeting, "name", "1234", Role.GUEST));
+        attendee = attendeeRepository.save(fixture.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
     }
@@ -68,7 +74,7 @@ class ScheduleControllerTest {
     @DisplayName("참가자가 스케줄을 생성하는데 성공하면 200 상태 코드를 응답한다.")
     @Test
     void create() {
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), fixture.getPassword());
 
         String token = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -122,7 +128,7 @@ class ScheduleControllerTest {
     @DisplayName("UUID와 참가자 ID로 자신의 스케줄을 조회한다.")
     @Test
     void findMySchedule() {
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), fixture.getPassword());
 
         createAttendeeSchedule(attendee);
 

@@ -328,7 +328,6 @@ class ScheduleServiceTest {
 
         schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0500));
 
-
         // attendee2
         schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0330));
         schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0400));
@@ -342,7 +341,6 @@ class ScheduleServiceTest {
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0200));
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0230));
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0300));
-
 
         // attendee3
         schedules.add(new Schedule(attendee3, date1, Timeslot.TIME_0130));

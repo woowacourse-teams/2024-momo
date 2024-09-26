@@ -70,8 +70,8 @@ class MeetingConfirmServiceTest {
         meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
-        today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         validRequest = new MeetingConfirmRequest(
                 today.getDate(),
                 meeting.earliestTime(),
@@ -218,7 +218,8 @@ class MeetingConfirmServiceTest {
                 LocalTime.of(1, 30)
         );
 
-        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(),
+                validRequest);
         ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
 
         assertAll(
