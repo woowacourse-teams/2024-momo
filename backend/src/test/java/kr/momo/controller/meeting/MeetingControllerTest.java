@@ -37,7 +37,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -58,9 +57,6 @@ class MeetingControllerTest {
     @Autowired
     private ConfirmedMeetingRepository confirmedMeetingRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
@@ -70,7 +66,7 @@ class MeetingControllerTest {
     @Test
     void find() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         List<String> dates = List.of(today.getDate().toString(), tomorrow.getDate().toString());
@@ -241,7 +237,7 @@ class MeetingControllerTest {
     void lock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -259,7 +255,7 @@ class MeetingControllerTest {
         String invalidUUID = "INVALID_UUID";
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -276,7 +272,7 @@ class MeetingControllerTest {
     void lockWithNoPermission() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture daon = AttendeeFixture.GUEST_DAON;
-        Attendee attendee = attendeeRepository.save(daon.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(daon.create(meeting));
         String token = getToken(daon.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -293,7 +289,7 @@ class MeetingControllerTest {
     void unlock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -311,7 +307,7 @@ class MeetingControllerTest {
         String invalidUUID = "INVALID_UUID";
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -328,7 +324,7 @@ class MeetingControllerTest {
     void unlockWithNoPermission() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
         AttendeeFixture daon = AttendeeFixture.GUEST_DAON;
-        Attendee attendee = attendeeRepository.save(daon.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(daon.create(meeting));
         String token = getToken(daon.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -358,7 +354,7 @@ class MeetingControllerTest {
         Meeting meeting = createLockedMovieMeeting();
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
@@ -385,7 +381,7 @@ class MeetingControllerTest {
         Meeting meeting = createLockedMovieMeeting();
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
-        Attendee guest = attendeeRepository.save(guestMark.create(meeting, passwordEncoder));
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
         String token = getToken(guestMark.getPassword(), guest, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
@@ -405,7 +401,7 @@ class MeetingControllerTest {
         Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-        Attendee host = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
@@ -427,7 +423,7 @@ class MeetingControllerTest {
                 new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String tomorrow = availableDate.getDate().format(DateTimeFormatter.ISO_DATE);
         AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
-        Attendee guest = attendeeRepository.save(guestMark.create(meeting, passwordEncoder));
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
         String token = getToken(guestMark.getPassword(), guest, meeting);
 
         MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow, "3:00", tomorrow, "03:00");
@@ -448,7 +444,7 @@ class MeetingControllerTest {
         Meeting meeting = createLockedMovieMeeting();
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -473,7 +469,7 @@ class MeetingControllerTest {
     void cancelConfirmedMeetingNonExist() {
         Meeting meeting = createLockedMovieMeeting();
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
@@ -491,7 +487,7 @@ class MeetingControllerTest {
         Meeting meeting = createLockedMovieMeeting();
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
         AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
-        Attendee guest = attendeeRepository.save(guestMark.create(meeting, passwordEncoder));
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
         String token = getToken(guestMark.getPassword(), guest, meeting);
 
         RestAssured.given().log().all()
@@ -509,7 +505,7 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
 
         RestAssured.given().log().all()

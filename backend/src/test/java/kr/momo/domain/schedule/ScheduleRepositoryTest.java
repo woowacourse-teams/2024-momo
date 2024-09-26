@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -47,16 +46,13 @@ class ScheduleRepositoryTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private Attendee attendee;
     private AvailableDate availableDate;
 
     @BeforeEach
     void setUp() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         availableDate = availableDateRepository.save(AvailableDateFixture.TODAY.create(meeting));
     }
 
@@ -82,11 +78,11 @@ class ScheduleRepositoryTest {
         // given
         LocalDate now = LocalDate.now();
         Meeting meeting = meetingRepository.save(MeetingFixture.DRINK.create());
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
-        Attendee pedro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
-        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting, passwordEncoder));
-        Attendee bakey = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting, passwordEncoder));
-        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee pedro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting));
+        Attendee bakey = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
 
         AvailableDate today = availableDateRepository.save(new AvailableDate(now, meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(now.plusDays(1), meeting));

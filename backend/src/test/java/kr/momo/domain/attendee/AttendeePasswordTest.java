@@ -25,7 +25,7 @@ class AttendeePasswordTest {
     void verifyMatch() {
         String given = "1234";
         AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
-        AttendeePassword password = new AttendeePassword(rawPassword, passwordEncoder);
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
 
         assertThatNoException()
                 .isThrownBy(() -> password.verifyMatch(rawPassword, passwordEncoder));
@@ -37,7 +37,7 @@ class AttendeePasswordTest {
         String given = "1234";
         AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
         AttendeeRawPassword other = new AttendeeRawPassword("4321");
-        AttendeePassword password = new AttendeePassword(rawPassword, passwordEncoder);
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
 
         assertThatThrownBy(() -> password.verifyMatch(other, passwordEncoder))
                 .isInstanceOf(MomoException.class)

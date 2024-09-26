@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 @IsolateDatabase
@@ -41,16 +40,13 @@ class ScheduleBatchRepositoryTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private Attendee attendee;
     private AvailableDate availableDate;
 
     @BeforeEach
     void setUp() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         availableDate = availableDateRepository.save(AvailableDateFixture.TODAY.create(meeting));
     }
 

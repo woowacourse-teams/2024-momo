@@ -47,7 +47,7 @@ public class AttendeeService {
     }
 
     private AttendeeLoginResponse signup(Meeting meeting, AttendeeName name, AttendeeRawPassword rawPassword) {
-        AttendeePassword password = new AttendeePassword(rawPassword, passwordEncoder);
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
         Attendee attendee = new Attendee(meeting, name, password, Role.GUEST);
         attendeeRepository.save(attendee);
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);

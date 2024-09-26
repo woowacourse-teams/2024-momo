@@ -57,7 +57,7 @@ class AttendeeControllerTest {
     void login() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
 
         Response response = RestAssured.given().log().all()
@@ -124,9 +124,9 @@ class AttendeeControllerTest {
     @Test
     void findInMeeting() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
-        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
-        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

@@ -51,7 +51,7 @@ public record MeetingCreateRequest(
     }
 
     public LocalTime toMeetingStartTime() {
-         return LocalTime.parse(meetingStartTime);
+        return LocalTime.parse(meetingStartTime);
     }
 
     public LocalTime toMeetingEndTime() {

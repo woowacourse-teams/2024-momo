@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -61,9 +60,6 @@ class MeetingConfirmServiceTest {
     @Autowired
     private ConfirmedMeetingRepository confirmedMeetingRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private Meeting meeting;
     private Attendee attendee;
     private AvailableDate today;
@@ -74,7 +70,7 @@ class MeetingConfirmServiceTest {
         meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         validRequest = new MeetingConfirmRequest(
                 today.getDate(),
@@ -119,7 +115,7 @@ class MeetingConfirmServiceTest {
     @DisplayName("주최자가 아닌 참가자가 잠겨있는 약속 일정을 확정 시 예외가 발생한다.")
     @Test
     void confirmScheduleThrowsExceptionWhen_NoHost() {
-        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
 
         assertThatThrownBy(() -> meetingConfirmService.create(meeting.getUuid(), guest.getId(), validRequest))
                 .isInstanceOf(MomoException.class)
@@ -196,7 +192,7 @@ class MeetingConfirmServiceTest {
     @Test
     void cancelConfirmScheduleNotHost() {
         meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
-        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
 
         assertThatThrownBy(() -> meetingConfirmService.delete(meeting.getUuid(), guest.getId()))
                 .isInstanceOf(MomoException.class)
@@ -211,7 +207,7 @@ class MeetingConfirmServiceTest {
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0030));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0100));
         schedules.add(new Schedule(attendee, today, Timeslot.TIME_0130));
-        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0000));
         schedules.add(new Schedule(attendee2, today, Timeslot.TIME_0100));
         scheduleRepository.saveAll(schedules);

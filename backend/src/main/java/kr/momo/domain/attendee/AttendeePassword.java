@@ -17,8 +17,8 @@ public class AttendeePassword {
     @Column(nullable = false)
     private String password;
 
-    public AttendeePassword(AttendeeRawPassword rawPassword, PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(rawPassword.password());
+    public AttendeePassword(String password) {
+        this.password = password;
     }
 
     public void verifyMatch(AttendeeRawPassword rawPassword, PasswordEncoder passwordEncoder) {

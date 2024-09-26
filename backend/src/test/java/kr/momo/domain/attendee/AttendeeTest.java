@@ -26,12 +26,10 @@ class AttendeeTest {
     @DisplayName("참가자의 비밀번호가 일치하지 않으면 예외를 발생시킨다.")
     @Test
     void throwsExceptionIfPasswordDoesNotMatch() {
-        String given = "1234";
-        AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
-        AttendeeRawPassword jazzRawPassword = new AttendeeRawPassword("4321");
-        AttendeePassword jazzPassword = new AttendeePassword(jazzRawPassword, passwordEncoder);
         Meeting meeting = MeetingFixture.DINNER.create();
-        Attendee attendee = AttendeeFixture.HOST_JAZZ.create(meeting, jazzPassword);
+        AttendeeFixture daon = AttendeeFixture.GUEST_DAON;
+        Attendee attendee = AttendeeFixture.HOST_JAZZ.create(meeting);
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(daon.getPassword());
 
         assertThatThrownBy(() -> attendee.verifyPassword(rawPassword, passwordEncoder))
                 .isInstanceOf(MomoException.class)
@@ -43,9 +41,8 @@ class AttendeeTest {
     void doesNotThrowExceptionIfPasswordMatches() {
         String given = "1234";
         AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
-        AttendeePassword attendeePassword = new AttendeePassword(rawPassword, passwordEncoder);
         Meeting meeting = MeetingFixture.DINNER.create();
-        Attendee attendee = AttendeeFixture.HOST_JAZZ.create(meeting, attendeePassword);
+        Attendee attendee = AttendeeFixture.HOST_JAZZ.create(meeting);
 
         assertThatNoException()
                 .isThrownBy(() -> attendee.verifyPassword(rawPassword, passwordEncoder));

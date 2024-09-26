@@ -49,7 +49,7 @@ class AttendeeServiceTest {
     @Test
     void loginThrowsExceptionForInvalidUuid() {
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
 
         assertThatThrownBy(() -> attendeeService.login("invalidUUID", request))
@@ -73,7 +73,7 @@ class AttendeeServiceTest {
     @Test
     void doesNotCreateAttendeeIfNameAlreadyExists() {
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
-        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
         AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
         attendeeService.login(meeting.getUuid(), request);
 
@@ -87,9 +87,9 @@ class AttendeeServiceTest {
     @DisplayName("미팅에 해당하는 모든 참여자의 이름 리스트를 반환한다.")
     @Test
     void findAllAttendeeNames() {
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
-        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
-        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
 
         List<String> attendeeNames = attendeeService.findAll(meeting.getUuid());
 

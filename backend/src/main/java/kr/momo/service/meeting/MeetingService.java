@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
-import kr.momo.domain.attendee.AttendeePassword;
 import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
@@ -87,8 +86,7 @@ public class MeetingService {
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
         AttendeeRawPassword rawPassword = new AttendeeRawPassword(hostPassword);
-        AttendeePassword attendeePassword = new AttendeePassword(rawPassword, passwordEncoder);
-        Attendee attendee = new Attendee(meeting, hostName, attendeePassword, Role.HOST);
+        Attendee attendee = new Attendee(meeting, hostName, rawPassword.encodePassword(passwordEncoder), Role.HOST);
         return attendeeRepository.save(attendee);
     }
 
