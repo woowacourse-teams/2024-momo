@@ -60,7 +60,7 @@ module.exports = () => ({
   },
 
   output: {
-    filename: 'momo-bundle.js',
+    filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
     publicPath: '/',
@@ -101,5 +101,11 @@ module.exports = () => ({
     hints: false,
     maxEntrypointSize: 400000,
     maxAssetSize: 400000,
+  },
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 });
