@@ -47,8 +47,8 @@ public class Attendee extends BaseEntity {
     @Column(nullable = false, length = 10)
     private Role role;
 
-    public Attendee(Meeting meeting, String name, String password, Role role) {
-        this(meeting, new AttendeeName(name), new AttendeePassword(password), role);
+    public Attendee(Meeting meeting, String name, AttendeePassword password, Role role) {
+        this(meeting, new AttendeeName(name), password, role);
     }
 
     public Attendee(Meeting meeting, AttendeeName name, AttendeePassword password, Role role) {
@@ -66,15 +66,11 @@ public class Attendee extends BaseEntity {
         return !isHost();
     }
 
-    public void verifyPassword(AttendeePassword rawPassword, PasswordEncoder passwordEncoder) {
+    public void verifyPassword(AttendeeRawPassword rawPassword, PasswordEncoder passwordEncoder) {
         password.verifyMatch(rawPassword, passwordEncoder);
     }
 
     public String name() {
         return name.getName();
-    }
-
-    public String password() {
-        return password.getPassword();
     }
 }

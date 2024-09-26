@@ -10,10 +10,21 @@ import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateAndTimeslot;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeGroupFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class CandidateScheduleTest {
+
+    private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setup() {
+        passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+    }
+
 
     @DisplayName("빈 리스트를 병합할 경우 빈 리스트를 반환한다.")
     @Test
@@ -33,7 +44,7 @@ class CandidateScheduleTest {
     void mergeContinuousTest() {
         // given
         LocalDate today = LocalDate.now();
-        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create();
+        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create(passwordEncoder);
         List<CandidateSchedule> schedules = List.of(
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_1000),
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_1030),
@@ -65,7 +76,7 @@ class CandidateScheduleTest {
         // given
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create();
+        AttendeeGroup group = AttendeeGroupFixture.JAZZ_DAON_BAKEY.create(passwordEncoder);
         List<CandidateSchedule> schedules = List.of(
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_2300),
                 createDiscreteCandidateSchedule(group, today, Timeslot.TIME_2330),

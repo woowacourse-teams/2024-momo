@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @IsolateDatabase
@@ -54,6 +55,9 @@ class ScheduleRecommenderTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private final LocalDate today = LocalDate.now();
     private final LocalDate tomorrow = today.plusDays(1);
     private Attendee jazz;
@@ -65,11 +69,11 @@ class ScheduleRecommenderTest {
     @BeforeEach
     void setUp() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DRINK.create());
-        jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        pedro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
-        daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting));
-        bakey = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting));
-        mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        pedro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
+        daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(meeting, passwordEncoder));
+        bakey = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting, passwordEncoder));
+        mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
 
         AvailableDate todayAvailableDate = availableDateRepository.save(new AvailableDate(today, meeting));
         AvailableDate tomorrowAvailableDate = availableDateRepository.save(

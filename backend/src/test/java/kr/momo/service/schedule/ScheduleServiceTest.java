@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -61,6 +62,9 @@ class ScheduleServiceTest {
     @Autowired
     private AvailableDateRepository availableDateRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Meeting meeting;
     private Attendee attendee;
     private AvailableDate today;
@@ -70,7 +74,7 @@ class ScheduleServiceTest {
     @BeforeEach
     void setUp() {
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
 
@@ -135,7 +139,7 @@ class ScheduleServiceTest {
     @DisplayName("해당하는 UUID의 미팅에 속한 참가자들의 모든 스케줄을 조회한다.")
     @Test
     void findAllSchedulesInMeetingByUuid() {
-        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting));
+        Attendee attendee2 = attendeeRepository.save(AttendeeFixture.GUEST_BAKEY.create(meeting, passwordEncoder));
         Schedule schedule1 = new Schedule(attendee, today, Timeslot.TIME_0100);
         Schedule schedule2 = new Schedule(attendee, tomorrow, Timeslot.TIME_0100);
         Schedule schedule3 = new Schedule(attendee2, today, Timeslot.TIME_0100);
@@ -232,9 +236,9 @@ class ScheduleServiceTest {
         AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
         AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
-        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting, passwordEncoder));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting, passwordEncoder));
+        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting, passwordEncoder));
 
         List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
@@ -272,9 +276,9 @@ class ScheduleServiceTest {
         AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
         AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
-        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting, passwordEncoder));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting, passwordEncoder));
+        Attendee padro = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(movieMeeting, passwordEncoder));
 
         List<Schedule> schedules = addSchedule(jazz, daon, padro, today, tomorrow);
         scheduleRepository.saveAll(schedules);
@@ -328,7 +332,6 @@ class ScheduleServiceTest {
 
         schedules.add(new Schedule(attendee1, date2, Timeslot.TIME_0500));
 
-
         // attendee2
         schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0330));
         schedules.add(new Schedule(attendee2, date1, Timeslot.TIME_0400));
@@ -342,7 +345,6 @@ class ScheduleServiceTest {
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0200));
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0230));
         schedules.add(new Schedule(attendee2, date2, Timeslot.TIME_0300));
-
 
         // attendee3
         schedules.add(new Schedule(attendee3, date1, Timeslot.TIME_0130));
@@ -372,8 +374,8 @@ class ScheduleServiceTest {
         AvailableDate today = availableDateRepository.save(AvailableDateFixture.TODAY.create(movieMeeting));
         AvailableDate tomorrow = availableDateRepository.save(AvailableDateFixture.TOMORROW.create(movieMeeting));
 
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting));
-        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(movieMeeting, passwordEncoder));
+        Attendee daon = attendeeRepository.save(AttendeeFixture.GUEST_DAON.create(movieMeeting, passwordEncoder));
 
         List<Schedule> schedules = addNextDaySchedule(jazz, daon, today, tomorrow);
         scheduleRepository.saveAll(schedules);

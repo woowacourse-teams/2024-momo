@@ -14,17 +14,27 @@ import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class ConfirmedMeetingTest {
+
+    private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setup() {
+        passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+    }
 
     @DisplayName("확정된 약속의 범위에 포함되는 스케줄들 중 참석 가능한 참석자들을 반환한다.")
     @Test
     void availableAttendeesOf() {
         Meeting meeting = MeetingFixture.MOVIE.create();
-        Attendee attendee1 = AttendeeFixture.GUEST_MARK.create(meeting);
-        Attendee attendee2 = AttendeeFixture.HOST_JAZZ.create(meeting);
+        Attendee attendee1 = AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder);
+        Attendee attendee2 = AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder);
         LocalDate today = LocalDate.now();
         ConfirmedMeeting confirmedMeeting = new ConfirmedMeeting(
                 meeting

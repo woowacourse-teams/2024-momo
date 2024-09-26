@@ -3,8 +3,10 @@ package kr.momo.fixture;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeName;
 import kr.momo.domain.attendee.AttendeePassword;
+import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.meeting.Meeting;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public enum AttendeeFixture {
 
@@ -24,8 +26,9 @@ public enum AttendeeFixture {
         this.role = role;
     }
 
-    public Attendee create(Meeting meeting) {
-        return new Attendee(meeting, new AttendeeName(name), new AttendeePassword(password), role);
+    public Attendee create(Meeting meeting, PasswordEncoder passwordEncoder) {
+        AttendeePassword encrypted = new AttendeePassword(new AttendeeRawPassword(password), passwordEncoder);
+        return new Attendee(meeting, new AttendeeName(name), encrypted, role);
     }
 
     public Attendee create(Meeting meeting, AttendeePassword attendeePassword) {

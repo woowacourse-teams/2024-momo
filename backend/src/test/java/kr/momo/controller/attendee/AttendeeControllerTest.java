@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -43,6 +44,9 @@ class AttendeeControllerTest {
     @Autowired
     private JwtManager jwtManager;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
@@ -52,9 +56,9 @@ class AttendeeControllerTest {
     @Test
     void login() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-
-        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting, passwordEncoder));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
 
         Response response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -120,9 +124,9 @@ class AttendeeControllerTest {
     @Test
     void findInMeeting() {
         Meeting meeting = meetingRepository.save(MeetingFixture.COFFEE.create());
-        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
-        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
+        Attendee jazz = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
+        Attendee pero = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
+        Attendee mark = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting, passwordEncoder));
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

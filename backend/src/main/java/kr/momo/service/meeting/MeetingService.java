@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeePassword;
+import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDateBatchRepository;
@@ -22,6 +24,7 @@ import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,7 @@ public class MeetingService {
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
     private final AvailableDateBatchRepository availableDateBatchRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
@@ -82,7 +86,9 @@ public class MeetingService {
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
-        Attendee attendee = new Attendee(meeting, hostName, hostPassword, Role.HOST);
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(hostPassword);
+        AttendeePassword attendeePassword = new AttendeePassword(rawPassword, passwordEncoder);
+        Attendee attendee = new Attendee(meeting, hostName, attendeePassword, Role.HOST);
         return attendeeRepository.save(attendee);
     }
 

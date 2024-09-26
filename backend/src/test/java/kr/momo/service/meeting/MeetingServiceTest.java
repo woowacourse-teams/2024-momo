@@ -34,6 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -71,11 +72,14 @@ class MeetingServiceTest {
     @Autowired
     private MeetingService meetingService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @DisplayName("UUID로 약속 정보를 조회한다.")
     @Test
     void findByUUID() {
         Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
         List<AvailableDate> availableDates = List.of(
                 availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting)),
                 availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting))
@@ -108,7 +112,7 @@ class MeetingServiceTest {
     void doesNotFindMeetingSharingMeetingIfUUIDNotExist() {
         String invalidUUID = "1234";
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
 
         assertThatThrownBy(() -> meetingService.findMeetingSharing(invalidUUID))
                 .isInstanceOf(MomoException.class)
@@ -159,7 +163,7 @@ class MeetingServiceTest {
     @Test
     void lock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
 
         meetingService.lock(meeting.getUuid(), attendee.getId());
         Meeting changedMeeting = meetingRepository.findById(meeting.getId()).orElseThrow();
@@ -171,7 +175,7 @@ class MeetingServiceTest {
     @Test
     void throwsExceptionWhenNoMeeting() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
         String uuid = "";
         long id = attendee.getId();
 
@@ -196,7 +200,7 @@ class MeetingServiceTest {
     @Test
     void throwsExceptionWhenAttendeeGuest() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
         String uuid = meeting.getUuid();
         long id = attendee.getId();
 
@@ -209,7 +213,7 @@ class MeetingServiceTest {
     @Test
     void unlock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting, passwordEncoder));
 
         meetingService.unlock(meeting.getUuid(), attendee.getId());
         Meeting changedMeeting = meetingRepository.findById(meeting.getId()).orElseThrow();
@@ -221,7 +225,7 @@ class MeetingServiceTest {
     @Test
     void throwsExceptionWhenUnlockNoMeeting() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
         String uuid = "";
         long id = attendee.getId();
 
@@ -246,7 +250,7 @@ class MeetingServiceTest {
     @Test
     void throwsExceptionWhenUnlockAttendeeGuest() {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
+        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting, passwordEncoder));
         String uuid = meeting.getUuid();
         long id = attendee.getId();
 

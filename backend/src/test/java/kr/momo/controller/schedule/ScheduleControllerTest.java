@@ -9,6 +9,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeePassword;
+import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -31,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -51,7 +54,11 @@ class ScheduleControllerTest {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Meeting meeting;
+    private AttendeeRawPassword rawPassword;
     private Attendee attendee;
     private AvailableDate today;
     private AvailableDate tomorrow;
@@ -60,7 +67,9 @@ class ScheduleControllerTest {
     void setUp() {
         RestAssured.port = port;
         meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        attendee = attendeeRepository.save(new Attendee(meeting, "name", "1234", Role.GUEST));
+        rawPassword = new AttendeeRawPassword("1234");
+        AttendeePassword attendeePassword = new AttendeePassword(rawPassword, passwordEncoder);
+        attendee = attendeeRepository.save(new Attendee(meeting, "name", attendeePassword, Role.GUEST));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
     }
@@ -68,7 +77,7 @@ class ScheduleControllerTest {
     @DisplayName("참가자가 스케줄을 생성하는데 성공하면 200 상태 코드를 응답한다.")
     @Test
     void create() {
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), rawPassword.password());
 
         String token = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -122,7 +131,7 @@ class ScheduleControllerTest {
     @DisplayName("UUID와 참가자 ID로 자신의 스케줄을 조회한다.")
     @Test
     void findMySchedule() {
-        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeLoginRequest loginRequest = new AttendeeLoginRequest(attendee.name(), rawPassword.password());
 
         createAttendeeSchedule(attendee);
 
