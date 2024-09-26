@@ -1,5 +1,4 @@
 import type { DateInfo } from 'types/calendar';
-import type { MeetingAllSchedulesItem } from 'types/schedule';
 
 import {
   s_baseDateButton,
@@ -17,7 +16,7 @@ import { s_additionalText } from './SingleDate.styles';
 interface DateProps {
   dateInfo: DateInfo;
   today: Date;
-  availableDateInfo: MeetingAllSchedulesItem | undefined;
+  isAvailable: boolean;
   hasDate: (date: string) => boolean;
   onDateClick: (date: string) => void;
 }
@@ -25,9 +24,9 @@ interface DateProps {
 export default function SingleDate({
   dateInfo,
   today,
+  isAvailable,
   hasDate,
   onDateClick,
-  availableDateInfo,
 }: DateProps) {
   const { value, status } = dateInfo;
   const { date, targetFullDate, isHoliday, isToday, isSaturday, isSunday, isPrevDate } =
@@ -38,13 +37,13 @@ export default function SingleDate({
   return status === 'current' ? (
     <button
       onClick={() => onDateClick(targetFullDate)}
-      disabled={!availableDateInfo || isPrevDate}
+      disabled={!isAvailable || isPrevDate}
       css={[
         s_dateContainer,
         s_baseDateButton,
         s_singleDateButton(isSelectedDate),
         s_dateText({
-          isDisabledDate: !availableDateInfo || isPrevDate,
+          isDisabledDate: !isAvailable || isPrevDate,
           isSelectedDate,
           isToday,
           isHoliday,

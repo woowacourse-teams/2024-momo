@@ -1,5 +1,4 @@
 import type { DateInfo } from 'types/calendar';
-import type { MeetingAllSchedulesItem } from 'types/schedule';
 
 import AttendeeTooltip from '@components/AttendeeTooltip';
 import {
@@ -15,23 +14,41 @@ import { s_additionalText, s_viewer } from './SingleDate.styles';
 interface DateProps {
   dateInfo: DateInfo;
   today: Date;
-  availableDateInfo: MeetingAllSchedulesItem | undefined;
-  hasDate: (date: string) => boolean;
+  isAvailable: boolean;
+  selectAttendee: string;
+  availableAttendees: string[] | undefined;
+  key: string;
 }
 
-export default function SingleDateViewer({ dateInfo, today, availableDateInfo }: DateProps) {
+export default function SingleDateViewer({
+  dateInfo,
+  today,
+  isAvailable,
+  selectAttendee,
+  availableAttendees,
+}: DateProps) {
   const { value, status } = dateInfo;
   const { date, isHoliday, isToday, isSaturday, isSunday, isPrevDate } = getDateInfo(value, today);
 
+  const additionalText = () => {
+    if (!availableAttendees) return '\u00A0';
+    if (selectAttendee === '' && availableAttendees) return `+${availableAttendees.length}`;
+    if (selectAttendee !== '' && availableAttendees) return availableAttendees[0];
+  };
+
+  const renderTooltip = () =>
+    selectAttendee === '' &&
+    availableAttendees && <AttendeeTooltip attendeeNames={availableAttendees} position="top" />;
+
   return status === 'current' ? (
     <button
-      disabled={!availableDateInfo || isPrevDate}
+      disabled={!isAvailable || isPrevDate}
       css={[
         s_dateContainer,
         s_baseDateButton,
         s_viewer,
         s_dateText({
-          isDisabledDate: !availableDateInfo || isPrevDate,
+          isDisabledDate: !isAvailable || isPrevDate,
           isSelectedDate: false,
           isToday,
           isHoliday,
@@ -41,12 +58,8 @@ export default function SingleDateViewer({ dateInfo, today, availableDateInfo }:
       ]}
     >
       <span css={s_baseDateText}>{date}</span>
-      <span css={s_additionalText}>
-        {!availableDateInfo ? '\u00A0' : `+${availableDateInfo.attendeeNames.length}`}
-      </span>
-      {availableDateInfo && (
-        <AttendeeTooltip attendeeNames={availableDateInfo.attendeeNames} position="top" />
-      )}
+      <span css={s_additionalText}>{additionalText()}</span>
+      {renderTooltip()}
     </button>
   ) : (
     <div css={s_dateContainer}></div>
