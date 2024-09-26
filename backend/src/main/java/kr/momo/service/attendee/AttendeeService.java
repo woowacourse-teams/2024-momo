@@ -73,12 +73,13 @@ public class AttendeeService {
                 .filter(attendee -> attendee.getPassword().getPassword().length() < 15)
                 .toList();
         rawAttendees.forEach(
-                        attendee -> {
-                            String rawPassword = attendee.getPassword().getPassword();
-                            String encodedPassword = passwordEncoder.encode(rawPassword);
-                            attendee.updatePassword(encodedPassword);
-                        }
-                );
+                attendee -> {
+                    String rawPassword = attendee.getPassword().getPassword();
+                    String encodedPassword = passwordEncoder.encode(rawPassword);
+                    attendee.updatePassword(encodedPassword);
+                }
+        );
+        attendeeRepository.saveAll(rawAttendees);
         return rawAttendees.size();
     }
 }
