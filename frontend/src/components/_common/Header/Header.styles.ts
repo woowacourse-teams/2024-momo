@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 
+import theme from '@styles/theme';
+
 // 테이블의 시간 범위가 길어지는 경우, Header가 가리는 문제를 해결하기 위해 z-index 수정(@해리)
 export const s_header = css`
   position: sticky;
@@ -27,5 +29,5 @@ export const s_logoContainer = css`
 
 export const s_title = css`
   font-size: 2.4rem;
-  font-weight: 800;
+  font-weight: ${theme.typography.titleBold};
 `;

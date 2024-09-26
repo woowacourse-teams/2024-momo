@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const FontPreloadPlugin = require('webpack-font-preload-plugin');
 
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
@@ -58,7 +60,7 @@ module.exports = () => ({
   },
 
   output: {
-    filename: 'momo-bundle.js',
+    filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
     publicPath: '/',
@@ -86,6 +88,11 @@ module.exports = () => ({
         // ? hidden-source-map을 사용해야 삭제가 되는 것인지는 아직 모름.
       },
     }),
+    new BundleAnalyzerPlugin(),
+    new FontPreloadPlugin({
+      index: 'index.html',
+      extensions: ['woff2'],
+    }),
   ],
 
   devtool: 'source-map',
@@ -94,5 +101,11 @@ module.exports = () => ({
     hints: false,
     maxEntrypointSize: 400000,
     maxAssetSize: 400000,
+  },
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 });

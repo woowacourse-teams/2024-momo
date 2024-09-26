@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@components/_common/Buttons/Button';
 
-import SadMomoCharacter from '@assets/images/sadMomoCharacter.svg';
+import QuestionMomoCharacter from '@assets/images/questionMomoCharacter.svg';
 
 import { s_container } from './UnconfirmedMessage.styles';
 
@@ -18,7 +18,7 @@ function UnconfirmedMessage({ uuid }: UnconfirmedMessageProps) {
 
   return (
     <div css={s_container}>
-      <SadMomoCharacter width="128" height="128" />
+      <QuestionMomoCharacter width="128" height="128" />
       <div>약속이 아직 확정되지 않았어요 :(</div>
       <Button variant="primary" size="full" onClick={() => handleMeetingPageNavigate()}>
         약속 조회하러 가기
