@@ -1,8 +1,8 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { PostMeetingResult } from 'types/meeting';
 
-import CopyLink from '@components/_common/\bCopyLink';
 import { Button } from '@components/_common/Buttons/Button';
+import CopyLink from '@components/_common/CopyLink';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 
