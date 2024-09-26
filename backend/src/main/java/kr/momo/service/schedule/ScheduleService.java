@@ -128,7 +128,7 @@ public class ScheduleService {
         AttendeeGroup filteredGroup = attendeeGroup.filterAttendeesByName(names);
 
         ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
-                attendeeGroup, filteredGroup
+                attendeeGroup, filteredGroup, meeting.getType()
         );
         List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType);
 

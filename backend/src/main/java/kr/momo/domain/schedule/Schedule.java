@@ -56,6 +56,11 @@ public class Schedule extends BaseEntity {
         return new DateTimeInterval(dateTime(), dateTime().plusMinutes(Timeslot.DURATION_IN_MINUTE));
     }
 
+    public DateTimeInterval dateInterval() {
+        LocalDateTime date = LocalDateTime.of(availableDate.getDate(), Timeslot.TIME_0000.startTime());
+        return new DateInterval(date, date);
+    }
+
     public LocalDateTime dateTime() {
         return LocalDateTime.of(availableDate.getDate(), timeslot.startTime());
     }
