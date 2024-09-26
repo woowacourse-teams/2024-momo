@@ -409,11 +409,12 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.DRINK.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
         AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
-        String token = getToken(host, meeting);
+        String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 tomorrow.getDate(),
                 Timeslot.TIME_0000.startTime(),
@@ -444,11 +445,12 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
         AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
-        String token = getToken(host, meeting);
+        String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 tomorrow.getDate(),
                 Timeslot.TIME_0000.startTime(),
@@ -473,10 +475,11 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.DRINK.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
-        String token = getToken(host, meeting);
+        String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 tomorrow.getDate(),
                 Timeslot.TIME_0000.startTime(),
@@ -500,10 +503,11 @@ class MeetingControllerTest {
         Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
         AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
-        String token = getToken(host, meeting);
+        String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = new MeetingConfirmRequest(
                 tomorrow.getDate(),
                 Timeslot.TIME_0000.startTime(),
