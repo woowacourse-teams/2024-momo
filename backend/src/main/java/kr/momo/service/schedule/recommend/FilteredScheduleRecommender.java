@@ -2,7 +2,7 @@ package kr.momo.service.schedule.recommend;
 
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.schedule.DateAndTimeslot;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
@@ -18,7 +18,8 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup filteredGroup, Type type) {
+    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup filteredGroup,
+                                                                            MeetingType type) {
         return findAllScheduleAvailableByEveryAttendee(filteredGroup);
     }
 

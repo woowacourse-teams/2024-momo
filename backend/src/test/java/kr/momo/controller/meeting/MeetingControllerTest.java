@@ -18,7 +18,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.ConfirmedMeetingFixture;
@@ -129,7 +129,7 @@ class MeetingControllerTest {
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
                 "22:00",
-                Type.DATETIME
+                MeetingType.DATETIME
         );
 
         RestAssured.given().log().all()
@@ -156,7 +156,7 @@ class MeetingControllerTest {
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 startTime,
                 endTime,
-                Type.DATETIME
+                MeetingType.DATETIME
         );
 
         RestAssured.given().log().all()
@@ -181,7 +181,7 @@ class MeetingControllerTest {
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
                 "22:00",
-                Type.DATETIME
+                MeetingType.DATETIME
         );
 
         RestAssured.given().log().all()
@@ -206,7 +206,7 @@ class MeetingControllerTest {
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
                 "22:00",
-                Type.DATETIME
+                MeetingType.DATETIME
         );
 
         RestAssured.given().log().all()
@@ -230,7 +230,7 @@ class MeetingControllerTest {
                 List.of(tomorrow.toString(), tomorrow.toString()),
                 "08:00",
                 "22:00",
-                Type.DATETIME
+                MeetingType.DATETIME
         );
 
         RestAssured.given().log().all()
@@ -442,7 +442,7 @@ class MeetingControllerTest {
     @DisplayName("주최자가 유형이 DaysOnly이며 잠겨있는 약속 일정을 확정하면 201 상태 코드를 응답한다.")
     @Test
     void confirmConsecutiveAndDaysOnlyMeeting() {
-        Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
         meeting.lock();
         meeting = meetingRepository.save(meeting);
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
@@ -500,7 +500,7 @@ class MeetingControllerTest {
     @DisplayName("주최자가 유형이 DaysOnly이며 연속적이지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
     @Test
     void confirmNotConsecutiveAndDaysOnlyMeeting() {
-        Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
         meeting.lock();
         meeting = meetingRepository.save(meeting);
         AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;

@@ -14,7 +14,7 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
@@ -139,7 +139,7 @@ class ScheduleRecommenderTest {
 
             // when
             List<CandidateSchedule> recommendResult = totalScheduleRecommender.recommend(
-                    group, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), Type.DATETIME
+                    group, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), MeetingType.DATETIME
             );
 
             // then
@@ -204,7 +204,7 @@ class ScheduleRecommenderTest {
 
             // when
             List<CandidateSchedule> recommendResult = filteredScheduleRecommender.recommend(
-                    filteredGroup, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), Type.DATETIME
+                    filteredGroup, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), MeetingType.DATETIME
             );
 
             // then

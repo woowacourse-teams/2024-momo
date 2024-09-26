@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 import kr.momo.controller.validator.DateFormatConstraint;
 import kr.momo.controller.validator.TimeFormatConstraint;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.timeslot.Timeslot;
 import org.hibernate.validator.constraints.Length;
 
@@ -48,7 +48,7 @@ public record MeetingCreateRequest(
 
         @NotNull
         @Schema(description = "약속 타입", example = "DATETIME")
-        Type type
+        MeetingType type
 ) {
 
     public List<LocalDate> toAvailableMeetingDates() {

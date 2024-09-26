@@ -18,7 +18,7 @@ import kr.momo.domain.availabledate.AvailableDate;
 import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.timeslot.Timeslot;
@@ -102,7 +102,7 @@ class ScheduleServiceTest {
     @DisplayName("days only 약속의 스케줄 생성 시 하루에 하나의 스케줄을 저장한다.")
     @Test
     void createDaysOnlySchedulesReplacesOldSchedules() {
-        meeting = meetingRepository.save(MeetingFixture.DRINK.create(Type.DAYSONLY));
+        meeting = meetingRepository.save(MeetingFixture.DRINK.create(MeetingType.DAYSONLY));
         attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));

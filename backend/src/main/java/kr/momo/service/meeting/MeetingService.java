@@ -13,7 +13,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.meeting.UuidGenerator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
@@ -59,7 +59,7 @@ public class MeetingService {
         return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
-    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime, Type type) {
+    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime, MeetingType type) {
         String uuid = generateUniqueUuid();
         Meeting meeting = new Meeting(meetingName, uuid, startTime, endTime, type);
         return meetingRepository.save(meeting);

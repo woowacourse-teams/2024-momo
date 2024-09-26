@@ -2,7 +2,7 @@ package kr.momo.service.schedule.recommend;
 
 import java.util.List;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
 import kr.momo.domain.schedule.recommend.CandidateScheduleSorter;
@@ -16,7 +16,7 @@ public abstract class ScheduleRecommender {
 
     protected final ScheduleRepository scheduleRepository;
 
-    public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType, Type meetingType) {
+    public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType, MeetingType meetingType) {
         List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group, meetingType);
         sortSchedules(mergedCandidateSchedules, recommendType);
         return mergedCandidateSchedules.stream()
@@ -24,12 +24,12 @@ public abstract class ScheduleRecommender {
                 .toList();
     }
 
-    private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group, Type type) {
+    private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group, MeetingType type) {
         List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group, type);
         return CandidateSchedule.mergeContinuous(intersectedDateTimes, this::isContinuous);
     }
 
-    abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, Type type);
+    abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, MeetingType type);
 
     abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
 

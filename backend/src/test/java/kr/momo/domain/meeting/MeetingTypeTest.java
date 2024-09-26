@@ -10,14 +10,14 @@ import kr.momo.exception.MomoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class TypeTest {
+class MeetingTypeTest {
 
     @DisplayName("daysonly일 때 true를 반환한다.")
     @Test
     void isDaysOnly() {
         assertAll(
-                () -> assertTrue(Type.DAYSONLY.isDaysOnly()),
-                () -> assertFalse(Type.DATETIME.isDaysOnly())
+                () -> assertTrue(MeetingType.DAYSONLY.isDaysOnly()),
+                () -> assertFalse(MeetingType.DATETIME.isDaysOnly())
         );
     }
 
@@ -25,8 +25,8 @@ class TypeTest {
     @Test
     void from() {
         assertAll(
-                () -> assertEquals(Type.DAYSONLY, Type.from("daysonly")),
-                () -> assertEquals(Type.DATETIME, Type.from("datetime"))
+                () -> assertEquals(MeetingType.DAYSONLY, MeetingType.from("daysonly")),
+                () -> assertEquals(MeetingType.DATETIME, MeetingType.from("datetime"))
         );
     }
 
@@ -34,8 +34,8 @@ class TypeTest {
     @Test
     void fromInvalid() {
         assertAll(
-                () -> assertThrows(MomoException.class, () -> Type.from(null)),
-                () -> assertThrows(MomoException.class, () -> Type.from("invalid"))
+                () -> assertThrows(MomoException.class, () -> MeetingType.from(null)),
+                () -> assertThrows(MomoException.class, () -> MeetingType.from("invalid"))
         );
     }
 }

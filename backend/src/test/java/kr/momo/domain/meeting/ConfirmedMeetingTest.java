@@ -50,7 +50,7 @@ class ConfirmedMeetingTest {
     @DisplayName("확정된 days only 유형 약속의 범위에 포함되는 스케줄들 중 참석 가능한 참석자들을 반환한다.")
     @Test
     void availableAttendeesOfDaysOnly() {
-        Meeting meeting = MeetingFixture.DRINK.create(Type.DAYSONLY);
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
         Attendee attendee1 = AttendeeFixture.GUEST_MARK.create(meeting);
         Attendee attendee2 = AttendeeFixture.HOST_JAZZ.create(meeting);
         LocalDate today = LocalDate.now();

@@ -38,12 +38,12 @@ public class Meeting extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private Type type;
+    private MeetingType type;
 
     @Embedded
     private TimeslotInterval timeslotInterval;
 
-    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime, Type type) {
+    public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime, MeetingType type) {
         this.name = name;
         this.uuid = uuid;
         this.isLocked = false;
@@ -52,7 +52,7 @@ public class Meeting extends BaseEntity {
     }
 
     public Meeting(String name, String uuid, LocalTime firstTime, LocalTime lastTime) {
-        this(name, uuid, firstTime, lastTime, Type.DATETIME);
+        this(name, uuid, firstTime, lastTime, MeetingType.DATETIME);
     }
 
     public void lock() {

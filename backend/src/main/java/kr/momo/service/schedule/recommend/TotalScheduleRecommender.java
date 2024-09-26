@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kr.momo.domain.attendee.AttendeeGroup;
-import kr.momo.domain.meeting.Type;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.schedule.RecommendInterval;
 import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleRepository;
@@ -22,11 +22,11 @@ public class TotalScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, Type type) {
+    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, MeetingType type) {
         return findAllScheduleAvailableByEachAttendee(group, type);
     }
 
-    private List<CandidateSchedule> findAllScheduleAvailableByEachAttendee(AttendeeGroup group, Type type) {
+    private List<CandidateSchedule> findAllScheduleAvailableByEachAttendee(AttendeeGroup group, MeetingType type) {
         List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(group.getAttendees());
         Map<RecommendInterval, AttendeeGroup> groupedAttendeesByDateTimeInterval = schedules.stream()
                 .collect(Collectors.groupingBy(schedule -> schedule.recommendInterval(type), Collectors.mapping(

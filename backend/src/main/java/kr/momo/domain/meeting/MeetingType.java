@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.MeetingErrorCode;
 
-public enum Type {
+public enum MeetingType {
+
     DAYSONLY,
     DATETIME;
 
@@ -13,9 +14,9 @@ public enum Type {
     }
 
     @JsonCreator
-    public static Type from(String type) {
+    public static MeetingType from(String type) {
         try {
-            return Type.valueOf(type.toUpperCase());
+            return MeetingType.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new MomoException(MeetingErrorCode.INVALID_TYPE);
         }
