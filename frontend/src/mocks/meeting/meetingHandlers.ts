@@ -7,6 +7,7 @@ import { BASE_URL } from '@constants/api';
 import meetingAllSchedules from './data/meetingAllSchedules.json';
 import meetingSingleSchedule from './data/meetingSingleSchedule.json';
 import meetingTableFrame from './data/meetingTableFrame.json';
+import mySchedule from './data/mySchedule.json';
 
 const meetingHandlers = [
   http.get(`${BASE_URL}/:uuid`, () => {
@@ -21,6 +22,10 @@ const meetingHandlers = [
       return HttpResponse.json(meetingAllSchedules, { status: 200 });
     }
     return HttpResponse.json(meetingSingleSchedule, { status: 200 });
+  }),
+
+  http.get(`${BASE_URL}/:uuid/attendees/me/schedules`, () => {
+    return HttpResponse.json(mySchedule, { status: 200 });
   }),
 
   // 요청한 type에 따라서 response 또한 같은 type이 설정되어야 하기 때문에 이와 같이 설정함(@낙타)

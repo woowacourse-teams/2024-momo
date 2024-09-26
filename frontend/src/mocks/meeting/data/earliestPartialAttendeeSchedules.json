@@ -1,58 +1,61 @@
 {
-  "data": [
-    {
-      "startDate": "2024-07-15",
-      "startDayOfWeek": "월",
-      "startTime": "18:00",
-      "endDate": "2024-07-15",
-      "endDayOfWeek": "월",
-      "endTime": "19:00",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    },
-    {
-      "startDate": "2024-07-16",
-      "startDayOfWeek": "화",
-      "startTime": "17:00",
-      "endDate": "2024-07-16",
-      "endDayOfWeek": "화",
-      "endTime": "18:30",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    },
-    {
-      "startDate": "2024-07-17",
-      "startDayOfWeek": "수",
-      "startTime": "16:00",
-      "endDate": "2024-07-17",
-      "endDayOfWeek": "수",
-      "endTime": "17:30",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    },
-    {
-      "startDate": "2024-07-18",
-      "startDayOfWeek": "목",
-      "startTime": "19:00",
-      "endDate": "2024-07-18",
-      "endDayOfWeek": "목",
-      "endTime": "23:00",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    },
-    {
-      "startDate": "2024-07-19",
-      "startDayOfWeek": "금",
-      "startTime": "18:00",
-      "endDate": "2024-07-19",
-      "endDayOfWeek": "금",
-      "endTime": "21:30",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    },
-    {
-      "startDate": "2024-07-20",
-      "startDayOfWeek": "토",
-      "startTime": "12:00",
-      "endDate": "2024-07-20",
-      "endDayOfWeek": "토",
-      "endTime": "17:00",
-      "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
-    }
-  ]
+  "data": {
+    "type": "DATETIME",
+    "recommends": [
+      {
+        "startDate": "2024-07-15",
+        "startDayOfWeek": "월",
+        "startTime": "18:00",
+        "endDate": "2024-07-15",
+        "endDayOfWeek": "월",
+        "endTime": "19:00",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      },
+      {
+        "startDate": "2024-07-16",
+        "startDayOfWeek": "화",
+        "startTime": "17:00",
+        "endDate": "2024-07-16",
+        "endDayOfWeek": "화",
+        "endTime": "18:30",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      },
+      {
+        "startDate": "2024-07-17",
+        "startDayOfWeek": "수",
+        "startTime": "16:00",
+        "endDate": "2024-07-17",
+        "endDayOfWeek": "수",
+        "endTime": "17:30",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      },
+      {
+        "startDate": "2024-07-18",
+        "startDayOfWeek": "목",
+        "startTime": "19:00",
+        "endDate": "2024-07-18",
+        "endDayOfWeek": "목",
+        "endTime": "23:00",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      },
+      {
+        "startDate": "2024-07-19",
+        "startDayOfWeek": "금",
+        "startTime": "18:00",
+        "endDate": "2024-07-19",
+        "endDayOfWeek": "금",
+        "endTime": "21:30",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      },
+      {
+        "startDate": "2024-07-20",
+        "startDayOfWeek": "토",
+        "startTime": "12:00",
+        "endDate": "2024-07-20",
+        "endDayOfWeek": "토",
+        "endTime": "17:00",
+        "attendeeNames": ["다온", "마크", "해리", "낙타", "빙봉", "재즈", "배키"]
+      }
+    ]
+  }
 }
