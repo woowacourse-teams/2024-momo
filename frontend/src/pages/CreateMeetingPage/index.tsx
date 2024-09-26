@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import type { DateInfo } from 'types/calendar';
 
 import RangeDate from '@components/MeetingCalendar/Date/RangeDate';
@@ -8,6 +7,7 @@ import MeetingCalendarWeekdays from '@components/MeetingCalendar/Weekdays';
 import TimeRangeSelector from '@components/TimeRangeSelector';
 import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
+import Checkbox from '@components/_common/Checkbox';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 import ConfirmModal from '@components/_common/Modal/ConfirmModal';
@@ -203,21 +203,12 @@ export default function CreateMeetingPage() {
           </Calendar>
         </Field>
 
-        {/* TODO: 공통 컴포넌트가 merge 되면 수정 예정 */}
-        <div
-          css={css`
-            display: flex;
-            gap: 0.2rem;
-          `}
-        >
-          <input
-            onChange={handleToggleIsChecked}
-            id="meetingType"
-            type="checkbox"
-            checked={isChecked}
-          />
-          <label htmlFor="meetingType">날짜만 선택할래요</label>
-        </div>
+        <Checkbox
+          onChange={handleToggleIsChecked}
+          id="meetingType"
+          isChecked={isChecked}
+          labelText="날짜만 선택할래요"
+        />
 
         {!isChecked && (
           <Field>
