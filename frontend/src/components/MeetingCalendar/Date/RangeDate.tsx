@@ -63,7 +63,7 @@ export default function RangeDate({
         s_dateText({
           isSelectedDate,
           isToday,
-          isPrevDate,
+          isDisabledDate: isPrevDate,
           isHoliday,
           isSunday,
           isSaturday,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { MeetingRecommend } from '@apis/meetingRecommend';
+import type { GetMeetingRecommendResponse } from '@apis/meetingRecommend';
 
 import { useGetMeetingRecommendsQuery } from '@stores/servers/meeting/queries';
 
@@ -16,7 +16,7 @@ interface UseMeetingTimeRecommendFilterReturn {
   checkSelectedAttendee: (attendeeName: string) => boolean;
   isSelectedAllAttendee: boolean;
   toggleAttendee: (attendeeName: string) => void;
-  meetingTimeRecommends: MeetingRecommend[] | undefined;
+  meetingRecommendResponse: GetMeetingRecommendResponse | undefined;
 }
 
 type UseMeetingTimeRecommendFilterHook = (
@@ -44,11 +44,12 @@ type UseMeetingTimeRecommendFilterHook = (
 const useMeetingTimeRecommendFilter: UseMeetingTimeRecommendFilterHook = (uuid, attendeeNames) => {
   const [recommendType, setRecommendType] = useState<MeetingRecommendType>('earliest');
   const [currentAttendeeNames, setCurrentAttendeeNames] = useState(attendeeNames);
-  const { data: meetingTimeRecommends } = useGetMeetingRecommendsQuery({
+  const { data: meetingRecommendResponse } = useGetMeetingRecommendsQuery({
     uuid,
     recommendType,
     currentAttendeeNames,
   });
+
   const isSelectedAllAttendee = currentAttendeeNames.length === attendeeNames.length;
 
   const checkSelectedAttendee = (attendeeName: string) =>
@@ -80,7 +81,7 @@ const useMeetingTimeRecommendFilter: UseMeetingTimeRecommendFilterHook = (uuid, 
     checkSelectedAttendee,
     isSelectedAllAttendee,
     toggleAttendee,
-    meetingTimeRecommends,
+    meetingRecommendResponse,
   };
 };
 

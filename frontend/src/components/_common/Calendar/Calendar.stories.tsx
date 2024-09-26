@@ -11,7 +11,7 @@ import MeetingCalendarWeekdays from '@components/MeetingCalendar/Weekdays';
 import useCalendar from '@hooks/useCalendar/useCalendar';
 import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 
-import Calendar from './index';
+import Calendar from '.';
 
 const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar',

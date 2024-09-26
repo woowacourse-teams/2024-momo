@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 export const s_calendarContainer = css`
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
 `;

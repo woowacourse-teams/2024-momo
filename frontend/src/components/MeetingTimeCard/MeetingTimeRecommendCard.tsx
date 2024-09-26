@@ -28,7 +28,7 @@ interface MeetingRecommendCardProps extends React.HTMLAttributes<HTMLDivElement>
   };
 }
 
-export default function MeetingRecommendCard({
+export default function MeetingTimeRecommendCard({
   schedule,
   attendeeCount,
 }: MeetingRecommendCardProps) {

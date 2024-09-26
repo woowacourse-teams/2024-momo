@@ -1,13 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
 
 import ScheduleDateDayList from '@components/Schedules/ScheduleTableFrame/ScheduleDateDayList';
 import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
 
-import { handleGetMeetingSchedules } from '@apis/schedules';
-
-import { QUERY_KEY } from '@constants/queryKeys';
+import { useGetSchedules } from '@stores/servers/schedule/queries';
 
 import {
   s_scheduleTable,
@@ -35,11 +32,7 @@ export default function ScheduleTable({
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
-  const { data: meetingSchedules } = useQuery({
-    queryKey: [QUERY_KEY.meetingSchedules, selectedAttendee],
-    queryFn: () => handleGetMeetingSchedules({ uuid, attendeeName: selectedAttendee }),
-    staleTime: 0,
-  });
+  const { data: meetingSchedules } = useGetSchedules(uuid, selectedAttendee);
 
   return (
     <section css={s_scheduleTableContainer}>

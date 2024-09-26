@@ -1,6 +1,7 @@
 import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
+import type { MeetingType } from './meetings';
 
 export interface ConfirmDates {
   startDate: string;
@@ -11,11 +12,11 @@ export interface ConfirmDates {
 
 interface PostMeetingConfirmRequest {
   uuid: string;
-
   requests: ConfirmDates;
 }
 
 export interface GetConfirmedMeetingInfoResponse extends ConfirmDates {
+  type: MeetingType;
   hostName: string;
   meetingName: string;
   availableAttendeeNames: string[];

@@ -17,6 +17,6 @@ function CalendarMain({ children }: PropsWithChildren) {
   );
 }
 
-const Calender = Object.assign(CalendarMain, { Header, WeekDays, Body });
+const Calendar = Object.assign(CalendarMain, { Header, WeekDays, Body });
 
-export default Calender;
+export default Calendar;
