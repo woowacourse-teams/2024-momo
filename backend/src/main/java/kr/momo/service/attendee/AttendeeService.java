@@ -49,6 +49,7 @@ public class AttendeeService {
         return AttendeeLoginResponse.from(jwtManager.generate(attendee.getId()), attendee);
     }
 
+    @Transactional(readOnly = true)
     public List<String> findAll(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
