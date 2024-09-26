@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -65,11 +66,20 @@ public class ConfirmedMeeting extends BaseEntity {
     }
 
     private boolean isScheduleWithinDateTimeRange(Schedule schedule) {
+        if (meeting.isDaysOnly()) {
+            LocalDate date = schedule.date();
+            LocalDate startDate = startDateTime.toLocalDate();
+            LocalDate endDate = endDateTime.toLocalDate();
+            return !date.isBefore(startDate) && !date.isAfter(endDate);
+        }
         LocalDateTime dateTime = schedule.dateTime();
         return !dateTime.isBefore(startDateTime) && dateTime.isBefore(endDateTime);
     }
 
     private long countTimeSlotOfConfirmedMeeting() {
+        if (meeting.isDaysOnly()) {
+            return Duration.between(startDateTime, endDateTime).plusDays(1).toDays();
+        }
         return Duration.between(startDateTime, endDateTime).dividedBy(SECOND_OF_HALF_HOUR).getSeconds();
     }
 }
