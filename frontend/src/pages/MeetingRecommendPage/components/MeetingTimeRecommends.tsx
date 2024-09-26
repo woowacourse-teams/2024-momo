@@ -53,7 +53,7 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
         ]}
       />
       {meetingRecommendResponse &&
-        meetingRecommendResponse.recommends.map((recommendInfo, index) => (
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo, index) => (
           <MeetingRecommendCard
             key={recommendInfo.startDate + index}
             attendeeCount={attendeeNames.length}

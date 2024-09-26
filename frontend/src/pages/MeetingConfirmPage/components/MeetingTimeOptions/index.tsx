@@ -118,7 +118,7 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
         ]}
       />
       {meetingRecommendResponse &&
-        meetingRecommendResponse.recommends.map((recommendInfo) =>
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo) =>
           meetingRecommendResponse.type === 'DATETIME' ? (
             <MeetingTimeOptionCard
               key={recommendInfo.rank}

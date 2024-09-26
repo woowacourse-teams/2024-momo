@@ -38,11 +38,17 @@ export default function MeetingTimeOptionCardDaysOnly({
   attendeeCount,
   schedule,
 }: MeetingTimeOptionCardProps) {
-  const { startDate, startDayOfWeek, attendeeNames } = schedule;
+  const { startDate, startDayOfWeek, endDate, endDayOfWeek, attendeeNames } = schedule;
 
-  const meetingDateWithDay = formatFullDate({
+  const startDateWithDay = formatFullDate({
     fullDate: startDate,
     dayOfWeek: startDayOfWeek,
+    format: 'korean',
+  });
+
+  const endDateWithDay = formatFullDate({
+    fullDate: endDate,
+    dayOfWeek: endDayOfWeek,
     format: 'korean',
   });
 
@@ -55,7 +61,8 @@ export default function MeetingTimeOptionCardDaysOnly({
     >
       <div css={s_recommendContainer}>
         <span css={s_attendeeInfo}>{`${attendeeCount}명 중 ${currentAttendeeCount}명`}</span>
-        <span css={s_dateInfo}>{meetingDateWithDay}</span>
+        <span css={s_dateInfo}>{startDateWithDay} 부터</span>
+        <span css={s_dateInfo}>{endDateWithDay} 까지</span>
       </div>
       <div css={s_checkboxContainer}>
         <input type="checkbox" checked={isSelected} onChange={onSelect} css={s_checkboxInput} />

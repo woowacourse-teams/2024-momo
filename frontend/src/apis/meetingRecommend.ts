@@ -20,7 +20,7 @@ export interface MeetingRecommend {
 
 export interface GetMeetingRecommendResponse {
   type: MeetingType;
-  recommends: MeetingRecommend[];
+  recommendedSchedules: MeetingRecommend[];
 }
 
 export const getMeetingTimeRecommends = async ({
