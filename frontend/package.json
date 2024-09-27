@@ -6,8 +6,10 @@
   "scripts": {
     "prod": "webpack server --open --config webpack.prod.js",
     "dev": "webpack server --open --config webpack.dev.js",
-    "build:prod": "NODE_ENV=production webpack --config webpack.prod.js && npm run sentry:sourcemaps",
-    "build:dev": "NODE_ENV=production webpack --config webpack.prod.js",
+    "build:prod-analyzer": "NODE_ENV=production USE_BUNDLE_ANALYZER=true webpack --config webpack.prod.js && npm run sentry:sourcemaps",
+    "build:prod": "NODE_ENV=production USE_BUNDLE_ANALYZER=false webpack --config webpack.prod.js && npm run sentry:sourcemaps",
+    "build:dev-analyzer": "NODE_ENV=production USE_BUNDLE_ANALYZER=true webpack --config webpack.prod.js && npm run sentry:sourcemaps",
+    "build:dev": "NODE_ENV=production USE_BUNDLE_ANALYZER=false webpack --config webpack.prod.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload -o momo2024 -p momo-harry-test /dist",
     "lint:css": "stylelint '**/*.styles.ts' --fix",
     "test": "jest",
