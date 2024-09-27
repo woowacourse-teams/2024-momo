@@ -5,33 +5,41 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class AttendeePasswordTest {
 
-    @DisplayName("참가자 비밀번호가 20글자를 초과하면 예외를 발생시킨다.")
-    @Test
-    void throwsExceptionIfAttendeePasswordIsTooLong() {
-        assertThatThrownBy(() -> new AttendeePassword("invalid_password_length_invalid_password_length"))
-                .isInstanceOf(MomoException.class)
-                .hasMessage(AttendeeErrorCode.INVALID_PASSWORD_LENGTH.message());
+    private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setup() {
+        passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 
-    @DisplayName("참가자 비밀번호 객체가 정상 생성된다.")
+    @DisplayName("비밀번호와 동일한지 검증한다.")
     @Test
-    void createAttendeePasswordObjectSuccessfully() {
+    void verifyMatch() {
+        String given = "1234";
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
+
         assertThatNoException()
-                .isThrownBy(() -> new AttendeePassword("momo"));
+                .isThrownBy(() -> password.verifyMatch(rawPassword, passwordEncoder));
     }
 
-    @DisplayName("비밀번호가 서로 다르면 예외를 발생시킨다.")
+    @DisplayName("암호화된 비밀번호와 서로 다르면 예외를 발생시킨다.")
     @Test
     void throwsExceptionForMismatchedPasswords() {
-        AttendeePassword password = new AttendeePassword("1234");
-        AttendeePassword other = new AttendeePassword("123456");
+        String given = "1234";
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(given);
+        AttendeeRawPassword other = new AttendeeRawPassword("4321");
+        AttendeePassword password = rawPassword.encodePassword(passwordEncoder);
 
-        assertThatThrownBy(() -> password.verifyPassword(other))
+        assertThatThrownBy(() -> password.verifyMatch(other, passwordEncoder))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.PASSWORD_MISMATCHED.message());
     }

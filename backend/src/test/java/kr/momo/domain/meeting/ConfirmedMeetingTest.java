@@ -46,4 +46,32 @@ class ConfirmedMeetingTest {
                 () -> assertThat(attendees).containsExactly(attendee1)
         );
     }
+
+    @DisplayName("확정된 days only 유형 약속의 범위에 포함되는 스케줄들 중 참석 가능한 참석자들을 반환한다.")
+    @Test
+    void availableAttendeesOfDaysOnly() {
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
+        Attendee attendee1 = AttendeeFixture.GUEST_MARK.create(meeting);
+        Attendee attendee2 = AttendeeFixture.HOST_JAZZ.create(meeting);
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        ConfirmedMeeting confirmedMeeting = new ConfirmedMeeting(
+                meeting
+                , LocalDateTime.of(today, LocalTime.of(0, 0))
+                , LocalDateTime.of(tomorrow, LocalTime.of(0, 0))
+        );
+        List<Schedule> schedules = List.of(
+                new Schedule(attendee1, new AvailableDate(today, meeting), Timeslot.TIME_0000),
+                new Schedule(attendee1, new AvailableDate(tomorrow, meeting), Timeslot.TIME_0000),
+                new Schedule(attendee2, new AvailableDate(today, meeting), Timeslot.TIME_0000)
+        );
+
+        AttendeeGroup availableAttendees = confirmedMeeting.availableAttendeesOf(schedules);
+        List<Attendee> attendees = availableAttendees.getAttendees();
+
+        assertAll(
+                () -> assertThat(attendees).hasSize(1),
+                () -> assertThat(attendees).containsExactly(attendee1)
+        );
+    }
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import kr.momo.domain.attendee.Attendee;
+import kr.momo.domain.attendee.AttendeeRawPassword;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.attendee.Role;
 import kr.momo.domain.availabledate.AvailableDateBatchRepository;
@@ -12,6 +13,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.availabledate.AvailableDates;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.meeting.UuidGenerator;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
@@ -22,6 +24,7 @@ import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +42,13 @@ public class MeetingService {
     private final AvailableDateRepository availableDateRepository;
     private final AttendeeRepository attendeeRepository;
     private final AvailableDateBatchRepository availableDateBatchRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public MeetingCreateResponse create(MeetingCreateRequest request) {
-        Meeting meeting = saveMeeting(request.meetingName(), request.toMeetingStartTime(), request.toMeetingEndTime());
+        Meeting meeting = saveMeeting(
+                request.meetingName(), request.toMeetingStartTime(), request.toMeetingEndTime(), request.type()
+        );
         AvailableDates meetingDates = new AvailableDates(request.toAvailableMeetingDates(), meeting);
 
         validateNotPast(meetingDates);
@@ -53,9 +59,9 @@ public class MeetingService {
         return MeetingCreateResponse.from(meeting, attendee, meetingDates, token);
     }
 
-    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime) {
+    private Meeting saveMeeting(String meetingName, LocalTime startTime, LocalTime endTime, MeetingType type) {
         String uuid = generateUniqueUuid();
-        Meeting meeting = new Meeting(meetingName, uuid, startTime, endTime);
+        Meeting meeting = new Meeting(meetingName, uuid, startTime, endTime, type);
         return meetingRepository.save(meeting);
     }
 
@@ -82,7 +88,8 @@ public class MeetingService {
     }
 
     private Attendee saveHostAttendee(Meeting meeting, String hostName, String hostPassword) {
-        Attendee attendee = new Attendee(meeting, hostName, hostPassword, Role.HOST);
+        AttendeeRawPassword rawPassword = new AttendeeRawPassword(hostPassword);
+        Attendee attendee = new Attendee(meeting, hostName, rawPassword.encodePassword(passwordEncoder), Role.HOST);
         return attendeeRepository.save(attendee);
     }
 

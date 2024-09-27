@@ -70,8 +70,8 @@ class MeetingConfirmServiceTest {
         meeting = MeetingFixture.MOVIE.create();
         meeting.lock();
         meeting = meetingRepository.save(meeting);
-        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(this.meeting));
-        today = availableDateRepository.save(new AvailableDate(LocalDate.now(), this.meeting));
+        attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        today = availableDateRepository.save(new AvailableDate(LocalDate.now(), meeting));
         validRequest = new MeetingConfirmRequest(
                 today.getDate(),
                 meeting.earliestTime(),
@@ -218,7 +218,8 @@ class MeetingConfirmServiceTest {
                 LocalTime.of(1, 30)
         );
 
-        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(), validRequest);
+        MeetingConfirmResponse confirmed = meetingConfirmService.create(meeting.getUuid(), attendee.getId(),
+                validRequest);
         ConfirmedMeetingResponse response = meetingConfirmService.findByUuid(meeting.getUuid());
 
         assertAll(
@@ -232,7 +233,8 @@ class MeetingConfirmServiceTest {
                 () -> assertThat(response.endDate()).isEqualTo(confirmed.endDate()),
                 () -> assertThat(response.endTime()).isEqualTo(confirmed.endTime()),
                 () -> assertThat(response.endDayOfWeek())
-                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN))
+                        .isEqualTo(confirmed.endDate().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)),
+                () -> assertThat(response.type()).isEqualTo(meeting.getType().name())
         );
     }
 

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import type { TooltipPosition } from 'types/tooltip';
 
 export const tooltipContainer = css`
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
 `;

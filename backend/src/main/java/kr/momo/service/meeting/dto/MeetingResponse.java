@@ -36,7 +36,10 @@ public record MeetingResponse(
         List<String> attendeeNames,
 
         @Schema(description = "약속 주최자 이름")
-        String hostName
+        String hostName,
+
+        @Schema(description = "약속 유형")
+        String type
 ) {
 
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -55,7 +58,8 @@ public record MeetingResponse(
                 meeting.isLocked(),
                 dates,
                 attendeeNames,
-                hostName
+                hostName,
+                meeting.getType().name()
         );
     }
 

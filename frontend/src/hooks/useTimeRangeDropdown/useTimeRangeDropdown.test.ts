@@ -12,18 +12,6 @@ describe('useTimeRangeDropdown', () => {
     expect(result.current.endTime.value).toBe(INITIAL_END_TIME);
   });
 
-  it('시작 시간(startTime)을 선택하면 끝 시간(endTime)은 시작 시간(startTime)의 1시간 이후로 설정된다.', () => {
-    const CHANGE_TIME = '01:00';
-    const CHANGE_TIME_AFTER_HOUR = '02:00';
-    const { result } = renderHook(() => useTimeRangeDropdown());
-
-    act(() => {
-      result.current.handleStartTimeChange(CHANGE_TIME);
-    });
-
-    expect(result.current.endTime.value).not.toBe(CHANGE_TIME_AFTER_HOUR);
-  });
-
   it('선택한 끝 시간(endTime)이 시작 시간(startTime)보다 빠르다면 선택한 시간값으로 변경되지 않는다.', () => {
     const CHANGE_START_TIME = '04:00';
     const CHANGE_END_TIME = '01:00';
@@ -55,4 +43,20 @@ describe('useTimeRangeDropdown', () => {
 
     expect(result.current.endTime.value).toBe(CHANGE_END_TIME);
   });
+
+  it.each([
+    ['18:00', '19:00'],
+    ['06:00', '07:00'],
+  ])(
+    '시작 시간(%s)을 선택하면, 끝 시간은 1시간 이후인 %s로 자동 설정된다.',
+    (startTime, endTime) => {
+      const { result } = renderHook(() => useTimeRangeDropdown());
+
+      act(() => {
+        result.current.handleStartTimeChange(startTime);
+      });
+
+      expect(result.current.endTime.value).toBe(endTime);
+    },
+  );
 });

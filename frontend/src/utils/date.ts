@@ -20,3 +20,15 @@ export const formatTime = (time: string): string => {
 
   return `${hourPrefix} ${formattedHour}시`;
 };
+
+export const getMonth = (date: Date) => date.getMonth();
+export const getYear = (date: Date) => date.getFullYear();
+export const getDay = (date: Date) => date.getDay();
+export const getDate = (date: Date) => date.getDate();
+export const getFullDate = (date: Date) => {
+  const year = getYear(date);
+  const month = String(getMonth(date) + 1).padStart(2, '0');
+  const day = String(getDate(date)).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};

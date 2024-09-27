@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -34,6 +35,9 @@ class AttendeeServiceTest {
     @Autowired
     private MeetingRepository meetingRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Meeting meeting;
 
     @BeforeEach
@@ -44,8 +48,9 @@ class AttendeeServiceTest {
     @DisplayName("로그인 시 올바르지 않은 uuid로 접근할 경우 예외를 발생시킨다.")
     @Test
     void loginThrowsExceptionForInvalidUuid() {
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
 
         assertThatThrownBy(() -> attendeeService.login("invalidUUID", request))
                 .isInstanceOf(MomoException.class)
@@ -67,8 +72,9 @@ class AttendeeServiceTest {
     @DisplayName("로그인 시 동일한 이름이 저장되어 있으면 새로 참가자를 생성하지 않는다.")
     @Test
     void doesNotCreateAttendeeIfNameAlreadyExists() {
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), jazz.getPassword());
         attendeeService.login(meeting.getUuid(), request);
 
         long initialCount = attendeeRepository.count();

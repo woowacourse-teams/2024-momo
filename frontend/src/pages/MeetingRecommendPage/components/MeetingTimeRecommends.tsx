@@ -1,4 +1,5 @@
-import MeetingRecommendCard from '@components/MeetingTimeCard/MeetingTimeRecommendCard';
+import MeetingTimeRecommendCard from '@components/MeetingTimeCard/MeetingTimeRecommendCard';
+import MeetingTimeRecommendCardDaysOnly from '@components/MeetingTimeCard/MeetingTimeRecommendCardDaysOnly';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
 
@@ -14,7 +15,7 @@ interface MeetingRecommendsProps {
 
 export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRecommendsProps) {
   const {
-    meetingTimeRecommends,
+    meetingRecommendResponse,
     isSelectedAllAttendee,
     toggleAttendee,
     checkSelectedAttendee,
@@ -52,14 +53,22 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
           { value: 'longTerm', label: '길게 만나고 싶어요' },
         ]}
       />
-      {meetingTimeRecommends &&
-        meetingTimeRecommends.map((recommendInfo, index) => (
-          <MeetingRecommendCard
-            key={recommendInfo.startDate + index}
-            attendeeCount={attendeeNames.length}
-            schedule={recommendInfo}
-          />
-        ))}
+      {meetingRecommendResponse &&
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo, index) =>
+          meetingRecommendResponse.type === 'DATETIME' ? (
+            <MeetingTimeRecommendCard
+              key={recommendInfo.startDate + index}
+              attendeeCount={attendeeNames.length}
+              schedule={recommendInfo}
+            />
+          ) : (
+            <MeetingTimeRecommendCardDaysOnly
+              key={recommendInfo.startDate + index}
+              attendeeCount={attendeeNames.length}
+              schedule={recommendInfo}
+            />
+          ),
+        )}
     </div>
   );
 }

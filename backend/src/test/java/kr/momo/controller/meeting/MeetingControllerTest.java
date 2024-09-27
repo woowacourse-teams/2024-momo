@@ -18,6 +18,7 @@ import kr.momo.domain.availabledate.AvailableDateRepository;
 import kr.momo.domain.meeting.ConfirmedMeetingRepository;
 import kr.momo.domain.meeting.Meeting;
 import kr.momo.domain.meeting.MeetingRepository;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.ConfirmedMeetingFixture;
@@ -120,13 +121,16 @@ class MeetingControllerTest {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfterTomorrow = today.plusDays(2);
+        AttendeeFixture hostJazz = AttendeeFixture.HOST_JAZZ;
         MeetingCreateRequest request = new MeetingCreateRequest(
-                "host",
-                "momo",
+                hostJazz.getName(),
+                hostJazz.getPassword(),
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                MeetingType.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -151,7 +155,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 startTime,
-                endTime);
+                endTime,
+                MeetingType.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -174,7 +180,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                MeetingType.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -197,7 +205,9 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), dayAfterTomorrow.toString()),
                 "08:00",
-                "22:00");
+                "22:00",
+                MeetingType.DATETIME
+        );
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -219,7 +229,32 @@ class MeetingControllerTest {
                 "momoMeeting",
                 List.of(tomorrow.toString(), tomorrow.toString()),
                 "08:00",
-                "22:00"
+                "22:00",
+                MeetingType.DATETIME
+        );
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("약속을 생성할 때 약속의 타입 없이 요청한다면 400을 반환한다.")
+    @Test
+    void createByInvalidType() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        MeetingCreateRequest request = new MeetingCreateRequest(
+                "momoHost",
+                "momo",
+                "momoMeeting",
+                List.of(tomorrow.toString(), tomorrow.toString()),
+                "08:00",
+                "22:00",
+                null
         );
 
         RestAssured.given().log().all()
@@ -235,8 +270,9 @@ class MeetingControllerTest {
     @Test
     void lock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -252,8 +288,9 @@ class MeetingControllerTest {
     void lockWithInvalidUUID() {
         String invalidUUID = "INVALID_UUID";
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -268,8 +305,9 @@ class MeetingControllerTest {
     @Test
     void lockWithNoPermission() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture daon = AttendeeFixture.GUEST_DAON;
+        Attendee attendee = attendeeRepository.save(daon.create(meeting));
+        String token = getToken(daon.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -284,8 +322,9 @@ class MeetingControllerTest {
     @Test
     void unlock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -301,8 +340,9 @@ class MeetingControllerTest {
     void unlockWithInvalidUUID() {
         String invalidUUID = "INVALID_UUID";
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -317,8 +357,9 @@ class MeetingControllerTest {
     @Test
     void unlockWithNoPermission() {
         Meeting meeting = meetingRepository.save(MeetingFixture.DINNER.create());
-        Attendee attendee = attendeeRepository.save(AttendeeFixture.GUEST_PEDRO.create(meeting));
-        String token = getToken(attendee, meeting);
+        AttendeeFixture daon = AttendeeFixture.GUEST_DAON;
+        Attendee attendee = attendeeRepository.save(daon.create(meeting));
+        String token = getToken(daon.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -329,8 +370,8 @@ class MeetingControllerTest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
-    private String getToken(Attendee attendee, Meeting meeting) {
-        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), attendee.password());
+    private String getToken(String rawPassword, Attendee attendee, Meeting meeting) {
+        AttendeeLoginRequest request = new AttendeeLoginRequest(attendee.name(), rawPassword);
 
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -345,10 +386,41 @@ class MeetingControllerTest {
     @Test
     void confirmSchedule() {
         Meeting meeting = createLockedMovieMeeting();
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-        String token = getToken(host, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
+    }
+
+    @DisplayName("주최자가 연속적인 약속 일정을 확정하면 201 상태 코드를 응답한다.")
+    @Test
+    void confirmConsecutiveMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(jazz.getPassword(), host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_2330.startTime()
+        );
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -367,13 +439,100 @@ class MeetingControllerTest {
         return meetingRepository.save(meeting);
     }
 
+    @DisplayName("주최자가 유형이 DaysOnly이며 잠겨있는 약속 일정을 확정하면 201 상태 코드를 응답한다.")
+    @Test
+    void confirmConsecutiveAndDaysOnlyMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(2), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(jazz.getPassword(), host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/api/v1/meetings/" + meeting.getUuid() + "/confirm");
+    }
+
+    @DisplayName("주최자가 연속적이지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
+    @Test
+    void confirmNotConsecutiveMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create();
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(jazz.getPassword(), host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("주최자가 유형이 DaysOnly이며 연속적이지 않은 약속 일정을 확정하면 400 상태 코드를 응답한다.")
+    @Test
+    void confirmNotConsecutiveAndDaysOnlyMeeting() {
+        Meeting meeting = MeetingFixture.DRINK.create(MeetingType.DAYSONLY);
+        meeting.lock();
+        meeting = meetingRepository.save(meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
+        AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
+        AvailableDate plus3Days = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(3), meeting));
+        String token = getToken(jazz.getPassword(), host, meeting);
+        MeetingConfirmRequest request = new MeetingConfirmRequest(
+                tomorrow.getDate(),
+                Timeslot.TIME_0000.startTime(),
+                plus3Days.getDate(),
+                Timeslot.TIME_0000.startTime()
+        );
+
+        RestAssured.given().log().all()
+                .cookie("ACCESS_TOKEN", token)
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/meetings/{uuid}/confirm")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("주최자가 아닌 참가자가 약속 일정을 확정하면 403 상태 코드를 응답한다.")
     @Test
     void confirmScheduleNotHost() {
         Meeting meeting = createLockedMovieMeeting();
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
-        String token = getToken(guest, meeting);
+        AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
+        String token = getToken(guestMark.getPassword(), guest, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
@@ -390,9 +549,10 @@ class MeetingControllerTest {
     @Test
     void confirmScheduleUnlock() {
         Meeting meeting = meetingRepository.save(MeetingFixture.MOVIE.create());
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
         AvailableDate tomorrow = availableDateRepository.save(new AvailableDate(LocalDate.now().plusDays(1), meeting));
-        String token = getToken(host, meeting);
+        Attendee host = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), host, meeting);
         MeetingConfirmRequest request = getValidFindRequest(tomorrow);
 
         RestAssured.given().log().all()
@@ -412,8 +572,9 @@ class MeetingControllerTest {
         AvailableDate availableDate = availableDateRepository.save(
                 new AvailableDate(LocalDate.now().plusDays(1), meeting));
         String tomorrow = availableDate.getDate().format(DateTimeFormatter.ISO_DATE);
-        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
-        String token = getToken(guest, meeting);
+        AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
+        String token = getToken(guestMark.getPassword(), guest, meeting);
 
         MeetingConfirmRequest request = new MeetingConfirmRequest(tomorrow, "3:00", tomorrow, "03:00");
 
@@ -431,9 +592,10 @@ class MeetingControllerTest {
     @Test
     void cancelConfirmedMeeting() {
         Meeting meeting = createLockedMovieMeeting();
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
-        String token = getToken(host, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -456,8 +618,9 @@ class MeetingControllerTest {
     @Test
     void cancelConfirmedMeetingNonExist() {
         Meeting meeting = createLockedMovieMeeting();
-        Attendee host = attendeeRepository.save(AttendeeFixture.HOST_JAZZ.create(meeting));
-        String token = getToken(host, meeting);
+        AttendeeFixture jazz = AttendeeFixture.HOST_JAZZ;
+        Attendee attendee = attendeeRepository.save(jazz.create(meeting));
+        String token = getToken(jazz.getPassword(), attendee, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)
@@ -472,9 +635,10 @@ class MeetingControllerTest {
     @Test
     void cancelConfirmedMeetingNotHost() {
         Meeting meeting = createLockedMovieMeeting();
-        Attendee guest = attendeeRepository.save(AttendeeFixture.GUEST_MARK.create(meeting));
         confirmedMeetingRepository.save(ConfirmedMeetingFixture.MOVIE.create(meeting));
-        String token = getToken(guest, meeting);
+        AttendeeFixture guestMark = AttendeeFixture.GUEST_MARK;
+        Attendee guest = attendeeRepository.save(guestMark.create(meeting));
+        String token = getToken(guestMark.getPassword(), guest, meeting);
 
         RestAssured.given().log().all()
                 .cookie("ACCESS_TOKEN", token)

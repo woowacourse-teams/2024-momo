@@ -8,6 +8,7 @@ import {
 } from '@pages/MeetingConfirmPage/MeetingTimeConfirmPage.styles';
 
 import MeetingTimeOptionCard from '@components/MeetingTimeCard/MeetingTimeOptionCard';
+import MeetingTimeOptionCardDaysOnly from '@components/MeetingTimeCard/MeetingTimeOptionCardDaysOnly';
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
@@ -33,7 +34,7 @@ interface SelectedMeeting {
 
 export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeOptionsProps) {
   const {
-    meetingTimeRecommends,
+    meetingRecommendResponse,
     isSelectedAllAttendee,
     toggleAttendee,
     checkSelectedAttendee,
@@ -116,16 +117,26 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
           { value: 'longTerm', label: '길게 만나고 싶어요' },
         ]}
       />
-      {meetingTimeRecommends &&
-        meetingTimeRecommends.map((recommendInfo) => (
-          <MeetingTimeOptionCard
-            key={recommendInfo.rank}
-            isSelected={checkSelectedMeeting(recommendInfo)}
-            onSelect={() => handleMeetingSelect(recommendInfo)}
-            attendeeCount={attendeeNames.length}
-            schedule={recommendInfo}
-          />
-        ))}
+      {meetingRecommendResponse &&
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo) =>
+          meetingRecommendResponse.type === 'DATETIME' ? (
+            <MeetingTimeOptionCard
+              key={recommendInfo.rank}
+              isSelected={checkSelectedMeeting(recommendInfo)}
+              onSelect={() => handleMeetingSelect(recommendInfo)}
+              attendeeCount={attendeeNames.length}
+              schedule={recommendInfo}
+            />
+          ) : (
+            <MeetingTimeOptionCardDaysOnly
+              key={recommendInfo.rank}
+              isSelected={checkSelectedMeeting(recommendInfo)}
+              onSelect={() => handleMeetingSelect(recommendInfo)}
+              attendeeCount={attendeeNames.length}
+              schedule={recommendInfo}
+            />
+          ),
+        )}
     </div>
   );
 }

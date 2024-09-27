@@ -17,6 +17,7 @@ import java.time.LocalTime;
 import kr.momo.domain.BaseEntity;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.availabledate.AvailableDate;
+import kr.momo.domain.meeting.MeetingType;
 import kr.momo.domain.timeslot.Timeslot;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,8 +53,17 @@ public class Schedule extends BaseEntity {
         this.timeslot = timeslot;
     }
 
-    public DateTimeInterval dateTimeInterval() {
+    public RecommendInterval recommendInterval(MeetingType type) {
+        return type.isDaysOnly() ? dateInterval() : dateTimeInterval();
+    }
+
+    private DateTimeInterval dateTimeInterval() {
         return new DateTimeInterval(dateTime(), dateTime().plusMinutes(Timeslot.DURATION_IN_MINUTE));
+    }
+
+    private DateInterval dateInterval() {
+        LocalDate date = availableDate.getDate();
+        return new DateInterval(date, date);
     }
 
     public LocalDateTime dateTime() {

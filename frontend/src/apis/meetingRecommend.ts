@@ -1,9 +1,10 @@
 import { fetchClient } from './_common/fetchClient';
+import type { MeetingType } from './meetings';
 
 interface GetMeetingRecommendRequest {
   uuid: string;
   recommendType: string;
-  attendeeNames: string[] | undefined;
+  attendeeNames: string[];
 }
 
 export interface MeetingRecommend {
@@ -16,18 +17,25 @@ export interface MeetingRecommend {
   attendeeNames: string[];
   rank: string;
 }
+
+export interface GetMeetingRecommendResponse {
+  type: MeetingType;
+  recommendedSchedules: MeetingRecommend[];
+}
+
 export const getMeetingTimeRecommends = async ({
   uuid,
   recommendType,
   attendeeNames,
-}: GetMeetingRecommendRequest): Promise<MeetingRecommend[]> => {
-  if (!attendeeNames) return [];
+}: GetMeetingRecommendRequest): Promise<GetMeetingRecommendResponse> => {
+  const urlParams = new URLSearchParams();
 
-  const path = `/${uuid}/recommended-schedules?recommendType=${recommendType}&attendeeNames=${attendeeNames.join(
-    ',',
-  )}`;
+  urlParams.append('recommendType', recommendType);
+  if (attendeeNames) urlParams.append('attendeeNames', attendeeNames.join(','));
 
-  const data = await fetchClient<MeetingRecommend[]>({
+  const path = `/${uuid}/recommended-schedules?${urlParams.toString()}`;
+
+  const data = await fetchClient<GetMeetingRecommendResponse>({
     path,
     method: 'GET',
   });

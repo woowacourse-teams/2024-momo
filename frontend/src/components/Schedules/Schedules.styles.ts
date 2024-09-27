@@ -94,6 +94,8 @@ export const s_cellColorBySelected = (isSelected: number, unavailableMode = fals
 `;
 
 export const s_baseTimeCell = (isHalfHour: boolean, isLastRow: boolean) => css`
+  position: relative;
+
   flex: 1;
 
   max-width: 6.4rem;

@@ -1,23 +1,42 @@
-import { useState } from 'react';
+import type { DateInfo } from 'types/calendar';
 
-import PasswordInput from '@components/PasswordInput';
+import RangeDate from '@components/MeetingCalendar/Date/RangeDate';
+import SingleDate from '@components/MeetingCalendar/Date/SingleDate';
+import MeetingCalendarHeader from '@components/MeetingCalendar/Header';
+import MeetingCalendarWeekdays from '@components/MeetingCalendar/Weekdays';
 import TimeRangeSelector from '@components/TimeRangeSelector';
 import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
+import Checkbox from '@components/_common/Checkbox';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
+import ConfirmModal from '@components/_common/Modal/ConfirmModal';
 
+import useConfirmModal from '@hooks/useConfirmModal/useConfirmModal';
+import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import useInput from '@hooks/useInput/useInput';
+import useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
 
-import { FIELD_DESCRIPTIONS, INPUT_FIELD_RULES } from '@constants/inputFields';
+import groupDates from '@utils/groupDates';
 
-import { s_confirmContainer, s_formContainer } from './CreateMeetingPage.styles';
+import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields';
+
+import {
+  s_availableDateDescription,
+  s_availableDatesContainer,
+  s_confirmContainer,
+  s_description,
+  s_descriptionContainer,
+  s_formContainer,
+} from './CreateMeetingPage.styles';
 
 export default function CreateMeetingPage() {
+  const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
+
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
 
   const {
@@ -25,8 +44,8 @@ export default function CreateMeetingPage() {
     onValueChange: handleMeetingNameChange,
     errorMessage: meetingNameErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.meetingName.minLength,
-    maxLength: INPUT_FIELD_RULES.meetingName.maxLength,
+    pattern: INPUT_FIELD_PATTERN.meetingName,
+    errorMessage: FIELD_DESCRIPTIONS.meetingName,
   });
 
   const {
@@ -34,8 +53,8 @@ export default function CreateMeetingPage() {
     onValueChange: handleHostNameChange,
     errorMessage: hostNameErrorMessage,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.nickname.minLength,
-    maxLength: INPUT_FIELD_RULES.nickname.maxLength,
+    pattern: INPUT_FIELD_PATTERN.nickname,
+    errorMessage: FIELD_DESCRIPTIONS.nickname,
   });
 
   const {
@@ -43,22 +62,23 @@ export default function CreateMeetingPage() {
     onValueChange: handleHostPasswordChange,
     errorMessage: hostPasswordError,
   } = useInput({
-    minLength: INPUT_FIELD_RULES.password.minLength,
-    maxLength: INPUT_FIELD_RULES.password.maxLength,
-    pattern: INPUT_FIELD_RULES.password.pattern,
+    pattern: INPUT_FIELD_PATTERN.password,
+    errorMessage: FIELD_DESCRIPTIONS.password,
   });
 
-  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+  const {
+    selectedDates,
+    handleSelectedDates,
+    hasDate,
+    dateSelectMode,
+    checkIsRangeStartDate,
+    checkIsRangeEndDate,
+    isAllRangeSelected,
+    toggleDateSelectMode,
+  } = useDateSelect();
 
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = useTimeRangeDropdown();
-
-  const hasDate = (date: string) => selectedDates.includes(date);
-
-  const handleDateClick = (date: string) => {
-    setSelectedDates((prevDates) =>
-      hasDate(date) ? prevDates.filter((d) => d !== date) : [...prevDates, date],
-    );
-  };
+  const { meetingType, isChecked, handleToggleIsChecked } = useMeetingType();
 
   const isFormValid = () => {
     const errorMessages = [meetingNameErrorMessage, hostNameErrorMessage, hostPasswordError];
@@ -82,10 +102,38 @@ export default function CreateMeetingPage() {
       hostPassword: hostPassword,
       meetingName: meetingName,
       availableMeetingDates: selectedDates,
-      meetingStartTime: startTime.value,
+      meetingStartTime: isChecked ? '00:00' : startTime.value,
       // 시간상 24시는 존재하지 않기 때문에 백엔드에서 오류가 발생. 따라서 오전 12:00으로 표현하지만, 서버에 00:00으로 전송(@낙타)
-      meetingEndTime: endTime.value === INITIAL_END_TIME ? INITIAL_START_TIME : endTime.value,
+      meetingEndTime: isChecked
+        ? '00:00'
+        : endTime.value === INITIAL_END_TIME
+          ? INITIAL_START_TIME
+          : endTime.value,
+      type: meetingType,
     });
+  };
+
+  const renderDate = (dateInfo: DateInfo, today: Date) => {
+    return dateSelectMode === 'single' ? (
+      <SingleDate
+        key={dateInfo.key}
+        dateInfo={dateInfo}
+        today={today}
+        hasDate={hasDate}
+        onDateClick={handleSelectedDates}
+      />
+    ) : (
+      <RangeDate
+        key={dateInfo.key}
+        dateInfo={dateInfo}
+        today={today}
+        hasDate={hasDate}
+        onDateClick={handleSelectedDates}
+        isRangeStart={checkIsRangeStartDate(dateInfo.value)}
+        isRangeEnd={checkIsRangeEndDate(dateInfo.value)}
+        isAllRangeSelected={isAllRangeSelected}
+      />
+    );
   };
 
   return (
@@ -114,36 +162,116 @@ export default function CreateMeetingPage() {
         <Field>
           <Field.Label id="비밀번호" labelText="비밀번호" />
           <Field.Description description={FIELD_DESCRIPTIONS.password} />
-          <PasswordInput id="비밀번호" value={hostPassword} onChange={handleHostPasswordChange} />
+          <Input
+            type="number"
+            id="비밀번호"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={hostPassword}
+            onChange={handleHostPasswordChange}
+          />
           <Field.ErrorMessage errorMessage={hostPasswordError} />
         </Field>
 
         <Field>
-          <Field.Label id="날짜선택" labelText="약속 날짜 선택" />
-          <Calendar hasDate={hasDate} onDateClick={handleDateClick} />
+          <Field.Label id="날짜선택" labelText="약속 후보 날짜 선택" />
+          <Field.Description description={FIELD_DESCRIPTIONS.date} />
+          <Calendar>
+            <Calendar.Header
+              render={({
+                currentYear,
+                currentMonth,
+                moveToNextMonth,
+                moveToPrevMonth,
+                isCurrentMonth,
+              }) => (
+                <MeetingCalendarHeader
+                  currentYear={currentYear}
+                  currentMonth={currentMonth}
+                  moveToNextMonth={moveToNextMonth}
+                  moveToPrevMonth={moveToPrevMonth}
+                  isCurrentMonth={isCurrentMonth}
+                  dateSelectMode={dateSelectMode}
+                  toggleDateSelectMode={toggleDateSelectMode}
+                />
+              )}
+            />
+            <Calendar.WeekDays
+              render={(weekdays) => <MeetingCalendarWeekdays weekdays={weekdays} />}
+            />
+            <Calendar.Body renderDate={renderDate} />
+          </Calendar>
         </Field>
 
-        <Field>
-          <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
-          <TimeRangeSelector
-            startTime={startTime}
-            endTime={endTime}
-            handleStartTimeChange={handleStartTimeChange}
-            handleEndTimeChange={handleEndTimeChange}
-          />
-        </Field>
+        <Checkbox
+          onChange={handleToggleIsChecked}
+          id="meetingType"
+          isChecked={isChecked}
+          labelText="날짜만 선택할래요"
+        />
+
+        {!isChecked && (
+          <Field>
+            <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
+            <TimeRangeSelector
+              startTime={startTime}
+              endTime={endTime}
+              handleStartTimeChange={handleStartTimeChange}
+              handleEndTimeChange={handleEndTimeChange}
+            />
+          </Field>
+        )}
 
         <div css={s_confirmContainer}>
           <Button
             variant="primary"
             size="m"
-            onClick={handleMeetingCreateButtonClick}
+            onClick={onToggleConfirmModal}
             disabled={!isFormValid()}
           >
             약속 생성하기
           </Button>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={onToggleConfirmModal}
+        position="center"
+        size="small"
+        title="입력하신 약속 정보를 확인해주세요."
+        onConfirm={handleMeetingCreateButtonClick}
+      >
+        <div css={s_descriptionContainer}>
+          <p css={s_description}>
+            <strong>약속명</strong>
+            {meetingName}
+          </p>
+          <p css={s_description}>
+            <strong>주최자</strong>
+            {hostName}
+          </p>
+          {!isChecked && (
+            <p css={s_description}>
+              <strong>약속 시간</strong>
+              {startTime.value} ~ {endTime.value}
+            </p>
+          )}
+          <div css={s_availableDateDescription}>
+            <strong>가능 날짜</strong>
+            {groupDates(selectedDates).map(([monthYear, dates]) => {
+              const [year, month] = monthYear.split('-');
+              return (
+                <div css={s_availableDatesContainer} key={monthYear}>
+                  <h3>
+                    {year}년 {month}월
+                  </h3>
+                  <span>{dates.join(', ')}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

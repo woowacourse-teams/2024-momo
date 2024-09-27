@@ -4,10 +4,13 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
+import MeetingConfirmCalendar from '@components/MeetingConfirmCalendar';
 import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
 import SchedulesViewer from '@components/Schedules/ScheduleViewer/SchedulesViewer';
 import ToggleButton from '@components/_common/Buttons/ToggleButton';
 import Text from '@components/_common/Text';
+
+import type { MeetingType } from '@apis/meetings';
 
 import { useLockMeetingMutation, useUnlockMeetingMutation } from '@stores/servers/meeting/mutation';
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
@@ -52,6 +55,41 @@ export default function MeetingTimePickPage() {
     }
   };
 
+  const renderPicker = (meetingType: MeetingType) => {
+    if (!meetingFrame) return;
+
+    switch (meetingType) {
+      case 'DATETIME':
+        return isTimePickerUpdate ? (
+          <SchedulePickerContainer
+            firstTime={meetingFrame.firstTime}
+            lastTime={meetingFrame.lastTime}
+            availableDates={meetingFrame.availableDates}
+          />
+        ) : (
+          <SchedulesViewer
+            isLocked={meetingFrame.isLocked}
+            firstTime={meetingFrame.firstTime}
+            lastTime={meetingFrame.lastTime}
+            hostName={meetingFrame.hostName}
+            availableDates={meetingFrame.availableDates}
+            meetingAttendees={meetingFrame.attendeeNames}
+          />
+        );
+      default:
+        return isTimePickerUpdate ? (
+          <MeetingConfirmCalendar.Picker availableDates={meetingFrame.availableDates} />
+        ) : (
+          <MeetingConfirmCalendar.Viewer
+            hostName={meetingFrame.hostName}
+            isLocked={meetingFrame.isLocked}
+            meetingAttendees={meetingFrame.attendeeNames}
+            availableDates={meetingFrame.availableDates}
+          />
+        );
+    }
+  };
+
   return (
     <div css={s_container} aria-label="약속 정보 조회 페이지">
       <section css={s_pageHeader}>
@@ -79,24 +117,7 @@ export default function MeetingTimePickPage() {
           </div>
         )}
       </section>
-      {meetingFrame && !isTimePickerUpdate ? (
-        <SchedulesViewer
-          isLocked={meetingFrame?.isLocked}
-          firstTime={meetingFrame.firstTime}
-          lastTime={meetingFrame.lastTime}
-          hostName={meetingFrame.hostName}
-          availableDates={meetingFrame.availableDates}
-          meetingAttendees={meetingFrame.attendeeNames}
-        />
-      ) : (
-        meetingFrame && (
-          <SchedulePickerContainer
-            firstTime={meetingFrame.firstTime}
-            lastTime={meetingFrame.lastTime}
-            availableDates={meetingFrame.availableDates}
-          />
-        )
-      )}
+      {meetingFrame && renderPicker(meetingFrame.type)}
     </div>
   );
 }

@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Table(name = "attendee")
 @Entity
@@ -46,15 +47,15 @@ public class Attendee extends BaseEntity {
     @Column(nullable = false, length = 10)
     private Role role;
 
+    public Attendee(Meeting meeting, String name, AttendeePassword password, Role role) {
+        this(meeting, new AttendeeName(name), password, role);
+    }
+
     public Attendee(Meeting meeting, AttendeeName name, AttendeePassword password, Role role) {
         this.meeting = meeting;
         this.name = name;
         this.password = password;
         this.role = role;
-    }
-
-    public Attendee(Meeting meeting, String name, String password, Role role) {
-        this(meeting, new AttendeeName(name), new AttendeePassword(password), role);
     }
 
     public boolean isHost() {
@@ -65,15 +66,15 @@ public class Attendee extends BaseEntity {
         return !isHost();
     }
 
-    public void verifyPassword(AttendeePassword other) {
-        this.password.verifyPassword(other);
+    public void updatePassword(String password) {
+        this.password = new AttendeePassword(password);
+    }
+
+    public void verifyPassword(AttendeeRawPassword rawPassword, PasswordEncoder passwordEncoder) {
+        password.verifyMatch(rawPassword, passwordEncoder);
     }
 
     public String name() {
-        return this.name.getName();
-    }
-
-    public String password() {
-        return this.password.getPassword();
+        return name.getName();
     }
 }

@@ -25,7 +25,8 @@ public record ConfirmedMeetingResponse(
         LocalDate endDate,
         @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
         LocalTime endTime,
-        String endDayOfWeek
+        String endDayOfWeek,
+        String type
 ) {
 
     public static ConfirmedMeetingResponse from(
@@ -40,7 +41,8 @@ public record ConfirmedMeetingResponse(
                 confirmedMeeting.getStartDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
                 confirmedMeeting.getEndDateTime().toLocalDate(),
                 confirmedMeeting.getEndDateTime().toLocalTime(),
-                confirmedMeeting.getEndDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN)
+                confirmedMeeting.getEndDateTime().getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
+                meeting.getType().name()
         );
     }
 }

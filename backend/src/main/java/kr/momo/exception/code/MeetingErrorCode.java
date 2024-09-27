@@ -14,7 +14,8 @@ public enum MeetingErrorCode implements ErrorCodeType {
     PAST_NOT_PERMITTED(HttpStatus.BAD_REQUEST, "과거 날짜로는 약속을 생성할 수 없습니다."),
     NOT_CONFIRMED(HttpStatus.NOT_FOUND, "아직 확정되지 않은 약속입니다."),
     UUID_GENERATION_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "약속 생성 과정 중 키 생성에 실패했습니다. 잠시 후 다시 시도해주세요."),
-    MEETING_LOAD_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "약속 정보를 불러오는데 실패했습니다. 약속을 다시 생성해주세요.");
+    MEETING_LOAD_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "약속 정보를 불러오는데 실패했습니다. 약속을 다시 생성해주세요."),
+    INVALID_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 약속 유형입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
