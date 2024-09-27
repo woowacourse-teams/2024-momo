@@ -67,6 +67,7 @@ public class AttendeeService {
     /**
      * TEMP: 비밀번호 마이그레이션 이후 삭제될 메서드입니다.
      */
+    @Transactional
     public Integer updateAllPassword() {
         List<Attendee> attendees = attendeeRepository.findAll();
         List<Attendee> rawAttendees = attendees.stream()
