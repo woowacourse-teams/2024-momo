@@ -103,20 +103,10 @@ jobs:
       - name: docker pull
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev
 
-      # 2. 기존 컨테이너 중지
-      - name: docker stop container
-        run: docker stop $(docker ps -q) 2>/dev/null || true
+      # 2. 실행 컨테이너 중 app 서비스만 재시작
+      - name: Restart app service
+        run: docker compose -f $HOME/docker-compose.yml up -d --no-deps app
 
-      # 3. 도커 컨테이너 실행
-      - name: docker run new container
-        run: >-
-          docker run --name momo-api-dev
-          --rm -d -p 8080:8080
-          --volume=$HOME/security:/momo/security:ro
-          --volume=$HOME/logs:/momo/logs
-          --env SPRING_PROFILE=dev
-          ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-dev
-
-      # 4. 미사용 이미지를 정리
+      # 3. 미사용 이미지를 정리
       - name: delete old docker image
         run: docker system prune -f
