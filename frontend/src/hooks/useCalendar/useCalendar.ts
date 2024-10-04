@@ -3,7 +3,7 @@ import type { MonthlyDays } from 'types/calendar';
 
 import { getMonth, getYear } from '@utils/date';
 
-import { getMonthlyDate } from './useCalendar.utils';
+import { getMonthlyCalendarDate } from './useCalendar.utils';
 
 interface useCalendarReturn {
   headers: {
@@ -39,7 +39,7 @@ const useCalendar = (): useCalendarReturn => {
     setCurrentFullDate(new Date(currentYear, currentMonth + 1));
   };
 
-  const monthlyDates = getMonthlyDate(currentFullDate);
+  const monthlyCalendarDate = getMonthlyCalendarDate(currentFullDate);
 
   return {
     headers: {
@@ -49,7 +49,7 @@ const useCalendar = (): useCalendarReturn => {
     },
     body: {
       today: TODAY,
-      value: monthlyDates,
+      value: monthlyCalendarDate,
     },
     view: {
       moveToNextMonth,
