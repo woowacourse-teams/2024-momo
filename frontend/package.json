@@ -12,7 +12,7 @@
     "build:dev": "NODE_ENV=production USE_BUNDLE_ANALYZER=false webpack --config webpack.prod.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload -o momo2024 -p momo-harry-test /dist",
     "lint:css": "stylelint '**/*.styles.ts' --fix",
-    "test": "jest --watch",
+    "test": "jest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
