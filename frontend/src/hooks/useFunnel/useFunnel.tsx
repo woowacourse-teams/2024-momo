@@ -29,7 +29,7 @@ const useFunnel = <Steps extends StepType>(steps: Steps, initialStep: Steps[numb
   const Funnel = useMemo(
     () =>
       Object.assign(
-        function RoteFunnel(props: RouteFunnelProps<Steps>) {
+        function RouteFunnel(props: RouteFunnelProps<Steps>) {
           const step =
             (location.state as { currentStep?: Steps[number] })?.currentStep || initialStep;
 
