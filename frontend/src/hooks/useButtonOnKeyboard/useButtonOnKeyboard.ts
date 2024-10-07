@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 
+const INITIAL_BUTTON_HEIGHT = 0;
+
 const useButtonOnKeyboard = () => {
-  const [resizedButtonHeight, setResizedButtonHeight] = useState(0);
+  const [resizedButtonHeight, setResizedButtonHeight] = useState(INITIAL_BUTTON_HEIGHT);
 
   useEffect(() => {
     const handleButtonHeightResize = () => {
