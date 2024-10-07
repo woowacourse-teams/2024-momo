@@ -16,7 +16,7 @@ export default function FunnelTestPage() {
     isMeetingNameInvalid,
     hostNickNameInput,
     hostPasswordInput,
-    isHostInfoInValid,
+    isHostInfoInvalid,
     hasDate,
     handleDateClick,
     meetingTimeInput,
@@ -37,7 +37,7 @@ export default function FunnelTestPage() {
         <MeetingHostInfo
           hostNickNameInput={hostNickNameInput}
           hostPasswordInput={hostPasswordInput}
-          isHostInfoInvalid={isHostInfoInValid}
+          isHostInfoInvalid={isHostInfoInvalid}
           onNextStep={() => setStep(CREATE_MEETING_STEPS.meetingDateTime)}
         />
       </Funnel.Step>
