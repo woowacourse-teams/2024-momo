@@ -28,7 +28,6 @@ export default function BottomFixedButton({
       >
         {children}
       </Button>
-      <div id="test"></div>
     </div>
   );
 }
