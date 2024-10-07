@@ -100,7 +100,6 @@ const globalStyles = css`
   }
 
   body {
-    overflow: hidden;
     display: flex;
     justify-content: center;
 
