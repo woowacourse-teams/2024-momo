@@ -3,12 +3,12 @@ import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
-import type { UseInputResult } from '@hooks/useInput/useInput.type';
+import type { UseInputReturn } from '@hooks/useInput/useInput';
 
 import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
 
 interface MeetingNameProps {
-  meetingNameInput: UseInputResult;
+  meetingNameInput: UseInputReturn;
   isMeetingNameInvalid: boolean;
   onNextStep: () => void;
 }

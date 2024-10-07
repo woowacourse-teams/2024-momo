@@ -1,18 +1,15 @@
-import { css } from '@emotion/react';
-import { useEffect, useRef } from 'react';
-
 import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 import Field from '@components/_common/Field';
 import Input from '@components/_common/Input';
 
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
-import type { UseInputResult } from '@hooks/useInput/useInput.type';
+import type { UseInputReturn } from '@hooks/useInput/useInput';
 
 import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
 
 interface MeetingHostInfoProps {
-  hostNickNameInput: UseInputResult;
-  hostPasswordInput: UseInputResult;
+  hostNickNameInput: UseInputReturn;
+  hostPasswordInput: UseInputReturn;
   isHostInfoInvalid: boolean;
   onNextStep: () => void;
 }
@@ -37,12 +34,7 @@ export default function MeetingHostInfo({
   const resizedButtonHeight = useButtonOnKeyboard();
 
   return (
-    <section
-      css={css`
-        position: relative;
-        height: 100%;
-      `}
-    >
+    <>
       <Field>
         <Field.Label id="닉네임" labelText="닉네임" />
         <Field.Description description={FIELD_DESCRIPTIONS.nickname} />
@@ -70,6 +62,6 @@ export default function MeetingHostInfo({
       >
         다음
       </BottomFixedButton>
-    </section>
+    </>
   );
 }
