@@ -5,11 +5,12 @@ import MeetingName from '@pages/CreateMeetingFunnelPage/MeetingName';
 import useCreateMeeting from '@hooks/useCreateMeeting/useCreateMeeting';
 import useFunnel from '@hooks/useFunnel/useFunnel';
 
-const testSteps = ['약속이름', '약속주최자정보', '약속날짜시간정보'] as const;
-type TestSteps = typeof testSteps;
+import { CREATE_MEETING_STEPS, meetingStepValues } from '@constants/meeting';
+
+type Steps = typeof meetingStepValues;
 
 export default function FunnelTestPage() {
-  const [setStep, Funnel] = useFunnel<TestSteps>(testSteps, '약속이름');
+  const [setStep, Funnel] = useFunnel<Steps>(meetingStepValues, '약속이름');
   const {
     meetingNameInput,
     isMeetingNameInvalid,
@@ -19,31 +20,33 @@ export default function FunnelTestPage() {
     hasDate,
     handleDateClick,
     meetingTimeInput,
-    isCreateMeetingFormInValid,
+    isCreateMeetingFormInvalid,
+    handleMeetingCreateButtonClick,
   } = useCreateMeeting();
 
   return (
     <Funnel>
-      <Funnel.Step name="약속이름">
+      <Funnel.Step name={CREATE_MEETING_STEPS.meetingName}>
         <MeetingName
           meetingNameInput={meetingNameInput}
           isMeetingNameInvalid={isMeetingNameInvalid}
-          onNextStep={() => setStep('약속주최자정보')}
+          onNextStep={() => setStep(CREATE_MEETING_STEPS.meetingHostInfo)}
         />
       </Funnel.Step>
-      <Funnel.Step name="약속주최자정보">
+      <Funnel.Step name={CREATE_MEETING_STEPS.meetingHostInfo}>
         <MeetingHostInfo
           hostNickNameInput={hostNickNameInput}
           hostPasswordInput={hostPasswordInput}
           isHostInfoInvalid={isHostInfoInValid}
-          onNextStep={() => setStep('약속날짜시간정보')}
+          onNextStep={() => setStep(CREATE_MEETING_STEPS.meetingDateTime)}
         />
       </Funnel.Step>
-      <Funnel.Step name="약속날짜시간정보">
+      <Funnel.Step name={CREATE_MEETING_STEPS.meetingDateTime}>
         <MeetingDateTime
           meetingDateInput={{ hasDate, onDateClick: handleDateClick }}
           meetingTimeInput={meetingTimeInput}
-          isCreateMeetingFormInValid={isCreateMeetingFormInValid}
+          isCreateMeetingFormInvalid={isCreateMeetingFormInvalid}
+          onMeetingCreateButtonClick={handleMeetingCreateButtonClick}
         />
       </Funnel.Step>
     </Funnel>
