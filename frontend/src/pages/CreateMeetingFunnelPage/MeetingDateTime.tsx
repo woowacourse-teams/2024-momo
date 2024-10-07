@@ -3,8 +3,9 @@ import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 import Calendar from '@components/_common/Calendar';
 import Field from '@components/_common/Field';
 
-import type { UseTimeRangeDropdownResult } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown.type';
+import type { UseTimeRangeDropdownReturn } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
+// 시작, 끝이 추가된 달력이랑 합쳐진 후, interface 수정예정(@해리)
 interface MeetingDateInput {
   hasDate: (date: string) => boolean;
   onDateClick: (date: string) => void;
@@ -12,14 +13,16 @@ interface MeetingDateInput {
 
 interface MeetingDateTimeProps {
   meetingDateInput: MeetingDateInput;
-  meetingTimeInput: UseTimeRangeDropdownResult;
-  isCreateMeetingFormInValid: boolean;
+  meetingTimeInput: UseTimeRangeDropdownReturn;
+  isCreateMeetingFormInvalid: boolean;
+  onMeetingCreateButtonClick: () => void;
 }
 
 export default function MeetingDateTime({
   meetingDateInput,
   meetingTimeInput,
-  isCreateMeetingFormInValid,
+  isCreateMeetingFormInvalid,
+  onMeetingCreateButtonClick,
 }: MeetingDateTimeProps) {
   const { hasDate, onDateClick } = meetingDateInput;
   const { startTime, endTime, handleStartTimeChange, handleEndTimeChange } = meetingTimeInput;
@@ -40,7 +43,7 @@ export default function MeetingDateTime({
           handleEndTimeChange={handleEndTimeChange}
         />
       </Field>
-      <BottomFixedButton onClick={() => console.log('hi')} disabled={isCreateMeetingFormInValid}>
+      <BottomFixedButton onClick={onMeetingCreateButtonClick} disabled={isCreateMeetingFormInvalid}>
         약속 생성하기
       </BottomFixedButton>
     </>
