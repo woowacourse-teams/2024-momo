@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import ToastProvider from '@contexts/ToastProvider';
+
 import globalStyles from '@styles/global';
 import theme from '@styles/theme';
 
@@ -51,7 +53,9 @@ enableMocking().then(() => {
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </React.StrictMode>,
