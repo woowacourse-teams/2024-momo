@@ -19,7 +19,7 @@ import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.auth.JwtManager;
-import kr.momo.service.meeting.dto.EntryMeetingResponse;
+import kr.momo.service.meeting.dto.MeetingHomeResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -112,10 +112,10 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public EntryMeetingResponse findMeetingHome(String uuid) {
+    public MeetingHomeResponse findMeetingHome(String uuid) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
-        return EntryMeetingResponse.from(meeting);
+        return MeetingHomeResponse.from(meeting);
     }
 
     @Transactional
