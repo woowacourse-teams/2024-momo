@@ -1,6 +1,6 @@
-import { useState } from 'react';
-
+import useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import useInput from '@hooks/useInput/useInput';
+import useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
@@ -33,28 +33,16 @@ const useCreateMeeting = () => {
     checkInputInvalid(hostNickNameInput.value, hostNickNameInput.errorMessage) ||
     checkInputInvalid(hostPasswordInput.value, hostPasswordInput.errorMessage);
 
-  const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
-
-  const hasDate = (date: string) => selectedDates.has(date);
-  const handleDateClick = (date: string) => {
-    setSelectedDates((prevDates) => {
-      const newSelectedDates = new Set(prevDates);
-      newSelectedDates.has(date) ? newSelectedDates.delete(date) : newSelectedDates.add(date);
-
-      return newSelectedDates;
-    });
-  };
-  const areDatesUnselected = selectedDates.size < 1;
-
+  const meetingDateInput = useDateSelect();
   const meetingTimeInput = useTimeRangeDropdown();
+  const meetingTypeInput = useMeetingType();
 
   const isCreateMeetingFormInvalid =
-    isMeetingNameInvalid || (isHostInfoInvalid && areDatesUnselected);
+    isMeetingNameInvalid || isHostInfoInvalid || meetingDateInput.areDatesUnselected;
 
   const { mutation: postMeetingMutation } = usePostMeetingMutation();
-
   const handleMeetingCreateButtonClick = () => {
-    const selectedDatesArray = Array.from(selectedDates);
+    const selectedDatesArray = Array.from(meetingDateInput.selectedDates);
 
     postMeetingMutation.mutate({
       meetingName: meetingNameInput.value,
@@ -67,6 +55,7 @@ const useCreateMeeting = () => {
         meetingTimeInput.endTime.value === INITIAL_END_TIME
           ? INITIAL_START_TIME
           : meetingTimeInput.endTime.value,
+      type: meetingTypeInput.meetingType,
     });
   };
 
@@ -76,9 +65,9 @@ const useCreateMeeting = () => {
     hostNickNameInput,
     hostPasswordInput,
     isHostInfoInvalid,
-    hasDate,
-    handleDateClick,
+    meetingDateInput,
     meetingTimeInput,
+    meetingTypeInput,
     isCreateMeetingFormInvalid,
     handleMeetingCreateButtonClick,
   };
