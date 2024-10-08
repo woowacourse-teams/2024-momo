@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeRepository;
 import kr.momo.domain.availabledate.AvailableDate;
@@ -24,6 +25,7 @@ import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
+import kr.momo.service.meeting.dto.EntryMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
@@ -257,5 +259,29 @@ class MeetingServiceTest {
         assertThatThrownBy(() -> meetingService.unlock(uuid, id))
                 .isInstanceOf(MomoException.class)
                 .hasMessage(AttendeeErrorCode.ACCESS_DENIED.message());
+    }
+
+    @DisplayName("UUID로 약속 입장 정보를 조회한다.")
+    @Test
+    void findMeetingHome() {
+        Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
+        String uuid = meeting.getUuid();
+
+        EntryMeetingResponse result = meetingService.findMeetingHome(uuid);
+
+        assertAll(
+                () -> assertThat(result.meetingName()).isEqualTo(meeting.getName()),
+                () -> assertThat(result.type()).isEqualTo(meeting.getType().name())
+        );
+    }
+
+    @DisplayName("약속 입장 정보를 조회한다.")
+    @Test
+    void throwsExceptionWhenFindHomeNoMeeting() {
+        String uuid = UUID.randomUUID().toString();
+
+        assertThatThrownBy(() -> meetingService.findMeetingHome(uuid))
+                .isInstanceOf(MomoException.class)
+                .hasMessage(MeetingErrorCode.NOT_FOUND_MEETING.message());
     }
 }

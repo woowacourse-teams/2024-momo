@@ -689,4 +689,18 @@ class MeetingControllerTest {
                 Timeslot.TIME_0600.startTime()
         );
     }
+
+    @DisplayName("약속 입장 정보를 조회하면 200 상태 코드를 응답한다.")
+    @Test
+    void findMeetingHome() {
+        Meeting meeting = MeetingFixture.MOVIE.create();
+        meeting = meetingRepository.save(meeting);
+
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/home")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
 }
