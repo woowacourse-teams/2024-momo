@@ -19,6 +19,7 @@ import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.service.auth.JwtManager;
+import kr.momo.service.meeting.dto.EntryMeetingResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
@@ -108,6 +109,13 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
         return MeetingSharingResponse.from(meeting);
+    }
+
+    @Transactional(readOnly = true)
+    public EntryMeetingResponse findMeetingHome(String uuid) {
+        Meeting meeting = meetingRepository.findByUuid(uuid)
+                .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
+        return EntryMeetingResponse.from(meeting);
     }
 
     @Transactional
