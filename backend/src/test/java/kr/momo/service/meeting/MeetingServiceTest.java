@@ -25,7 +25,7 @@ import kr.momo.exception.code.AttendeeErrorCode;
 import kr.momo.exception.code.MeetingErrorCode;
 import kr.momo.fixture.AttendeeFixture;
 import kr.momo.fixture.MeetingFixture;
-import kr.momo.service.meeting.dto.EntryMeetingResponse;
+import kr.momo.service.meeting.dto.MeetingHomeResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
@@ -267,7 +267,7 @@ class MeetingServiceTest {
         Meeting meeting = meetingRepository.save(MeetingFixture.GAME.create());
         String uuid = meeting.getUuid();
 
-        EntryMeetingResponse result = meetingService.findMeetingHome(uuid);
+        MeetingHomeResponse result = meetingService.findMeetingHome(uuid);
 
         assertAll(
                 () -> assertThat(result.meetingName()).isEqualTo(meeting.getName()),
