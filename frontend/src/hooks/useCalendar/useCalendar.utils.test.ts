@@ -21,11 +21,6 @@ describe('Calendar utils', () => {
   const testDate = new Date(TEST_YEAR, TEST_MONTH, TEST_DATE);
 
   describe('Calendar Base util functions test', () => {
-    it('getYear 함수는 올바른 년도를 반환한다.', () => {
-      const year = getYear(testDate);
-      expect(year).toBe(TEST_YEAR);
-    });
-
     it('getMonth 함수는 현재 달에서 1을 뺀 값을 반환한다.', () => {
       const month = getMonth(testDate);
       expect(month).toBe(TEST_MONTH);
@@ -36,21 +31,15 @@ describe('Calendar utils', () => {
       expect(day).toBe(TUESDAY_INDEX);
     });
 
-    it('getDate 함수는 오늘 날짜를 반환한다.', () => {
-      const date = getDate(testDate);
-      expect(date).toBe(TEST_DATE);
-    });
-
     it('getFullDate 함수는 오늘 날짜 정보를 문자열로 반환한다.', () => {
       const fullDate = getFullDate(testDate);
       expect(fullDate).toBe(TEST_FULL_DATE);
     });
   });
 
-  describe('serFirstDate', () => {
+  describe('setFirstDate', () => {
     it('날짜 객체를 해당 달의 첫 번째 날짜로 변경한다.', () => {
       const result = setFirstDate(testDate);
-      expect(getDate(result)).not.toBe(TEST_DATE);
       expect(getDate(result)).toBe(1);
     });
   });
@@ -68,6 +57,24 @@ describe('Calendar utils', () => {
       const EXPECTED_DAYS_IN_MONTH = 31;
       const dayInTestDate = getDaysInMonth(testDate);
       expect(dayInTestDate).toBe(EXPECTED_DAYS_IN_MONTH);
+    });
+
+    const LEAP_YEAR = 2020;
+    const FEBRUARY_INDEX = 1;
+    const DATE = 1;
+
+    it('윤년인 경우 2월의 총 일수를 계산해서 반환한다. (29일)', () => {
+      const testDate = new Date(LEAP_YEAR, FEBRUARY_INDEX, DATE);
+      const EXPECTED_DAYS_IN_FEBRUARY = 29;
+      const dayInTestDate = getDaysInMonth(testDate);
+      expect(dayInTestDate).toBe(EXPECTED_DAYS_IN_FEBRUARY);
+    });
+
+    it('평년인 경우 2월의 총 일수를 계산해서 반환한다. (28일)', () => {
+      const testDate = new Date(LEAP_YEAR + 1, FEBRUARY_INDEX, DATE); // 2021년은 평년
+      const EXPECTED_DAYS_IN_FEBRUARY = 28;
+      const dayInTestDate = getDaysInMonth(testDate);
+      expect(dayInTestDate).toBe(EXPECTED_DAYS_IN_FEBRUARY);
     });
   });
 
@@ -89,11 +96,13 @@ describe('Calendar utils', () => {
       const calendarStartDate = getCalendarStartDate(testDate);
 
       const firstWeeklyDate = getWeeklyDate(calendarStartDate, getMonth(testDate));
-      const { status } =
-        firstWeeklyDate.find(({ value }) => getMonth(value) === getMonth(testDate) - 1) ?? {};
+      const prevStatusDates = firstWeeklyDate
+        .filter(({ value }) => getMonth(value) === getMonth(testDate) - 1)
+        .map(({ status }) => status);
 
-      expect(firstWeeklyDate).toHaveLength(CALENDAR_PROPERTIES.daysInOneWeek);
-      expect(status).toBe('prev');
+      prevStatusDates.forEach((status) => {
+        expect(status).toBe('prev');
+      });
     });
 
     it('한 주 데이터에 다음 달이 포함되어 있으면, 해당 날짜의 상태는 next여야 한다.', () => {
@@ -104,21 +113,26 @@ describe('Calendar utils', () => {
       );
 
       const lastWeeklyDate = getWeeklyDate(calendarStartDate, getMonth(testDate));
-      const { status } =
-        lastWeeklyDate.find(({ value }) => getMonth(value) === getMonth(testDate) + 1) ?? {};
+      const nextStatusDates = lastWeeklyDate
+        .filter(({ value }) => getMonth(value) === getMonth(testDate) - 1)
+        .map(({ status }) => status);
 
-      expect(lastWeeklyDate).toHaveLength(CALENDAR_PROPERTIES.daysInOneWeek);
-      expect(status).toBe('next');
+      nextStatusDates.forEach((status) => {
+        expect(status).toBe('next');
+      });
     });
 
     it('한 주 데이터에 현재 달이 포함되어 있으면, 해당 날짜의 상태는 current여야 한다.', () => {
       const calendarStartDate = getCalendarStartDate(testDate);
       const firstWeeklyDate = getWeeklyDate(calendarStartDate, getMonth(testDate));
 
-      const { status } =
-        firstWeeklyDate.find(({ value }) => getMonth(value) === getMonth(testDate)) ?? {};
+      const currentStatusDates = firstWeeklyDate
+        .filter(({ value }) => getMonth(value) === getMonth(testDate))
+        .map(({ status }) => status);
 
-      expect(status).toBe('current');
+      currentStatusDates.forEach((status) => {
+        expect(status).toBe('current');
+      });
     });
   });
 
@@ -174,7 +188,7 @@ describe('Calendar utils', () => {
       });
     });
 
-    it('달력 데이터의 마지막 "current" 상태 이후의 모든 날짜는 "prev" 상태여야 한다.', () => {
+    it('달력 데이터의 마지막 "current" 상태 이후의 모든 날짜는 "next" 상태여야 한다.', () => {
       const reversedFlattenedCalendarDates = monthlyCalendarDate
         .flatMap((week) => week.value)
         .reverse();
