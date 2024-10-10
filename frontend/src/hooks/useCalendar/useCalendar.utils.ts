@@ -18,17 +18,17 @@ export const getDaysInMonth = (date: Date) => {
 };
 
 export const getNumberOfWeeks = (date: Date) => {
-  const firstOfMonth = setFirstDate(date);
+  const firstDateOfMonth = setFirstDate(date);
   const daysInMonth = getDaysInMonth(date);
-  const dayOfWeek = getDay(firstOfMonth);
+  const dayOfWeek = getDay(firstDateOfMonth);
 
   return Math.ceil((daysInMonth + dayOfWeek) / 7);
 };
 
 export const getMonthlyStartIndex = (date: Date) => {
-  const firstOfMonth = setFirstDate(date);
+  const firstDateOfMonth = setFirstDate(date);
 
-  return firstOfMonth.getDay();
+  return firstDateOfMonth.getDay();
 };
 
 const getMonthStatus = (targetDate: Date, currentMonthIndex: number): MonthStatus => {
@@ -56,19 +56,19 @@ export const getWeeklyDate = (startDate: Date, currentMonthIndex: number): DateI
   });
 
 export const getCalendarStartDate = (date: Date) => {
-  const monthStartDate = setFirstDate(date);
-  monthStartDate.setDate(1 - getMonthlyStartIndex(date));
+  const startDateOfMonth = setFirstDate(date);
+  startDateOfMonth.setDate(1 - getMonthlyStartIndex(date));
 
-  return monthStartDate;
+  return startDateOfMonth;
 };
 
 export const getMonthlyCalendarDate = (date: Date): MonthlyDays => {
   const numberOfWeeks = getNumberOfWeeks(date);
-  const monthStartDate = getCalendarStartDate(date);
+  const startDateOfCalendar = getCalendarStartDate(date);
 
   return Array.from({ length: numberOfWeeks }, (_, i) => {
-    const newDate = new Date(monthStartDate);
-    newDate.setDate(getDate(monthStartDate) + CALENDAR_PROPERTIES.daysInOneWeek * i);
+    const newDate = new Date(startDateOfCalendar);
+    newDate.setDate(getDate(startDateOfCalendar) + CALENDAR_PROPERTIES.daysInOneWeek * i);
 
     return {
       key: getYear(date) * getMonth(date) + i,
