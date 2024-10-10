@@ -16,6 +16,8 @@ import type { UseTimeRangeDropdownReturn } from '@hooks/useTimeRangeDropdown/use
 
 import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
 
+import { s_container, s_dateCandidateSelector } from './MeetingDateTime.styles';
+
 interface MeetingDateTimeProps {
   meetingDateInput: ReturnType<typeof useDateSelect>;
   meetingTimeInput: UseTimeRangeDropdownReturn;
@@ -69,8 +71,8 @@ export default function MeetingDateTime({
   };
 
   return (
-    <>
-      <Field>
+    <div css={s_container}>
+      <div css={s_dateCandidateSelector}>
         <Field>
           <Field.Label id="날짜선택" labelText="약속 후보 날짜 선택" />
           <Field.Description description={FIELD_DESCRIPTIONS.date} />
@@ -100,14 +102,15 @@ export default function MeetingDateTime({
             <Calendar.Body renderDate={renderDate} />
           </Calendar>
         </Field>
-      </Field>
 
-      <Checkbox
-        onChange={handleToggleIsChecked}
-        id="meetingType"
-        isChecked={isChecked}
-        labelText="날짜만 선택할래요"
-      />
+        <Checkbox
+          onChange={handleToggleIsChecked}
+          id="meetingType"
+          isChecked={isChecked}
+          labelText="날짜만 선택할래요"
+        />
+      </div>
+
       {!isChecked && (
         <Field>
           <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
@@ -123,6 +126,6 @@ export default function MeetingDateTime({
       <BottomFixedButton onClick={onMeetingCreateButtonClick} disabled={isCreateMeetingFormInvalid}>
         약속 생성하기
       </BottomFixedButton>
-    </>
+    </div>
   );
 }
