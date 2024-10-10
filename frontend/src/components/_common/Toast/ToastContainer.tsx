@@ -4,14 +4,14 @@ import Toast from '.';
 import type { ToastType } from './Toast.type';
 
 interface ToastContainerProps {
-  duration: number;
+  duration?: number;
   type: ToastType;
   message: string;
 }
 
 const TOAST_ANIMATION_DURATION_TIME = 500;
 
-export default function ToastContainer({ duration, type, message }: ToastContainerProps) {
+export default function ToastContainer({ type, message, duration = 3000 }: ToastContainerProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {

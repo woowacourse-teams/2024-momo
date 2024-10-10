@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createContext } from 'react';
 
 import type { ToastType } from '@components/_common/Toast/Toast.type';
@@ -9,7 +9,7 @@ interface ToastState {
   id: number;
   type: ToastType;
   message: string;
-  duration: number;
+  duration?: number;
 }
 
 interface ToastContextType {
