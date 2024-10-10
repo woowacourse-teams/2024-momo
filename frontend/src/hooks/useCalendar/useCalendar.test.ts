@@ -36,7 +36,7 @@ describe('useCalendar', () => {
   });
 
   describe('달력 년도 이동 기능', () => {
-    it('다음 년도로 이동하면, 년도가 변경되어야 한다.', async () => {
+    it('12월에서 다음 달로 이동하면 다음 년도로 변경되어야 한다.', () => {
       jest.setSystemTime(new Date(TEST_YEAR, LAST_MONTH_INDEX, TEST_DATE));
 
       const { result } = renderHook(() => useCalendar());
@@ -55,7 +55,7 @@ describe('useCalendar', () => {
       expect(isCurrentMonth).toBeFalsy();
     });
 
-    it('이전 년도 이동하면, 년도가 변경되어야 한다.', async () => {
+    it('1월에서 이전 년도로 이동하면 이전 년도로 변경되어야 한다.', () => {
       jest.setSystemTime(new Date(TEST_YEAR, FIRST_MONTH_INDEX, TEST_DATE));
 
       const { result } = renderHook(() => useCalendar());
