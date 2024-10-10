@@ -3,7 +3,7 @@ name: Backend Dev CD
 on:
   workflow_dispatch:
   push:
-    branches: ['develop']
+    branches: [ 'develop' ]
 
 jobs:
   detect-changes:
@@ -83,7 +83,7 @@ jobs:
 
   be-depoly:
     needs: be-build
-    runs-on: [self-hosted, linux, ARM64, dev]
+    runs-on: [ self-hosted, linux, ARM64, dev ]
     defaults:
       run:
         shell: bash
@@ -105,7 +105,7 @@ jobs:
 
       # 2. 실행 컨테이너 중 app 서비스만 재시작
       - name: Restart app service
-        run: docker compose -f $HOME/docker-compose.yml up -d --no-deps app
+        run: docker compose -f $HOME/security/docker-compose.yml up -d --no-deps app
 
       # 3. 미사용 이미지를 정리
       - name: delete old docker image
