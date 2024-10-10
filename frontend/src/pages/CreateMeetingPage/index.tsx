@@ -1,6 +1,6 @@
-import MeetingDateTime from '@pages/CreateMeetingPage/MeetingDateTime';
-import MeetingHostInfo from '@pages/CreateMeetingPage/MeetingHostInfo';
-import MeetingName from '@pages/CreateMeetingPage/MeetingName';
+import MeetingDateTime from '@pages/CreateMeetingPage/components/MeetingDateTime';
+import MeetingHostInfo from '@pages/CreateMeetingPage/components/MeetingHostInfo';
+import MeetingName from '@pages/CreateMeetingPage/components/MeetingName';
 
 import useCreateMeeting from '@hooks/useCreateMeeting/useCreateMeeting';
 import useFunnel from '@hooks/useFunnel/useFunnel';
