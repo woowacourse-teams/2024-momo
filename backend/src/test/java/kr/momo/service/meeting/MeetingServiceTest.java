@@ -275,7 +275,7 @@ class MeetingServiceTest {
         );
     }
 
-    @DisplayName("약속 입장 정보를 조회한다.")
+    @DisplayName("약속 입장 정보를 조회시 UUID가 존재하지 않으면 예외가 발생한다.")
     @Test
     void throwsExceptionWhenFindHomeNoMeeting() {
         String uuid = UUID.randomUUID().toString();
