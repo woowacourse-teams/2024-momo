@@ -105,7 +105,7 @@ jobs:
 
       # 2. 실행 컨테이너 중 app 서비스만 재시작
       - name: Restart app service
-        run: docker compose -f $HOME/security/docker-compose.yml up -d --no-deps app
+        run: docker compose -f $HOME/security/docker-compose-dev.yml restart app --no-deps
 
       # 3. 미사용 이미지를 정리
       - name: delete old docker image
