@@ -12,7 +12,10 @@ import Text from '@components/_common/Text';
 
 import type { MeetingType } from '@apis/meetings';
 
-import { useLockMeetingMutation, useUnlockMeetingMutation } from '@stores/servers/meeting/mutation';
+import {
+  useLockMeetingMutation,
+  useUnlockMeetingMutation,
+} from '@stores/servers/meeting/mutations';
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
 
 import {
