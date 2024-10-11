@@ -200,7 +200,7 @@ export default function SchedulePicker({
                 onClick={() => handleScheduleSave('edit')}
                 isLoading={isEditModePending}
               >
-                등록하기
+                수정하기
               </Button>
             </>
           )}

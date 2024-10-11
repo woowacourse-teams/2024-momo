@@ -117,7 +117,7 @@ export default function Picker({ availableDates, mode }: PickerProps) {
                 onClick={() => handleScheduleSave('edit')}
                 isLoading={isEditModePending}
               >
-                등록하기
+                수정하기
               </Button>
             </>
           )}
