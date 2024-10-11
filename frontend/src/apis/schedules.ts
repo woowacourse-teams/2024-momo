@@ -5,6 +5,10 @@ import type {
   MeetingSingleSchedule,
 } from 'types/schedule';
 
+import { ResponseError } from '@utils/responseError';
+
+import { BASE_URL } from '@constants/api';
+
 import { fetchClient } from './_common/fetchClient';
 
 export const postSchedule = async ({
@@ -14,16 +18,22 @@ export const postSchedule = async ({
   uuid: string;
   requestData: MeetingSingeScheduleItem[];
 }) => {
-  const path = `/${uuid}/schedules`;
-
-  await fetchClient({
-    path,
+  const response = await fetch(`${BASE_URL}/${uuid}/schedules`, {
     method: 'POST',
-    body: {
-      dateTimes: requestData,
+    headers: {
+      'Content-Type': 'application/json',
     },
-    isAuthRequire: true,
+    body: JSON.stringify({
+      dateTimes: requestData,
+    }),
+    credentials: 'include',
   });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new ResponseError(data);
+  }
 };
 
 export const createMeetingSchedulesRequestUrl = (uuid: string, attendeeName: string) => {
