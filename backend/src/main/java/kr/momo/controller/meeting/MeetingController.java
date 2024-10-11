@@ -75,7 +75,7 @@ public class MeetingController implements MeetingControllerDocs {
     }
 
     @GetMapping("/api/v1/meetings/{uuid}/home")
-    public MomoApiResponse<MeetingHomeResponse> findMeetingEntry(@PathVariable String uuid) {
+    public MomoApiResponse<MeetingHomeResponse> findMeetingHome(@PathVariable String uuid) {
         MeetingHomeResponse response = meetingService.findMeetingHome(uuid);
         return new MomoApiResponse<>(response);
     }
