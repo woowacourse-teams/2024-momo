@@ -65,6 +65,7 @@ export default function MeetingTimePickPage() {
             firstTime={meetingFrame.firstTime}
             lastTime={meetingFrame.lastTime}
             availableDates={meetingFrame.availableDates}
+            type="edit"
           />
         ) : (
           <SchedulesViewer

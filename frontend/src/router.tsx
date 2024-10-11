@@ -7,6 +7,9 @@ import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
+import MeetingInvitePage from '@pages/MeetingInvitePage';
+import MeetingRegisterPage from '@pages/MeetingRegisterPage';
+
 import PageMoveLoading from '@components/_common/PageMoveLoading';
 
 const AttendeeLoginPage = lazy(() => import('@pages/AttendeeLoginPage'));
@@ -38,15 +41,23 @@ const meetingRoutes: RouteObject[] = [
     children: [
       {
         index: true,
+        element: SuspenseWrapper(MeetingInvitePage),
+      },
+      {
+        path: 'login',
+        element: SuspenseWrapper(AttendeeLoginPage),
+      },
+      {
+        path: 'register',
+        element: SuspenseWrapper(MeetingRegisterPage),
+      },
+      {
+        path: 'viewer',
         element: (
           <TimePickerUpdateStateProvider>
             {SuspenseWrapper(MeetingTimePickPage)}
           </TimePickerUpdateStateProvider>
         ),
-      },
-      {
-        path: 'login',
-        element: SuspenseWrapper(AttendeeLoginPage),
       },
       {
         path: 'recommend',

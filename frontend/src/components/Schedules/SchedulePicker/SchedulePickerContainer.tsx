@@ -8,11 +8,16 @@ import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
 
 import SchedulePicker from '.';
 
+interface SchedulePickerContainerProps extends MeetingDateTime {
+  type: 'register' | 'edit';
+}
+
 export default function SchedulePickerContainer({
   firstTime,
   lastTime,
   availableDates,
-}: MeetingDateTime) {
+  type,
+}: SchedulePickerContainerProps) {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
   const { userName } = useContext(AuthContext).state;
@@ -26,6 +31,7 @@ export default function SchedulePickerContainer({
         lastTime={lastTime}
         availableDates={availableDates}
         meetingSingleSchedule={meetingSchedules}
+        type={type}
       />
     )
   );

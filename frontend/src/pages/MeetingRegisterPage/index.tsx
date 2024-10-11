@@ -36,6 +36,7 @@ export default function MeetingRegisterPage() {
             firstTime={meetingFrame.firstTime}
             lastTime={meetingFrame.lastTime}
             availableDates={meetingFrame.availableDates}
+            type="register"
           />
         );
       default:

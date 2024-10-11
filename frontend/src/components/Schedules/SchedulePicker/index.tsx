@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule } from 'types/schedule';
 
@@ -33,8 +33,11 @@ import {
 } from '../Schedules.styles';
 import { convertToSchedule, generateSingleScheduleTable } from '../Schedules.util';
 
+type Mode = 'register' | 'edit';
+
 interface SchedulePickerProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;
+  type: Mode;
 }
 
 const TIME_SELECT_MODE = {
@@ -47,7 +50,10 @@ export default function SchedulePicker({
   lastTime,
   availableDates,
   meetingSingleSchedule,
+  type,
 }: SchedulePickerProps) {
+  const navigate = useNavigate();
+
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
@@ -73,11 +79,17 @@ export default function SchedulePicker({
     isLastPage,
   } = usePagedTimePick(availableDates, schedules);
 
-  const { mutate: postScheduleMutate, isPending } = usePostScheduleMutation(() =>
-    handleToggleIsTimePickerUpdate(),
-  );
+  const { mutate: postScheduleMutateForEdit, isPending: isEditModePending } =
+    usePostScheduleMutation(() => handleToggleIsTimePickerUpdate());
 
-  const handleOnToggle = () => {
+  const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
+    usePostScheduleMutation(() => handleMeetingViewerNavigate());
+
+  const handleMeetingViewerNavigate = () => {
+    navigate(`/meeting/${uuid}/viewer`);
+  };
+
+  const handleScheduleSave = (mode: Mode) => {
     const convert = convertToSchedule({
       availableDates,
       firstTime,
@@ -86,7 +98,15 @@ export default function SchedulePicker({
       selectMode,
     });
 
-    postScheduleMutate({ uuid, requestData: convert });
+    if (convert.length === 0) {
+      return;
+    }
+
+    const scheduleRequestData = { uuid, requestData: convert };
+
+    mode === 'register'
+      ? postScheduleMutateForRegistration(scheduleRequestData)
+      : postScheduleMutateForEdit(scheduleRequestData);
   };
 
   const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
@@ -155,12 +175,35 @@ export default function SchedulePicker({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
-          <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
-            취소하기
-          </Button>
-          <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
-            등록하기
-          </Button>
+          {type === 'register' ? (
+            <>
+              <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
+                약속 현황 조회
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={() => handleScheduleSave('register')}
+                isLoading={isRegisterModePending}
+              >
+                등록하기
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
+                취소하기
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={() => handleScheduleSave('edit')}
+                isLoading={isEditModePending}
+              >
+                등록하기
+              </Button>
+            </>
+          )}
         </div>
         <button css={s_circleButton} onClick={resetTableValue}>
           <Rotate width="16" height="16" />
