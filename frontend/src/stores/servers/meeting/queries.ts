@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getMeetingBase, getMeetingInvitationDetails } from '@apis/meetings/meetings';
 import { getMeetingTimeRecommends } from '@apis/meetings/recommends';
-import { getMeetingMySchedule } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
@@ -30,13 +29,6 @@ export const useGetMeetingRecommendsQuery = ({
       getMeetingTimeRecommends({ uuid, recommendType, attendeeNames: currentAttendeeNames }),
     retry: 0,
     refetchOnWindowFocus: false,
-  });
-
-export const useGetMyScheduleQuery = (uuid: string, userName: string) =>
-  useQuery({
-    queryKey: [QUERY_KEY.meetingMySchedule, { userName }],
-    queryFn: () => getMeetingMySchedule(uuid),
-    staleTime: 0,
   });
 
 export const useMeetingInvitationDetailQuery = (uuid: string) => {

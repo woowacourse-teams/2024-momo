@@ -5,7 +5,7 @@ import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
-import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
+import { useGetMyScheduleQuery } from '@stores/servers/schedule/queries';
 
 import SchedulePicker from '.';
 
