@@ -7,9 +7,6 @@ import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
-import MeetingInvitePage from '@pages/MeetingInvitePage';
-import MeetingRegisterPage from '@pages/MeetingRegisterPage';
-
 import PageMoveLoading from '@components/_common/PageMoveLoading';
 
 const AttendeeLoginPage = lazy(() => import('@pages/AttendeeLoginPage'));
@@ -19,8 +16,10 @@ const LandingPage = lazy(() => import('@pages/LandingPage'));
 const MeetingConfirmPage = lazy(() => import('@pages/MeetingConfirmPage'));
 const MeetingLinkSharePage = lazy(() => import('@pages/MeetingLinkSharePage'));
 const MeetingRecommendPage = lazy(() => import('@pages/MeetingRecommendPage'));
-const MeetingTimePickPage = lazy(() => import('@pages/MeetingTimePickPage'));
+const MeetingRegisterPage = lazy(() => import('@pages/MeetingRegisterPage'));
+const MeetingViewerPage = lazy(() => import('@pages/MeetingViewerPage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
+const MeetingInvitePage = lazy(() => import('@pages/MeetingInvitePage'));
 
 const SuspenseWrapper = (Component: ComponentType) => (
   <Suspense fallback={<PageMoveLoading />}>
@@ -55,7 +54,7 @@ const meetingRoutes: RouteObject[] = [
         path: 'viewer',
         element: (
           <TimePickerUpdateStateProvider>
-            {SuspenseWrapper(MeetingTimePickPage)}
+            {SuspenseWrapper(MeetingViewerPage)}
           </TimePickerUpdateStateProvider>
         ),
       },

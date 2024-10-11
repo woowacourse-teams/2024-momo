@@ -21,8 +21,8 @@ import {
 } from './MeetingInvitePage.styles';
 
 const MEETING_TYPE = {
-  DAYSONLY: '날짜',
-  DATETIME: '날짜와 시간',
+  DAYSONLY: '날짜를',
+  DATETIME: '날짜와 시간을',
 };
 
 export default function MeetingInvitePage() {
@@ -55,7 +55,7 @@ export default function MeetingInvitePage() {
           <h1 css={s_titleText}>{meetingName}</h1>
           <div
             css={s_explanationText}
-          >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME}을 알려주세요.`}</div>
+          >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME} 알려주세요.`}</div>
         </div>
       </div>
       <div css={s_buttonContainer}>

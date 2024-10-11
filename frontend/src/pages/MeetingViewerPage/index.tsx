@@ -23,14 +23,14 @@ import {
   s_contentDivider,
   s_pageHeader,
   s_toggleButtonContainer,
-} from './MeetingTimePickPage.styles';
+} from './MeetingViewerPage.styles';
 
 const MEETING_QUERY_PAGE_ATTRIBUTES = {
   overview: ' 약속 참여자들이\n선택한 시간대를 알려드릴게요',
   timePick: ' 약속에\n참여할 수 있는 시간을 알려주세요',
 };
 
-export default function MeetingTimePickPage() {
+export default function MeetingViewerPage() {
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
   const {
