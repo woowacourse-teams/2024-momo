@@ -44,11 +44,6 @@ export default function Picker({ availableDates, mode }: PickerProps) {
   const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
     usePostScheduleMutation(() => handleMeetingViewerNavigate());
 
-  const handleMeetingViewerNavigate = () => {
-    navigate(`/meeting/${uuid}/viewer`);
-  };
-
-  // 백엔드에 날짜 데이터 보내주기 위해 임시로 generate함수 선언(@낙타)
   const generateScheduleTable = (dates: string[]) => {
     return dates.map((date) => {
       return {
@@ -58,13 +53,16 @@ export default function Picker({ availableDates, mode }: PickerProps) {
     });
   };
 
-  const handleScheduleSave = (mode: Mode) => {
-    const convertedData = generateScheduleTable(selectedDates);
+  const handleMeetingViewerNavigate = () => {
+    navigate(`/meeting/${uuid}/viewer`);
+  };
 
-    if (convertedData.length === 0) {
+  const handleScheduleSave = (mode: Mode) => {
+    if (mode === 'register' && selectedDates.length === 0) {
       return;
     }
 
+    const convertedData = generateScheduleTable(selectedDates);
     const scheduleRequestData = { uuid, requestData: convertedData };
 
     mode === 'register'
@@ -103,6 +101,7 @@ export default function Picker({ availableDates, mode }: PickerProps) {
                 variant="primary"
                 onClick={() => handleScheduleSave('register')}
                 isLoading={isRegisterModePending}
+                disabled={selectedDates.length === 0}
               >
                 등록하기
               </Button>

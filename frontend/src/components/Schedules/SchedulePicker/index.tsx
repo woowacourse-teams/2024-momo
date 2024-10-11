@@ -83,31 +83,32 @@ export default function SchedulePicker({
   const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
     usePostScheduleMutation(() => handleMeetingViewerNavigate());
 
+  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
+
   const handleMeetingViewerNavigate = () => {
     navigate(`/meeting/${uuid}/viewer`);
   };
 
-  const handleScheduleSave = (mode: Mode) => {
-    const convertedData = convertToSchedule({
-      availableDates,
-      firstTime,
-      lastTime,
-      selectedScheduleTable: tableValue,
-      selectMode,
-    });
+  const convertedScheduleData = convertToSchedule({
+    availableDates,
+    firstTime,
+    lastTime,
+    selectedScheduleTable: tableValue,
+    selectMode,
+  });
 
-    if (convertedData.length === 0) {
+  const handleScheduleSave = (mode: Mode) => {
+    if (mode === 'register' && convertedScheduleData.length === 0) {
       return;
     }
 
-    const scheduleRequestData = { uuid, requestData: convertedData };
+    const scheduleRequestData = { uuid, requestData: convertedScheduleData };
 
     mode === 'register'
       ? postScheduleMutateForRegistration(scheduleRequestData)
       : postScheduleMutateForEdit(scheduleRequestData);
   };
 
-  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
   const handleSelectModeChange = (mode: keyof typeof TIME_SELECT_MODE) => {
     if (selectMode === mode) return;
 
@@ -183,6 +184,7 @@ export default function SchedulePicker({
                 variant="primary"
                 onClick={() => handleScheduleSave('register')}
                 isLoading={isRegisterModePending}
+                disabled={convertedScheduleData.length === 0}
               >
                 등록하기
               </Button>
