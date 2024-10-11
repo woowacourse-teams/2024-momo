@@ -7,7 +7,7 @@ import MeetingConfirmCalendar from '@components/MeetingConfirmCalendar';
 import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
 import Text from '@components/_common/Text';
 
-import type { MeetingType } from '@apis/meetings';
+import type { MeetingType } from '@apis/meetings/meetings';
 
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
 

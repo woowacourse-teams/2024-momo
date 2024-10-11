@@ -15,8 +15,8 @@ import Dropdown from '@components/_common/Dropdown';
 
 import useMeetingTimeRecommendFilter from '@hooks/useMeetingTimeRecommendFilter/useMeetingTimeRecommendFilter';
 
-import { postMeetingConfirm } from '@apis/meetingConfirm';
-import type { MeetingRecommend } from '@apis/meetingRecommend';
+import { postMeetingConfirm } from '@apis/meetings/confirms';
+import type { MeetingRecommend } from '@apis/meetings/recommends';
 
 import { s_container } from './MeetingTimeOptions.styles';
 

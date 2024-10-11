@@ -10,7 +10,7 @@ import SchedulesViewer from '@components/Schedules/ScheduleViewer/SchedulesViewe
 import ToggleButton from '@components/_common/Buttons/ToggleButton';
 import Text from '@components/_common/Text';
 
-import type { MeetingType } from '@apis/meetings';
+import type { MeetingType } from '@apis/meetings/meetings';
 
 import {
   useLockMeetingMutation,

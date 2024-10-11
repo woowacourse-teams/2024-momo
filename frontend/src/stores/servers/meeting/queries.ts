@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getMeetingTimeRecommends } from '@apis/meetingRecommend';
-import { getMeetingBase } from '@apis/meetings';
+import { getMeetingBase } from '@apis/meetings/meetings';
+import { getMeetingTimeRecommends } from '@apis/meetings/recommends';
 import { getMeetingMySchedule } from '@apis/schedules';
 
 import { QUERY_KEY } from '@constants/queryKeys';

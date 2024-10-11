@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import type { PostMeetingRequest } from '@apis/meetings';
+import type { PostMeetingRequest } from '@apis/meetings/meetings';
 
 import { BASE_URL } from '@constants/api';
 

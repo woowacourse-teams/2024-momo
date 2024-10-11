@@ -4,9 +4,10 @@ import { ResponseError } from '@utils/responseError';
 
 import { BASE_URL } from '@constants/api';
 
-import { fetchClient } from './_common/fetchClient';
+import { fetchClient } from '../_common/fetchClient';
 
 export type MeetingType = 'DAYSONLY' | 'DATETIME';
+
 interface MeetingBaseResponse {
   meetingName: string;
   firstTime: string;

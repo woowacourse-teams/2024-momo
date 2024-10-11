@@ -1,4 +1,4 @@
-import { fetchClient } from './_common/fetchClient';
+import { fetchClient } from '../_common/fetchClient';
 import type { MeetingType } from './meetings';
 
 interface GetMeetingRecommendRequest {

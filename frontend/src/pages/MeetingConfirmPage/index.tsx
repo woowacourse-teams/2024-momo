@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import Text from '@components/_common/Text';
 
-import { getMeetingAttendees } from '@apis/meetingRecommend';
+import { getMeetingAttendees } from '@apis/meetings/recommends';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 
