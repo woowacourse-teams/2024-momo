@@ -36,11 +36,16 @@ export default function MeetingRegisterPage() {
             firstTime={meetingFrame.firstTime}
             lastTime={meetingFrame.lastTime}
             availableDates={meetingFrame.availableDates}
-            type="register"
+            mode="register"
           />
         );
       default:
-        return <MeetingConfirmCalendar.Picker availableDates={meetingFrame.availableDates} />;
+        return (
+          <MeetingConfirmCalendar.Picker
+            availableDates={meetingFrame.availableDates}
+            mode="register"
+          />
+        );
     }
   };
 

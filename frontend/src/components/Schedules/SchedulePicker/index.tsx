@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
-import type { MeetingSingleSchedule } from 'types/schedule';
+import type { MeetingSingleSchedule, Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
@@ -33,11 +33,9 @@ import {
 } from '../Schedules.styles';
 import { convertToSchedule, generateSingleScheduleTable } from '../Schedules.util';
 
-type Mode = 'register' | 'edit';
-
 interface SchedulePickerProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;
-  type: Mode;
+  mode: Mode;
 }
 
 const TIME_SELECT_MODE = {
@@ -50,7 +48,7 @@ export default function SchedulePicker({
   lastTime,
   availableDates,
   meetingSingleSchedule,
-  type,
+  mode,
 }: SchedulePickerProps) {
   const navigate = useNavigate();
 
@@ -90,7 +88,7 @@ export default function SchedulePicker({
   };
 
   const handleScheduleSave = (mode: Mode) => {
-    const convert = convertToSchedule({
+    const convertedData = convertToSchedule({
       availableDates,
       firstTime,
       lastTime,
@@ -98,11 +96,11 @@ export default function SchedulePicker({
       selectMode,
     });
 
-    if (convert.length === 0) {
+    if (convertedData.length === 0) {
       return;
     }
 
-    const scheduleRequestData = { uuid, requestData: convert };
+    const scheduleRequestData = { uuid, requestData: convertedData };
 
     mode === 'register'
       ? postScheduleMutateForRegistration(scheduleRequestData)
@@ -175,7 +173,7 @@ export default function SchedulePicker({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
-          {type === 'register' ? (
+          {mode === 'register' ? (
             <>
               <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
                 약속 현황 조회

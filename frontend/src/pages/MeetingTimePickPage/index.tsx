@@ -65,7 +65,7 @@ export default function MeetingTimePickPage() {
             firstTime={meetingFrame.firstTime}
             lastTime={meetingFrame.lastTime}
             availableDates={meetingFrame.availableDates}
-            type="edit"
+            mode="edit"
           />
         ) : (
           <SchedulesViewer
@@ -79,7 +79,7 @@ export default function MeetingTimePickPage() {
         );
       default:
         return isTimePickerUpdate ? (
-          <MeetingConfirmCalendar.Picker availableDates={meetingFrame.availableDates} />
+          <MeetingConfirmCalendar.Picker availableDates={meetingFrame.availableDates} mode="edit" />
         ) : (
           <MeetingConfirmCalendar.Viewer
             hostName={meetingFrame.hostName}
