@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getMeetingBase } from '@apis/meetings/meetings';
+import { getMeetingBase, getMeetingInvitationDetails } from '@apis/meetings/meetings';
 import { getMeetingTimeRecommends } from '@apis/meetings/recommends';
 import { getMeetingMySchedule } from '@apis/schedules';
 
@@ -38,3 +38,11 @@ export const useGetMyScheduleQuery = (uuid: string, userName: string) =>
     queryFn: () => getMeetingMySchedule(uuid),
     staleTime: 0,
   });
+
+export const useMeetingInvitationDetailQuery = (uuid: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.meetingInvitationDetails],
+    queryFn: () => getMeetingInvitationDetails(uuid),
+    retry: 1,
+  });
+};

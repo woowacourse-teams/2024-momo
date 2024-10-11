@@ -137,3 +137,17 @@ export const unlockMeeting = async (uuid: string) => {
     throw new ResponseError(data);
   }
 };
+
+interface MeetingInvitationDetails {
+  meetingName: string;
+  type: MeetingType;
+}
+
+export const getMeetingInvitationDetails = async (uuid: string) => {
+  const data = await fetchClient<MeetingInvitationDetails>({
+    path: `/${uuid}/home`,
+    method: 'GET',
+  });
+
+  return data;
+};
