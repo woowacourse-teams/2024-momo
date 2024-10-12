@@ -29,15 +29,15 @@ public abstract class ScheduleRecommender {
         return CandidateSchedule.mergeContinuous(intersectedDateTimes, this::isContinuous);
     }
 
-    abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, MeetingType type);
-
-    abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
-
     private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
         RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
         CandidateScheduleSorter sorter = sortStandard.getSorter();
         sorter.sort(mergedCandidateSchedules);
     }
 
-    abstract long getMaxRecommendCount();
+    protected abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, MeetingType type);
+
+    protected abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
+
+    protected abstract long getMaxRecommendCount();
 }
