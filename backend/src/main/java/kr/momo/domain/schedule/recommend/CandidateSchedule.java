@@ -9,10 +9,12 @@ import java.util.stream.Stream;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.RecommendInterval;
+import kr.momo.exception.MomoException;
+import kr.momo.exception.code.ScheduleErrorCode;
 
-public record CandidateSchedule(
-        RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup
-) {
+public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup) {
+
+    private static final int MINIMUM_MIN_SIZE = 0;
 
     public static CandidateSchedule of(
             LocalDateTime startDateTime, LocalDateTime endDateTime, AttendeeGroup attendeeGroup
@@ -22,7 +24,8 @@ public record CandidateSchedule(
 
     public static List<CandidateSchedule> mergeContinuous(
             List<CandidateSchedule> sortedSchedules,
-            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous
+            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous,
+            int minSize
     ) {
         List<CandidateSchedule> mergedSchedules = new ArrayList<>();
         int idx = 0;
@@ -32,12 +35,24 @@ public record CandidateSchedule(
                     .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isContinuous))
                     .map(sortedSchedules::get)
                     .toList();
-            subList.stream()
-                    .reduce(CandidateSchedule::merge)
-                    .ifPresent(mergedSchedules::add);
+            addWhenLongerOrEqualThanMinTime(subList, mergedSchedules, minSize);
             idx += subList.size();
         }
         return mergedSchedules;
+    }
+
+    private static void addWhenLongerOrEqualThanMinTime(
+            List<CandidateSchedule> subList, List<CandidateSchedule> mergedSchedules, int minSize
+    ) {
+        if (minSize < MINIMUM_MIN_SIZE) {
+            throw new MomoException(ScheduleErrorCode.INVALID_MIN_TIME);
+        }
+        if (minSize > subList.size()) {
+            return;
+        }
+        subList.stream()
+                .reduce(CandidateSchedule::merge)
+                .ifPresent(mergedSchedules::add);
     }
 
     private static boolean isSequential(

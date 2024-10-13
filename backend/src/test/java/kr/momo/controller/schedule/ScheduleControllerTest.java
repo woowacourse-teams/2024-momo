@@ -154,7 +154,7 @@ class ScheduleControllerTest {
     void recommendSchedules() {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
-                .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())
+                .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name(), "minimumTime", 0)
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meetings/{uuid}/recommended-schedules")
                 .then().log().all()
