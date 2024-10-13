@@ -98,9 +98,11 @@ public interface ScheduleControllerDocs {
     @ApiSuccessResponse.Ok("추천 일정 조회 성공")
     MomoApiResponse<RecommendedSchedulesResponse> recommendSchedules(
             @PathVariable @Schema(description = "약속 UUID") String uuid,
-            @RequestParam @Schema(description = "추천 기준(이른 시간 순 / 길게 볼 수 있는 순)", example = "earliest")
+            @RequestParam @Schema(description = "추천 기준(이른 시간 순 / 길게 볼 수 있는 순 / 최소 시간 보장 순)", example = "earliest")
             String recommendType,
             @RequestParam @Schema(description = "추천 대상 참여자 이름", example = "페드로, 재즈, 모모")
-            List<String> attendeeNames
+            List<String> attendeeNames,
+            @RequestParam @Schema(description = "최소 만남 시간(30분 단위의 분)", example = "0, 30, 60, 90")
+            int minTime
     );
 }
