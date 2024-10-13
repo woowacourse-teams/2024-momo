@@ -9,4 +9,9 @@ module.exports = {
   },
   setupFiles: ['./jest.polyfills.js'],
   reporters: ['default', ['jest-junit', { outputDirectory: 'reports', outputName: 'report.xml' }]],
+
+  moduleNameMapper: {
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@constants/(.*)$': '<rootDir>/src/constants/$1',
+  },
 };
