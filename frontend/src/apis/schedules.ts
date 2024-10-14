@@ -11,13 +11,12 @@ import { BASE_URL } from '@constants/api';
 
 import { fetchClient } from './_common/fetchClient';
 
-export const postSchedule = async ({
-  uuid,
-  requestData,
-}: {
+export interface PostScheduleRequest {
   uuid: string;
   requestData: MeetingSingeScheduleItem[];
-}) => {
+}
+
+export const postSchedule = async ({ uuid, requestData }: PostScheduleRequest) => {
   const response = await fetch(`${BASE_URL}/${uuid}/schedules`, {
     method: 'POST',
     headers: {

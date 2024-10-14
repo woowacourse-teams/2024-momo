@@ -12,7 +12,7 @@ import Text from '@components/_common/Text';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 
-import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
+import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
 import Rotate from '@assets/images/rotate.svg';
 
@@ -77,11 +77,7 @@ export default function SchedulePicker({
     isLastPage,
   } = usePagedTimePick(availableDates, schedules);
 
-  const { mutate: postScheduleMutateForEdit, isPending: isEditModePending } =
-    usePostScheduleMutation(() => handleToggleIsTimePickerUpdate());
-
-  const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
-    usePostScheduleMutation(() => handleMeetingViewerNavigate());
+  const { submitSchedule, isEditModePending, isRegisterModePending } = usePostScheduleByMode(mode);
 
   const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
 
@@ -89,24 +85,25 @@ export default function SchedulePicker({
     navigate(`/meeting/${uuid}/viewer`);
   };
 
-  const convertedScheduleData = convertToSchedule({
-    availableDates,
-    firstTime,
-    lastTime,
-    selectedScheduleTable: tableValue,
-    selectMode,
-  });
+  const convertSelectedDatesToRequest = () => {
+    const convertedData = convertToSchedule({
+      availableDates,
+      firstTime,
+      lastTime,
+      selectedScheduleTable: tableValue,
+      selectMode,
+    });
 
-  const handleScheduleSave = (mode: Mode) => {
-    if (mode === 'register' && convertedScheduleData.length === 0) {
+    return { uuid, requestData: convertedData };
+  };
+
+  const handleScheduleSave = () => {
+    if (mode === 'register' && availableDates.length === 0) {
       return;
     }
 
-    const scheduleRequestData = { uuid, requestData: convertedScheduleData };
-
-    mode === 'register'
-      ? postScheduleMutateForRegistration(scheduleRequestData)
-      : postScheduleMutateForEdit(scheduleRequestData);
+    const scheduleRequestData = convertSelectedDatesToRequest();
+    submitSchedule(scheduleRequestData);
   };
 
   const handleSelectModeChange = (mode: keyof typeof TIME_SELECT_MODE) => {
@@ -115,6 +112,15 @@ export default function SchedulePicker({
     resetTableValue();
     setSelectMode(mode);
   };
+
+  const isScheduleEmpty =
+    convertToSchedule({
+      availableDates,
+      firstTime,
+      lastTime,
+      selectedScheduleTable: tableValue,
+      selectMode,
+    }).length === 0;
 
   return (
     <>
@@ -182,9 +188,9 @@ export default function SchedulePicker({
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => handleScheduleSave('register')}
+                onClick={handleScheduleSave}
                 isLoading={isRegisterModePending}
-                disabled={convertedScheduleData.length === 0}
+                disabled={isScheduleEmpty}
               >
                 등록하기
               </Button>
@@ -197,7 +203,7 @@ export default function SchedulePicker({
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => handleScheduleSave('edit')}
+                onClick={handleScheduleSave}
                 isLoading={isEditModePending}
               >
                 수정하기

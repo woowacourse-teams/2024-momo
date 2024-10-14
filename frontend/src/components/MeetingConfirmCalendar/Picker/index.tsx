@@ -14,7 +14,7 @@ import Calendar from '@components/_common/Calendar';
 
 import useCalendarPick from '@hooks/useCalendarPick/useCalendarPick';
 
-import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
+import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
 import { getFullDate } from '@utils/date';
 
@@ -38,37 +38,33 @@ export default function Picker({ availableDates, mode }: PickerProps) {
 
   const { selectedDates, hasDate, handleSelectedDate } = useCalendarPick(uuid, userName);
 
-  const { mutate: postScheduleMutateForEdit, isPending: isEditModePending } =
-    usePostScheduleMutation(() => handleToggleIsTimePickerUpdate());
+  const { submitSchedule, isEditModePending, isRegisterModePending } = usePostScheduleByMode(mode);
 
-  const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
-    usePostScheduleMutation(() => handleMeetingViewerNavigate());
-
-  const generateScheduleTable = (dates: string[]) => {
-    return dates.map((date) => {
+  const convertSelectedDatesToRequest = (dates: string[]) => {
+    const convertedData = dates.map((date) => {
       return {
         date,
         times: ['00:00'],
       };
     });
+
+    return { uuid, requestData: convertedData };
   };
 
   const handleMeetingViewerNavigate = () => {
     navigate(`/meeting/${uuid}/viewer`);
   };
 
-  const handleScheduleSave = (mode: Mode) => {
+  const handleScheduleSave = () => {
     if (mode === 'register' && selectedDates.length === 0) {
       return;
     }
 
-    const convertedData = generateScheduleTable(selectedDates);
-    const scheduleRequestData = { uuid, requestData: convertedData };
-
-    mode === 'register'
-      ? postScheduleMutateForRegistration(scheduleRequestData)
-      : postScheduleMutateForEdit(scheduleRequestData);
+    const scheduleRequestData = convertSelectedDatesToRequest(selectedDates);
+    submitSchedule(scheduleRequestData);
   };
+
+  const isScheduleEmpty = selectedDates.length === 0;
 
   return (
     <>
@@ -99,9 +95,9 @@ export default function Picker({ availableDates, mode }: PickerProps) {
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => handleScheduleSave('register')}
+                onClick={handleScheduleSave}
                 isLoading={isRegisterModePending}
-                disabled={selectedDates.length === 0}
+                disabled={isScheduleEmpty}
               >
                 등록하기
               </Button>
@@ -114,7 +110,7 @@ export default function Picker({ availableDates, mode }: PickerProps) {
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => handleScheduleSave('edit')}
+                onClick={handleScheduleSave}
                 isLoading={isEditModePending}
               >
                 수정하기
