@@ -89,7 +89,7 @@ jobs:
         runner: [ prod-a, prod-b ]
       # fail-fast 옵션을 명시적으로 설정
       fail-fast: true
-    runs-on: [ self-hosted, linux, ARM64, ${ { matrix.runner } } ]
+    runs-on: [ self-hosted, linux, ARM64, "${{ matrix.runner }}" ]
     defaults:
       run:
         shell: bash
