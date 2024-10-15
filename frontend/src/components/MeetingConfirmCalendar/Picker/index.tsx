@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
@@ -13,7 +14,7 @@ import Calendar from '@components/_common/Calendar';
 
 import useCalendarPick from '@hooks/useCalendarPick/useCalendarPick';
 
-import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
+import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
 import { getFullDate } from '@utils/date';
 
@@ -23,34 +24,47 @@ import WeekDays from '../WeekDays';
 
 interface PickerProps {
   availableDates: string[];
+  mode: Mode;
 }
 
-export default function Picker({ availableDates }: PickerProps) {
+export default function Picker({ availableDates, mode }: PickerProps) {
+  const navigate = useNavigate();
+
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
-  const { userName } = useContext(AuthContext).state;
 
+  const { userName } = useContext(AuthContext).state;
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
   const { selectedDates, hasDate, handleSelectedDate } = useCalendarPick(uuid, userName);
 
-  const { mutate: postScheduleMutate, isPending } = usePostScheduleMutation(() =>
-    handleToggleIsTimePickerUpdate(),
-  );
+  const { submitSchedule, isEditModePending, isRegisterModePending } = usePostScheduleByMode(mode);
 
-  // 백엔드에 날짜 데이터 보내주기 위해 임시로 generate함수 선언(@낙타)
-  const generateScheduleTable = (dates: string[]) => {
-    return dates.map((date) => {
+  const convertSelectedDatesToRequest = (dates: string[]) => {
+    const convertedData = dates.map((date) => {
       return {
         date,
         times: ['00:00'],
       };
     });
+
+    return { uuid, requestData: convertedData };
   };
 
-  const handleOnToggle = () => {
-    postScheduleMutate({ uuid, requestData: generateScheduleTable(selectedDates) });
+  const handleMeetingViewerNavigate = () => {
+    navigate(`/meeting/${uuid}/viewer`);
   };
+
+  const handleScheduleSave = () => {
+    if (mode === 'register' && selectedDates.length === 0) {
+      return;
+    }
+
+    const scheduleRequestData = convertSelectedDatesToRequest(selectedDates);
+    submitSchedule(scheduleRequestData);
+  };
+
+  const isScheduleEmpty = selectedDates.length === 0;
 
   return (
     <>
@@ -73,12 +87,36 @@ export default function Picker({ availableDates }: PickerProps) {
 
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
-          <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
-            취소하기
-          </Button>
-          <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
-            등록하기
-          </Button>
+          {mode === 'register' ? (
+            <>
+              <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
+                약속 현황 조회
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={handleScheduleSave}
+                isLoading={isRegisterModePending}
+                disabled={isScheduleEmpty}
+              >
+                등록하기
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
+                취소하기
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={handleScheduleSave}
+                isLoading={isEditModePending}
+              >
+                수정하기
+              </Button>
+            </>
+          )}
         </div>
       </footer>
     </>

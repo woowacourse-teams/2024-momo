@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { deleteFixedMeeting } from '@apis/meetingConfirm';
+import { deleteFixedMeeting } from '@apis/meetings/confirms';
 
 export const useCancelFixedMeetingMutation = (uuid: string) => {
   const navigate = useNavigate();

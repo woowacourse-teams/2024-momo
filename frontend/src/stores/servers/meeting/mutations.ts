@@ -5,7 +5,7 @@ import type { PostMeetingResult } from 'types/meeting';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
-import { lockMeeting, postMeeting, unlockMeeting } from '@apis/meetings';
+import { lockMeeting, postMeeting, unlockMeeting } from '@apis/meetings/meetings';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 

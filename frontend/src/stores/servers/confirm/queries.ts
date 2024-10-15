@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getConfirmedMeetingInfo } from '@apis/meetingConfirm';
+import { getConfirmedMeetingInfo } from '@apis/meetings/confirms';
 
 import { QUERY_KEY } from '@constants/queryKeys';
 

@@ -4,7 +4,7 @@ import useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import { INITIAL_END_TIME, INITIAL_START_TIME } from '@hooks/useTimeRangeDropdown/constants';
 import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
-import { usePostMeetingMutation } from '@stores/servers/meeting/mutation';
+import { usePostMeetingMutation } from '@stores/servers/meeting/mutations';
 
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN, INPUT_RULES } from '@constants/inputFields';
 

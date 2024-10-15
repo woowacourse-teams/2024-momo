@@ -4,9 +4,10 @@ import { ResponseError } from '@utils/responseError';
 
 import { BASE_URL } from '@constants/api';
 
-import { fetchClient } from './_common/fetchClient';
+import { fetchClient } from '../_common/fetchClient';
 
 export type MeetingType = 'DAYSONLY' | 'DATETIME';
+
 interface MeetingBaseResponse {
   meetingName: string;
   firstTime: string;
@@ -135,4 +136,18 @@ export const unlockMeeting = async (uuid: string) => {
 
     throw new ResponseError(data);
   }
+};
+
+interface MeetingEntranceDetails {
+  meetingName: string;
+  type: MeetingType;
+}
+
+export const getMeetingEntranceDetails = async (uuid: string) => {
+  const data = await fetchClient<MeetingEntranceDetails>({
+    path: `/${uuid}/home`,
+    method: 'GET',
+  });
+
+  return data;
 };

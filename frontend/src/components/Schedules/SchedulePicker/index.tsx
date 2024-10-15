@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
-import type { MeetingSingleSchedule } from 'types/schedule';
+import type { MeetingSingleSchedule, Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
@@ -12,7 +12,7 @@ import Text from '@components/_common/Text';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 
-import { usePostScheduleMutation } from '@stores/servers/schedule/mutations';
+import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
 import Rotate from '@assets/images/rotate.svg';
 
@@ -35,6 +35,7 @@ import { convertToSchedule, generateSingleScheduleTable } from '../Schedules.uti
 
 interface SchedulePickerProps extends MeetingDateTime {
   meetingSingleSchedule: MeetingSingleSchedule;
+  mode: Mode;
 }
 
 const TIME_SELECT_MODE = {
@@ -47,7 +48,10 @@ export default function SchedulePicker({
   lastTime,
   availableDates,
   meetingSingleSchedule,
+  mode,
 }: SchedulePickerProps) {
+  const navigate = useNavigate();
+
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
 
@@ -73,12 +77,16 @@ export default function SchedulePicker({
     isLastPage,
   } = usePagedTimePick(availableDates, schedules);
 
-  const { mutate: postScheduleMutate, isPending } = usePostScheduleMutation(() =>
-    handleToggleIsTimePickerUpdate(),
-  );
+  const { submitSchedule, isEditModePending, isRegisterModePending } = usePostScheduleByMode(mode);
 
-  const handleOnToggle = () => {
-    const convert = convertToSchedule({
+  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
+
+  const handleMeetingViewerNavigate = () => {
+    navigate(`/meeting/${uuid}/viewer`);
+  };
+
+  const convertSelectedDatesToRequest = () => {
+    const convertedData = convertToSchedule({
       availableDates,
       firstTime,
       lastTime,
@@ -86,16 +94,33 @@ export default function SchedulePicker({
       selectMode,
     });
 
-    postScheduleMutate({ uuid, requestData: convert });
+    return { uuid, requestData: convertedData };
   };
 
-  const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
+  const handleScheduleSave = () => {
+    if (mode === 'register' && availableDates.length === 0) {
+      return;
+    }
+
+    const scheduleRequestData = convertSelectedDatesToRequest();
+    submitSchedule(scheduleRequestData);
+  };
+
   const handleSelectModeChange = (mode: keyof typeof TIME_SELECT_MODE) => {
     if (selectMode === mode) return;
 
     resetTableValue();
     setSelectMode(mode);
   };
+
+  const isScheduleEmpty =
+    convertToSchedule({
+      availableDates,
+      firstTime,
+      lastTime,
+      selectedScheduleTable: tableValue,
+      selectMode,
+    }).length === 0;
 
   return (
     <>
@@ -155,12 +180,36 @@ export default function SchedulePicker({
       </div>
       <footer css={s_bottomFixedButtonContainer}>
         <div css={s_fullButtonContainer}>
-          <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
-            취소하기
-          </Button>
-          <Button size="full" variant="primary" onClick={handleOnToggle} isLoading={isPending}>
-            등록하기
-          </Button>
+          {mode === 'register' ? (
+            <>
+              <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
+                약속 현황 조회
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={handleScheduleSave}
+                isLoading={isRegisterModePending}
+                disabled={isScheduleEmpty}
+              >
+                등록하기
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="full" variant="secondary" onClick={handleToggleIsTimePickerUpdate}>
+                취소하기
+              </Button>
+              <Button
+                size="full"
+                variant="primary"
+                onClick={handleScheduleSave}
+                isLoading={isEditModePending}
+              >
+                수정하기
+              </Button>
+            </>
+          )}
         </div>
         <button css={s_circleButton} onClick={resetTableValue}>
           <Rotate width="16" height="16" />
