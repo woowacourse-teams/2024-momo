@@ -35,4 +35,6 @@ const useInput = (rules?: ValidationRules) => {
   };
 };
 
+export type UseInputReturn = ReturnType<typeof useInput>;
+
 export default useInput;

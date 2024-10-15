@@ -104,7 +104,7 @@ const globalStyles = css`
     justify-content: center;
 
     width: 100%;
-    min-height: 100vh;
+    height: 100dvh;
 
     font-family: Pretendard, sans-serif;
     font-size: 1.6rem;

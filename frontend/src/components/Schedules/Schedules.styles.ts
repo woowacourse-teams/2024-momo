@@ -10,7 +10,6 @@ export const s_container = css`
 export const s_relativeContainer = css`
   position: relative;
   flex: 1;
-  max-height: fit-content;
 `;
 
 export const s_selectModeButtonsContainer = css`

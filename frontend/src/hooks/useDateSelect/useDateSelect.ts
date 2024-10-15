@@ -6,7 +6,7 @@ import { getFullDate } from '@utils/date';
 import { getDatesInRange } from './useDateSelect.utils';
 
 const useDateSelect = () => {
-  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+  const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
   const [dateSelectMode, setDateSelectMode] = useState<DateSelectMode>('single');
   const [rangeStartDate, setRangeStartDate] = useState<string | null>(null);
   const [rangeEndDate, setRangeEndDate] = useState<string | null>(null);
@@ -15,21 +15,24 @@ const useDateSelect = () => {
     if (mode === dateSelectMode) return;
 
     setDateSelectMode(mode);
-    setSelectedDates([]);
+    setSelectedDates(new Set());
     setRangeStartDate(null);
     setRangeEndDate(null);
   };
 
   const handleSelectedDateBySingleMode = (date: string) => {
-    setSelectedDates((prev) =>
-      prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date],
-    );
+    setSelectedDates((prevDates) => {
+      const newSelectedDates = new Set(prevDates);
+      newSelectedDates.has(date) ? newSelectedDates.delete(date) : newSelectedDates.add(date);
+
+      return newSelectedDates;
+    });
   };
 
   const handleRangeStartDatePick = (date: string) => {
     setRangeStartDate(date);
     setRangeEndDate(null);
-    setSelectedDates([date]);
+    setSelectedDates(new Set([date]));
   };
 
   const handleRangeEndDatePick = (date: string) => {
@@ -40,13 +43,13 @@ const useDateSelect = () => {
 
     if (end < start) {
       setRangeStartDate(date);
-      setSelectedDates([date]);
+      setSelectedDates(new Set([date]));
       return;
-    } else {
-      setRangeEndDate(date);
-      const range = getDatesInRange(start, end);
-      setSelectedDates(range);
     }
+
+    setRangeEndDate(date);
+    const range = getDatesInRange(start, end);
+    setSelectedDates(new Set(range));
   };
 
   const handleSelectedDateByRangeMode = (date: string) => {
@@ -67,9 +70,9 @@ const useDateSelect = () => {
     handleSelectedDateByRangeMode(date);
   };
 
-  const hasDate = (date: string) => {
-    return selectedDates.includes(date);
-  };
+  const hasDate = (date: string) => selectedDates.has(date);
+  const areDatesUnselected = selectedDates.size < 1;
+
   const checkIsRangeStartDate = (date: Date) => getFullDate(date) === rangeStartDate;
   const checkIsRangeEndDate = (date: Date) => getFullDate(date) === rangeEndDate;
   const isAllRangeSelected = rangeStartDate !== null && rangeEndDate != null;
@@ -82,6 +85,7 @@ const useDateSelect = () => {
     checkIsRangeEndDate,
     handleSelectedDates,
     hasDate,
+    areDatesUnselected,
     isAllRangeSelected,
   };
 };

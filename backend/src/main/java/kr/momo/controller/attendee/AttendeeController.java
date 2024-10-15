@@ -50,12 +50,4 @@ public class AttendeeController implements AttendeeControllerDocs {
     public MomoApiResponse<List<String>> findAttendeesOfMeeting(@PathVariable String uuid) {
         return new MomoApiResponse<>(attendeeService.findAll(uuid));
     }
-
-    /**
-     * TEMP: 비밀번호 마이그레이션 이후 삭제될 메서드입니다.
-     */
-    @PostMapping("/api/v1/attendee/update-password")
-    public MomoApiResponse<Integer> updatePassword() {
-        return new MomoApiResponse<>(attendeeService.updateAllPassword());
-    }
 }

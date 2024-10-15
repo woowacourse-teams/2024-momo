@@ -13,7 +13,7 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         boolean currentTransactionReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
         String key = currentTransactionReadOnly ? DataSourceConfig.REPLICA_SERVER : DataSourceConfig.SOURCE_SERVER;
-        log.info("Activated Datasource: {}", key);
+        log.debug("Activated Datasource: {}", key);
         return key;
     }
 }

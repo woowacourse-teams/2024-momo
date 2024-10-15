@@ -15,6 +15,7 @@ import kr.momo.service.meeting.dto.MeetingConfirmRequest;
 import kr.momo.service.meeting.dto.MeetingConfirmResponse;
 import kr.momo.service.meeting.dto.MeetingCreateRequest;
 import kr.momo.service.meeting.dto.MeetingCreateResponse;
+import kr.momo.service.meeting.dto.MeetingHomeResponse;
 import kr.momo.service.meeting.dto.MeetingResponse;
 import kr.momo.service.meeting.dto.MeetingSharingResponse;
 import org.springframework.http.ResponseEntity;
@@ -147,4 +148,11 @@ public interface MeetingControllerDocs {
             @PathVariable @Schema(description = "약속 UUID") String uuid,
             @AuthAttendee @Schema(hidden = true) long id
     );
+
+    @Operation(summary = "약속 입장 정보 조회", description = "약속 입장에 필요한 정보를 조회하는 API 입니다.")
+    @ApiSuccessResponse.NoContent("약속 입장 정보 조회 성공")
+    @ApiErrorResponse.BadRequest(ERROR_CODE_TABLE_HEADER + """
+            | NOT_FOUND_MEETING | 존재하지 않는 약속 정보 입니다. |
+            """)
+    MomoApiResponse<MeetingHomeResponse> findMeetingHome(@PathVariable @Schema(description = "약속 UUID") String uuid);
 }

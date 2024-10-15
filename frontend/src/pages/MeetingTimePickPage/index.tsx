@@ -55,7 +55,7 @@ export default function MeetingTimePickPage() {
     }
   };
 
-  const renderPicker = (meetingType: MeetingType) => {
+  const renderMeetingFrame = (meetingType: MeetingType) => {
     if (!meetingFrame) return;
 
     switch (meetingType) {
@@ -117,7 +117,7 @@ export default function MeetingTimePickPage() {
           </div>
         )}
       </section>
-      {meetingFrame && renderPicker(meetingFrame.type)}
+      {meetingFrame && renderMeetingFrame(meetingFrame.type)}
     </div>
   );
 }

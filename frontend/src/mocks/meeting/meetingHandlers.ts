@@ -11,6 +11,7 @@ import mySchedule from './data/mySchedule.json';
 
 const meetingHandlers = [
   http.get(`${BASE_URL}/:uuid`, () => {
+    // meetingTableFrame에서 type을 "DATETIME"으로 설정하면 시간 선택 표가 나오고, "DAYSONLY"로 설정하면 달력이 나옵니다.
     return HttpResponse.json(meetingTableFrame, { status: 200 });
   }),
 
