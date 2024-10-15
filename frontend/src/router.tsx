@@ -19,7 +19,7 @@ const MeetingRecommendPage = lazy(() => import('@pages/MeetingRecommendPage'));
 const MeetingRegisterPage = lazy(() => import('@pages/MeetingRegisterPage'));
 const MeetingViewerPage = lazy(() => import('@pages/MeetingViewerPage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
-const MeetingInvitePage = lazy(() => import('@pages/MeetingInvitePage'));
+const MeetingEntrancePage = lazy(() => import('@pages/MeetingEntrancePage'));
 
 const SuspenseWrapper = (Component: ComponentType) => (
   <Suspense fallback={<PageMoveLoading />}>
@@ -40,7 +40,7 @@ const meetingRoutes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: SuspenseWrapper(MeetingInvitePage),
+        element: SuspenseWrapper(MeetingEntrancePage),
       },
       {
         path: 'login',

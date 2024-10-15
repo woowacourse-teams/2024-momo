@@ -1,6 +1,6 @@
 export const QUERY_KEY = {
   meeting: 'meeting',
-  meetingInvitationDetails: 'meetingInvitationDetails',
+  meetingEntranceDetails: 'meetingEntranceDetails',
   meetingAttendees: 'meetingAttendees',
   meetingTimeRecommends: 'meetingTimeRecommends',
   meetingSchedules: 'meetingSchedules',

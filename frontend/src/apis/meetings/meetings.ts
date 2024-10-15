@@ -138,13 +138,13 @@ export const unlockMeeting = async (uuid: string) => {
   }
 };
 
-interface MeetingInvitationDetails {
+interface MeetingEntranceDetails {
   meetingName: string;
   type: MeetingType;
 }
 
-export const getMeetingInvitationDetails = async (uuid: string) => {
-  const data = await fetchClient<MeetingInvitationDetails>({
+export const getMeetingEntranceDetails = async (uuid: string) => {
+  const data = await fetchClient<MeetingEntranceDetails>({
     path: `/${uuid}/home`,
     method: 'GET',
   });

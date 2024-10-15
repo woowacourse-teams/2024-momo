@@ -5,7 +5,7 @@ import { AuthContext } from '@contexts/AuthProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 
-import { useMeetingInvitationDetailQuery } from '@stores/servers/meeting/queries';
+import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
 import Logo from '@assets/images/logo.svg';
 
@@ -18,14 +18,14 @@ import {
   s_pinkButton,
   s_textContainer,
   s_titleText,
-} from './MeetingInvitePage.styles';
+} from './MeetingEntrancePage.styles';
 
 const MEETING_TYPE = {
   DAYSONLY: '날짜를',
   DATETIME: '날짜와 시간을',
 };
 
-export default function MeetingInvitePage() {
+export default function MeetingEntrancePage() {
   const navigate = useNavigate();
 
   const params = useParams<{ uuid: string }>();
@@ -33,7 +33,7 @@ export default function MeetingInvitePage() {
 
   const { isLoggedIn } = useContext(AuthContext).state;
 
-  const { data: { meetingName, type } = {} } = useMeetingInvitationDetailQuery(uuid);
+  const { data: { meetingName, type } = {} } = useMeetingEntranceDetailQuery(uuid);
 
   const handleMeetingRegisterButtonClick = () => {
     if (isLoggedIn) {
