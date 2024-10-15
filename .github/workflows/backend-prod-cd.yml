@@ -3,7 +3,7 @@ name: Backend Prod CD
 on:
   workflow_dispatch:
   push:
-    branches: ['main']
+    branches: [ 'main' ]
 
 jobs:
   detect-changes:
@@ -83,7 +83,13 @@ jobs:
 
   be-depoly:
     needs: be-build
-    runs-on: [self-hosted, linux, ARM64, prod]
+    strategy:
+      matrix:
+        # 매트릭스 전략으로 여러 runner를 사용할 수 있도록 설정
+        runner: [ prod-a, prod-b ]
+      # fail-fast 옵션을 명시적으로 설정
+      fail-fast: true
+    runs-on: [ self-hosted, linux, ARM64, "${{ matrix.runner }}" ]
     defaults:
       run:
         shell: bash
@@ -103,20 +109,10 @@ jobs:
       - name: docker pull
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-prod
 
-      # 2. 기존 컨테이너 중지
-      - name: docker stop container
-        run: docker stop $(docker ps -q) 2>/dev/null || true
+      # 2. 실행 컨테이너 중 app 서비스만 재시작
+      - name: Restart app service
+        run: docker compose -f $HOME/security/docker-compose-prod.yml restart app --no-deps
 
-      # 3. 도커 컨테이너 실행
-      - name: docker run new container
-        run: >-
-          docker run --name momo-api-prod
-          --rm -d -p 8080:8080
-          --volume=$HOME/security:/momo/security:ro
-          --volume=$HOME/logs:/momo/logs
-          --env SPRING_PROFILE=prod
-          ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-prod
-
-      # 4. 미사용 이미지를 정리
+      # 3. 미사용 이미지를 정리
       - name: delete old docker image
         run: docker system prune -f
