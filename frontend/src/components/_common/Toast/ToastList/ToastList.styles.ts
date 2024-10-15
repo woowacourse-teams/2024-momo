@@ -15,5 +15,5 @@ export const s_toastListContainer = css`
 
   width: 100%;
   max-width: 43rem;
-  padding: 1.6rem;
+  padding: 0 1.6rem;
 `;
