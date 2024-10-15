@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 
-import GlobalLayout from '@layouts/GlobalLayout';
+import GlobalLayout from '@layouts/GlobalLayout/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
