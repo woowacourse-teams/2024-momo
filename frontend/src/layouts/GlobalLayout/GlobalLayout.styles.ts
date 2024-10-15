@@ -12,8 +12,3 @@ export const s_globalContainer = css`
   background-color: #fff;
   box-shadow: rgb(100 100 111 / 20%) 0 7px 29px 0;
 `;
-
-export const s_content = css`
-  flex: 1;
-  padding: 2.4rem 1.6rem 0;
-`;
