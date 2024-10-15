@@ -45,14 +45,16 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
         ))}
       </section>
       <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
-      <Dropdown
-        value={recommendType}
-        onChange={(e) => handleChangeRecommendType(e.target.value)}
-        options={[
-          { value: 'earliest', label: '빠르게 만나고 싶어요' },
-          { value: 'longTerm', label: '길게 만나고 싶어요' },
-        ]}
-      />
+      {meetingRecommendResponse && meetingRecommendResponse.type === 'DATETIME' && (
+        <Dropdown
+          value={recommendType}
+          onChange={(e) => handleChangeRecommendType(e.target.value)}
+          options={[
+            { value: 'earliest', label: '빠르게 만나고 싶어요' },
+            { value: 'longTerm', label: '길게 만나고 싶어요' },
+          ]}
+        />
+      )}
       {meetingRecommendResponse &&
         meetingRecommendResponse.recommendedSchedules.map((recommendInfo, index) =>
           meetingRecommendResponse.type === 'DATETIME' ? (
