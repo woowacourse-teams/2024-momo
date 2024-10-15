@@ -60,7 +60,7 @@ export default function MeetingLinkSharePage() {
             css={s_button}
             onClick={() => navigate(`/meeting/${uuid}`)}
           >
-            시간 등록하러 가기
+            약속에 참여하기
           </Button>
         </div>
       </div>

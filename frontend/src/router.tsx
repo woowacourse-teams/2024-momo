@@ -1,13 +1,10 @@
-import type { ComponentType } from 'react';
-import { Suspense, lazy } from 'react';
+import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 
 import GlobalLayout from '@layouts/GlobalLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
-
-import PageMoveLoading from '@components/_common/PageMoveLoading';
 
 const AttendeeLoginPage = lazy(() => import('@pages/AttendeeLoginPage'));
 const CreateMeetingPage = lazy(() => import('@pages/CreateMeetingPage'));
@@ -21,58 +18,53 @@ const MeetingViewerPage = lazy(() => import('@pages/MeetingViewerPage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
 const MeetingEntrancePage = lazy(() => import('@pages/MeetingEntrancePage'));
 
-const SuspenseWrapper = (Component: ComponentType) => (
-  <Suspense fallback={<PageMoveLoading />}>
-    <Component />
-  </Suspense>
-);
 const meetingRoutes: RouteObject[] = [
   {
     index: true,
-    element: SuspenseWrapper(LandingPage),
+    element: <LandingPage />,
   },
   {
     path: 'create',
-    element: SuspenseWrapper(CreateMeetingPage),
+    element: <CreateMeetingPage />,
   },
   {
     path: ':uuid',
     children: [
       {
         index: true,
-        element: SuspenseWrapper(MeetingEntrancePage),
+        element: <MeetingEntrancePage />,
       },
       {
         path: 'login',
-        element: SuspenseWrapper(AttendeeLoginPage),
+        element: <AttendeeLoginPage />,
       },
       {
         path: 'register',
-        element: SuspenseWrapper(MeetingRegisterPage),
+        element: <MeetingRegisterPage />,
       },
       {
         path: 'viewer',
         element: (
           <TimePickerUpdateStateProvider>
-            {SuspenseWrapper(MeetingViewerPage)}
+            <MeetingViewerPage />
           </TimePickerUpdateStateProvider>
         ),
       },
       {
         path: 'recommend',
-        element: SuspenseWrapper(MeetingRecommendPage),
+        element: <MeetingRecommendPage />,
       },
       {
         path: 'confirm',
-        element: SuspenseWrapper(MeetingConfirmPage),
+        element: <MeetingConfirmPage />,
       },
       {
         path: 'complete',
-        element: SuspenseWrapper(MeetingLinkSharePage),
+        element: <MeetingLinkSharePage />,
       },
       {
         path: 'fixed-meeting-ticket',
-        element: SuspenseWrapper(FixedMeetingTicketPage),
+        element: <FixedMeetingTicketPage />,
       },
     ],
   },
@@ -86,11 +78,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '*',
-        element: SuspenseWrapper(NotFoundPage),
+        element: <NotFoundPage />,
       },
       {
         index: true,
-        element: SuspenseWrapper(LandingPage),
+        element: <LandingPage />,
       },
       {
         path: 'meeting',
