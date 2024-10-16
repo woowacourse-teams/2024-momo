@@ -84,11 +84,17 @@ jobs:
     env:
       CLOUDFRONT_DISTRIBUTION_ID_PROD: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD}}
     steps:
+      - name: 기존 dist 폴더 내부에 있던 이전 버젼의 dist 폴더 내부 모든 파일을 삭제해요
+        working-directory: ./frontend/
+        run: |
+          rm -rf dist/*
+
       - name: 모모 깃허브 레파지토리 artifacts로 부터 빌드 결과물을 다운받아요 :)
         uses: actions/download-artifact@v4
         with:
           name: momoResources
           path: ./frontend/dist
+
       - name: aws에 배포하고 cloudfront 캐싱을 무효화해요
         working-directory: ./frontend/dist/
         run: |
