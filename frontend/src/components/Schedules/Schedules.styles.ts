@@ -125,7 +125,7 @@ export const s_bottomFixedButtonContainer = css`
   width: calc(100% + 1.6rem * 2);
   height: 6rem;
   margin: 1.6rem 0 0 -1.6rem;
-  padding: 0 1.6rem;
+  padding: 0.6rem 1.6rem;
 
   background-color: #fff;
   box-shadow: 0 -4px 4px rgb(0 0 0 / 25%);
