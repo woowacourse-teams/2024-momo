@@ -4,6 +4,7 @@ export const s_container = css`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 1.6rem;
 `;
 
 export const s_pageHeader = css`

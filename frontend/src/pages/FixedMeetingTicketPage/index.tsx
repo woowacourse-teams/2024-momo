@@ -1,6 +1,10 @@
 import { useParams } from 'react-router-dom';
 
+import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+
 import MeetingTicket from '@pages/FixedMeetingTicketPage/components/MeetingTicket';
+
+import Header from '@components/_common/Header';
 
 import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries';
 
@@ -13,15 +17,20 @@ export default function FixedMeetingTicketPage() {
   const uuid = params.uuid!;
   const { data } = useGetConfirmedMeetingInfoQuery(uuid);
   return (
-    <div css={s_container}>
-      {data ? (
-        <>
-          <MeetingTicket data={data} />
-          <ActionButtonGroup uuid={uuid} data={data} />
-        </>
-      ) : (
-        <UnconfirmedMessage uuid={uuid} />
-      )}
-    </div>
+    <>
+      <Header title="확정된 약속" />
+      <ContentLayout>
+        <div css={s_container}>
+          {data ? (
+            <>
+              <MeetingTicket data={data} />
+              <ActionButtonGroup uuid={uuid} data={data} />
+            </>
+          ) : (
+            <UnconfirmedMessage uuid={uuid} />
+          )}
+        </div>
+      </ContentLayout>
+    </>
   );
 }

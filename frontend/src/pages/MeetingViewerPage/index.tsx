@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
+import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
 
@@ -8,7 +10,12 @@ import MeetingConfirmCalendar from '@components/MeetingConfirmCalendar';
 import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
 import SchedulesViewer from '@components/Schedules/ScheduleViewer/SchedulesViewer';
 import ToggleButton from '@components/_common/Buttons/ToggleButton';
+import Header from '@components/_common/Header';
+import { s_backButton } from '@components/_common/Header/Header.styles';
 import Text from '@components/_common/Text';
+
+import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
+import useRouter from '@hooks/useRouter/useRouter';
 
 import type { MeetingType } from '@apis/meetings/meetings';
 
@@ -17,6 +24,11 @@ import {
   useUnlockMeetingMutation,
 } from '@stores/servers/meeting/mutations';
 import { useGetMeetingQuery } from '@stores/servers/meeting/queries';
+
+import BackSVG from '@assets/images/back.svg';
+import ShareSVG from '@assets/images/share.svg';
+
+import { MEETING_INVITE_TEMPLATE_ID } from '@constants/kakao';
 
 import {
   s_container,
@@ -31,6 +43,8 @@ const MEETING_QUERY_PAGE_ATTRIBUTES = {
 };
 
 export default function MeetingViewerPage() {
+  const { routeTo } = useRouter();
+  const { handleKakaoTalkShare } = useKakaoTalkShare();
   const params = useParams<{ uuid: string }>();
   const uuid = params.uuid!;
   const {
@@ -38,7 +52,9 @@ export default function MeetingViewerPage() {
   } = useContext(AuthContext);
 
   const { data: meetingFrame } = useGetMeetingQuery(uuid);
-  const { isTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
+  const { isTimePickerUpdate, handleToggleIsTimePickerUpdate } = useContext(
+    TimePickerUpdateStateContext,
+  );
   const { mutate: lockMutate } = useLockMeetingMutation();
   const { mutate: unlockMutate } = useUnlockMeetingMutation();
 
@@ -94,34 +110,63 @@ export default function MeetingViewerPage() {
     }
   };
 
+  // 뒤로가기 버튼 : Picker상태일 때 업데이트 상태를 false로 만들고, Viewer 상태일 때 약속 입장 페이지로 이동 (@낙타)
+  const handleBackButtonClick = (isTimePickerUpdate: boolean) => {
+    if (isTimePickerUpdate) handleToggleIsTimePickerUpdate();
+    else routeTo(`/meeting/${uuid}`);
+  };
+
+  const handleShareButtonClick = () => {
+    handleKakaoTalkShare(MEETING_INVITE_TEMPLATE_ID, {
+      path: uuid,
+      hostName: meetingFrame?.hostName,
+      meetingName: meetingFrame?.meetingName,
+    });
+  };
+
   return (
-    <div css={s_container} aria-label="약속 정보 조회 페이지">
-      <section css={s_pageHeader}>
-        {userName !== '' && (
-          <Text>
-            <Text.Accent text={userName} />님 반가워요 👋🏻
-          </Text>
+    <>
+      <Header title={isTimePickerUpdate ? '약속 변경하기' : '약속 현황 조회'}>
+        <button css={s_backButton} onClick={() => handleBackButtonClick(isTimePickerUpdate)}>
+          <BackSVG width="24" height="24" />
+        </button>
+        {/* 업데이트 상태가 아닐 때 공유 버튼이 렌더링 되도록 구현 (@낙타) */}
+        {!isTimePickerUpdate && (
+          <button css={s_backButton} onClick={() => handleShareButtonClick()}>
+            <ShareSVG width="24" height="24" />
+          </button>
         )}
-        <Text typo="titleBold">
-          <Text.Accent text={meetingFrame?.meetingName ?? ''} />
-          {isTimePickerUpdate
-            ? `${MEETING_QUERY_PAGE_ATTRIBUTES.timePick}`
-            : `${MEETING_QUERY_PAGE_ATTRIBUTES.overview}`}
-        </Text>
-        <div css={s_contentDivider}></div>
-        {meetingFrame?.hostName === userName && (
-          <div css={s_toggleButtonContainer}>
-            <ToggleButton
-              id="toggle-lock-meeting"
-              isToggled={meetingFrame?.isLocked}
-              onClick={() => handleToggleMeetingLock(uuid)}
-            >
-              {meetingFrame?.isLocked ? '응답 다시 받기' : '응답 그만 받기'}
-            </ToggleButton>
-          </div>
-        )}
-      </section>
-      {meetingFrame && renderMeetingFrame(meetingFrame.type)}
-    </div>
+      </Header>
+      <ContentLayout>
+        <div css={s_container} aria-label="약속 정보 조회 페이지">
+          <section css={s_pageHeader}>
+            {userName !== '' && (
+              <Text>
+                <Text.Accent text={userName} />님 반가워요 👋🏻
+              </Text>
+            )}
+            <Text typo="titleBold">
+              <Text.Accent text={meetingFrame?.meetingName ?? ''} />
+              {isTimePickerUpdate
+                ? `${MEETING_QUERY_PAGE_ATTRIBUTES.timePick}`
+                : `${MEETING_QUERY_PAGE_ATTRIBUTES.overview}`}
+            </Text>
+            <div css={s_contentDivider}></div>
+            {meetingFrame?.hostName === userName && (
+              <div css={s_toggleButtonContainer}>
+                <ToggleButton
+                  id="toggle-lock-meeting"
+                  isToggled={meetingFrame?.isLocked}
+                  onClick={() => handleToggleMeetingLock(uuid)}
+                >
+                  {meetingFrame?.isLocked ? '응답 다시 받기' : '응답 그만 받기'}
+                </ToggleButton>
+              </div>
+            )}
+          </section>
+          {meetingFrame && renderMeetingFrame(meetingFrame.type)}
+        </div>
+      </ContentLayout>
+    </>
   );
 }
