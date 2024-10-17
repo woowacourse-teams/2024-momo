@@ -3,10 +3,7 @@ package kr.momo.domain.schedule;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public record DateTimeInterval(
-        LocalDateTime startDateTime,
-        LocalDateTime endDateTime
-) implements RecommendInterval {
+public record DateTimeInterval(LocalDateTime startDateTime, LocalDateTime endDateTime) implements RecommendInterval {
 
     @Override
     public boolean isSequential(RecommendInterval nextInterval) {
