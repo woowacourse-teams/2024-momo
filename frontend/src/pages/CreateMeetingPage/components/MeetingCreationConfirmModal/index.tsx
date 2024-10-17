@@ -62,7 +62,7 @@ export default function MeetingCreationConfirmModal({
                 <h3>
                   {year}년 {month}월
                 </h3>
-                <span>{dates.join(', ')}</span>
+                <div>{dates.join(', ')}</div>
               </div>
             );
           })}
