@@ -52,10 +52,13 @@ public class ScheduleController implements ScheduleControllerDocs {
 
     @GetMapping("/api/v1/meetings/{uuid}/recommended-schedules")
     public MomoApiResponse<RecommendedSchedulesResponse> recommendSchedules(
-            @PathVariable String uuid, @RequestParam String recommendType, @RequestParam List<String> attendeeNames
+            @PathVariable String uuid,
+            @RequestParam String recommendType,
+            @RequestParam List<String> attendeeNames,
+            @RequestParam(value = "minTime", defaultValue = "0") int minTime
     ) {
         RecommendedSchedulesResponse response = scheduleService.recommendSchedules(
-                uuid, recommendType, attendeeNames
+                uuid, recommendType, attendeeNames, minTime
         );
         return new MomoApiResponse<>(response);
     }

@@ -9,7 +9,9 @@ import lombok.Getter;
 public enum RecommendedScheduleSortStandard {
 
     EARLIEST_ORDER("earliest", new EarliestFirstSorter()),
-    LONG_TERM_ORDER("longTerm", new LongTermFirstSorter());
+    LONG_TERM_ORDER("longTerm", new LongTermFirstSorter()),
+    MIN_TIME_EARLIER_ORDER("minTime", new EarliestFirstSorter())
+    ;
 
     private final String type;
     private final CandidateScheduleSorter sorter;
