@@ -14,7 +14,8 @@ import type useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import type useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import type { UseTimeRangeDropdownReturn } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
-import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
+import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { FIELD_DESCRIPTIONS, FIELD_LABELS, FIELD_TITLES } from '@constants/inputFields';
 
 import { s_container, s_dateCandidateSelector } from './MeetingDateTime.styles';
 
@@ -74,7 +75,7 @@ export default function MeetingDateTime({
     <div css={s_container}>
       <div css={s_dateCandidateSelector}>
         <Field>
-          <Field.Label id="날짜선택" labelText="약속 후보 날짜 선택" />
+          <Field.Title title={FIELD_TITLES.meetingDateTime} />
           <Field.Description description={FIELD_DESCRIPTIONS.date} />
           <Calendar>
             <Calendar.Header
@@ -107,13 +108,13 @@ export default function MeetingDateTime({
           onChange={handleToggleIsChecked}
           id="meetingType"
           isChecked={isChecked}
-          labelText="날짜만 선택할래요"
+          labelText={FIELD_LABELS.onlyDate}
         />
       </div>
 
       {!isChecked && (
         <Field>
-          <Field.Label id="약속시간범위선택" labelText="약속 시간 범위 선택" />
+          <Field.Title title={FIELD_TITLES.meetingTimeRange} />
           <TimeRangeSelector
             startTime={startTime}
             endTime={endTime}
@@ -124,7 +125,7 @@ export default function MeetingDateTime({
       )}
 
       <BottomFixedButton onClick={onMeetingCreateButtonClick} disabled={isCreateMeetingFormInvalid}>
-        약속 생성하기
+        {MEETING_BUTTON_TEXTS.create}
       </BottomFixedButton>
     </div>
   );

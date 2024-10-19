@@ -162,8 +162,13 @@ const globalStyles = css`
 
   button {
     cursor: pointer;
+
     padding: 0;
+
     font: inherit;
+    color: inherit;
+
+    appearance: none; /* IOS 디바이스의 버튼 색상이 파란색으로 보이는 문제 해결(@해리) */
     border: none;
   }
 `;

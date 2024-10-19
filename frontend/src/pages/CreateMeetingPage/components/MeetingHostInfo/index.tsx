@@ -1,11 +1,13 @@
+import ScrollBlock from '@components/ScrollBlock';
 import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 import Field from '@components/_common/Field';
-import Input from '@components/_common/Input';
+import Text from '@components/_common/Text';
 
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
 import type { UseInputReturn } from '@hooks/useInput/useInput';
 
-import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
+import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { FIELD_LABELS, FIELD_PLACEHOLDERS, FIELD_TITLES } from '@constants/inputFields';
 
 interface MeetingHostInfoProps {
   hostNickNameInput: UseInputReturn;
@@ -32,36 +34,45 @@ export default function MeetingHostInfo({
   } = hostPasswordInput;
 
   const resizedButtonHeight = useButtonOnKeyboard();
+  const isHostNickNameError = hostNickNameErrorMessage !== null;
+  const isHostPasswordError = hostPasswordErrorMessage !== null;
 
   return (
-    <>
+    <ScrollBlock>
       <Field>
-        <Field.Label id="닉네임" labelText="닉네임" />
-        <Field.Description description={FIELD_DESCRIPTIONS.nickname} />
-        <Input id="닉네임" value={hostNickName} onChange={handleHostNickNameChange} autoFocus />
-        <Field.ErrorMessage errorMessage={hostNickNameErrorMessage} />
-      </Field>
-
-      <Field>
-        <Field.Label id="비밀번호" labelText="비밀번호" />
-        <Field.Description description={FIELD_DESCRIPTIONS.password} />
-        <Input
-          type="number"
-          id="비밀번호"
-          inputMode="numeric"
-          pattern="[0-9]*"
+        <Field.Title title={FIELD_TITLES.meetingHostInfo} />
+        <Text typo="captionBold" variant="caption">
+          약속을 생성하면
+          <Text.Accent text=" 자동으로 로그인"></Text.Accent>
+          돼요
+        </Text>
+        <Field.FloatingInput
+          label={FIELD_LABELS.nickname}
+          placeholder={FIELD_PLACEHOLDERS.nickname}
+          value={hostNickName}
+          onChange={handleHostNickNameChange}
+          autoComplete="off"
+          isError={isHostNickNameError}
+          autoFocus
+        />
+        <Field.FloatingInput
+          label={FIELD_LABELS.password}
+          placeholder={FIELD_PLACEHOLDERS.password}
           value={hostPassword}
           onChange={handleHostPasswordChange}
+          autoComplete="off"
+          isError={isHostPasswordError}
+          inputMode="numeric"
         />
-        <Field.ErrorMessage errorMessage={hostPasswordErrorMessage} />
+        <Field.ErrorMessage errorMessage={hostNickNameErrorMessage || hostPasswordErrorMessage} />
       </Field>
       <BottomFixedButton
         onClick={onNextStep}
         disabled={isHostInfoInvalid}
         height={resizedButtonHeight}
       >
-        다음
+        {MEETING_BUTTON_TEXTS.next}
       </BottomFixedButton>
-    </>
+    </ScrollBlock>
   );
 }

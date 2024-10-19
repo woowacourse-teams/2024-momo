@@ -6,7 +6,7 @@ import useTimeRangeDropdown from '@hooks/useTimeRangeDropdown/useTimeRangeDropdo
 
 import { usePostMeetingMutation } from '@stores/servers/meeting/mutations';
 
-import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN, INPUT_RULES } from '@constants/inputFields';
+import { FIELD_ERROR_MESSAGES, INPUT_FIELD_PATTERN, INPUT_RULES } from '@constants/inputFields';
 
 const checkInputInvalid = (value: string, errorMessage: string | null) =>
   value.length < INPUT_RULES.minimumLength || errorMessage !== null;
@@ -14,7 +14,7 @@ const checkInputInvalid = (value: string, errorMessage: string | null) =>
 const useCreateMeeting = () => {
   const meetingNameInput = useInput({
     pattern: INPUT_FIELD_PATTERN.meetingName,
-    errorMessage: FIELD_DESCRIPTIONS.meetingName,
+    errorMessage: FIELD_ERROR_MESSAGES.meetingName,
   });
   const isMeetingNameInvalid = checkInputInvalid(
     meetingNameInput.value,
@@ -23,11 +23,11 @@ const useCreateMeeting = () => {
 
   const hostNickNameInput = useInput({
     pattern: INPUT_FIELD_PATTERN.nickname,
-    errorMessage: FIELD_DESCRIPTIONS.nickname,
+    errorMessage: FIELD_ERROR_MESSAGES.nickname,
   });
   const hostPasswordInput = useInput({
     pattern: INPUT_FIELD_PATTERN.password,
-    errorMessage: FIELD_DESCRIPTIONS.password,
+    errorMessage: FIELD_ERROR_MESSAGES.password,
   });
   const isHostInfoInvalid =
     checkInputInvalid(hostNickNameInput.value, hostNickNameInput.errorMessage) ||

@@ -7,6 +7,7 @@ export const s_field = css`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  margin-bottom: 1.2rem;
 `;
 
 export const s_label = css`
