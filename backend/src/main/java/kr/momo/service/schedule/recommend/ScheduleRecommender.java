@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public abstract class ScheduleRecommender {
 
-    private static final int HALF_HOUR_INTERVAL = 30;
+    private static final int ONE_HOUR_TIME_INTERVAL_SIZE = 2;
 
     protected final ScheduleRepository scheduleRepository;
 
     public List<CandidateSchedule> recommend(
             AttendeeGroup group, String recommendType, MeetingType meetingType, int minTime
     ) {
-        int minSize = minTime / HALF_HOUR_INTERVAL;
+        int minSize = minTime * ONE_HOUR_TIME_INTERVAL_SIZE;
         List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group, meetingType, minSize);
         sortSchedules(mergedCandidateSchedules, recommendType);
         return mergedCandidateSchedules.stream()

@@ -203,7 +203,7 @@ class ScheduleRecommenderTest {
         @Test
         void recommendByEachAttendeeSubsetOrderByAttendeeCountAndEarliestTimeWithMinimumTime() {
             // given
-            int givenMinTime = 180;
+            int givenMinTime = 3;
             AttendeeGroup group = new AttendeeGroup(List.of(jazz, pedro, daon, bakey, mark));
             List<CandidateSchedule> expected = List.of(
                     new CandidateSchedule(
