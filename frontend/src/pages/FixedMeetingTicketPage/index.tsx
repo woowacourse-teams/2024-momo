@@ -1,4 +1,4 @@
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import MeetingTicket from '@pages/FixedMeetingTicketPage/components/MeetingTicket';
 

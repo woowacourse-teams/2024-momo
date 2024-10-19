@@ -1,4 +1,4 @@
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import MeetingDateTime from '@pages/CreateMeetingPage/components/MeetingDateTime';
 import MeetingHostInfo from '@pages/CreateMeetingPage/components/MeetingHostInfo';

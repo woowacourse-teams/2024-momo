@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import { AuthContext } from '@contexts/AuthProvider';
 

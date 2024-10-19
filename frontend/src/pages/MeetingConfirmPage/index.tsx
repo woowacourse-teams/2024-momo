@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import Header from '@components/_common/Header';
 import { s_backButton } from '@components/_common/Header/Header.styles';

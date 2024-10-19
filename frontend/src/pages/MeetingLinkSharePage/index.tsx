@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import type { PostMeetingResult } from 'types/meeting';
 
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import { Button } from '@components/_common/Buttons/Button';
 import CopyLink from '@components/_common/CopyLink';

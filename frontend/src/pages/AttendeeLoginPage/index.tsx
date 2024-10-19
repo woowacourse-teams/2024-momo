@@ -1,4 +1,4 @@
-import ContentLayout from '@layouts/ContentLayout/ContentLayout';
+import ContentLayout from '@layouts/ContentLayout';
 
 import { Button } from '@components/_common/Buttons/Button';
 import Field from '@components/_common/Field';
