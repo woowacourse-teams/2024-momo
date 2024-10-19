@@ -31,13 +31,13 @@ public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGrou
                     .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isContinuous))
                     .map(sortedSchedules::get)
                     .toList();
-            addWhenLongerOrEqualThanMinTime(subList, mergedSchedules, minSize);
+            addIfLongerThanOrEqualToMinTime(subList, mergedSchedules, minSize);
             idx += subList.size();
         }
         return mergedSchedules;
     }
 
-    private static void addWhenLongerOrEqualThanMinTime(
+    private static void addIfLongerThanOrEqualToMinTime(
             List<CandidateSchedule> subList, List<CandidateSchedule> mergedSchedules, int minSize
     ) {
         if (minSize <= subList.size()) {
