@@ -121,7 +121,7 @@ export const s_rangeStart = (isAllRangeSelected: boolean) => css`
 
     position: absolute;
     top: 0;
-    right: 0.4px;
+    right: 0.02rem;
     bottom: 0;
 
     width: 20%;
