@@ -42,10 +42,7 @@ const meetingHandlers = [
   }),
 
   http.get(`${BASE_URL}/:uuid/home`, () => {
-    // 새로고침 시, 값을 받아오는 형태를 알 수 없으므로 null에 대한 처리: 기본값 설정 (@낙타)
-    if (!currentMeetingType) return HttpResponse.json(meetingEntranceDateTimeInfo, { status: 200 });
-
-    if (currentMeetingType === 'DATETIME') {
+    if (!currentMeetingType || currentMeetingType === 'DATETIME') {
       return HttpResponse.json(meetingEntranceDateTimeInfo, { status: 200 });
     } else if (currentMeetingType === 'DAYSONLY') {
       return HttpResponse.json(meetingEntranceDaysOnlyInfo, { status: 200 });
