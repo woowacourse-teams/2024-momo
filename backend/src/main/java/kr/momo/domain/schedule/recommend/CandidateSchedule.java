@@ -9,12 +9,8 @@ import java.util.stream.Stream;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.RecommendInterval;
-import kr.momo.exception.MomoException;
-import kr.momo.exception.code.ScheduleErrorCode;
 
 public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup) {
-
-    private static final int MINIMUM_MIN_SIZE = 0;
 
     public static CandidateSchedule of(
             LocalDateTime startDateTime, LocalDateTime endDateTime, AttendeeGroup attendeeGroup
@@ -44,9 +40,6 @@ public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGrou
     private static void addWhenLongerOrEqualThanMinTime(
             List<CandidateSchedule> subList, List<CandidateSchedule> mergedSchedules, int minSize
     ) {
-        if (minSize < MINIMUM_MIN_SIZE) {
-            throw new MomoException(ScheduleErrorCode.INVALID_MIN_TIME);
-        }
         if (minSize > subList.size()) {
             return;
         }
