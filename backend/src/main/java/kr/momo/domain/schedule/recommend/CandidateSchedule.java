@@ -40,12 +40,11 @@ public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGrou
     private static void addWhenLongerOrEqualThanMinTime(
             List<CandidateSchedule> subList, List<CandidateSchedule> mergedSchedules, int minSize
     ) {
-        if (minSize > subList.size()) {
-            return;
+        if (minSize <= subList.size()) {
+            subList.stream()
+                    .reduce(CandidateSchedule::merge)
+                    .ifPresent(mergedSchedules::add);
         }
-        subList.stream()
-                .reduce(CandidateSchedule::merge)
-                .ifPresent(mergedSchedules::add);
     }
 
     private static boolean isSequential(
