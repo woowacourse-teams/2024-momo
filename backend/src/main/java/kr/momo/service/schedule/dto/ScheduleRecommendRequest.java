@@ -9,7 +9,7 @@ import java.util.List;
 public record ScheduleRecommendRequest(
 
         @NotEmpty
-        @Schema(description = "추천 기준(이른 시간 순 / 길게 볼 수 있는 순 / 최소 시간 보장 순)", example = "earliest")
+        @Schema(description = "추천 기준(이른 시간 순 / 길게 볼 수 있는 순)", example = "earliest")
         String recommendType,
 
         @NotEmpty
@@ -18,6 +18,12 @@ public record ScheduleRecommendRequest(
 
         @Schema(description = "최소 만남 시간(시간 단위)", example = "0, 1, 2, 3")
         @Min(value = 0, message = "최소 시간은 0보다 작을 수 없습니다.")
-        int minTime
+        Integer minTime
 ) {
+
+    public ScheduleRecommendRequest {
+        if (minTime == null) {
+            minTime = 0;
+        }
+    }
 }
