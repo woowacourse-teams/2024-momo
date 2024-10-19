@@ -1,13 +1,13 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useRouter = () => {
   const navigate = useNavigate();
-  const { uuid } = useParams<{ uuid: string }>();
 
-  return {
-    uuid,
-    routeTo: (path: string) => navigate(path),
-  };
+  const routeTo = (path: string) => navigate(path);
+
+  const goBack = () => navigate(-1);
+
+  return { routeTo, goBack };
 };
 
 export default useRouter;
