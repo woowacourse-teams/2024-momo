@@ -3,6 +3,7 @@ import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule, Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
 import { Button } from '@components/_common/Buttons/Button';
@@ -11,7 +12,6 @@ import Text from '@components/_common/Text';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
@@ -52,7 +52,7 @@ export default function SchedulePicker({
   mode,
 }: SchedulePickerProps) {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 

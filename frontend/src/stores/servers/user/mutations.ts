@@ -2,15 +2,15 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 import { AuthContext } from '@contexts/AuthProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { postUserLogin, postUserLogout } from '@apis/users';
 
 export const usePostLoginMutation = () => {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
   const authContext = useContext(AuthContext);
 
   return useMutation({

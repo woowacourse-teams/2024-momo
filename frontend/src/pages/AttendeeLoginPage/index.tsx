@@ -1,4 +1,8 @@
+import { useContext } from 'react';
+
 import ContentLayout from '@layouts/ContentLayout';
+
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import Field from '@components/_common/Field';
@@ -8,7 +12,6 @@ import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { usePostLoginMutation } from '@stores/servers/user/mutations';
 
@@ -20,7 +23,7 @@ import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { mutate: postLoginMutate } = usePostLoginMutation();
 
@@ -57,11 +60,6 @@ export default function AttendeeLoginPage() {
   };
 
   const handleLoginButtonClick = async () => {
-    if (!uuid) {
-      console.error('UUID is missing');
-      return;
-    }
-
     postLoginMutate({
       uuid,
       request: { attendeeName, password: attendeePassword },

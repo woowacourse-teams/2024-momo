@@ -1,7 +1,10 @@
+import { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { PostMeetingResult } from 'types/meeting';
 
 import ContentLayout from '@layouts/ContentLayout';
+
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import CopyLink from '@components/_common/CopyLink';
@@ -9,7 +12,6 @@ import Header from '@components/_common/Header';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import KakaoIcon from '@assets/images/kakao.svg';
 import LogoSunglass from '@assets/images/logoSunglass.svg';
@@ -31,7 +33,7 @@ interface RouteState {
 
 export default function MeetingLinkSharePage() {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const {
     state: { meetingInfo },

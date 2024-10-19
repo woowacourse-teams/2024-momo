@@ -3,8 +3,7 @@ import type { MeetingDateTime } from 'types/meeting';
 import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
-
-import useUuid from '@hooks/useUuid/useUuid';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { useGetMyScheduleQuery } from '@stores/servers/schedule/queries';
 
@@ -20,7 +19,7 @@ export default function SchedulePickerContainer({
   availableDates,
   mode,
 }: SchedulePickerContainerProps) {
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
   const { userName } = useContext(AuthContext).state;
   const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, userName);
 

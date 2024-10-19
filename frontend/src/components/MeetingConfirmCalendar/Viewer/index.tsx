@@ -3,6 +3,7 @@ import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule'
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { s_attendeesContainer } from '@pages/MeetingConfirmPage/MeetingTimeConfirmPage.styles';
 
@@ -16,7 +17,6 @@ import TabButton from '@components/_common/Buttons/TabButton';
 import Calendar from '@components/_common/Calendar';
 
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
@@ -43,7 +43,7 @@ export default function Viewer({
   isLocked,
 }: ViewerProps) {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
   const [selectedAttendee, setSelectedAttendee] = useState('');
 
   const { data: meetingSchedules } = useGetSchedules(uuid, selectedAttendee);

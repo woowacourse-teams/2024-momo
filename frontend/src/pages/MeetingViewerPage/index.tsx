@@ -4,6 +4,7 @@ import ContentLayout from '@layouts/ContentLayout';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import MeetingConfirmCalendar from '@components/MeetingConfirmCalendar';
 import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
@@ -15,7 +16,6 @@ import Text from '@components/_common/Text';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import type { MeetingType } from '@apis/meetings/meetings';
 
@@ -45,7 +45,7 @@ const MEETING_QUERY_PAGE_ATTRIBUTES = {
 export default function MeetingViewerPage() {
   const { routeTo } = useRouter();
   const { handleKakaoTalkShare } = useKakaoTalkShare();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const {
     state: { userName },

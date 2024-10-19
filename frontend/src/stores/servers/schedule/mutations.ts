@@ -3,9 +3,9 @@ import { useContext } from 'react';
 import type { Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import type { PostScheduleRequest } from '@apis/schedules';
 import { postSchedule } from '@apis/schedules';
@@ -29,7 +29,7 @@ export const usePostScheduleMutation = (callback?: () => void) => {
 // mode에 따라 mutation을 호출하는 함수
 export const usePostScheduleByMode = (mode: Mode) => {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 

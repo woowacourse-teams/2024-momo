@@ -3,12 +3,12 @@ import { useContext } from 'react';
 import ContentLayout from '@layouts/ContentLayout';
 
 import { AuthContext } from '@contexts/AuthProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import Header from '@components/_common/Header';
 
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
@@ -32,7 +32,7 @@ const MEETING_TYPE = {
 
 export default function MeetingEntrancePage() {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { isLoggedIn } = useContext(AuthContext).state;
 

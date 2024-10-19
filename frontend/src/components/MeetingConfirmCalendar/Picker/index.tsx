@@ -3,6 +3,7 @@ import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import {
   s_bottomFixedButtonContainer,
@@ -13,7 +14,6 @@ import Calendar from '@components/_common/Calendar';
 
 import useCalendarPick from '@hooks/useCalendarPick/useCalendarPick';
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
@@ -30,7 +30,7 @@ interface PickerProps {
 
 export default function Picker({ availableDates, mode }: PickerProps) {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { userName } = useContext(AuthContext).state;
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);

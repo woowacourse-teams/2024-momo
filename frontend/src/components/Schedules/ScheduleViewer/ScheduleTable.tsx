@@ -1,9 +1,10 @@
+import { useContext } from 'react';
 import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
+
+import { UuidContext } from '@contexts/UuidProvider';
 
 import ScheduleDateDayList from '@components/Schedules/ScheduleTableFrame/ScheduleDateDayList';
 import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
-
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
@@ -30,7 +31,7 @@ export default function ScheduleTable({
   meetingAttendees,
   selectedAttendee,
 }: ScheduleTableProps) {
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { data: meetingSchedules } = useGetSchedules(uuid, selectedAttendee);
 

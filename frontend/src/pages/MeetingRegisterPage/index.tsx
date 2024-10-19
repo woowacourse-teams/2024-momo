@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import ContentLayout from '@layouts/ContentLayout';
 
 import { AuthContext } from '@contexts/AuthProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import MeetingConfirmCalendar from '@components/MeetingConfirmCalendar';
 import SchedulePickerContainer from '@components/Schedules/SchedulePicker/SchedulePickerContainer';
@@ -11,7 +12,6 @@ import { s_backButton } from '@components/_common/Header/Header.styles';
 import Text from '@components/_common/Text';
 
 import useRouter from '@hooks/useRouter/useRouter';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import type { MeetingType } from '@apis/meetings/meetings';
 
@@ -27,7 +27,7 @@ const MEETING_QUERY_PAGE_ATTRIBUTES = {
 
 export default function MeetingRegisterPage() {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const {
     state: { userName },

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import { createContext, useEffect, useState } from 'react';
-
-import useUuid from '@hooks/useUuid/useUuid';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { loadAuthState, saveAuthState } from '@utils/auth';
+
+import { UuidContext } from './UuidProvider';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -27,7 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     if (uuid) {

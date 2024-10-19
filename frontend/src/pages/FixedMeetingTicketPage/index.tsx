@@ -1,10 +1,12 @@
+import { useContext } from 'react';
+
 import ContentLayout from '@layouts/ContentLayout';
+
+import { UuidContext } from '@contexts/UuidProvider';
 
 import MeetingTicket from '@pages/FixedMeetingTicketPage/components/MeetingTicket';
 
 import Header from '@components/_common/Header';
-
-import useUuid from '@hooks/useUuid/useUuid';
 
 import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries';
 
@@ -13,7 +15,7 @@ import ActionButtonGroup from './components/ActionButtonGroup';
 import UnconfirmedMessage from './components/UnconfirmedMessage';
 
 export default function FixedMeetingTicketPage() {
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
   const { data } = useGetConfirmedMeetingInfoQuery(uuid);
   return (
     <>

@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 
 import GlobalLayout from '@layouts/GlobalLayout';
+import UuidLayout from '@layouts/UuidLayout';
 
 import { TimePickerUpdateStateProvider } from '@contexts/TimePickerUpdateStateProvider';
 
@@ -29,6 +30,7 @@ const meetingRoutes: RouteObject[] = [
   },
   {
     path: ':uuid',
+    element: <UuidLayout />,
     children: [
       {
         index: true,

@@ -3,13 +3,13 @@ import type { MeetingDateTime } from 'types/meeting';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 
 import useRouter from '@hooks/useRouter/useRouter';
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
-import useUuid from '@hooks/useUuid/useUuid';
 
 import Check from '@assets/images/attendeeCheck.svg';
 import Pen from '@assets/images/pen.svg';
@@ -40,7 +40,7 @@ export default function SchedulesViewer({
   meetingAttendees,
 }: SchedulesViewerProps) {
   const { routeTo } = useRouter();
-  const { uuid } = useUuid();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
   const { isLoggedIn, userName } = useContext(AuthContext).state;
