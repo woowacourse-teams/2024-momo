@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
 import MeetingDateTime from '@pages/CreateMeetingPage/components/MeetingDateTime';
@@ -12,6 +10,7 @@ import { s_backButton } from '@components/_common/Header/Header.styles';
 import useConfirmModal from '@hooks/useConfirmModal/useConfirmModal';
 import useCreateMeeting from '@hooks/useCreateMeeting/useCreateMeeting';
 import useFunnel from '@hooks/useFunnel/useFunnel';
+import useRouter from '@hooks/useRouter/useRouter';
 
 import BackSVG from '@assets/images/back.svg';
 
@@ -22,9 +21,9 @@ import MeetingCreationConfirmModal from './components/MeetingCreationConfirmModa
 type Steps = typeof meetingStepValues;
 
 export default function CreateMeetingPage() {
-  const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
+  const { goBack } = useRouter();
 
-  const navigate = useNavigate();
+  const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
   const [setStep, Funnel] = useFunnel<Steps>(meetingStepValues, '약속이름');
 
   const {
@@ -43,7 +42,7 @@ export default function CreateMeetingPage() {
   return (
     <>
       <Header title="약속 만들기">
-        <button css={s_backButton} onClick={() => navigate(-1)}>
+        <button css={s_backButton} onClick={goBack}>
           <BackSVG width="24" height="24" />
         </button>
       </Header>

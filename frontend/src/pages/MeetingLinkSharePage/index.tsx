@@ -9,6 +9,7 @@ import Header from '@components/_common/Header';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import KakaoIcon from '@assets/images/kakao.svg';
 import LogoSunglass from '@assets/images/logoSunglass.svg';
@@ -29,10 +30,12 @@ interface RouteState {
 }
 
 export default function MeetingLinkSharePage() {
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
+
   const {
     state: { meetingInfo },
   } = useLocation() as RouteState;
-  const { uuid, routeTo } = useRouter();
 
   const LINK = `${window.location.protocol}/${window.location.host}/meeting/${uuid}`;
 

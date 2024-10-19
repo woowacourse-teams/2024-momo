@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
@@ -7,6 +6,9 @@ import { AuthContext } from '@contexts/AuthProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import Header from '@components/_common/Header';
+
+import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
@@ -29,10 +31,8 @@ const MEETING_TYPE = {
 };
 
 export default function MeetingEntrancePage() {
-  const navigate = useNavigate();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
 
   const { isLoggedIn } = useContext(AuthContext).state;
 
@@ -40,14 +40,14 @@ export default function MeetingEntrancePage() {
 
   const handleMeetingRegisterButtonClick = () => {
     if (isLoggedIn) {
-      navigate(`/meeting/${uuid}/register`);
+      routeTo(`/meeting/${uuid}/register`);
     } else {
-      navigate(`/meeting/${uuid}/login`);
+      routeTo(`/meeting/${uuid}/login`);
     }
   };
 
   const handleMeetingViewButtonClick = () => {
-    navigate(`/meeting/${uuid}/viewer`);
+    routeTo(`/meeting/${uuid}/viewer`);
   };
 
   return (

@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
@@ -15,6 +14,9 @@ import {
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Calendar from '@components/_common/Calendar';
+
+import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
@@ -40,9 +42,8 @@ export default function Viewer({
   hostName,
   isLocked,
 }: ViewerProps) {
-  const navigate = useNavigate();
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
   const [selectedAttendee, setSelectedAttendee] = useState('');
 
   const { data: meetingSchedules } = useGetSchedules(uuid, selectedAttendee);
@@ -52,7 +53,7 @@ export default function Viewer({
   const handleScheduleUpdate = () => {
     if (!isLoggedIn) {
       alert('로그인 해주세요');
-      navigate(`/meeting/${uuid}/login`);
+      routeTo(`/meeting/${uuid}/login`);
       return;
     }
 
@@ -123,7 +124,7 @@ export default function Viewer({
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => navigate(`/meeting/${uuid}/confirm`)}
+                onClick={() => routeTo(`/meeting/${uuid}/confirm`)}
               >
                 약속 시간 확정하기
               </Button>
@@ -131,7 +132,7 @@ export default function Viewer({
               <Button
                 size="full"
                 variant="primary"
-                onClick={() => navigate(`/meeting/${uuid}/recommend`)}
+                onClick={() => routeTo(`/meeting/${uuid}/recommend`)}
               >
                 약속 시간 추천받기
               </Button>

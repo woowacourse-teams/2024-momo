@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
 
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
@@ -8,6 +7,7 @@ import { s_backButton } from '@components/_common/Header/Header.styles';
 import Text from '@components/_common/Text';
 
 import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { getMeetingAttendees } from '@apis/meetings/recommends';
 
@@ -20,8 +20,7 @@ import MeetingTimeOptions from './components/MeetingTimeOptions';
 
 export default function MeetingConfirmPage() {
   const { routeTo } = useRouter();
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { uuid } = useUuid();
 
   const { data: attendeeNames } = useQuery({
     queryKey: [QUERY_KEY.meetingAttendees],

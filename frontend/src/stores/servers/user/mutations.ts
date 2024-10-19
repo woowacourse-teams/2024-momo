@@ -1,14 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import { AuthContext } from '@contexts/AuthProvider';
+
+import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { postUserLogin, postUserLogout } from '@apis/users';
 
 export const usePostLoginMutation = () => {
-  const navigate = useNavigate();
-  const { uuid } = useParams<{ uuid: string }>();
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
   const authContext = useContext(AuthContext);
 
   return useMutation({
@@ -20,7 +22,7 @@ export const usePostLoginMutation = () => {
 
       setIsLoggedIn(true);
       setUserName(userName);
-      navigate(`/meeting/${uuid}`);
+      routeTo(`/meeting/${uuid}`);
     },
   });
 };

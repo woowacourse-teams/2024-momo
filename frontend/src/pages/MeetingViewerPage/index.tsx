@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
 
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
@@ -16,6 +15,7 @@ import Text from '@components/_common/Text';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import type { MeetingType } from '@apis/meetings/meetings';
 
@@ -45,8 +45,8 @@ const MEETING_QUERY_PAGE_ATTRIBUTES = {
 export default function MeetingViewerPage() {
   const { routeTo } = useRouter();
   const { handleKakaoTalkShare } = useKakaoTalkShare();
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { uuid } = useUuid();
+
   const {
     state: { userName },
   } = useContext(AuthContext);

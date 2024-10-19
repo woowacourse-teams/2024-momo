@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
 
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
@@ -12,6 +11,7 @@ import { s_backButton } from '@components/_common/Header/Header.styles';
 import Text from '@components/_common/Text';
 
 import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import type { MeetingType } from '@apis/meetings/meetings';
 
@@ -27,8 +27,8 @@ const MEETING_QUERY_PAGE_ATTRIBUTES = {
 
 export default function MeetingRegisterPage() {
   const { routeTo } = useRouter();
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { uuid } = useUuid();
+
   const {
     state: { userName },
   } = useContext(AuthContext);

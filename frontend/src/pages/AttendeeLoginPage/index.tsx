@@ -8,6 +8,7 @@ import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
 import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { usePostLoginMutation } from '@stores/servers/user/mutations';
 
@@ -18,7 +19,8 @@ import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields'
 import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
-  const { uuid, routeTo } = useRouter();
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
 
   const { mutate: postLoginMutate } = usePostLoginMutation();
 

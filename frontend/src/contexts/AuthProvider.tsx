@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { loadAuthState, saveAuthState } from '@utils/auth';
 
@@ -26,8 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const params = useParams<{ uuid?: string }>();
-  const uuid = params.uuid;
+  const { uuid } = useUuid();
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     if (uuid) {

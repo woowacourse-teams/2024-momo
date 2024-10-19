@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
 import { Button } from '@components/_common/Buttons/Button';
 import Text from '@components/_common/Text';
+
+import useRouter from '@hooks/useRouter/useRouter';
 
 import MomoCharacter from '@assets/images/momoCharacter.svg';
 
@@ -12,7 +12,7 @@ import { MEETING_CREATE_PATH } from '@constants/routes/meeting';
 import { s_container } from './LandingPage.styles';
 
 export default function LandingPage() {
-  const navigate = useNavigate();
+  const { routeTo } = useRouter();
 
   return (
     <ContentLayout>
@@ -23,7 +23,7 @@ export default function LandingPage() {
           </Text>
         </h1>
         <MomoCharacter width="128" height="180" />
-        <Button onClick={() => navigate(MEETING_CREATE_PATH)} variant="primary" size="full">
+        <Button onClick={() => routeTo(MEETING_CREATE_PATH)} variant="primary" size="full">
           약속 생성하기
         </Button>
       </div>

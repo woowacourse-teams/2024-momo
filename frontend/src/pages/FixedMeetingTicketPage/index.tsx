@@ -1,10 +1,10 @@
-import { useParams } from 'react-router-dom';
-
 import ContentLayout from '@layouts/ContentLayout/ContentLayout';
 
 import MeetingTicket from '@pages/FixedMeetingTicketPage/components/MeetingTicket';
 
 import Header from '@components/_common/Header';
+
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { useGetConfirmedMeetingInfoQuery } from '@stores/servers/confirm/queries';
 
@@ -13,8 +13,7 @@ import ActionButtonGroup from './components/ActionButtonGroup';
 import UnconfirmedMessage from './components/UnconfirmedMessage';
 
 export default function FixedMeetingTicketPage() {
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { uuid } = useUuid();
   const { data } = useGetConfirmedMeetingInfoQuery(uuid);
   return (
     <>

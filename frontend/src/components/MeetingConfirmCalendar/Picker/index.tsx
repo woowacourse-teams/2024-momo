@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
@@ -13,6 +12,8 @@ import { Button } from '@components/_common/Buttons/Button';
 import Calendar from '@components/_common/Calendar';
 
 import useCalendarPick from '@hooks/useCalendarPick/useCalendarPick';
+import useRouter from '@hooks/useRouter/useRouter';
+import useUuid from '@hooks/useUuid/useUuid';
 
 import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
@@ -28,10 +29,8 @@ interface PickerProps {
 }
 
 export default function Picker({ availableDates, mode }: PickerProps) {
-  const navigate = useNavigate();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useUuid();
 
   const { userName } = useContext(AuthContext).state;
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
@@ -49,10 +48,6 @@ export default function Picker({ availableDates, mode }: PickerProps) {
     });
 
     return { uuid, requestData: convertedData };
-  };
-
-  const handleMeetingViewerNavigate = () => {
-    navigate(`/meeting/${uuid}/viewer`);
   };
 
   const handleScheduleSave = () => {
@@ -89,7 +84,11 @@ export default function Picker({ availableDates, mode }: PickerProps) {
         <div css={s_fullButtonContainer}>
           {mode === 'register' ? (
             <>
-              <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
+              <Button
+                size="full"
+                variant="secondary"
+                onClick={() => routeTo(`/meeting/${uuid}/viewer`)}
+              >
                 약속 현황 조회
               </Button>
               <Button

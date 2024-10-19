@@ -16,11 +16,6 @@ const useFunnel = <Steps extends StepType>(steps: Steps, initialStep: Steps[numb
     });
   };
 
-  // 아직 헤더 디자인을 하지 않은 상태이기 때문에, goPrevStep은 사용하지 않는 상태입니다.(@해리)
-  const goPrevStep = () => {
-    navigate(-1);
-  };
-
   const Step = <Steps extends StepType>({ children }: StepProps<Steps>) => {
     return <>{children}</>;
   };
