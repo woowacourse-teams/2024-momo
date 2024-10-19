@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 const useRouter = () => {
-  const router = useNavigate();
-  const uuid = useParams<{ uuid: string }>().uuid;
+  const navigate = useNavigate();
+  const { uuid } = useParams<{ uuid: string }>();
 
   return {
     uuid,
-    routeTo: (path: string) => router(path),
+    routeTo: (path: string) => navigate(path),
   };
 };
 
