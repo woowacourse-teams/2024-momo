@@ -28,9 +28,3 @@ export const s_title = css`
   transform: translateX(-50%);
   font-weight: ${theme.typography.bodyBold};
 `;
-
-export const s_backButton = css`
-  width: 2.4rem;
-  height: 2.4rem;
-  background-color: inherit;
-`;
