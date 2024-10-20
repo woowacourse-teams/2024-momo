@@ -4,25 +4,21 @@ import ContentLayout from '@layouts/ContentLayout';
 
 import { UuidContext } from '@contexts/UuidProvider';
 
+import BackButton from '@components/_common/Buttons/BackButton';
 import { Button } from '@components/_common/Buttons/Button';
 import Field from '@components/_common/Field';
 import Header from '@components/_common/Header';
-import { s_backButton } from '@components/_common/Header/Header.styles';
 import Input from '@components/_common/Input';
 
 import useInput from '@hooks/useInput/useInput';
-import useRouter from '@hooks/useRouter/useRouter';
 
 import { usePostLoginMutation } from '@stores/servers/user/mutations';
-
-import BackSVG from '@assets/images/back.svg';
 
 import { FIELD_DESCRIPTIONS, INPUT_FIELD_PATTERN } from '@constants/inputFields';
 
 import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
 
 export default function AttendeeLoginPage() {
-  const { routeTo } = useRouter();
   const { uuid } = useContext(UuidContext);
 
   const { mutate: postLoginMutate } = usePostLoginMutation();
@@ -70,9 +66,7 @@ export default function AttendeeLoginPage() {
     <>
       <Header title="로그인">
         {/* 현재 로그인 페이지는 빙봉이 구현한 로직 상 약속 입장 페이지에서만 사용됩니다. 따라서 뒤로가기 시, 입장 페이지로 이동하도록 구현했습니다. (@낙타) */}
-        <button css={s_backButton} onClick={() => routeTo(`/meeting/${uuid}`)}>
-          <BackSVG width="24" height="24" />
-        </button>
+        <BackButton path={`/meeting/${uuid}`} />
       </Header>
       <ContentLayout>
         <div css={s_container}>

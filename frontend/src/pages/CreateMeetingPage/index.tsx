@@ -4,15 +4,12 @@ import MeetingDateTime from '@pages/CreateMeetingPage/components/MeetingDateTime
 import MeetingHostInfo from '@pages/CreateMeetingPage/components/MeetingHostInfo';
 import MeetingName from '@pages/CreateMeetingPage/components/MeetingName';
 
+import BackButton from '@components/_common/Buttons/BackButton';
 import Header from '@components/_common/Header';
-import { s_backButton } from '@components/_common/Header/Header.styles';
 
 import useConfirmModal from '@hooks/useConfirmModal/useConfirmModal';
 import useCreateMeeting from '@hooks/useCreateMeeting/useCreateMeeting';
 import useFunnel from '@hooks/useFunnel/useFunnel';
-import useRouter from '@hooks/useRouter/useRouter';
-
-import BackSVG from '@assets/images/back.svg';
 
 import { CREATE_MEETING_STEPS, meetingStepValues } from '@constants/meeting';
 
@@ -21,8 +18,6 @@ import MeetingCreationConfirmModal from './components/MeetingCreationConfirmModa
 type Steps = typeof meetingStepValues;
 
 export default function CreateMeetingPage() {
-  const { goBack } = useRouter();
-
   const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
   const [setStep, Funnel] = useFunnel<Steps>(meetingStepValues, '약속이름');
 
@@ -42,9 +37,7 @@ export default function CreateMeetingPage() {
   return (
     <>
       <Header title="약속 만들기">
-        <button css={s_backButton} onClick={goBack}>
-          <BackSVG width="24" height="24" />
-        </button>
+        <BackButton />
       </Header>
       <ContentLayout>
         <Funnel>
