@@ -62,7 +62,7 @@ export default function CreateMeetingPage() {
               meetingTimeInput={meetingTimeInput}
               meetingTypeInput={meetingTypeInput}
               isCreateMeetingFormInvalid={isCreateMeetingFormInvalid}
-              onMeetingCreateButtonClick={handleMeetingCreateButtonClick}
+              onMeetingCreateButtonClick={onToggleConfirmModal}
             />
           </Funnel.Step>
         </Funnel>
