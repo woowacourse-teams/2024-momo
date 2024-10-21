@@ -5,9 +5,11 @@ const useRouter = () => {
 
   const routeTo = (path: string) => navigate(path);
 
+  const routeWithState = (path: string, state: object) => navigate(path, { state });
+
   const goBack = () => navigate(-1);
 
-  return { routeTo, goBack };
+  return { routeTo, goBack, routeWithState };
 };
 
 export default useRouter;

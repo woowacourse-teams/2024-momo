@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import {
   s_attendeesContainer,
@@ -14,6 +13,7 @@ import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
 
 import useMeetingTimeRecommendFilter from '@hooks/useMeetingTimeRecommendFilter/useMeetingTimeRecommendFilter';
+import useRouter from '@hooks/useRouter/useRouter';
 
 import { postMeetingConfirm } from '@apis/meetings/confirms';
 import type { MeetingRecommend } from '@apis/meetings/recommends';
@@ -43,13 +43,13 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
   } = useMeetingTimeRecommendFilter(uuid, attendeeNames);
 
   const [selectedMeeting, setSelectedMeeting] = useState<SelectedMeeting>({} as SelectedMeeting);
-  const navigate = useNavigate();
+  const { routeTo } = useRouter();
 
   // TODO: stores/servers/confirm/mutation.ts 파일로 분리
   const { mutate } = useMutation({
     mutationFn: postMeetingConfirm,
     onSuccess: () => {
-      navigate(`/meeting/${uuid}/fixed-meeting-ticket`);
+      routeTo(`/meeting/${uuid}/fixed-meeting-ticket`);
     },
   });
 
