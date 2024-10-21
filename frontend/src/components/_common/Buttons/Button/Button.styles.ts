@@ -93,3 +93,9 @@ export const s_size = (size: ButtonSize) => css`
   height: ${buttonSize[size].height};
   padding: ${buttonSize[size].padding};
 `;
+
+export const s_headerIconButton = css`
+  width: 2.4rem;
+  height: 2.4rem;
+  background-color: inherit;
+`;

@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import type { Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
+
+import useRouter from '@hooks/useRouter/useRouter';
 
 import type { PostScheduleRequest } from '@apis/schedules';
 import { postSchedule } from '@apis/schedules';
@@ -26,10 +28,8 @@ export const usePostScheduleMutation = (callback?: () => void) => {
 
 // mode에 따라 mutation을 호출하는 함수
 export const usePostScheduleByMode = (mode: Mode) => {
-  const navigate = useNavigate();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
@@ -37,7 +37,7 @@ export const usePostScheduleByMode = (mode: Mode) => {
     usePostScheduleMutation(() => handleToggleIsTimePickerUpdate());
 
   const { mutate: postScheduleMutateForRegistration, isPending: isRegisterModePending } =
-    usePostScheduleMutation(() => navigate(`/meeting/${uuid}/viewer`));
+    usePostScheduleMutation(() => routeTo(`/meeting/${uuid}/viewer`));
 
   const submitSchedule = (scheduleRequestData: PostScheduleRequest) => {
     if (mode === 'register') {

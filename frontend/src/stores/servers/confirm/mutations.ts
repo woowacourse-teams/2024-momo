@@ -1,15 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+
+import useRouter from '@hooks/useRouter/useRouter';
 
 import { deleteFixedMeeting } from '@apis/meetings/confirms';
 
 export const useCancelFixedMeetingMutation = (uuid: string) => {
-  const navigate = useNavigate();
+  const { routeTo } = useRouter();
 
   return useMutation({
     mutationFn: () => deleteFixedMeeting(uuid),
     onSuccess: () => {
-      navigate(`/meeting/${uuid}`);
+      routeTo(`/meeting/${uuid}`);
     },
   });
 };

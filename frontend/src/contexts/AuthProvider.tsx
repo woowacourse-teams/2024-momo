@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { createContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { loadAuthState, saveAuthState } from '@utils/auth';
+
+import { UuidContext } from './UuidProvider';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -26,8 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const params = useParams<{ uuid?: string }>();
-  const uuid = params.uuid;
+  const { uuid } = useContext(UuidContext);
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     if (uuid) {

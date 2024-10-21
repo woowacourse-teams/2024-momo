@@ -13,21 +13,18 @@ export const s_header = css`
   justify-content: space-between;
 
   width: 100%;
-  height: 6rem;
+  height: 4.8rem;
   padding: 0 1.6rem;
+
+  text-align: center;
 
   background-color: #fff;
   box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
 `;
 
-export const s_logoContainer = css`
-  display: flex;
-  gap: 1.2rem;
-  align-items: center;
-  height: 3.6rem;
-`;
-
 export const s_title = css`
-  font-size: 2.4rem;
-  font-weight: ${theme.typography.titleBold};
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: ${theme.typography.bodyBold};
 `;

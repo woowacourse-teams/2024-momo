@@ -42,7 +42,7 @@ const meetingHandlers = [
   }),
 
   http.get(`${BASE_URL}/:uuid/home`, () => {
-    if (currentMeetingType === 'DATETIME') {
+    if (!currentMeetingType || currentMeetingType === 'DATETIME') {
       return HttpResponse.json(meetingEntranceDateTimeInfo, { status: 200 });
     } else if (currentMeetingType === 'DAYSONLY') {
       return HttpResponse.json(meetingEntranceDaysOnlyInfo, { status: 200 });

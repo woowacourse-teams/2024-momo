@@ -1,24 +1,17 @@
 import { useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
+import useRouter from '@hooks/useRouter/useRouter';
 
 import FunnelMain from './FunnelMain';
 import type { RouteFunnelProps, StepProps, StepType } from './useFunnel.type';
 
 const useFunnel = <Steps extends StepType>(steps: Steps, initialStep: Steps[number]) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { routeWithState } = useRouter();
 
   const setStep = (step: Steps[number]) => {
-    navigate(location.pathname, {
-      state: {
-        currentStep: step,
-      },
-    });
-  };
-
-  // 아직 헤더 디자인을 하지 않은 상태이기 때문에, goPrevStep은 사용하지 않는 상태입니다.(@해리)
-  const goPrevStep = () => {
-    navigate(-1);
+    routeWithState(location.pathname, { currentStep: step });
   };
 
   const Step = <Steps extends StepType>({ children }: StepProps<Steps>) => {

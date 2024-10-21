@@ -1,9 +1,14 @@
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+
+import ContentLayout from '@layouts/ContentLayout';
 
 import { AuthContext } from '@contexts/AuthProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
+import Header from '@components/_common/Header';
+
+import useRouter from '@hooks/useRouter/useRouter';
 
 import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
@@ -26,10 +31,8 @@ const MEETING_TYPE = {
 };
 
 export default function MeetingEntrancePage() {
-  const navigate = useNavigate();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useContext(UuidContext);
 
   const { isLoggedIn } = useContext(AuthContext).state;
 
@@ -37,35 +40,44 @@ export default function MeetingEntrancePage() {
 
   const handleMeetingRegisterButtonClick = () => {
     if (isLoggedIn) {
-      navigate(`/meeting/${uuid}/register`);
+      routeTo(`/meeting/${uuid}/register`);
     } else {
-      navigate(`/meeting/${uuid}/login`);
+      routeTo(`/meeting/${uuid}/login`);
     }
   };
 
   const handleMeetingViewButtonClick = () => {
-    navigate(`/meeting/${uuid}/viewer`);
+    routeTo(`/meeting/${uuid}/viewer`);
   };
 
   return (
-    <div css={s_container}>
-      <div css={s_infoContainer}>
-        <Logo width="128" height="128" />
-        <div css={s_textContainer}>
-          <h1 css={s_titleText}>{meetingName}</h1>
-          <div
-            css={s_explanationText}
-          >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME} 알려주세요.`}</div>
+    <>
+      <Header title="약속 입장하기" />
+      <ContentLayout>
+        <div css={s_container}>
+          <div css={s_infoContainer}>
+            <Logo width="128" height="128" />
+            <div css={s_textContainer}>
+              <h1 css={s_titleText}>{meetingName}</h1>
+              <div
+                css={s_explanationText}
+              >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME} 알려주세요.`}</div>
+            </div>
+          </div>
+          <div css={s_buttonContainer}>
+            <Button size="full" customCss={s_pinkButton} onClick={handleMeetingRegisterButtonClick}>
+              바로 등록할게요
+            </Button>
+            <Button
+              size="full"
+              customCss={s_lightPinkButton}
+              onClick={handleMeetingViewButtonClick}
+            >
+              조회부터 할게요
+            </Button>
+          </div>
         </div>
-      </div>
-      <div css={s_buttonContainer}>
-        <Button size="full" customCss={s_pinkButton} onClick={handleMeetingRegisterButtonClick}>
-          바로 등록할게요
-        </Button>
-        <Button size="full" customCss={s_lightPinkButton} onClick={handleMeetingViewButtonClick}>
-          조회부터 할게요
-        </Button>
-      </div>
-    </div>
+      </ContentLayout>
+    </>
   );
 }

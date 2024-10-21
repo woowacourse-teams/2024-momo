@@ -1,13 +1,14 @@
 import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 
 import { AuthContext } from '@contexts/AuthProvider';
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 
+import useRouter from '@hooks/useRouter/useRouter';
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
 import Check from '@assets/images/attendeeCheck.svg';
@@ -38,10 +39,8 @@ export default function SchedulesViewer({
   availableDates,
   meetingAttendees,
 }: SchedulesViewerProps) {
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
-
-  const navigate = useNavigate();
+  const { routeTo } = useRouter();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
   const { isLoggedIn, userName } = useContext(AuthContext).state;
@@ -60,7 +59,7 @@ export default function SchedulesViewer({
   const handleScheduleUpdate = () => {
     if (!isLoggedIn) {
       alert('로그인 해주세요');
-      navigate(`/meeting/${uuid}/login`);
+      routeTo(`/meeting/${uuid}/login`);
       return;
     }
 
@@ -114,7 +113,7 @@ export default function SchedulesViewer({
             <Button
               size="full"
               variant="primary"
-              onClick={() => navigate(`/meeting/${uuid}/confirm`)}
+              onClick={() => routeTo(`/meeting/${uuid}/confirm`)}
             >
               약속 시간 확정하기
             </Button>
@@ -122,7 +121,7 @@ export default function SchedulesViewer({
             <Button
               size="full"
               variant="primary"
-              onClick={() => navigate(`/meeting/${uuid}/recommend`)}
+              onClick={() => routeTo(`/meeting/${uuid}/recommend`)}
             >
               약속 시간 추천받기
             </Button>

@@ -1,5 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useContext } from 'react';
 import type { MeetingAllSchedules, MeetingSingleSchedule } from 'types/schedule';
+
+import { UuidContext } from '@contexts/UuidProvider';
 
 import ScheduleDateDayList from '@components/Schedules/ScheduleTableFrame/ScheduleDateDayList';
 import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
@@ -29,8 +31,7 @@ export default function ScheduleTable({
   meetingAttendees,
   selectedAttendee,
 }: ScheduleTableProps) {
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { uuid } = useContext(UuidContext);
 
   const { data: meetingSchedules } = useGetSchedules(uuid, selectedAttendee);
 

@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule, Mode } from 'types/schedule';
 
 import { TimePickerUpdateStateContext } from '@contexts/TimePickerUpdateStateProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
 import ScheduleTimeList from '@components/Schedules/ScheduleTableFrame/ScheduleTimeList';
 import { Button } from '@components/_common/Buttons/Button';
@@ -11,6 +11,7 @@ import TabButton from '@components/_common/Buttons/TabButton';
 import Text from '@components/_common/Text';
 
 import usePagedTimePick from '@hooks/usePagedTimePick/usePagedTimePick';
+import useRouter from '@hooks/useRouter/useRouter';
 
 import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
@@ -50,10 +51,8 @@ export default function SchedulePicker({
   meetingSingleSchedule,
   mode,
 }: SchedulePickerProps) {
-  const navigate = useNavigate();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  const { routeTo } = useRouter();
+  const { uuid } = useContext(UuidContext);
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
@@ -80,10 +79,6 @@ export default function SchedulePicker({
   const { submitSchedule, isEditModePending, isRegisterModePending } = usePostScheduleByMode(mode);
 
   const [selectMode, setSelectMode] = useState<keyof typeof TIME_SELECT_MODE>('available');
-
-  const handleMeetingViewerNavigate = () => {
-    navigate(`/meeting/${uuid}/viewer`);
-  };
 
   const convertSelectedDatesToRequest = () => {
     const convertedData = convertToSchedule({
@@ -182,7 +177,11 @@ export default function SchedulePicker({
         <div css={s_fullButtonContainer}>
           {mode === 'register' ? (
             <>
-              <Button size="full" variant="secondary" onClick={handleMeetingViewerNavigate}>
+              <Button
+                size="full"
+                variant="secondary"
+                onClick={() => routeTo(`/meeting/${uuid}/viewer`)}
+              >
                 약속 현황 조회
               </Button>
               <Button
