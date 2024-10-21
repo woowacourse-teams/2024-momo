@@ -262,7 +262,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name()), 0
         );
 
         assertThat(responses.recommendedSchedules()).containsExactly(
@@ -302,7 +302,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(jazz.name(), daon.name())
+                movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(jazz.name(), daon.name()), 0
         );
 
         assertThat(responses.recommendedSchedules()).containsExactly(
@@ -399,7 +399,7 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(schedules);
 
         RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
-                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name())
+                movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name()), 0
         );
 
         assertThat(responses.recommendedSchedules()).containsExactly(

@@ -37,6 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class ScheduleRecommenderTest {
 
+    private static final int DEFAULT_MIN_SIZE = 0;
+
     @Autowired
     private TotalScheduleRecommender totalScheduleRecommender;
 
@@ -74,7 +76,8 @@ class ScheduleRecommenderTest {
 
         AvailableDate todayAvailableDate = availableDateRepository.save(new AvailableDate(today, meeting));
         AvailableDate tomorrowAvailableDate = availableDateRepository.save(
-                new AvailableDate(today.plusDays(1), meeting));
+                new AvailableDate(today.plusDays(1), meeting)
+        );
 
         // jazz: 오늘 0000 ~ 2330 / 내일 0000 ~ 2330
         saveAttendeeSchedule(jazz, todayAvailableDate, createTimeslotRange(Timeslot.TIME_0000, Timeslot.TIME_2330));
@@ -130,19 +133,12 @@ class ScheduleRecommenderTest {
     @Transactional  // TODO: 테스트 코드에서의 @Transactional 사용 논의 필요
     class TotalScheduleRecommenderTest {
 
-        @DisplayName("참여자의 부분집합 별 참여 가능 시간을 구한 뒤, "
+        @DisplayName("참여자의 부분 집합 별 참여 가능 시간을 구한 뒤, "
                 + "(참여자 많은 순, 빠른 시간 순)으로 정렬하고 상위 10개를 추천한다.")
         @Test
         void recommendByEachAttendeeSubsetOrderByAttendeeCountAndEarliestTime() {
             // given
             AttendeeGroup group = new AttendeeGroup(List.of(jazz, pedro, daon, bakey, mark));
-
-            // when
-            List<CandidateSchedule> recommendResult = totalScheduleRecommender.recommend(
-                    group, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), MeetingType.DATETIME
-            );
-
-            // then
             List<CandidateSchedule> expected = List.of(
                     new CandidateSchedule(
                             createDateTimeInterval(today, 12, 0, today, 15, 0),
@@ -185,6 +181,67 @@ class ScheduleRecommenderTest {
                             createAttendeeGroup(jazz, daon, mark)
                     )
             );
+
+            // when
+            List<CandidateSchedule> recommendResult = totalScheduleRecommender.recommend(
+                    group,
+                    RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(),
+                    MeetingType.DATETIME,
+                    DEFAULT_MIN_SIZE
+            );
+
+            // then
+            assertAll(
+                    () -> assertThat(recommendResult).hasSizeLessThanOrEqualTo(10),
+                    () -> assertThat(recommendResult).containsExactlyElementsOf(expected)
+            );
+        }
+
+        @DisplayName("참여자의 부분 집합 별 참여 가능 시간을 구한 뒤, "
+                + "(참여자 많은 순, 빠른 시간 순)으로 정렬하고 상위 10개를 추천한다."
+                + "최소 시간 보장을 곁들인")
+        @Test
+        void recommendByEachAttendeeSubsetOrderByAttendeeCountAndEarliestTimeWithMinimumTime() {
+            // given
+            int givenMinTime = 3;
+            AttendeeGroup group = new AttendeeGroup(List.of(jazz, pedro, daon, bakey, mark));
+            List<CandidateSchedule> expected = List.of(
+                    new CandidateSchedule(
+                            createDateTimeInterval(today, 12, 0, today, 15, 0),
+                            createAttendeeGroup(jazz, pedro, daon, mark, bakey)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(tomorrow, 16, 0, tomorrow, 20, 0),
+                            createAttendeeGroup(jazz, pedro, daon, mark, bakey)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(today, 15, 0, today, 18, 30),
+                            createAttendeeGroup(jazz, pedro, daon, bakey)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(today, 19, 0, today, 22, 0),
+                            createAttendeeGroup(jazz, pedro, daon, bakey)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(tomorrow, 0, 0, tomorrow, 16, 0),
+                            createAttendeeGroup(jazz, daon, bakey, mark)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(today, 6, 0, today, 9, 0),
+                            createAttendeeGroup(jazz, pedro, daon)
+                    ),
+                    new CandidateSchedule(
+                            createDateTimeInterval(today, 0, 0, today, 6, 0),
+                            createAttendeeGroup(jazz, daon)
+                    )
+            );
+
+            // when
+            List<CandidateSchedule> recommendResult = totalScheduleRecommender.recommend(
+                    group, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), MeetingType.DATETIME, givenMinTime
+            );
+
+            // then
             assertAll(
                     () -> assertThat(recommendResult).hasSizeLessThanOrEqualTo(10),
                     () -> assertThat(recommendResult).containsExactlyElementsOf(expected)
@@ -204,7 +261,10 @@ class ScheduleRecommenderTest {
 
             // when
             List<CandidateSchedule> recommendResult = filteredScheduleRecommender.recommend(
-                    filteredGroup, RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(), MeetingType.DATETIME
+                    filteredGroup,
+                    RecommendedScheduleSortStandard.EARLIEST_ORDER.getType(),
+                    MeetingType.DATETIME,
+                    DEFAULT_MIN_SIZE
             );
 
             // then
@@ -215,7 +275,7 @@ class ScheduleRecommenderTest {
                             expectedGroup
                     ),
                     new CandidateSchedule(
-                            createDateTimeInterval(today, 12, 0, today, 15, 00),
+                            createDateTimeInterval(today, 12, 0, today, 15, 0),
                             expectedGroup
                     ),
                     new CandidateSchedule(

@@ -14,24 +14,25 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public abstract class ScheduleRecommender {
 
+    private static final int ONE_HOUR_TIME_INTERVAL_SIZE = 2;
+
     protected final ScheduleRepository scheduleRepository;
 
-    public List<CandidateSchedule> recommend(AttendeeGroup group, String recommendType, MeetingType meetingType) {
-        List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group, meetingType);
+    public List<CandidateSchedule> recommend(
+            AttendeeGroup group, String recommendType, MeetingType meetingType, int minTime
+    ) {
+        int minSize = minTime * ONE_HOUR_TIME_INTERVAL_SIZE;
+        List<CandidateSchedule> mergedCandidateSchedules = calcCandidateSchedules(group, meetingType, minSize);
         sortSchedules(mergedCandidateSchedules, recommendType);
         return mergedCandidateSchedules.stream()
                 .limit(getMaxRecommendCount())
                 .toList();
     }
 
-    private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group, MeetingType type) {
+    private List<CandidateSchedule> calcCandidateSchedules(AttendeeGroup group, MeetingType type, int minSize) {
         List<CandidateSchedule> intersectedDateTimes = extractProperSortedDiscreteScheduleOf(group, type);
-        return CandidateSchedule.mergeContinuous(intersectedDateTimes, this::isContinuous);
+        return CandidateSchedule.mergeContinuous(intersectedDateTimes, this::isContinuous, minSize);
     }
-
-    abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup group, MeetingType type);
-
-    abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
 
     private void sortSchedules(List<CandidateSchedule> mergedCandidateSchedules, String recommendType) {
         RecommendedScheduleSortStandard sortStandard = RecommendedScheduleSortStandard.from(recommendType);
@@ -39,5 +40,11 @@ public abstract class ScheduleRecommender {
         sorter.sort(mergedCandidateSchedules);
     }
 
-    abstract long getMaxRecommendCount();
+    protected abstract List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(
+            AttendeeGroup group, MeetingType type
+    );
+
+    protected abstract boolean isContinuous(CandidateSchedule current, CandidateSchedule next);
+
+    protected abstract long getMaxRecommendCount();
 }
