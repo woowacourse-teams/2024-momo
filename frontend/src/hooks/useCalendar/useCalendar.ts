@@ -29,6 +29,8 @@ interface useCalendarReturn {
 const TODAY = new Date();
 const ONE_YEAR_LATER = getFullDate(new Date(getYear(TODAY) + 1, getMonth(TODAY)));
 
+type MonthDelta = -1 | 1;
+
 const useCalendar = (): useCalendarReturn => {
   const [currentFullDate, setCurrentFullDate] = useState(new Date());
   const { addToast } = useToast();
@@ -37,8 +39,12 @@ const useCalendar = (): useCalendarReturn => {
   const currentMonth = getMonth(currentFullDate);
   const isCurrentMonth = getYear(TODAY) === currentYear && getMonth(TODAY) === currentMonth;
 
+  const moveMonth = (monthDelta: MonthDelta) => {
+    setCurrentFullDate(new Date(currentYear, currentMonth + monthDelta));
+  };
+
   const moveToPrevMonth = () => {
-    setCurrentFullDate(new Date(currentYear, currentMonth - 1));
+    moveMonth(-1);
   };
 
   const moveToNextMonth = () => {
@@ -53,7 +59,7 @@ const useCalendar = (): useCalendarReturn => {
       return;
     }
 
-    setCurrentFullDate(new Date(currentYear, currentMonth + 1));
+    moveMonth(1);
   };
 
   const monthlyCalendarDate = getMonthlyCalendarDate(currentFullDate);
