@@ -2,10 +2,15 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
-export const s_floatingLabelContainer = css`
+export const s_floatingLabelContainer = (isError: boolean) => css`
   position: relative;
   display: inline-block;
   width: 100%;
+  color: ${isError ? '#EB1E1E' : '#71717a'};
+
+  &:focus-within label {
+    color: ${isError ? '#EB1E1E' : theme.colors.pink.medium};
+  }
 `;
 
 export const s_floatingLabelInput = (isError: boolean) => css`
@@ -24,22 +29,12 @@ export const s_floatingLabelInput = (isError: boolean) => css`
   }
 `;
 
-const getLabelTextColor = (isFocused: boolean, isError: boolean): string => {
-  if (isError) return '#EB1E1E';
-
-  if (isFocused) return theme.colors.pink.medium;
-
-  return '#71717a';
-};
-
-export const s_floatingLabel = (isFocused: boolean, isError: boolean) => css`
+export const s_floatingLabel = () => css`
   position: absolute;
   top: 0.4rem;
   left: 1em;
 
   ${theme.typography.captionMedium};
-
-  color: ${getLabelTextColor(isFocused, isError)};
 
   background: transparent;
 

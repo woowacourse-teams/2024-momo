@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import FloatingInput from '.';
+import FloatingLabelInput from '.';
 
 const meta = {
-  title: 'Components/Inputs/FloatingInput',
-  component: FloatingInput,
+  title: 'Components/Inputs/FloatingLabelInput',
+  component: FloatingLabelInput,
   argTypes: {
     label: { control: 'text' },
     isError: { control: 'boolean' },
   },
-} satisfies Meta<typeof FloatingInput>;
+} satisfies Meta<typeof FloatingLabelInput>;
 
 export default meta;
 

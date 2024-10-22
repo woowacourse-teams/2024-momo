@@ -21,9 +21,6 @@ export const s_input = {
   floating: css`
     padding-top: 1.6rem; /* 텍스트를 아래로 내리기 위해 top padding을 더 줌 (@해리) */
     padding-left: 1.2rem;
-
-    color: #71717a;
-
     border: none;
     ${baseInputStyle}
     border-radius: 1.2rem;
