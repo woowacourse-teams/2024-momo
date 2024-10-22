@@ -40,11 +40,6 @@ const useAttendeeLogin = () => {
   };
 
   const handleLoginButtonClick = async () => {
-    if (!uuid) {
-      console.error('UUID is missing');
-      return;
-    }
-
     postLoginMutate({
       uuid,
       request: { attendeeName: attendeeNameInput.value, password: attendeePasswordInput.value },
