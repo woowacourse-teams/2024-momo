@@ -1,6 +1,5 @@
 import ContentLayout from '@layouts/ContentLayout';
 
-import FloatingLabelInput from '@components/FloatingInput';
 import ScrollBlock from '@components/ScrollBlock';
 import BackButton from '@components/_common/Buttons/BackButton';
 import { Button } from '@components/_common/Buttons/Button';
@@ -10,7 +9,7 @@ import Text from '@components/_common/Text';
 
 import useAttendeeLogin from '@hooks/useAttendeeLogin/useAttendeeLogin';
 
-import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { MEETING_BUTTON_TEXTS } from '@constants/buttons';
 import { FIELD_LABELS, FIELD_PLACEHOLDERS, FIELD_TITLES } from '@constants/inputFields';
 
 import { s_container, s_inputContainer } from './AttendeeLoginPage.styles';
@@ -45,10 +44,11 @@ export default function AttendeeLoginPage() {
             <div css={s_inputContainer}>
               <Field>
                 <Field.Title title={FIELD_TITLES.attendeeLogin} />
+
                 <Text typo="captionBold" variant="caption">
                   약속에서 사용할 <Text.Accent text="닉네임과 비밀번호" />를 입력해 주세요
                 </Text>
-                <FloatingLabelInput
+                <Field.FloatingLabelInput
                   label={FIELD_LABELS.nickname}
                   placeholder={FIELD_PLACEHOLDERS.nickname}
                   value={attendeeName}
@@ -57,7 +57,7 @@ export default function AttendeeLoginPage() {
                   isError={isAttendeeNameError}
                   autoFocus
                 />
-                <FloatingLabelInput
+                <Field.FloatingLabelInput
                   label={FIELD_LABELS.password}
                   placeholder={FIELD_PLACEHOLDERS.password}
                   value={attendeePassword}

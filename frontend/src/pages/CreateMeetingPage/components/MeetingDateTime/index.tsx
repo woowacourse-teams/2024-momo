@@ -14,7 +14,7 @@ import type useDateSelect from '@hooks/useDateSelect/useDateSelect';
 import type useMeetingType from '@hooks/useMeetingType/useMeetingType';
 import type { UseTimeRangeDropdownReturn } from '@hooks/useTimeRangeDropdown/useTimeRangeDropdown';
 
-import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { MEETING_BUTTON_TEXTS } from '@constants/buttons';
 import { FIELD_DESCRIPTIONS, FIELD_LABELS, FIELD_TITLES } from '@constants/inputFields';
 
 import { s_container, s_dateCandidateSelector } from './MeetingDateTime.styles';

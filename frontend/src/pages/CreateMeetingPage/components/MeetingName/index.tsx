@@ -5,7 +5,7 @@ import Field from '@components/_common/Field';
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
 import type { UseInputReturn } from '@hooks/useInput/useInput';
 
-import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { MEETING_BUTTON_TEXTS } from '@constants/buttons';
 import { FIELD_LABELS, FIELD_PLACEHOLDERS, FIELD_TITLES } from '@constants/inputFields';
 
 interface MeetingNameProps {
@@ -32,7 +32,7 @@ export default function MeetingName({
     <ScrollBlock>
       <Field>
         <Field.Title title={FIELD_TITLES.meetingName} />
-        <Field.FloatingInput
+        <Field.FloatingLabelInput
           label={FIELD_LABELS.meetingName}
           placeholder={FIELD_PLACEHOLDERS.nickname}
           value={meetingName}

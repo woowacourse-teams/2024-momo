@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import FloatingInput from '@components/FloatingInput';
+import FloatingLabelInput from '@components/FloatingInput';
 
 import Text from '../Text';
 import {
@@ -60,6 +60,6 @@ Field.Title = FieldTitle;
 Field.Label = FieldLabel;
 Field.Description = FieldDescription;
 Field.ErrorMessage = FieldErrorMessage;
-Field.FloatingInput = FloatingInput;
+Field.FloatingLabelInput = FloatingLabelInput;
 
 export default Field;

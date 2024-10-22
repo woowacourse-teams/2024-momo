@@ -6,7 +6,7 @@ import Text from '@components/_common/Text';
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
 import type { UseInputReturn } from '@hooks/useInput/useInput';
 
-import { MEETING_BUTTON_TEXTS } from '@constants/button';
+import { MEETING_BUTTON_TEXTS } from '@constants/buttons';
 import { FIELD_LABELS, FIELD_PLACEHOLDERS, FIELD_TITLES } from '@constants/inputFields';
 
 interface MeetingHostInfoProps {
@@ -46,7 +46,7 @@ export default function MeetingHostInfo({
           <Text.Accent text=" 자동으로 로그인"></Text.Accent>
           돼요
         </Text>
-        <Field.FloatingInput
+        <Field.FloatingLabelInput
           label={FIELD_LABELS.nickname}
           placeholder={FIELD_PLACEHOLDERS.nickname}
           value={hostNickName}
@@ -55,7 +55,7 @@ export default function MeetingHostInfo({
           isError={isHostNickNameError}
           autoFocus
         />
-        <Field.FloatingInput
+        <Field.FloatingLabelInput
           label={FIELD_LABELS.password}
           placeholder={FIELD_PLACEHOLDERS.password}
           value={hostPassword}
