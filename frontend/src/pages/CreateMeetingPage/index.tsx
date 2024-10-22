@@ -67,7 +67,7 @@ export default function CreateMeetingPage() {
           </Funnel.Step>
         </Funnel>
         {/* BottomFixedButton이 요소를 가리는 현상이 있어 버튼 높이(6rem)와 같은 크기의 div 요소 배치  */}
-        <div style={{ width: '100%', height: '6rem' }}></div>
+        <div style={{ width: '100%', height: '5.2rem' }}></div>
         <MeetingCreationConfirmModal
           isModalOpen={isConfirmModalOpen}
           onModalClose={onToggleConfirmModal}
