@@ -11,6 +11,8 @@ import TabButton from '@components/_common/Buttons/TabButton';
 import useRouter from '@hooks/useRouter/useRouter';
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
+import { generateAriaLabelForTab } from '@utils/a11y';
+
 import Check from '@assets/images/attendeeCheck.svg';
 import Pen from '@assets/images/pen.svg';
 
@@ -73,6 +75,7 @@ export default function SchedulesViewer({
           tabButtonVariants="outlinedFloating"
           onClick={() => handleAttendeeChange('')}
           isActive={selectedAttendee === ''}
+          aria-label={generateAriaLabelForTab('전체', selectedAttendee === '')}
         >
           {selectedAttendee === '' && <Check width="12" height="12" />}
           전체
@@ -83,6 +86,7 @@ export default function SchedulesViewer({
             tabButtonVariants="outlinedFloating"
             onClick={() => handleAttendeeChange(attendee)}
             isActive={selectedAttendee === attendee}
+            aria-label={generateAriaLabelForTab(attendee, selectedAttendee === attendee)}
           >
             {selectedAttendee === attendee && <Check width="12" height="12" />}
             {attendee}

@@ -15,6 +15,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   isLoading?: boolean;
   customCss?: SerializedStyles;
+  ariaLabel?: string;
 }
 
 export function Button({
@@ -27,13 +28,20 @@ export function Button({
   customCss,
   type = 'button',
   onClick,
+  'aria-label': ariaLabel,
 }: ButtonProps) {
   const cssProps = [s_baseButton(borderRadius), s_size(size)];
 
   if (variant) cssProps.push(s_variant[variant]);
 
   return (
-    <button disabled={disabled} css={[cssProps, customCss]} type={type} onClick={onClick}>
+    <button
+      disabled={disabled}
+      css={[cssProps, customCss]}
+      type={type}
+      onClick={onClick}
+      aria-label={ariaLabel}
+    >
       {isLoading && <Spinner backgroundColor={'#f4f4f5'} />}
       {!isLoading && children}
     </button>

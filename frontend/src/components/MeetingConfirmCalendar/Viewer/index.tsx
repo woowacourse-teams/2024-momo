@@ -20,6 +20,7 @@ import useRouter from '@hooks/useRouter/useRouter';
 
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
+import { generateAriaLabelForTab } from '@utils/a11y';
 import { getFullDate } from '@utils/date';
 
 import Check from '@assets/images/attendeeCheck.svg';
@@ -84,6 +85,7 @@ export default function Viewer({
             tabButtonVariants="outlinedFloating"
             onClick={() => setSelectedAttendee('')}
             isActive={selectedAttendee === ''}
+            aria-label={generateAriaLabelForTab('전체', selectedAttendee === '')}
           >
             {selectedAttendee === '' && <Check width="12" height="12" />}
             전체
@@ -94,6 +96,7 @@ export default function Viewer({
               tabButtonVariants="outlinedFloating"
               onClick={() => setSelectedAttendee(attendee)}
               isActive={selectedAttendee === attendee}
+              aria-label={generateAriaLabelForTab(attendee, selectedAttendee === attendee)}
             >
               {selectedAttendee === attendee && <Check width="12" height="12" />}
               {attendee}
