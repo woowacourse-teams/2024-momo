@@ -14,7 +14,7 @@ import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 import useRouter from '@hooks/useRouter/useRouter';
 
 import KakaoIcon from '@assets/images/kakao.svg';
-import LogoSunglass from '@assets/images/logoSunglass.svg';
+import logoSunglass from '@assets/images/logoSunglass.webp';
 
 import { MEETING_INVITE_TEMPLATE_ID } from '@constants/kakao';
 
@@ -56,7 +56,7 @@ export default function MeetingLinkSharePage() {
       <Header title="약속 공유하기" />
       <ContentLayout>
         <div css={s_container}>
-          <LogoSunglass width="160" height="160" />
+          <img src={logoSunglass} width={160} height={160} alt="" />
           <div css={s_meetingInfo}>
             <CopyLink url={LINK} />
             <div css={s_buttonContainer}>

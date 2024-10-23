@@ -12,7 +12,7 @@ import useRouter from '@hooks/useRouter/useRouter';
 
 import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
-import Logo from '@assets/images/logo.svg';
+import logoImg from '@assets/images/logo.webp';
 
 import {
   s_buttonContainer,
@@ -56,7 +56,7 @@ export default function MeetingEntrancePage() {
       <ContentLayout>
         <div css={s_container}>
           <div css={s_infoContainer}>
-            <Logo width="128" height="128" />
+            <img width={160} height={160} src={logoImg} alt="" />
             <div css={s_textContainer}>
               <h2 css={s_titleText}>{meetingName}</h2>
               <div
