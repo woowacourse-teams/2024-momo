@@ -58,7 +58,7 @@ export default function MeetingEntrancePage() {
           <div css={s_infoContainer}>
             <Logo width="128" height="128" />
             <div css={s_textContainer}>
-              <h1 css={s_titleText}>{meetingName}</h1>
+              <h2 css={s_titleText}>{meetingName}</h2>
               <div
                 css={s_explanationText}
               >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME} 알려주세요.`}</div>
