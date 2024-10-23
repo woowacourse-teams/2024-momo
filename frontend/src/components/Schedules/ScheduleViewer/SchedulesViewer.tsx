@@ -127,7 +127,12 @@ export default function SchedulesViewer({
             </Button>
           )}
         </div>
-        <button disabled={isLocked} onClick={handleScheduleUpdate} css={s_circleButton}>
+        <button
+          disabled={isLocked}
+          onClick={handleScheduleUpdate}
+          css={s_circleButton}
+          aria-label="약속 수정하기"
+        >
           <Pen width="28" height="28" />
         </button>
       </footer>
