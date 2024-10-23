@@ -23,8 +23,15 @@ export const s_header = css`
 `;
 
 export const s_title = css`
+  pointer-events: none;
+
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+
   font-weight: ${theme.typography.bodyBold};
+
+  &:focus {
+    outline: none;
+  }
 `;
