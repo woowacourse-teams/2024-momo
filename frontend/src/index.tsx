@@ -1,11 +1,14 @@
 import { Global, ThemeProvider } from '@emotion/react';
 import * as Sentry from '@sentry/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { ErrorProvider } from '@contexts/ErrorProvider';
 import ToastProvider from '@contexts/ToastProvider';
+
+import ErrorToastNotifier from '@components/ErrorToastNotifier';
+import QueryClientManager from '@components/QueryClientManager';
 
 import globalStyles from '@styles/global';
 import theme from '@styles/theme';
@@ -35,28 +38,20 @@ Sentry.init({
   enabled: process.env.NODE_ENV !== 'development',
 });
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      throwOnError: true,
-    },
-    mutations: {
-      throwOnError: true,
-    },
-  },
-});
-
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <Global styles={globalStyles} />
       <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <ToastProvider>
-            <App />
-          </ToastProvider>
-        </QueryClientProvider>
+        <ErrorProvider>
+          <QueryClientManager>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <ToastProvider>
+              <ErrorToastNotifier />
+              <App />
+            </ToastProvider>
+          </QueryClientManager>
+        </ErrorProvider>
       </ThemeProvider>
     </React.StrictMode>,
   );
