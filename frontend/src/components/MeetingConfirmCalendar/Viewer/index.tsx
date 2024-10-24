@@ -15,10 +15,14 @@ import {
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Calendar from '@components/_common/Calendar';
+import MeetingLockConfirmModal from '@components/_common/Modal/MeetingLockConfirmModal';
 import ScreenReaderOnly from '@components/_common/ScreenReaderOnly';
+import Text from '@components/_common/Text';
 
+import useConfirmModal from '@hooks/useConfirmModal/useConfirmModal';
 import useRouter from '@hooks/useRouter/useRouter';
 
+import { useLockMeetingMutation } from '@stores/servers/meeting/mutations';
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
 import { formatAriaTab } from '@utils/a11y';
@@ -52,6 +56,11 @@ export default function Viewer({
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
   const { isLoggedIn, userName } = useContext(AuthContext).state;
 
+  const { isConfirmModalOpen, onToggleConfirmModal } = useConfirmModal();
+  const { mutate: lockMutate } = useLockMeetingMutation();
+
+  const routerToMeetingConfirmPage = () => routeTo(`/meeting/${uuid}/confirm`);
+
   const handleScheduleUpdate = () => {
     if (!isLoggedIn) {
       alert('로그인 해주세요');
@@ -76,6 +85,20 @@ export default function Viewer({
         ? [schedules.attendeeName]
         : undefined;
     }
+  };
+
+  const handleConfirmPageRoute = () => {
+    if (!isLocked) {
+      onToggleConfirmModal();
+      return;
+    }
+
+    routerToMeetingConfirmPage();
+  };
+
+  const handleMeetingLockWithRoute = () => {
+    lockMutate(uuid);
+    routerToMeetingConfirmPage();
   };
 
   return (
@@ -139,11 +162,7 @@ export default function Viewer({
         <footer css={s_bottomFixedButtonContainer}>
           <div css={s_fullButtonContainer}>
             {hostName === userName ? (
-              <Button
-                size="full"
-                variant="primary"
-                onClick={() => routeTo(`/meeting/${uuid}/confirm`)}
-              >
+              <Button size="full" variant="primary" onClick={handleConfirmPageRoute}>
                 약속 시간 확정하기
               </Button>
             ) : (
@@ -165,6 +184,25 @@ export default function Viewer({
             <Pen width="28" height="28" />
           </button>
         </footer>
+
+        <MeetingLockConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={onToggleConfirmModal}
+          onConfirm={handleMeetingLockWithRoute}
+          onSecondButtonClick={routerToMeetingConfirmPage}
+          title="약속 잠금 결정"
+          size="small"
+          position="center"
+          buttonPosition="column"
+        >
+          <Text variant="default" typo="captionMedium">
+            약속을 확정하기 위해서는 우선
+            <Text.Accent text=" 약속을 잠가야 합니다" />
+          </Text>
+          <Text variant="default" typo="captionMedium">
+            약속을 잠그고 약속 확정 페이지로 이동할까요?
+          </Text>
+        </MeetingLockConfirmModal>
       </>
     )
   );
