@@ -9,6 +9,8 @@ import {
 } from '@components/MeetingCalendar/Date/Date.styles';
 import { getDateInfo } from '@components/MeetingCalendar/Date/Date.utils';
 
+import { formatAriaFullDate } from '@utils/a11y';
+
 import Check from '@assets/images/attendeeCheck.svg';
 
 import { s_additionalText, s_viewer } from './SingleDate.styles';
@@ -30,7 +32,16 @@ export default function SingleDateViewer({
   availableAttendees,
 }: DateProps) {
   const { value, status } = dateInfo;
-  const { date, isHoliday, isToday, isSaturday, isSunday, isPrevDate } = getDateInfo(value, today);
+  const {
+    date,
+    targetFullDate,
+    targetDayOfWeekKR,
+    isHoliday,
+    isToday,
+    isSaturday,
+    isSunday,
+    isPrevDate,
+  } = getDateInfo(value, today);
 
   const additionalText = () => {
     if (!availableAttendees) return '\u00A0';
@@ -43,8 +54,7 @@ export default function SingleDateViewer({
     availableAttendees && <AttendeeTooltip attendeeNames={availableAttendees} position="top" />;
 
   return status === 'current' ? (
-    <button
-      disabled={!isAvailable || isPrevDate}
+    <div
       css={[
         s_dateContainer,
         s_baseDateButton,
@@ -58,11 +68,16 @@ export default function SingleDateViewer({
           isSaturday,
         }),
       ]}
+      role="text"
+      aria-hidden={!isAvailable}
+      aria-label={
+        isAvailable ? formatAriaFullDate(targetFullDate, targetDayOfWeekKR, availableAttendees) : ''
+      }
     >
       <span css={s_baseDateText}>{date}</span>
       <span css={s_additionalText}>{additionalText()}</span>
       {renderTooltip()}
-    </button>
+    </div>
   ) : (
     <div css={s_dateContainer}></div>
   );

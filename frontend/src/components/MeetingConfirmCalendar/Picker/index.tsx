@@ -19,8 +19,8 @@ import { usePostScheduleByMode } from '@stores/servers/schedule/mutations';
 
 import { getFullDate } from '@utils/date';
 
-import Header from '../Header/Header';
-import SingleDate from '../SingleDate/SingleDate';
+import Header from '../Header';
+import SingleDate from '../SingleDate';
 import WeekDays from '../WeekDays';
 
 interface PickerProps {

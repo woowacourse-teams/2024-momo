@@ -5,6 +5,7 @@ import useToast from '@hooks/useToast/useToast';
 
 import { getFullDate, getMonth, getYear } from '@utils/date';
 
+import { DAY_OF_WEEK_KR } from '@constants/date';
 import { TOAST_MESSAGES } from '@constants/toasts';
 
 import { getMonthlyCalendarDate } from './useCalendar.utils';
@@ -68,7 +69,7 @@ const useCalendar = (): useCalendarReturn => {
     headers: {
       currentYear,
       currentMonth,
-      weekDays: ['일', '월', '화', '수', '목', '금', '토'],
+      weekDays: DAY_OF_WEEK_KR,
     },
     body: {
       today: TODAY,

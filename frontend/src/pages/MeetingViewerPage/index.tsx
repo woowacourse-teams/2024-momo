@@ -121,7 +121,11 @@ export default function MeetingViewerPage() {
         {!isTimePickerUpdate && (
           <>
             <BackButton path={`/meeting/${uuid}`} />
-            <button css={s_headerIconButton} onClick={() => handleShareButtonClick()}>
+            <button
+              css={s_headerIconButton}
+              onClick={() => handleShareButtonClick()}
+              aria-label="카카오톡으로 공유하기"
+            >
               <ShareSVG width="24" height="24" />
             </button>
           </>

@@ -10,7 +10,11 @@ interface TextProps extends PropsWithChildren {
 }
 
 export default function Text({ variant = 'default', typo = 'bodyMedium', children }: TextProps) {
-  return <p css={s_textStyles({ variant, typo })}>{children}</p>;
+  return (
+    <p css={s_textStyles({ variant, typo })} role="text">
+      {children}
+    </p>
+  );
 }
 
 Text.Accent = Accent;
