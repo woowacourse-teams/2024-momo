@@ -27,7 +27,7 @@ import { getFullDate, hasSelectableDaysInMonth } from '@utils/date';
 import Check from '@assets/images/attendeeCheck.svg';
 import Pen from '@assets/images/pen.svg';
 
-import Header from '../Header/Header';
+import Header from '../Header';
 import SingleDateViewer from '../SingleDate/SingleDateViewer';
 import WeekDays from '../WeekDays';
 
