@@ -1,6 +1,4 @@
-import { BASE_URL } from '@constants/api';
-
-import { fetchClient } from '../_common/fetchClient';
+import { fetcher } from '../_common/fetcher';
 import type { MeetingType } from './meetings';
 
 export interface ConfirmDates {
@@ -25,9 +23,8 @@ export interface GetConfirmedMeetingInfoResponse extends ConfirmDates {
 }
 
 export const postMeetingConfirm = async ({ uuid, requests }: PostMeetingConfirmRequest) => {
-  const data = await fetchClient({
+  const data = await fetcher.post({
     path: `/${uuid}/confirm`,
-    method: 'POST',
     body: requests,
     isAuthRequire: true,
   });
@@ -36,24 +33,11 @@ export const postMeetingConfirm = async ({ uuid, requests }: PostMeetingConfirmR
 };
 
 export const getConfirmedMeetingInfo = async (uuid: string) => {
-  const data = await fetchClient<Promise<GetConfirmedMeetingInfoResponse>>({
-    path: `/${uuid}/confirm`,
-    method: 'GET',
-  });
+  const data = await fetcher.get<GetConfirmedMeetingInfoResponse>({ path: `/${uuid}/confirm` });
 
   return data;
 };
 
 export const deleteFixedMeeting = async (uuid: string) => {
-  const response = await fetch(`${BASE_URL}/${uuid}/confirm`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    throw new Error('약속을 확정 취소하는데 실패했어요. :(');
-  }
+  await fetcher.delete({ path: `/${uuid}/confirm`, isAuthRequire: true });
 };
