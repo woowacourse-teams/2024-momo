@@ -30,14 +30,17 @@ const TEXT_TYPOGRAPHIES: Record<keyof typeof TYPOGRAPHY, SerializedStyles> = {
 export const s_textStyles = ({
   variant,
   typo,
+  textAlign,
 }: {
   variant: TextVariant;
   typo: keyof typeof TYPOGRAPHY;
+  textAlign: CSSProperties['textAlign'];
 }) => {
   return css`
+    ${TEXT_TYPOGRAPHIES[typo]};
     color: ${TEXT_COLOR_STYLES[variant]};
+    text-align: ${textAlign};
     white-space: pre-line;
     vertical-align: middle;
-    ${TEXT_TYPOGRAPHIES[typo]}
   `;
 };
