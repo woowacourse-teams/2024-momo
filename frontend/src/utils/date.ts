@@ -21,8 +21,8 @@ export const formatTime = (time: string): string => {
   return `${hourPrefix} ${formattedHour}시`;
 };
 
-export const getMonth = (date: Date) => date.getMonth();
 export const getYear = (date: Date) => date.getFullYear();
+export const getMonth = (date: Date) => date.getMonth();
 export const getDay = (date: Date) => date.getDay();
 export const getDate = (date: Date) => date.getDate();
 export const getFullDate = (date: Date) => {
@@ -31,4 +31,10 @@ export const getFullDate = (date: Date) => {
   const day = String(getDate(date)).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+};
+
+export const hasSelectableDaysInMonth = (currentMonth: number, schedules: string[]) => {
+  const availableMonths = schedules.map((schedule) => Number(schedule.split('-')[1]));
+
+  return availableMonths.includes(currentMonth + 1);
 };

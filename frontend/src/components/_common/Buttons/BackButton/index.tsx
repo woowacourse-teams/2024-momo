@@ -17,7 +17,7 @@ export default function BackButton({ path }: BackButtonProps) {
   };
 
   return (
-    <button css={s_headerIconButton} onClick={handleBackButtonClick}>
+    <button css={s_headerIconButton} onClick={handleBackButtonClick} aria-label="뒤로가기">
       <BackSVG width="24" height="24" />
     </button>
   );

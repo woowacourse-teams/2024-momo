@@ -16,7 +16,6 @@ import Calendar from '.';
 const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar',
   component: Calendar,
-  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },

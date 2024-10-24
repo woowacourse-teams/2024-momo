@@ -15,17 +15,19 @@ import {
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Calendar from '@components/_common/Calendar';
+import ScreenReaderOnly from '@components/_common/ScreenReaderOnly';
 
 import useRouter from '@hooks/useRouter/useRouter';
 
 import { useGetSchedules } from '@stores/servers/schedule/queries';
 
-import { getFullDate } from '@utils/date';
+import { formatAriaTab } from '@utils/a11y';
+import { getFullDate, hasSelectableDaysInMonth } from '@utils/date';
 
 import Check from '@assets/images/attendeeCheck.svg';
 import Pen from '@assets/images/pen.svg';
 
-import Header from '../Header/Header';
+import Header from '../Header';
 import SingleDateViewer from '../SingleDate/SingleDateViewer';
 import WeekDays from '../WeekDays';
 
@@ -84,6 +86,7 @@ export default function Viewer({
             tabButtonVariants="outlinedFloating"
             onClick={() => setSelectedAttendee('')}
             isActive={selectedAttendee === ''}
+            aria-label={formatAriaTab('전체', selectedAttendee === '')}
           >
             {selectedAttendee === '' && <Check width="12" height="12" />}
             전체
@@ -94,6 +97,7 @@ export default function Viewer({
               tabButtonVariants="outlinedFloating"
               onClick={() => setSelectedAttendee(attendee)}
               isActive={selectedAttendee === attendee}
+              aria-label={formatAriaTab(attendee, selectedAttendee === attendee)}
             >
               {selectedAttendee === attendee && <Check width="12" height="12" />}
               {attendee}
@@ -102,8 +106,22 @@ export default function Viewer({
         </section>
 
         <Calendar>
-          <Calendar.Header render={(props) => <Header {...props} />} />
+          <Calendar.Header
+            render={(props) => (
+              <Header {...props}>
+                <ScreenReaderOnly>
+                  {hasSelectableDaysInMonth(
+                    props.currentMonth,
+                    meetingSchedules.schedules.map(({ date }) => date),
+                  )
+                    ? '선택 가능한 날이 있습니다.'
+                    : '선택 가능한 날이 없습니다.'}
+                </ScreenReaderOnly>
+              </Header>
+            )}
+          />
           <Calendar.WeekDays render={(weekdays) => <WeekDays weekdays={weekdays} />} />
+
           <Calendar.Body
             renderDate={(dateInfo, today) => (
               <SingleDateViewer
@@ -138,7 +156,12 @@ export default function Viewer({
               </Button>
             )}
           </div>
-          <button disabled={isLocked} onClick={handleScheduleUpdate} css={s_circleButton}>
+          <button
+            disabled={isLocked}
+            onClick={handleScheduleUpdate}
+            css={s_circleButton}
+            aria-label="약속 수정하기"
+          >
             <Pen width="28" height="28" />
           </button>
         </footer>

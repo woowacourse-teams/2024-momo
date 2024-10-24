@@ -12,7 +12,7 @@ import useRouter from '@hooks/useRouter/useRouter';
 
 import { useMeetingEntranceDetailQuery } from '@stores/servers/meeting/queries';
 
-import Logo from '@assets/images/logo.svg';
+import logoImg from '@assets/images/logo.webp';
 
 import {
   s_buttonContainer,
@@ -56,9 +56,11 @@ export default function MeetingEntrancePage() {
       <ContentLayout>
         <div css={s_container}>
           <div css={s_infoContainer}>
-            <Logo width="128" height="128" />
+            <img width={160} height={160} src={logoImg} alt="" />
             <div css={s_textContainer}>
-              <h1 css={s_titleText}>{meetingName}</h1>
+              <h2 css={s_titleText} aria-label={`약속명: ${meetingName}`}>
+                {meetingName}
+              </h2>
               <div
                 css={s_explanationText}
               >{`일정 조율을 위해 약속에 참여할 수 있는 \n${type ? MEETING_TYPE[type] : MEETING_TYPE.DATETIME} 알려주세요.`}</div>

@@ -15,6 +15,7 @@ import useRouter from '@hooks/useRouter/useRouter';
 import useSelectSchedule from '@hooks/useSelectSchedule/useSelectSchedule';
 
 import { useLockMeetingMutation } from '@stores/servers/meeting/mutations';
+import { formatAriaTab } from '@utils/a11y';
 
 import Check from '@assets/images/attendeeCheck.svg';
 import Pen from '@assets/images/pen.svg';
@@ -97,6 +98,7 @@ export default function SchedulesViewer({
           tabButtonVariants="outlinedFloating"
           onClick={() => handleAttendeeChange('')}
           isActive={selectedAttendee === ''}
+          aria-label={formatAriaTab('전체', selectedAttendee === '')}
         >
           {selectedAttendee === '' && <Check width="12" height="12" />}
           전체
@@ -107,6 +109,7 @@ export default function SchedulesViewer({
             tabButtonVariants="outlinedFloating"
             onClick={() => handleAttendeeChange(attendee)}
             isActive={selectedAttendee === attendee}
+            aria-label={formatAriaTab(attendee, selectedAttendee === attendee)}
           >
             {selectedAttendee === attendee && <Check width="12" height="12" />}
             {attendee}
@@ -147,7 +150,12 @@ export default function SchedulesViewer({
             </Button>
           )}
         </div>
-        <button disabled={isLocked} onClick={handleScheduleUpdate} css={s_circleButton}>
+        <button
+          disabled={isLocked}
+          onClick={handleScheduleUpdate}
+          css={s_circleButton}
+          aria-label="약속 수정하기"
+        >
           <Pen width="28" height="28" />
         </button>
       </footer>
