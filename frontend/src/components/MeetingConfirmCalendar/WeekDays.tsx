@@ -11,7 +11,7 @@ interface WeekDaysProps {
 
 export default function WeekDays({ weekdays }: WeekDaysProps) {
   return (
-    <section css={[s_calendarContent, s_dayOfWeekContainer]}>
+    <section css={[s_calendarContent, s_dayOfWeekContainer]} aria-hidden={true}>
       {weekdays.map((day, index) => (
         <div key={day} css={[s_baseDayOfWeek, s_dayOfWeek(index)]}>
           {day}

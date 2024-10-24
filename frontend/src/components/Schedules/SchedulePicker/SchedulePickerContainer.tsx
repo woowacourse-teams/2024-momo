@@ -1,20 +1,25 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
 import type { MeetingDateTime } from 'types/meeting';
+import type { Mode } from 'types/schedule';
 
 import { AuthContext } from '@contexts/AuthProvider';
+import { UuidContext } from '@contexts/UuidProvider';
 
-import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
+import { useGetMyScheduleQuery } from '@stores/servers/schedule/queries';
 
 import SchedulePicker from '.';
+
+interface SchedulePickerContainerProps extends MeetingDateTime {
+  mode: Mode;
+}
 
 export default function SchedulePickerContainer({
   firstTime,
   lastTime,
   availableDates,
-}: MeetingDateTime) {
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
+  mode,
+}: SchedulePickerContainerProps) {
+  const { uuid } = useContext(UuidContext);
   const { userName } = useContext(AuthContext).state;
   const { data: meetingSchedules } = useGetMyScheduleQuery(uuid, userName);
 
@@ -26,6 +31,7 @@ export default function SchedulePickerContainer({
         lastTime={lastTime}
         availableDates={availableDates}
         meetingSingleSchedule={meetingSchedules}
+        mode={mode}
       />
     )
   );

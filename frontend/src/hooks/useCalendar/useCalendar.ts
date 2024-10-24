@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import type { MonthlyDays } from 'types/calendar';
 
-import { getMonth, getYear } from '@utils/date';
+import useToast from '@hooks/useToast/useToast';
+
+import { getFullDate, getMonth, getYear } from '@utils/date';
+
+import { DAY_OF_WEEK_KR } from '@constants/date';
+import { TOAST_MESSAGES } from '@constants/toasts';
 
 import { getMonthlyCalendarDate } from './useCalendar.utils';
 
@@ -23,20 +28,39 @@ interface useCalendarReturn {
 }
 
 const TODAY = new Date();
+const ONE_YEAR_LATER = getFullDate(new Date(getYear(TODAY) + 1, getMonth(TODAY)));
+
+type MonthDelta = -1 | 1;
 
 const useCalendar = (): useCalendarReturn => {
   const [currentFullDate, setCurrentFullDate] = useState(new Date());
+  const { addToast } = useToast();
 
   const currentYear = getYear(currentFullDate);
   const currentMonth = getMonth(currentFullDate);
   const isCurrentMonth = getYear(TODAY) === currentYear && getMonth(TODAY) === currentMonth;
 
+  const moveMonth = (monthDelta: MonthDelta) => {
+    setCurrentFullDate(new Date(currentYear, currentMonth + monthDelta));
+  };
+
   const moveToPrevMonth = () => {
-    setCurrentFullDate(new Date(currentYear, currentMonth - 1));
+    moveMonth(-1);
   };
 
   const moveToNextMonth = () => {
-    setCurrentFullDate(new Date(currentYear, currentMonth + 1));
+    const fullDate = getFullDate(currentFullDate);
+
+    if (fullDate >= ONE_YEAR_LATER) {
+      addToast({
+        message: TOAST_MESSAGES.OUT_OF_ONE_YEAR_RANGE,
+        type: 'warning',
+        duration: 2000,
+      });
+      return;
+    }
+
+    moveMonth(1);
   };
 
   const monthlyCalendarDate = getMonthlyCalendarDate(currentFullDate);
@@ -45,7 +69,7 @@ const useCalendar = (): useCalendarReturn => {
     headers: {
       currentYear,
       currentMonth,
-      weekDays: ['일', '월', '화', '수', '목', '금', '토'],
+      weekDays: DAY_OF_WEEK_KR,
     },
     body: {
       today: TODAY,

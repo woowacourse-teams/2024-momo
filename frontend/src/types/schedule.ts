@@ -17,3 +17,5 @@ export interface MeetingSingleSchedule {
   attendeeName: string;
   schedules: MeetingSingeScheduleItem[];
 }
+
+export type Mode = 'register' | 'edit';

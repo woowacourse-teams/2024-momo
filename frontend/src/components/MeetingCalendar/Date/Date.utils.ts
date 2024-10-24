@@ -3,6 +3,7 @@ import { getHolidayNames } from '@hyunbinseo/holidays-kr';
 import { getDate, getDay, getFullDate } from '@utils/date';
 
 import CALENDAR_PROPERTIES from '@constants/calendar';
+import { DAY_OF_WEEK_KR } from '@constants/date';
 
 export const getDateInfo = (targetDate: Date, today: Date) => {
   const targetDateNumber = getDate(targetDate);
@@ -28,6 +29,7 @@ export const getDateInfo = (targetDate: Date, today: Date) => {
   return {
     date: targetDateNumber,
     targetFullDate,
+    targetDayOfWeekKR: DAY_OF_WEEK_KR[targetDayOfWeek],
     isHoliday,
     isToday,
     isSunday,

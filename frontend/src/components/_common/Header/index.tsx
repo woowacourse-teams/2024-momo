@@ -1,44 +1,24 @@
-import { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { type PropsWithChildren, useEffect, useRef } from 'react';
 
-import { AuthContext } from '@contexts/AuthProvider';
+import { s_header, s_title } from './Header.styles';
 
-import { usePostLogoutMutation } from '@stores/servers/user/mutations';
+interface HeaderProps {
+  title: string;
+}
 
-import Logo from '@assets/images/logo.svg';
+export default function Header({ title, children }: PropsWithChildren<HeaderProps>) {
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-import { Button } from '../Buttons/Button';
-import { s_header, s_logoContainer, s_title } from './Header.styles';
-
-export default function Header() {
-  const navigate = useNavigate();
-  const { mutate: postLogoutMutate } = usePostLogoutMutation();
-
-  const params = useParams<{ uuid: string }>();
-  const uuid = params.uuid!;
-
-  const authContext = useContext(AuthContext);
-  const { isLoggedIn } = authContext.state;
-
-  const handleAuthButtonClick = async () => {
-    if (isLoggedIn) {
-      postLogoutMutate(uuid);
-    } else {
-      navigate(`/meeting/${uuid}/login`);
-    }
-  };
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
 
   return (
     <header css={s_header}>
-      <div css={s_logoContainer}>
-        <Logo width={36} height={36} />
-        <h1 css={s_title}>momo</h1>
-      </div>
-      {uuid ? (
-        <Button variant="primary" size="m" onClick={handleAuthButtonClick}>
-          {isLoggedIn ? '로그아웃' : '로그인'}
-        </Button>
-      ) : null}
+      {children}
+      <h1 css={s_title} ref={titleRef} tabIndex={-1}>
+        {title}
+      </h1>
     </header>
   );
 }

@@ -1,8 +1,10 @@
+import { DAY_OF_WEEK_KR } from '../../../src/constants/date';
+
 export const formatDate = (dateString: string) => {
   const currentDateObj = new Date(dateString);
   const currentMonth = currentDateObj.getMonth() + 1;
   const currentDay = currentDateObj.getDate();
-  const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][currentDateObj.getDay()];
+  const dayOfWeek = DAY_OF_WEEK_KR[currentDateObj.getDay()];
 
   return {
     dayOfWeek,

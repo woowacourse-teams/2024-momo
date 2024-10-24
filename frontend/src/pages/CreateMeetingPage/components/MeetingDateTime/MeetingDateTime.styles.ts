@@ -1,12 +1,10 @@
 import { css } from '@emotion/react';
 
 export const s_container = css`
-  overflow: scroll;
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-
-  height: calc(100% - 6rem);
+  margin-bottom: 2.4rem;
 `;
 
 export const s_dateCandidateSelector = css`

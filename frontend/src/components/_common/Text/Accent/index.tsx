@@ -5,5 +5,5 @@ interface AccentProps {
 }
 
 export default function Accent({ text }: AccentProps) {
-  return <strong css={s_accentTextStyle}>{text}</strong>;
+  return <span css={s_accentTextStyle}>{text}</span>;
 }

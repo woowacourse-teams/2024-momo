@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { GetMeetingRecommendResponse } from '@apis/meetingRecommend';
+import type { GetMeetingRecommendResponse } from '@apis/meetings/recommends';
 
 import { useGetMeetingRecommendsQuery } from '@stores/servers/meeting/queries';
 

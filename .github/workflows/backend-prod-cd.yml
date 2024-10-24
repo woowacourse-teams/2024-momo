@@ -109,10 +109,10 @@ jobs:
       - name: docker pull
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/momo-api-prod
 
-      # 2. 실행 컨테이너 중 app 서비스만 재시작
-      - name: Restart app service
-        run: docker compose -f $HOME/security/docker-compose-prod.yml restart app --no-deps
+      # 2. 블루그린 배포 스크립트 실행
+      - name: Launch Blue-Green Deployment
+        run: chmod +x $HOME/security/deploy.sh; $HOME/security/deploy.sh
 
-      # 3. 미사용 이미지를 정리
+      # 3. 미사용 이미지 정리
       - name: delete old docker image
         run: docker system prune -f

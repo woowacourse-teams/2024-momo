@@ -4,7 +4,7 @@ import { AuthContext } from '@contexts/AuthProvider';
 
 import useKakaoTalkShare from '@hooks/useKakaoTalkShare/useKakaoTalkShare';
 
-import type { GetConfirmedMeetingInfoResponse } from '@apis/meetingConfirm';
+import type { GetConfirmedMeetingInfoResponse } from '@apis/meetings/confirms';
 
 import { useCancelFixedMeetingMutation } from '@stores/servers/confirm/mutations';
 

@@ -1,11 +1,12 @@
+import ScrollBlock from '@components/ScrollBlock';
 import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 import Field from '@components/_common/Field';
-import Input from '@components/_common/Input';
 
 import useButtonOnKeyboard from '@hooks/useButtonOnKeyboard/useButtonOnKeyboard';
 import type { UseInputReturn } from '@hooks/useInput/useInput';
 
-import { FIELD_DESCRIPTIONS } from '@constants/inputFields';
+import { MEETING_BUTTON_TEXTS } from '@constants/buttons';
+import { FIELD_LABELS, FIELD_PLACEHOLDERS, FIELD_TITLES } from '@constants/inputFields';
 
 interface MeetingNameProps {
   meetingNameInput: UseInputReturn;
@@ -24,18 +25,20 @@ export default function MeetingName({
     errorMessage: meetingNameErrorMessage,
   } = meetingNameInput;
 
+  const isTextError = meetingNameErrorMessage !== null;
   const resizedButtonHeight = useButtonOnKeyboard();
 
   return (
-    <>
+    <ScrollBlock>
       <Field>
-        <Field.Label id="약속이름" labelText="약속 이름" />
-        <Field.Description description={FIELD_DESCRIPTIONS.meetingName} />
-        <Input
-          id="약속이름"
+        <Field.Title title={FIELD_TITLES.meetingName} />
+        <Field.FloatingLabelInput
+          label={FIELD_LABELS.meetingName}
+          placeholder={FIELD_PLACEHOLDERS.nickname}
           value={meetingName}
           onChange={handleMeetingNameChange}
           autoComplete="off"
+          isError={isTextError}
           autoFocus
         />
         <Field.ErrorMessage errorMessage={meetingNameErrorMessage} />
@@ -45,8 +48,8 @@ export default function MeetingName({
         disabled={isMeetingNameInvalid}
         height={resizedButtonHeight}
       >
-        다음
+        {MEETING_BUTTON_TEXTS.next}
       </BottomFixedButton>
-    </>
+    </ScrollBlock>
   );
 }

@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from 'react';
+
 import {
   s_monthNavigation,
   s_monthNavigationContainer,
@@ -23,7 +25,10 @@ export default function Header({
   moveToNextMonth,
   moveToPrevMonth,
   isCurrentMonth,
-}: HeaderProps) {
+  children,
+}: PropsWithChildren<HeaderProps>) {
+  const yearMonthText = `${currentYear}년 ${currentMonth + 1}월`;
+
   return (
     <header css={s_container}>
       <div css={s_monthNavigationContainer}>
@@ -35,9 +40,9 @@ export default function Header({
         >
           {'<'}
         </button>
-
-        <span css={s_yearMonthText}>
-          {currentYear}년 {currentMonth + 1}월
+        <span css={s_yearMonthText} aria-live="polite" role="text">
+          {yearMonthText}
+          {children}
         </span>
         <button css={s_monthNavigation} onClick={moveToNextMonth} aria-label="다음 달">
           {'>'}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useGetMyScheduleQuery } from '@stores/servers/meeting/queries';
+import { useGetMyScheduleQuery } from '@stores/servers/schedule/queries';
 
 export default function useCalendarPick(uuid: string, userName: string) {
   const { data: meetingSchedules, isSuccess } = useGetMyScheduleQuery(uuid, userName);

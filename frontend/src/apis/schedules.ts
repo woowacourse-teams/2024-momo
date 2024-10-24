@@ -5,20 +5,16 @@ import type {
   MeetingSingleSchedule,
 } from 'types/schedule';
 
-import { fetchClient } from './_common/fetchClient';
+import { fetcher } from './_common/fetcher';
 
-export const postSchedule = async ({
-  uuid,
-  requestData,
-}: {
+export interface PostScheduleRequest {
   uuid: string;
   requestData: MeetingSingeScheduleItem[];
-}) => {
-  const path = `/${uuid}/schedules`;
+}
 
-  await fetchClient({
-    path,
-    method: 'POST',
+export const postSchedule = async ({ uuid, requestData }: PostScheduleRequest) => {
+  await fetcher.post({
+    path: `/${uuid}/schedules`,
     body: {
       dateTimes: requestData,
     },
@@ -41,10 +37,7 @@ interface MeetingAllSchedulesResponse {
 const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules> => {
   const path = `/${uuid}/schedules`;
 
-  const data = await fetchClient<MeetingAllSchedulesResponse>({
-    path,
-    method: 'GET',
-  });
+  const data = await fetcher.get<MeetingAllSchedulesResponse>({ path });
 
   return {
     schedules: data.schedules,
@@ -65,9 +58,8 @@ const getMeetingSingleSchedule = async ({
 }): Promise<MeetingSingleSchedule> => {
   const path = createMeetingSchedulesRequestUrl(uuid, attendeeName);
 
-  const data = await fetchClient<MeetingSingleScheduleResponse>({
+  const data = await fetcher.get<MeetingSingleScheduleResponse>({
     path,
-    method: 'GET',
   });
 
   return {
@@ -79,9 +71,8 @@ const getMeetingSingleSchedule = async ({
 export const getMeetingMySchedule = async (uuid: string): Promise<MeetingSingleSchedule> => {
   const path = `/${uuid}/attendees/me/schedules`;
 
-  const data = await fetchClient<MeetingSingleScheduleResponse>({
+  const data = await fetcher.get<MeetingSingleScheduleResponse>({
     path,
-    method: 'GET',
     isAuthRequire: true,
   });
 

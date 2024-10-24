@@ -1,26 +1,36 @@
-import { useNavigate } from 'react-router-dom';
+import ContentLayout from '@layouts/ContentLayout';
 
-import { Button } from '@components/_common/Buttons/Button';
-import Text from '@components/_common/Text';
+import ComponentCarousel from '@components/ComponentCarousel';
+import FirstCarousel from '@components/LandingCarousel/FirstCarousel';
+import FourthCarousel from '@components/LandingCarousel/FourthCarousel';
+import SecondCarousel from '@components/LandingCarousel/SecondCarousel';
+import ThirdCarousel from '@components/LandingCarousel/ThirdCarousel';
+import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 
-import MomoCharacter from '@assets/images/momoCharacter.svg';
+import useRouter from '@hooks/useRouter/useRouter';
 
 import { MEETING_CREATE_PATH } from '@constants/routes/meeting';
 
 import { s_container } from './LandingPage.styles';
 
+const slides = [
+  <FirstCarousel key="first" />,
+  <SecondCarousel key="second" />,
+  <ThirdCarousel key="third" />,
+  <FourthCarousel key="fourth" />,
+];
+
 export default function LandingPage() {
-  const navigate = useNavigate();
+  const { routeTo } = useRouter();
 
   return (
-    <div css={s_container}>
-      <Text typo="titleBold">
-        모두 쉽게 모이자! <Text.Accent text="모모" /> 🍑
-      </Text>
-      <MomoCharacter width="128" height="180" />
-      <Button onClick={() => navigate(MEETING_CREATE_PATH)} variant="primary" size="full">
-        약속 생성하기
-      </Button>
-    </div>
+    <ContentLayout>
+      <div css={s_container}>
+        <ComponentCarousel slides={slides} />
+        <BottomFixedButton onClick={() => routeTo(MEETING_CREATE_PATH)}>
+          약속 생성하기
+        </BottomFixedButton>
+      </div>
+    </ContentLayout>
   );
 }

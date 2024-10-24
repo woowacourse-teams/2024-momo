@@ -1,4 +1,4 @@
-import type { GetConfirmedMeetingInfoResponse } from '@apis/meetingConfirm';
+import type { GetConfirmedMeetingInfoResponse } from '@apis/meetings/confirms';
 
 import MomoCharacter from '@assets/images/momoCharacter.svg';
 
