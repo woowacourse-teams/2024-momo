@@ -10,9 +10,7 @@ import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.schedule.DateTimeInterval;
 import kr.momo.domain.schedule.RecommendInterval;
 
-public record CandidateSchedule(
-        RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup
-) {
+public record CandidateSchedule(RecommendInterval dateTimeInterval, AttendeeGroup attendeeGroup) {
 
     public static CandidateSchedule of(
             LocalDateTime startDateTime, LocalDateTime endDateTime, AttendeeGroup attendeeGroup
@@ -22,7 +20,8 @@ public record CandidateSchedule(
 
     public static List<CandidateSchedule> mergeContinuous(
             List<CandidateSchedule> sortedSchedules,
-            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous
+            BiPredicate<CandidateSchedule, CandidateSchedule> isContinuous,
+            int minSize
     ) {
         List<CandidateSchedule> mergedSchedules = new ArrayList<>();
         int idx = 0;
@@ -32,12 +31,20 @@ public record CandidateSchedule(
                     .takeWhile(i -> i == headIdx || isSequential(i, sortedSchedules, isContinuous))
                     .map(sortedSchedules::get)
                     .toList();
-            subList.stream()
-                    .reduce(CandidateSchedule::merge)
-                    .ifPresent(mergedSchedules::add);
+            addIfLongerThanOrEqualToMinTime(subList, mergedSchedules, minSize);
             idx += subList.size();
         }
         return mergedSchedules;
+    }
+
+    private static void addIfLongerThanOrEqualToMinTime(
+            List<CandidateSchedule> subList, List<CandidateSchedule> mergedSchedules, int minSize
+    ) {
+        if (minSize <= subList.size()) {
+            subList.stream()
+                    .reduce(CandidateSchedule::merge)
+                    .ifPresent(mergedSchedules::add);
+        }
     }
 
     private static boolean isSequential(

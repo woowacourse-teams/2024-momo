@@ -122,7 +122,9 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public RecommendedSchedulesResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
+    public RecommendedSchedulesResponse recommendSchedules(
+            String uuid, String recommendType, List<String> names, int minimumTime
+    ) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
@@ -131,11 +133,13 @@ public class ScheduleService {
         ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
                 attendeeGroup, filteredGroup
         );
-        List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType,
-                meeting.getType());
+        List<CandidateSchedule> recommendedResult = recommender.recommend(
+                filteredGroup, recommendType, meeting.getType(), minimumTime
+        );
 
         List<RecommendedScheduleResponse> scheduleResponses = RecommendedScheduleResponse.fromCandidateSchedules(
-                recommendedResult);
+                recommendedResult
+        );
         return RecommendedSchedulesResponse.of(meeting.getType(), scheduleResponses);
     }
 }

@@ -18,8 +18,9 @@ public class FilteredScheduleRecommender extends ScheduleRecommender {
     }
 
     @Override
-    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(AttendeeGroup filteredGroup,
-                                                                            MeetingType type) {
+    protected List<CandidateSchedule> extractProperSortedDiscreteScheduleOf(
+            AttendeeGroup filteredGroup, MeetingType type
+    ) {
         return findAllScheduleAvailableByEveryAttendee(filteredGroup);
     }
 
