@@ -5,11 +5,7 @@ import type {
   MeetingSingleSchedule,
 } from 'types/schedule';
 
-import { ResponseError } from '@utils/responseError';
-
-import { BASE_URL } from '@constants/api';
-
-import { fetchClient } from './_common/fetchClient';
+import { fetcher } from './_common/fetcher';
 
 export interface PostScheduleRequest {
   uuid: string;
@@ -17,22 +13,13 @@ export interface PostScheduleRequest {
 }
 
 export const postSchedule = async ({ uuid, requestData }: PostScheduleRequest) => {
-  const response = await fetch(`${BASE_URL}/${uuid}/schedules`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  await fetcher.post({
+    path: `/${uuid}/schedules`,
+    body: {
       dateTimes: requestData,
-    }),
-    credentials: 'include',
+    },
+    isAuthRequire: true,
   });
-
-  if (!response.ok) {
-    const data = await response.json();
-
-    throw new ResponseError(data);
-  }
 };
 
 export const createMeetingSchedulesRequestUrl = (uuid: string, attendeeName: string) => {
@@ -50,10 +37,7 @@ interface MeetingAllSchedulesResponse {
 const getMeetingAllSchedules = async (uuid: string): Promise<MeetingAllSchedules> => {
   const path = `/${uuid}/schedules`;
 
-  const data = await fetchClient<MeetingAllSchedulesResponse>({
-    path,
-    method: 'GET',
-  });
+  const data = await fetcher.get<MeetingAllSchedulesResponse>({ path });
 
   return {
     schedules: data.schedules,
@@ -74,9 +58,8 @@ const getMeetingSingleSchedule = async ({
 }): Promise<MeetingSingleSchedule> => {
   const path = createMeetingSchedulesRequestUrl(uuid, attendeeName);
 
-  const data = await fetchClient<MeetingSingleScheduleResponse>({
+  const data = await fetcher.get<MeetingSingleScheduleResponse>({
     path,
-    method: 'GET',
   });
 
   return {
@@ -88,9 +71,8 @@ const getMeetingSingleSchedule = async ({
 export const getMeetingMySchedule = async (uuid: string): Promise<MeetingSingleSchedule> => {
   const path = `/${uuid}/attendees/me/schedules`;
 
-  const data = await fetchClient<MeetingSingleScheduleResponse>({
+  const data = await fetcher.get<MeetingSingleScheduleResponse>({
     path,
-    method: 'GET',
     isAuthRequire: true,
   });
 

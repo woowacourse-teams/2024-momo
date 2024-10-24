@@ -1,4 +1,4 @@
-import { fetchClient } from '../_common/fetchClient';
+import { fetcher } from '../_common/fetcher';
 import type { MeetingType } from './meetings';
 
 interface GetMeetingRecommendRequest {
@@ -35,10 +35,7 @@ export const getMeetingTimeRecommends = async ({
 
   const path = `/${uuid}/recommended-schedules?${urlParams.toString()}`;
 
-  const data = await fetchClient<GetMeetingRecommendResponse>({
-    path,
-    method: 'GET',
-  });
+  const data = await fetcher.get<GetMeetingRecommendResponse>({ path });
 
   return data;
 };
@@ -54,9 +51,8 @@ export const getMeetingAttendees = async ({
 }): Promise<MeetingAttendees> => {
   const path = `/${uuid}/attendees`;
 
-  const data = await fetchClient<GetMeetingAttendeesResponse>({
+  const data = await fetcher.get<GetMeetingAttendeesResponse>({
     path,
-    method: 'GET',
   });
 
   return data;

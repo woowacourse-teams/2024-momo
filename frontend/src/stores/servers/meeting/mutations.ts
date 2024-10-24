@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useContext, useState } from 'react';
-import type { PostMeetingResult } from 'types/meeting';
+import { useContext } from 'react';
 
 import { AuthContext } from '@contexts/AuthProvider';
 
@@ -16,21 +15,11 @@ export const usePostMeetingMutation = () => {
   const authContext = useContext(AuthContext);
   const { setIsLoggedIn, setUserName } = authContext.actions;
 
-  const [meetingInfo, setMeetingInfo] = useState<PostMeetingResult>({
-    uuid: '',
-    userName: '',
-    meetingName: '',
-    firstTime: '',
-    lastTime: '',
-    availableDates: [],
-  });
-
   const mutation = useMutation({
     mutationFn: postMeeting,
     onSuccess: (responseData) => {
       const { uuid, userName } = responseData;
 
-      setMeetingInfo(responseData);
       setIsLoggedIn(true);
       setUserName(userName);
 
@@ -38,7 +27,7 @@ export const usePostMeetingMutation = () => {
     },
   });
 
-  return { mutation, meetingInfo };
+  return { mutation };
 };
 
 export const useLockMeetingMutation = () => {

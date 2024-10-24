@@ -4,7 +4,7 @@ import { ResponseError } from '@utils/responseError';
 
 import { BASE_URL } from '@constants/api';
 
-import { fetchClient } from '../_common/fetchClient';
+import { fetcher } from '../_common/fetcher';
 
 export type MeetingType = 'DAYSONLY' | 'DATETIME';
 
@@ -51,10 +51,7 @@ interface PostMeetingResponse {
 export const getMeetingBase = async (uuid: string): Promise<MeetingBase> => {
   const path = `/${uuid}`;
 
-  const data = await fetchClient<MeetingBaseResponse>({
-    path,
-    method: 'GET',
-  });
+  const data = await fetcher.get<MeetingBaseResponse>({ path });
 
   return {
     meetingName: data.meetingName,
@@ -89,9 +86,8 @@ interface PostMeetingResponse {
 }
 
 export const postMeeting = async (request: PostMeetingRequest): Promise<PostMeetingResult> => {
-  const data = await fetchClient<PostMeetingResponse>({
+  const data = await fetcher.postWithResponse<PostMeetingResponse>({
     path: '',
-    method: 'POST',
     body: request,
     isAuthRequire: true,
   });
@@ -144,10 +140,7 @@ interface MeetingEntranceDetails {
 }
 
 export const getMeetingEntranceDetails = async (uuid: string) => {
-  const data = await fetchClient<MeetingEntranceDetails>({
-    path: `/${uuid}/home`,
-    method: 'GET',
-  });
+  const data = await fetcher.get<MeetingEntranceDetails>({ path: `/${uuid}/home` });
 
   return data;
 };

@@ -1,8 +1,6 @@
-import { ResponseError } from '@utils/responseError';
-
 import { BASE_URL } from '@constants/api';
 
-import { fetchClient } from './_common/fetchClient';
+import { fetcher } from './_common/fetcher';
 
 interface UserLoginRequest {
   uuid: string;
@@ -13,9 +11,8 @@ interface UserLoginRequest {
 }
 
 export const postUserLogin = async ({ uuid, request }: UserLoginRequest) => {
-  const data = await fetchClient<string>({
+  const data = await fetcher.postWithResponse<string>({
     path: `/${uuid}/login`,
-    method: 'POST',
     body: request,
     isAuthRequire: true,
   });
@@ -30,22 +27,5 @@ export const postUserLogin = async ({ uuid, request }: UserLoginRequest) => {
  * TODO: 응답 데이터가 없을 때도 대응 가능한 fetchClient 함수를 만들어야 함
  */
 export const postUserLogout = async (uuid: string) => {
-  try {
-    const response = await fetch(`${BASE_URL}/${uuid}/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-
-      throw new ResponseError(data);
-    }
-  } catch (error) {
-    console.error('로그아웃 중 문제가 발생했습니다:', error);
-    throw error;
-  }
+  await fetcher.post({ path: `${BASE_URL}/${uuid}/logout`, isAuthRequire: true });
 };
