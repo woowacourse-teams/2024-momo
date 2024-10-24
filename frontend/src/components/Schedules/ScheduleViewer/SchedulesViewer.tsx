@@ -163,8 +163,8 @@ export default function SchedulesViewer({
         buttonPosition="column"
       >
         <Text variant="default" typo="captionMedium">
-          약속을 확정하기 위해서는
-          <Text.Accent text="우선 약속을 잠가야 합니다" />
+          약속을 확정하기 위해서는 우선
+          <Text.Accent text=" 약속을 잠가야 합니다" />
         </Text>
         <Text variant="default" typo="captionMedium">
           약속을 잠그고 약속 확정 페이지로 이동할까요?
