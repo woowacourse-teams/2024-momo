@@ -1,15 +1,24 @@
 import ContentLayout from '@layouts/ContentLayout';
 
-import { Button } from '@components/_common/Buttons/Button';
-import Text from '@components/_common/Text';
+import ComponentCarousel from '@components/ComponentCarousel';
+import FirstCarousel from '@components/LandingCarousel/FirstCarousel';
+import FourthCarousel from '@components/LandingCarousel/FourthCarousel';
+import SecondCarousel from '@components/LandingCarousel/SecondCarousel';
+import ThirdCarousel from '@components/LandingCarousel/ThirdCarousel';
+import BottomFixedButton from '@components/_common/Buttons/BottomFixedButton';
 
 import useRouter from '@hooks/useRouter/useRouter';
-
-import MomoCharacter from '@assets/images/momoCharacter.svg';
 
 import { MEETING_CREATE_PATH } from '@constants/routes/meeting';
 
 import { s_container } from './LandingPage.styles';
+
+const slides = [
+  <FirstCarousel key="first" />,
+  <SecondCarousel key="second" />,
+  <ThirdCarousel key="third" />,
+  <FourthCarousel key="fourth" />,
+];
 
 export default function LandingPage() {
   const { routeTo } = useRouter();
@@ -17,15 +26,10 @@ export default function LandingPage() {
   return (
     <ContentLayout>
       <div css={s_container}>
-        <h1>
-          <Text typo="titleBold">
-            모두 쉽게 모이자! <Text.Accent text="모모" /> 🍑
-          </Text>
-        </h1>
-        <MomoCharacter width="128" height="180" />
-        <Button onClick={() => routeTo(MEETING_CREATE_PATH)} variant="primary" size="full">
+        <ComponentCarousel slides={slides} />
+        <BottomFixedButton onClick={() => routeTo(MEETING_CREATE_PATH)}>
           약속 생성하기
-        </Button>
+        </BottomFixedButton>
       </div>
     </ContentLayout>
   );
