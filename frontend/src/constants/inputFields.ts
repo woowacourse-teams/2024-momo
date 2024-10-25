@@ -32,7 +32,7 @@ export const FIELD_LABELS = {
 
 export const FIELD_PLACEHOLDERS = {
   meetingName: '10자 이내의 약속 이름 입력',
-  nickname: '5자 이내의 약속 닉네임 입력',
+  nickname: '5자 이내의 약속 이름 입력',
   password: '4자리 숫자 입력',
 };
 

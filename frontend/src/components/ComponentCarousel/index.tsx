@@ -14,7 +14,7 @@ interface CarouselProps {
   interval?: number;
 }
 
-export default function ComponentCarousel({ slides, interval = 2000 }: CarouselProps) {
+export default function ComponentCarousel({ slides, interval = 3000 }: CarouselProps) {
   const extendedSlides = [...slides.slice(-2), ...slides, ...slides.slice(0, 2)];
 
   const [currentIndex, setCurrentIndex] = useState(2);
