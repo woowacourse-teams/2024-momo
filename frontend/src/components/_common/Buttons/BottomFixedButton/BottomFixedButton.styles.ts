@@ -24,7 +24,7 @@ export const s_bottomFixedButtonContainer = (height = 0) => css`
   justify-content: center;
 
   width: 100%;
-  height: 6rem;
+  height: 5.2rem;
 
   background-color: transparent;
 `;
