@@ -22,7 +22,7 @@ export const usePostLoginMutation = () => {
 
       setIsLoggedIn(true);
       setUserName(userName);
-      routeTo(`/meeting/${uuid}`);
+      routeTo(`/meeting/${uuid}/register`);
     },
   });
 };
