@@ -5,10 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public record DateInterval(
-        LocalDate startDate,
-        LocalDate endDate
-) implements RecommendInterval {
+public record DateInterval(LocalDate startDate, LocalDate endDate) implements RecommendInterval {
 
     @Override
     public boolean isSequential(RecommendInterval nextInterval) {
