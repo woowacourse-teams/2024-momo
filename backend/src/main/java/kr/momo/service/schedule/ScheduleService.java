@@ -3,6 +3,7 @@ package kr.momo.service.schedule;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
+import kr.momo.config.constant.CacheType;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.attendee.AttendeeName;
@@ -43,6 +44,7 @@ public class ScheduleService {
     private final AvailableDateRepository availableDateRepository;
     private final ScheduleBatchRepository scheduleBatchRepository;
     private final ScheduleRecommenderFactory scheduleRecommenderFactory;
+    private final ScheduleCache scheduleCache;
 
     @Transactional
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
@@ -55,6 +57,8 @@ public class ScheduleService {
 
         scheduleRepository.deleteByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
+        scheduleCache.delete(CacheType.SCHEDULES_STORE, uuid);
+        scheduleCache.delete(CacheType.RECOMMEND_STORE, uuid);
         scheduleBatchRepository.batchInsert(schedules);
     }
 
@@ -89,12 +93,19 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public SchedulesResponse findAllSchedules(String uuid) {
+        if (scheduleCache.isHit(CacheType.SCHEDULES_STORE, uuid)) {
+            return scheduleCache.get(CacheType.SCHEDULES_STORE, uuid, SchedulesResponse.class);
+        }
+
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         List<Attendee> attendees = attendeeRepository.findAllByMeeting(meeting);
         List<Schedule> schedules = scheduleRepository.findAllByAttendeeIn(attendees);
+        SchedulesResponse schedulesResponse = SchedulesResponse.from(schedules);
 
-        return SchedulesResponse.from(schedules);
+        scheduleCache.put(CacheType.SCHEDULES_STORE, uuid, schedulesResponse);
+
+        return schedulesResponse;
     }
 
     @Transactional(readOnly = true)
@@ -125,6 +136,14 @@ public class ScheduleService {
     public RecommendedSchedulesResponse recommendSchedules(
             String uuid, String recommendType, List<String> names, int minimumTime
     ) {
+        if (scheduleCache.isHit(CacheType.RECOMMEND_STORE, uuid)) {
+            RecommendedSchedulesResponse response = scheduleCache.get(
+                    CacheType.RECOMMEND_STORE, uuid, RecommendedSchedulesResponse.class
+            );
+            if (response.type().equals(recommendType)) {
+                return response;
+            }
+        }
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
@@ -140,6 +159,12 @@ public class ScheduleService {
         List<RecommendedScheduleResponse> scheduleResponses = RecommendedScheduleResponse.fromCandidateSchedules(
                 recommendedResult
         );
-        return RecommendedSchedulesResponse.of(meeting.getType(), scheduleResponses);
+        RecommendedSchedulesResponse recommendedSchedulesResponse = RecommendedSchedulesResponse.of(
+                meeting.getType(), scheduleResponses
+        );
+
+        scheduleCache.put(CacheType.RECOMMEND_STORE, uuid, recommendedSchedulesResponse);
+
+        return recommendedSchedulesResponse;
     }
 }
