@@ -36,7 +36,8 @@ import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
-import kr.momo.support.IsolateDatabase;
+import kr.momo.support.EnableEmbeddedCache;
+import kr.momo.support.IsolateDatabaseAndCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@IsolateDatabase
+@EnableEmbeddedCache
+@IsolateDatabaseAndCache
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class ScheduleServiceTest {
 
@@ -482,3 +484,4 @@ class ScheduleServiceTest {
         return schedules;
     }
 }
+
