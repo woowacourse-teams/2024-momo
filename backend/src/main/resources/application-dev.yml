@@ -7,6 +7,7 @@ spring:
       - ${SECURITY_PATH:classpath:security}/cors.yml
       - ${SECURITY_PATH:classpath:security}/logback.yml
       - ${SECURITY_PATH:classpath:security}/actuator.yml
+      - ${SECURITY_PATH:classpath:security}/cache-dev.yml
 
   jpa:
     hibernate:

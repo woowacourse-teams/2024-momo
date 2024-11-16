@@ -3,7 +3,6 @@ spring:
     activate.on-profile: local
     import:
       - classpath:datasource.yml
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,6 +18,13 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: ${REDIS_PORT:6379}
+      timeout: 2000
 
 security:
   jwt:
