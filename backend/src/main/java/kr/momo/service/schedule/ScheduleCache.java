@@ -34,7 +34,7 @@ public class ScheduleCache {
         String cacheName = cacheType.getName();
         Cache cache = cacheManager.getCache(cacheName);
         if (cache == null || cache.get(key, String.class) == null) {
-            throw new RuntimeException();
+            throw new MomoException(CacheErrorCode.CACHE_NOT_FOUND);
         }
         String value = cache.get(key, String.class);
         log.debug("CACHE NAME: {}, KEY: {}, STATE: HIT", cacheName, key);
