@@ -1,6 +1,7 @@
 package kr.momo.service.schedule;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import kr.momo.config.constant.CacheType;
@@ -17,6 +18,7 @@ import kr.momo.domain.schedule.Schedule;
 import kr.momo.domain.schedule.ScheduleBatchRepository;
 import kr.momo.domain.schedule.ScheduleRepository;
 import kr.momo.domain.schedule.recommend.CandidateSchedule;
+import kr.momo.domain.schedule.recommend.RecommendedScheduleSortStandard;
 import kr.momo.domain.timeslot.Timeslot;
 import kr.momo.exception.MomoException;
 import kr.momo.exception.code.AttendeeErrorCode;
@@ -57,9 +59,11 @@ public class ScheduleService {
 
         scheduleRepository.deleteByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
-        scheduleCache.delete(CacheType.SCHEDULES_STORE, uuid);
-        scheduleCache.delete(CacheType.RECOMMEND_STORE, uuid);
         scheduleBatchRepository.batchInsert(schedules);
+        scheduleCache.evict(CacheType.SCHEDULES_STORE, uuid);
+        Arrays.stream(RecommendedScheduleSortStandard.values())
+                .map(RecommendedScheduleSortStandard::getType)
+                .forEach(type -> scheduleCache.evict(CacheType.RECOMMEND_STORE, type + uuid));
     }
 
     private void validateMeetingUnLocked(Meeting meeting) {
@@ -136,13 +140,9 @@ public class ScheduleService {
     public RecommendedSchedulesResponse recommendSchedules(
             String uuid, String recommendType, List<String> names, int minimumTime
     ) {
-        if (scheduleCache.isHit(CacheType.RECOMMEND_STORE, uuid)) {
-            RecommendedSchedulesResponse response = scheduleCache.get(
-                    CacheType.RECOMMEND_STORE, uuid, RecommendedSchedulesResponse.class
-            );
-            if (response.type().equals(recommendType)) {
-                return response;
-            }
+        String key = recommendType + uuid;
+        if (scheduleCache.isHit(CacheType.RECOMMEND_STORE, key)) {
+            return scheduleCache.get(CacheType.RECOMMEND_STORE, key, RecommendedSchedulesResponse.class);
         }
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
@@ -163,7 +163,7 @@ public class ScheduleService {
                 meeting.getType(), scheduleResponses
         );
 
-        scheduleCache.put(CacheType.RECOMMEND_STORE, uuid, recommendedSchedulesResponse);
+        scheduleCache.put(CacheType.RECOMMEND_STORE, key, recommendedSchedulesResponse);
 
         return recommendedSchedulesResponse;
     }
