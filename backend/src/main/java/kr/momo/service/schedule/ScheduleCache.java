@@ -56,10 +56,10 @@ public class ScheduleCache {
             return;
         }
         log.debug("CACHE NAME: {}, KEY: {}, STATE: MISS", cacheName, key);
-        cache.put(key, convertJson(cacheName, key, value));
+        cache.put(key, convertToJson(cacheName, key, value));
     }
 
-    private <T> String convertJson(String cacheName, String key, T value) {
+    private <T> String convertToJson(String cacheName, String key, T value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
@@ -68,7 +68,7 @@ public class ScheduleCache {
         }
     }
 
-    public void delete(CacheType cacheType, String key) {
+    public void evict(CacheType cacheType, String key) {
         String cacheName = cacheType.getName();
         Cache cache = cacheManager.getCache(cacheName);
         if (cache == null) {
