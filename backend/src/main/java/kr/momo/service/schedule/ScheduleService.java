@@ -60,10 +60,10 @@ public class ScheduleService {
         scheduleRepository.deleteByAttendee(attendee);
         List<Schedule> schedules = createSchedules(request, meeting, attendee);
         scheduleBatchRepository.batchInsert(schedules);
-        scheduleCache.evict(CacheType.SCHEDULES_STORE, uuid);
+        scheduleCache.putInvalid(CacheType.SCHEDULES_STORE, uuid);
         Arrays.stream(RecommendedScheduleSortStandard.values())
                 .map(RecommendedScheduleSortStandard::getType)
-                .forEach(type -> scheduleCache.evict(CacheType.RECOMMEND_STORE, type + uuid));
+                .forEach(type -> scheduleCache.putInvalid(CacheType.RECOMMEND_STORE, type + uuid));
     }
 
     private void validateMeetingUnLocked(Meeting meeting) {

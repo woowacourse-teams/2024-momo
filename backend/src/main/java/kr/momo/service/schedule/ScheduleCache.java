@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ScheduleCache {
 
+    public static final String INVALID_STATUS = "invalid";
+
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
 
@@ -25,7 +27,7 @@ public class ScheduleCache {
             return false;
         }
         String json = cache.get(key, String.class);
-        return json != null;
+        return json != null && !INVALID_STATUS.equals(json);
     }
 
     public <T> T get(CacheType cacheType, String key, Class<T> clazz) {
@@ -68,13 +70,14 @@ public class ScheduleCache {
         }
     }
 
-    public void evict(CacheType cacheType, String key) {
+    public <T> void putInvalid(CacheType cacheType, String key) {
         String cacheName = cacheType.getName();
         Cache cache = cacheManager.getCache(cacheName);
         if (cache == null) {
+            log.error("캐싱에 해당하는 이름이 존재하지 않습니다. 캐싱 이름: {}", cacheName);
             return;
         }
-        cache.evict(key);
-        log.debug("CACHE NAME: {}, KEY: {}, STATE: EVICT", cacheName, key);
+        log.debug("CACHE NAME: {}, KEY: {}, STATE: invalid insert", cacheName, key);
+        cache.put(key, INVALID_STATUS);
     }
 }
