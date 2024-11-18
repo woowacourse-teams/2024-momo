@@ -70,14 +70,7 @@ public class ScheduleCache {
         }
     }
 
-    public <T> void putInvalid(CacheType cacheType, String key) {
-        String cacheName = cacheType.getName();
-        Cache cache = cacheManager.getCache(cacheName);
-        if (cache == null) {
-            log.error("캐싱에 해당하는 이름이 존재하지 않습니다. 캐싱 이름: {}", cacheName);
-            return;
-        }
-        log.debug("CACHE NAME: {}, KEY: {}, STATE: invalid insert", cacheName, key);
-        cache.put(key, INVALID_STATUS);
+    public void putInvalid(CacheType cacheType, String key) {
+        put(cacheType, key, INVALID_STATUS);
     }
 }
