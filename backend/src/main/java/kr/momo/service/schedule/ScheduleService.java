@@ -31,6 +31,7 @@ import kr.momo.service.schedule.recommend.ScheduleRecommender;
 import kr.momo.service.schedule.recommend.ScheduleRecommenderFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -44,7 +45,7 @@ public class ScheduleService {
     private final ScheduleBatchRepository scheduleBatchRepository;
     private final ScheduleRecommenderFactory scheduleRecommenderFactory;
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
