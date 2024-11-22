@@ -33,12 +33,16 @@ public class ScheduleCache {
     public <T> T get(CacheType cacheType, String key, Class<T> clazz) {
         String cacheName = cacheType.getName();
         Cache cache = cacheManager.getCache(cacheName);
-        if (cache == null || cache.get(key, String.class) == null) {
-            throw new MomoException(CacheErrorCode.CACHE_NOT_FOUND);
-        }
+        validateCacheNotNull(key, cache);
         String value = cache.get(key, String.class);
         log.debug("CACHE NAME: {}, KEY: {}, STATE: HIT", cacheName, key);
         return convertObject(cacheName, key, clazz, value);
+    }
+
+    private void validateCacheNotNull(String key, Cache cache) {
+        if (cache == null || cache.get(key, String.class) == null) {
+            throw new MomoException(CacheErrorCode.CACHE_NOT_FOUND);
+        }
     }
 
     private <T> T convertObject(String cacheName, String key, Class<T> clazz, String value) {
