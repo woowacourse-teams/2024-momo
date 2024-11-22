@@ -38,6 +38,9 @@ dependencies {
     implementation 'org.springframework.security:spring-security-crypto'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.github.codemonstur:embedded-redis:1.4.3'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
