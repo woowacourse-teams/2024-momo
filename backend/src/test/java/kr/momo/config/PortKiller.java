@@ -1,11 +1,9 @@
 package kr.momo.config;
 
-import groovy.util.logging.Slf4j;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import org.springframework.boot.test.context.TestComponent;
 
-@Slf4j
 @TestComponent
 public class PortKiller {
 
