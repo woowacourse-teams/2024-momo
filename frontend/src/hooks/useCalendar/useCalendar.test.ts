@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act } from '@testing-library/react';
 
 import renderHookWithProvider from '@hooks/__test__/renderHookWithProvider';
 
@@ -191,17 +191,18 @@ describe('useCalendar', () => {
     const TEST_DATE = 4;
 
     beforeEach(() => {
-      jest.setSystemTime(new Date(TEST_YEAR + 1, TEST_MONTH, TEST_DATE));
+      jest.setSystemTime(new Date(TEST_YEAR, TEST_MONTH, TEST_DATE));
     });
 
-    it('현재 월 기준, 약속 날짜 범위가 1년을 벗어나면 토스트 UI를 활용하여 사용자에게 예외 피드백을 전달한다', () => {
+    it('현재 월 기준, 약속 날짜 범위가 1년을 벗어나면 토스트 UI를 활용하여 사용자에게 예외 피드백을 전달한다', async () => {
       const { result } = renderHookWithProvider(useCalendar);
 
-      const { view } = result.current;
-      const { moveToNextMonth } = view;
-      act(() => {
-        moveToNextMonth();
-      });
+      // 총 13번의 moveToNextMonth() 함수 실행
+      for (let i = 0; i < 13; i++) {
+        await act(async () => {
+          result.current.view.moveToNextMonth();
+        });
+      }
 
       expect(mockAddToast).toHaveBeenCalledWith({
         message: TOAST_MESSAGES.OUT_OF_ONE_YEAR_RANGE,
