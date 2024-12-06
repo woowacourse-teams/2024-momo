@@ -27,12 +27,12 @@ interface useCalendarReturn {
   isCurrentMonth: boolean;
 }
 
-const TODAY = new Date();
-const ONE_YEAR_LATER = getFullDate(new Date(getYear(TODAY) + 1, getMonth(TODAY)));
-
 type MonthDelta = -1 | 1;
 
 const useCalendar = (): useCalendarReturn => {
+  const TODAY = new Date();
+  const ONE_YEAR_LATER = getFullDate(new Date(getYear(TODAY) + 1, getMonth(TODAY)));
+
   const [currentFullDate, setCurrentFullDate] = useState(new Date());
   const { addToast } = useToast();
 
@@ -51,7 +51,7 @@ const useCalendar = (): useCalendarReturn => {
   const moveToNextMonth = () => {
     const fullDate = getFullDate(currentFullDate);
 
-    if (fullDate >= ONE_YEAR_LATER) {
+    if (new Date(fullDate).getTime() >= new Date(ONE_YEAR_LATER).getTime()) {
       addToast({
         message: TOAST_MESSAGES.OUT_OF_ONE_YEAR_RANGE,
         type: 'warning',
