@@ -22,7 +22,8 @@ import kr.momo.fixture.MeetingFixture;
 import kr.momo.service.attendee.dto.AttendeeLoginRequest;
 import kr.momo.service.schedule.dto.DateTimesCreateRequest;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
-import kr.momo.support.IsolateDatabase;
+import kr.momo.support.EnableEmbeddedCache;
+import kr.momo.support.IsolateDatabaseAndCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@IsolateDatabase
+@EnableEmbeddedCache
+@IsolateDatabaseAndCache
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ScheduleControllerTest {
 
