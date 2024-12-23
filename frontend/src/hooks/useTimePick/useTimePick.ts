@@ -91,6 +91,7 @@ export default function useTimePick(initialTableValue: number[][], currentDatePa
 
   const handlePointerEnd = useCallback((event: Event) => {
     startIndex.current = null;
+    currentIndex.current = null;
     if (event.cancelable) {
       event.preventDefault();
     }
