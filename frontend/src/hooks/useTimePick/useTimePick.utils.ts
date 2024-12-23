@@ -30,9 +30,6 @@ export function getTableCellElement(event: Event): HTMLTableCellElement | null {
 }
 
 export function getTableCellIndex(event: Event) {
-  let rowIndex: number | null = null;
-  let colIndex: number | null = null;
-
   const target = getTableCellElement(event);
 
   if (!target) {
@@ -41,12 +38,14 @@ export function getTableCellIndex(event: Event) {
 
   const tr = target.closest('tr');
 
-  if (tr) {
-    const tds = Array.from(tr.querySelectorAll('td'));
-
-    rowIndex = tr.sectionRowIndex;
-    colIndex = tds.findIndex((td) => td === target);
+  if (!tr) {
+    return null;
   }
+
+  const tds = Array.from(tr.querySelectorAll('td'));
+
+  const rowIndex = tr.sectionRowIndex;
+  const colIndex = tds.findIndex((td) => td === target);
 
   if (rowIndex === null || colIndex === null || colIndex === -1) {
     return null;
