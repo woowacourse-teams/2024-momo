@@ -2,11 +2,6 @@ import { css } from '@emotion/react';
 
 import theme from '@styles/theme';
 
-export const s_tooltipTrigger = css`
-  width: 100%;
-  height: 100%;
-`;
-
 export const s_attendeeTooltipContainer = css`
   display: flex;
   flex-direction: column;

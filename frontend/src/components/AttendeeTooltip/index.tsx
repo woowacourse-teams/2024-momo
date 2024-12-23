@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import type { PropsWithChildren } from 'react';
 import type { TooltipPosition } from 'types/tooltip';
 
 import Tooltip from '@components/_common/Tooltip';
@@ -8,7 +9,6 @@ import {
   s_attendeeTooltipContainer,
   s_attendeesContainer,
   s_tooltipTitle,
-  s_tooltipTrigger,
 } from './AttendeeTooltip.styles';
 
 interface AttendeeTooltipProps {
@@ -16,7 +16,11 @@ interface AttendeeTooltipProps {
   position: TooltipPosition;
 }
 
-export default function AttendeeTooltip({ attendeeNames, position }: AttendeeTooltipProps) {
+export default function AttendeeTooltip({
+  attendeeNames,
+  position,
+  children,
+}: PropsWithChildren<AttendeeTooltipProps>) {
   return (
     <Tooltip
       position={position}
@@ -33,10 +37,11 @@ export default function AttendeeTooltip({ attendeeNames, position }: AttendeeToo
         </div>
       }
       visibleStyles={css`
-        border: 0.3rem dashed #71717a;
+        outline: 3px dashed #71717a;
+        outline-offset: -3px;
       `}
     >
-      <div css={s_tooltipTrigger} />
+      {children}
     </Tooltip>
   );
 }
