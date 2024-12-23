@@ -1,7 +1,6 @@
 import type { SerializedStyles } from '@emotion/react';
 import type { ReactNode } from 'react';
-import { useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 import type { TooltipPosition } from 'types/tooltip';
 
 import {
@@ -25,7 +24,6 @@ export default function Tooltip({
   visibleStyles,
 }: TooltipProps) {
   const [visible, setVisible] = useState(false);
-  const triggerRef = useRef<HTMLDivElement | null>(null);
 
   const showTooltip = () => {
     setVisible(true);
@@ -36,7 +34,7 @@ export default function Tooltip({
   };
 
   const positionStyle = {
-    ...getTooltipPosition(position, triggerRef?.current?.getBoundingClientRect()),
+    ...getTooltipPosition(position),
   };
 
   return (
@@ -45,14 +43,13 @@ export default function Tooltip({
         css={s_tooltipTrigger(visible, visibleStyles)}
         onMouseEnter={showTooltip}
         onMouseLeave={hideTooltip}
-        ref={triggerRef}
       >
         {children}
       </div>
-      {/* cratePortal과 부모 요소 기준 위치를 잡는 것 중 어느 것을 선호하시나요?(@해리) */}
-      {visible &&
-        createPortal(<div css={[tooltipContent, positionStyle]}>{content}</div>, document.body)}
-      {/* {visible && <div css={[tooltipContent, positionStyle]}>{content}</div>} */}
+      {/* {visible &&
+        createPortal(<div css={[tooltipContent, positionStyle]}>{content}</div>, document.body)} */}
+      {/* 스크롤을 할 경우 툴팁의 위치가 고정되지 않는 문제가 발생하기 때문에, 부모 요소 기준 상대적으로 툴팁의 위치가 결정되도록 수정 (2024.12.23 @해리) */}
+      {visible && <div css={[tooltipContent, positionStyle]}>{content}</div>}
     </div>
   );
 }
