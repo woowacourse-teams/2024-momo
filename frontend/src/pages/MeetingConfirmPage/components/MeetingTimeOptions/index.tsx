@@ -5,9 +5,9 @@ import {
   s_attendeesContainer,
   s_tipInfo,
 } from '@pages/MeetingConfirmPage/MeetingTimeConfirmPage.styles';
+import MeetingTimeOptionCard from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeOptionCard';
+import MeetingTimeOptionCardDaysOnly from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeOptionCardDaysOnly';
 
-import MeetingTimeOptionCard from '@components/MeetingTimeCard/MeetingTimeOptionCard';
-import MeetingTimeOptionCardDaysOnly from '@components/MeetingTimeCard/MeetingTimeOptionCardDaysOnly';
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';

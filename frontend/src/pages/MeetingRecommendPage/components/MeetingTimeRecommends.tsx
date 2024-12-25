@@ -1,5 +1,6 @@
-import MeetingTimeRecommendCard from '@components/MeetingTimeCard/MeetingTimeRecommendCard';
-import MeetingTimeRecommendCardDaysOnly from '@components/MeetingTimeCard/MeetingTimeRecommendCardDaysOnly';
+import MeetingTimeRecommendCard from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeRecommendCard';
+import MeetingTimeRecommendCardDaysOnly from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeRecommendCardDaysOnly';
+
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
 
