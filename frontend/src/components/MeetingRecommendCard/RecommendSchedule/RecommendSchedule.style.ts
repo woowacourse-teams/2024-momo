@@ -4,6 +4,7 @@ import theme from '@styles/theme';
 
 export const s_recommendContainer = css`
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   gap: 0.8rem;
 `;

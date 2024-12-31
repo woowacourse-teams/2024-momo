@@ -15,12 +15,15 @@ export const formatFullDate = ({ fullDate, dayOfWeek, format = 'standard' }: For
   return `${year}/${month}/${day}(${dayOfWeek})`;
 };
 
-// 오후 6시, 오전 3시 와 같은 형태로 반환
-export const formatTime = (time: string): string => {
-  const hour = parseInt(time, 10);
+// "17:00" -> "오후 5시"
+// "17:30" -> "오후 5시 30분"
+// "03:00" -> "오전 3시"
+export const formatTimeToKorean = (time: string): string => {
+  const [hour, minutes] = time.split(':').map(Number);
   const hourPrefix = hour >= 12 ? '오후' : '오전';
   const formattedHour = hour % 12 || 12;
 
+  if (minutes === 30) return `${hourPrefix} ${formattedHour}시 ${minutes}분`;
   return `${hourPrefix} ${formattedHour}시`;
 };
 

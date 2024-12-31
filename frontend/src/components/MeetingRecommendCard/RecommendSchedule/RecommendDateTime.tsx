@@ -1,6 +1,6 @@
 import type { MeetingRecommend } from '@apis/meetings/recommends';
 
-import { formatFullDate, formatTime } from '@utils/date';
+import { formatFullDate, formatTimeToKorean } from '@utils/date';
 
 import { s_dateInfo, s_recommendContainer } from './RecommendSchedule.style';
 
@@ -25,8 +25,8 @@ export default function RecommendDateTime({ schedule }: RecommendDateTimeProps) 
 
   return (
     <div css={s_recommendContainer}>
-      <span css={s_dateInfo}>{`${startRecommendDate} ${formatTime(startTime)}`}부터</span>
-      <span css={s_dateInfo}>{`${endRecommendDate} ${formatTime(endTime)}`}까지</span>
+      <span css={s_dateInfo}>{`${startRecommendDate} ${formatTimeToKorean(startTime)}`}부터</span>
+      <span css={s_dateInfo}>{`${endRecommendDate} ${formatTimeToKorean(endTime)}`}까지</span>
     </div>
   );
 }
