@@ -12,6 +12,12 @@ export const s_baseContainer = css`
   border-radius: 0.8rem;
 `;
 
+export const s_scheduleContainer = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
 export const s_optionContainer = css`
   display: flex;
   align-items: center;

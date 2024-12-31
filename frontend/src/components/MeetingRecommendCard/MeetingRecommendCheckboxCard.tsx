@@ -7,7 +7,9 @@ import {
   s_checkboxInput,
   s_getSelectedStyle,
   s_optionContainer,
+  s_scheduleContainer,
 } from './MeetingRecommendCard.styles';
+import RecommendAttendees from './RecommendAttendees';
 import RecommendCardDateTime from './RecommendSchedule/RecommendDateTime';
 import RecommendCardDaysOnly from './RecommendSchedule/RecommendDaysOnly';
 
@@ -20,19 +22,15 @@ export default function MeetingRecommendCheckboxCard({
   type,
   isSelected,
   schedule,
-  totalAttendeeCount,
+  totalAttendees,
   onSelect,
 }: MeetingRecommendCheckboxProps) {
   const renderRecommendCard = (type: MeetingType) => {
     switch (type) {
       case 'DATETIME':
-        return (
-          <RecommendCardDateTime schedule={schedule} totalAttendeeCount={totalAttendeeCount} />
-        );
+        return <RecommendCardDateTime schedule={schedule} />;
       case 'DAYSONLY':
-        return (
-          <RecommendCardDaysOnly schedule={schedule} totalAttendeeCount={totalAttendeeCount} />
-        );
+        return <RecommendCardDaysOnly schedule={schedule} />;
     }
   };
 
@@ -41,7 +39,13 @@ export default function MeetingRecommendCheckboxCard({
       css={[s_baseContainer, s_optionContainer, s_getSelectedStyle(isSelected)]}
       onClick={onSelect}
     >
-      {renderRecommendCard(type)}
+      <div css={s_scheduleContainer}>
+        <RecommendAttendees
+          totalAttendees={totalAttendees}
+          recommendAttendees={schedule.attendeeNames}
+        />
+        {renderRecommendCard(type)}
+      </div>
       <div css={s_checkboxContainer}>
         <input type="checkbox" checked={isSelected} onChange={onSelect} css={s_checkboxInput} />
       </div>

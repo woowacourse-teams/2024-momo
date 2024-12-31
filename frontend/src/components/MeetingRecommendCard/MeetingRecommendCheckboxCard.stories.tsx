@@ -24,7 +24,7 @@ const meta: Meta<typeof MeetingRecommendCheckboxCard> = {
   },
   args: {
     schedule: DEFAULT_SCHEDULE,
-    totalAttendeeCount: 8,
+    totalAttendees: DEFAULT_SCHEDULE.attendeeNames,
   },
   decorators: (Story) => (
     <div css={{ width: '32rem' }}>

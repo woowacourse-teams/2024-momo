@@ -5,9 +5,8 @@ import {
   s_attendeesContainer,
   s_tipInfo,
 } from '@pages/MeetingConfirmPage/MeetingTimeConfirmPage.styles';
-import MeetingTimeOptionCard from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeOptionCard';
-import MeetingTimeOptionCardDaysOnly from '@pages/MeetingRecommendPage/components/MeetingTimeCard/MeetingTimeOptionCardDaysOnly';
 
+import MeetingRecommendCheckboxCard from '@components/MeetingRecommendCard/MeetingRecommendCheckboxCard';
 import { Button } from '@components/_common/Buttons/Button';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
@@ -81,6 +80,8 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
 
   return (
     <div css={s_container}>
+      {/* 만약 TabButton의 로직이 변경되면 MeetingRecommendPage에 있는 로직도 함께 변경되어야 함 (@낙타) */}
+      <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
       <section css={s_attendeesContainer}>
         <TabButton
           tabButtonVariants="outlinedFloating"
@@ -100,7 +101,7 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
           </TabButton>
         ))}
       </section>
-      <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
+
       <Button
         disabled={JSON.stringify(selectedMeeting) === JSON.stringify({})}
         onClick={handleMeetingConfirmPost}
@@ -118,25 +119,16 @@ export default function MeetingTimeOptions({ uuid, attendeeNames }: MeetingTimeO
         ]}
       />
       {meetingRecommendResponse &&
-        meetingRecommendResponse.recommendedSchedules.map((recommendInfo) =>
-          meetingRecommendResponse.type === 'DATETIME' ? (
-            <MeetingTimeOptionCard
-              key={recommendInfo.rank}
-              isSelected={checkSelectedMeeting(recommendInfo)}
-              onSelect={() => handleMeetingSelect(recommendInfo)}
-              attendeeCount={attendeeNames.length}
-              schedule={recommendInfo}
-            />
-          ) : (
-            <MeetingTimeOptionCardDaysOnly
-              key={recommendInfo.rank}
-              isSelected={checkSelectedMeeting(recommendInfo)}
-              onSelect={() => handleMeetingSelect(recommendInfo)}
-              attendeeCount={attendeeNames.length}
-              schedule={recommendInfo}
-            />
-          ),
-        )}
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo) => (
+          <MeetingRecommendCheckboxCard
+            type={meetingRecommendResponse.type}
+            key={recommendInfo.rank}
+            isSelected={checkSelectedMeeting(recommendInfo)}
+            onSelect={() => handleMeetingSelect(recommendInfo)}
+            totalAttendees={attendeeNames}
+            schedule={recommendInfo}
+          />
+        ))}
     </div>
   );
 }

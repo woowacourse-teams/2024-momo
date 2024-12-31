@@ -5,7 +5,7 @@ import theme from '@styles/theme';
 export const s_recommendContainer = css`
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 0.8rem;
 `;
 
 export const s_attendeeInfo = css`

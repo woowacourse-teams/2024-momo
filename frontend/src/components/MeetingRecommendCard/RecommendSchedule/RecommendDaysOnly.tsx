@@ -1,15 +1,18 @@
-import { formatFullDate } from '@utils/date';
+import { Fragment } from 'react';
 
-import type { RecommendCardProps } from '../MeetingRecommendCard';
-import { s_attendeeInfo, s_dateInfo, s_recommendContainer } from './RecommendSchedule.style';
+import type { MeetingRecommend } from '@apis/meetings/recommends';
 
-export default function RecommendCardDaysOnly({
-  schedule,
-  totalAttendeeCount,
-}: Omit<RecommendCardProps, 'type'>) {
-  const { startDate, startDayOfWeek, endDate, endDayOfWeek, attendeeNames } = schedule;
+import { formatFullDate, isSameDate } from '@utils/date';
 
-  const currentAttendeeCount = attendeeNames.length;
+import { s_dateInfo, s_recommendContainer } from './RecommendSchedule.style';
+
+interface RecommendDaysOnlyProps {
+  schedule: MeetingRecommend;
+}
+
+export default function RecommendDaysOnly({ schedule }: RecommendDaysOnlyProps) {
+  const { startDate, startDayOfWeek, endDate, endDayOfWeek } = schedule;
+
   const startRecommendDate = formatFullDate({
     fullDate: startDate,
     dayOfWeek: startDayOfWeek,
@@ -24,9 +27,15 @@ export default function RecommendCardDaysOnly({
 
   return (
     <div css={s_recommendContainer}>
-      <span css={s_attendeeInfo}>{`${totalAttendeeCount}명 중 ${currentAttendeeCount}명`}</span>
-      <span css={s_dateInfo}>{startRecommendDate}부터</span>
-      <span css={s_dateInfo}>{endRecommendDate}까지</span>
+      {/* 만약 하루만 추천해준다면 "00월 00일(수)"로 나오도록 구현(@낙타) */}
+      {isSameDate(new Date(startDate), new Date(endDate)) ? (
+        <span css={s_dateInfo}>{startRecommendDate}</span>
+      ) : (
+        <Fragment>
+          <span css={s_dateInfo}>{startRecommendDate}부터</span>
+          <span css={s_dateInfo}>{endRecommendDate}까지</span>
+        </Fragment>
+      )}
     </div>
   );
 }

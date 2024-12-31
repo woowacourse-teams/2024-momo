@@ -35,7 +35,7 @@ type Story = StoryObj<typeof meta>;
 export const DateTime: Story = {
   args: {
     schedule: DEFAULT_SCHEDULE,
-    totalAttendeeCount: DEFAULT_SCHEDULE.attendeeNames.length,
+    totalAttendees: DEFAULT_SCHEDULE.attendeeNames,
     type: 'DATETIME',
   },
 };
@@ -43,7 +43,7 @@ export const DateTime: Story = {
 export const DaysOnly: Story = {
   args: {
     schedule: DEFAULT_SCHEDULE,
-    totalAttendeeCount: DEFAULT_SCHEDULE.attendeeNames.length,
+    totalAttendees: DEFAULT_SCHEDULE.attendeeNames,
     type: 'DAYSONLY',
   },
 };

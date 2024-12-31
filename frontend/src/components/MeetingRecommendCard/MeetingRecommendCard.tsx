@@ -1,9 +1,10 @@
 import type { MeetingType } from '@apis/meetings/meetings';
 import type { MeetingRecommend } from '@apis/meetings/recommends';
 
-import { s_baseContainer } from './MeetingRecommendCard.styles';
-import RecommendCardDateTime from './RecommendSchedule/RecommendDateTime';
-import RecommendCardDaysOnly from './RecommendSchedule/RecommendDaysOnly';
+import { s_baseContainer, s_scheduleContainer } from './MeetingRecommendCard.styles';
+import RecommendAttendees from './RecommendAttendees';
+import RecommendDateTime from './RecommendSchedule/RecommendDateTime';
+import RecommendDaysOnly from './RecommendSchedule/RecommendDaysOnly';
 
 export interface DateInfo {
   fullDate: string;
@@ -13,27 +14,33 @@ export interface DateInfo {
 
 export interface RecommendCardProps {
   type: MeetingType;
-  totalAttendeeCount: number;
+  totalAttendees: string[];
   schedule: MeetingRecommend;
 }
 
 export default function MeetingRecommendCard({
   type,
   schedule,
-  totalAttendeeCount,
+  totalAttendees,
 }: RecommendCardProps) {
   const renderRecommendCard = (type: MeetingType) => {
     switch (type) {
       case 'DATETIME':
-        return (
-          <RecommendCardDateTime schedule={schedule} totalAttendeeCount={totalAttendeeCount} />
-        );
+        return <RecommendDateTime schedule={schedule} />;
       case 'DAYSONLY':
-        return (
-          <RecommendCardDaysOnly schedule={schedule} totalAttendeeCount={totalAttendeeCount} />
-        );
+        return <RecommendDaysOnly schedule={schedule} />;
     }
   };
 
-  return <div css={s_baseContainer}>{renderRecommendCard(type)}</div>;
+  return (
+    <div css={s_baseContainer}>
+      <div css={s_scheduleContainer}>
+        <RecommendAttendees
+          totalAttendees={totalAttendees}
+          recommendAttendees={schedule.attendeeNames}
+        />
+        {renderRecommendCard(type)}
+      </div>
+    </div>
+  );
 }
