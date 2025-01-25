@@ -47,7 +47,7 @@ jobs:
         with:
           node-version: "lts/*"
 
-      - name: 이전 의존성을 저장해둔게 있나~? 확인해요 :)
+      - name: 의존성 캐시를 확인해요 :)
         id: cache
         uses: actions/cache@v4
         with:
@@ -68,7 +68,7 @@ jobs:
       - name: 프론트엔드 리소스를 빌드해요 :)
         run: npm run build:dev
 
-      - name: 프론트엔드 리소스 결과물을 깃허브 레파지토리 artifacts로 업로드해요
+      - name: 프론트엔드 리소스 결과물을 깃허브 레파지토리 artifacts로 업로드해요 :)
         uses: actions/upload-artifact@v4
         with:
           name: momoResources
@@ -76,23 +76,19 @@ jobs:
 
   deploy:
     needs: fe-build
-    runs-on: [self-hosted, linux, ARM64, dev]
+    runs-on: ubuntu-latest
     env:
-      CLOUDFRONT_DISTRIBUTION_ID_DEV: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV}}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLOUDFRONT_DISTRIBUTION_ID_DEV: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}
     steps:
-      - name: 기존 dist 폴더 내부에 있던 이전 버젼의 dist 폴더 내부 모든 파일을 삭제해요
-        working-directory: ./frontend/
-        run: |
-          rm -rf dist/*
-
-      - name: 모모 깃허브 레파지토리 artifacts로 부터 빌드 결과물을 다운받아요 :)
+      - name: 모모 깃허브 레파지토리 artifacts로부터 빌드 결과물을 다운받아요 :)
         uses: actions/download-artifact@v4
         with:
           name: momoResources
           path: ./frontend/dist
 
-      - name: aws에 배포하고 cloudfront 캐싱을 무효화해요
-        working-directory: ./frontend/dist/
+      - name: aws에 배포하고 cloudfront 캐싱을 무효화해요 :)
         run: |
-          aws s3 sync ./ s3://techcourse-project-2024/momo-dev --delete
+          aws s3 sync ./frontend/dist/ s3://momo-fe-s3/momo-fe-dev/ --delete
           aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID_DEV" --paths "/*"
