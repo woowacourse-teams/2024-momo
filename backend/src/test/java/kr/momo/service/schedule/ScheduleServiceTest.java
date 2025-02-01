@@ -37,19 +37,20 @@ import kr.momo.service.schedule.dto.RecommendedScheduleResponse;
 import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
-import kr.momo.support.EnableEmbeddedCache;
-import kr.momo.support.IsolateDatabaseAndCache;
+import kr.momo.support.IsolateDatabase;
+import kr.momo.support.TestContainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
-@EnableEmbeddedCache
-@IsolateDatabaseAndCache
+@IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-class ScheduleServiceTest {
+class ScheduleServiceTest extends TestContainers {
 
     @Autowired
     private ScheduleService scheduleService;
@@ -68,6 +69,9 @@ class ScheduleServiceTest {
 
     @Autowired
     private ScheduleCache scheduleCache;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     private Meeting meeting;
     private Attendee attendee;
@@ -88,6 +92,11 @@ class ScheduleServiceTest {
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
+
+        for (String name : cacheManager.getCacheNames()) {
+            Cache cache = cacheManager.getCache(name);
+            cache.clear();
+        }
     }
 
     @DisplayName("스케줄 생성 시 사용자의 기존 스케줄들을 모두 삭제하고 새로운 스케줄을 저장한다.")
