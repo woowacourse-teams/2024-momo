@@ -1,4 +1,6 @@
+import { css } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Fragment } from 'react';
 
 import Tooltip from '.';
 
@@ -51,15 +53,36 @@ type Story = StoryObj<typeof Tooltip>;
 
 export const Playground: Story = {
   args: {
-    content: <div>안녕하세요 툴팁입니다</div>,
-    children: <button>마우스를 올려보세요</button>,
+    content: (
+      <div
+        css={css`
+          display: flex;
+          justify-content: center;
+          width: 20rem;
+        `}
+      >
+        안녕하세요 툴팁입니다
+      </div>
+    ),
+    children: (
+      <button
+        css={css`
+          width: 20rem;
+          height: 10rem;
+        `}
+      >
+        마우스를 올려보세요
+      </button>
+    ),
     position: 'top',
   },
   render: (args) => {
     return (
-      <Tooltip content={args.content} position={args.position}>
-        {args.children}
-      </Tooltip>
+      <Fragment>
+        <Tooltip content={args.content} position={args.position}>
+          {args.children}
+        </Tooltip>
+      </Fragment>
     );
   },
 };

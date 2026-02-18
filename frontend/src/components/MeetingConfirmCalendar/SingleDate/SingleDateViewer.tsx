@@ -49,11 +49,39 @@ export default function SingleDateViewer({
     if (selectAttendee !== '' && availableAttendees) return <Check width={12} height={12} />;
   };
 
-  const renderTooltip = () =>
-    selectAttendee === '' &&
-    availableAttendees && <AttendeeTooltip attendeeNames={availableAttendees} position="top" />;
+  const hasAttendeeTooltip = selectAttendee === '' && availableAttendees;
 
-  return status === 'current' ? (
+  if (status !== 'current') return <div css={s_dateContainer}></div>;
+
+  return hasAttendeeTooltip ? (
+    <AttendeeTooltip attendeeNames={availableAttendees} position="top">
+      <div
+        css={[
+          s_dateContainer,
+          s_baseDateButton,
+          s_viewer,
+          s_dateText({
+            isDisabledDate: !isAvailable || isPrevDate,
+            isSelectedDate: false,
+            isToday,
+            isHoliday,
+            isSunday,
+            isSaturday,
+          }),
+        ]}
+        role="text"
+        aria-hidden={!isAvailable}
+        aria-label={
+          isAvailable
+            ? formatAriaFullDate(targetFullDate, targetDayOfWeekKR, availableAttendees)
+            : ''
+        }
+      >
+        <span css={s_baseDateText}>{date}</span>
+        <span css={s_additionalText}>{additionalText()}</span>
+      </div>
+    </AttendeeTooltip>
+  ) : (
     <div
       css={[
         s_dateContainer,
@@ -76,9 +104,6 @@ export default function SingleDateViewer({
     >
       <span css={s_baseDateText}>{date}</span>
       <span css={s_additionalText}>{additionalText()}</span>
-      {renderTooltip()}
     </div>
-  ) : (
-    <div css={s_dateContainer}></div>
   );
 }

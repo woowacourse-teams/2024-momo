@@ -110,6 +110,7 @@ export const s_baseTimeCell = (isHalfHour: boolean, isLastRow: boolean) => css`
 
 export const s_bottomFixedButtonContainer = css`
   position: sticky; /* 절대 위치로 부모 컨테이너 내에서 배치 */
+  z-index: 1; /* 툴팁이 푸터보다 위에 위치하는 문제를 해결하기 위해서 z-index 추가(@해리) */
   bottom: 0;
   left: 0;
 

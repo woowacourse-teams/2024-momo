@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingSingleSchedule, Mode } from 'types/schedule';
 
@@ -56,12 +56,16 @@ export default function SchedulePicker({
 
   const { handleToggleIsTimePickerUpdate } = useContext(TimePickerUpdateStateContext);
 
-  const schedules = generateSingleScheduleTable({
-    firstTime,
-    lastTime,
-    availableDates,
-    meetingSingleSchedule,
-  });
+  const schedules = useMemo(
+    () =>
+      generateSingleScheduleTable({
+        firstTime,
+        lastTime,
+        availableDates,
+        meetingSingleSchedule,
+      }),
+    [availableDates, firstTime, lastTime, meetingSingleSchedule],
+  );
 
   const {
     tableRef,

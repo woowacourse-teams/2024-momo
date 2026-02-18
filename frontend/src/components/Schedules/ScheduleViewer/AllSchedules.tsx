@@ -1,4 +1,3 @@
-import React from 'react';
 import type { MeetingDateTime } from 'types/meeting';
 import type { MeetingAllSchedules } from 'types/schedule';
 
