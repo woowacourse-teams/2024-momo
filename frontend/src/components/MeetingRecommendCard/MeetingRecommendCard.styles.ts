@@ -12,10 +12,10 @@ export const s_baseContainer = css`
   border-radius: 0.8rem;
 `;
 
-export const s_recommendContainer = css`
+export const s_scheduleContainer = css`
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 0.8rem;
 `;
 
 export const s_optionContainer = css`
@@ -37,16 +37,6 @@ export const s_getSelectedStyle = (isSelected: boolean) => css`
     opacity: 0.9;
     border: 1px solid ${theme.colors.primary};
   `};
-`;
-
-export const s_attendeeInfo = css`
-  color: #6cd929;
-  text-align: start;
-  ${theme.typography.captionBold}
-`;
-
-export const s_dateInfo = css`
-  ${theme.typography.bodyBold}
 `;
 
 export const s_checkboxContainer = css`
