@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import kr.momo.config.constant.CacheType;
 import kr.momo.domain.attendee.Attendee;
 import kr.momo.domain.attendee.AttendeeGroup;
 import kr.momo.domain.attendee.AttendeeRepository;
@@ -37,16 +38,19 @@ import kr.momo.service.schedule.dto.RecommendedSchedulesResponse;
 import kr.momo.service.schedule.dto.ScheduleCreateRequest;
 import kr.momo.service.schedule.dto.SchedulesResponse;
 import kr.momo.support.IsolateDatabase;
+import kr.momo.support.TestContainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 @IsolateDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-class ScheduleServiceTest {
+class ScheduleServiceTest extends TestContainers {
 
     @Autowired
     private ScheduleService scheduleService;
@@ -62,6 +66,12 @@ class ScheduleServiceTest {
 
     @Autowired
     private AvailableDateRepository availableDateRepository;
+
+    @Autowired
+    private ScheduleCache scheduleCache;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     private Meeting meeting;
     private Attendee attendee;
@@ -82,6 +92,11 @@ class ScheduleServiceTest {
                 new DateTimesCreateRequest(today.getDate(), times),
                 new DateTimesCreateRequest(tomorrow.getDate(), times)
         );
+
+        for (String name : cacheManager.getCacheNames()) {
+            Cache cache = cacheManager.getCache(name);
+            cache.clear();
+        }
     }
 
     @DisplayName("스케줄 생성 시 사용자의 기존 스케줄들을 모두 삭제하고 새로운 스케줄을 저장한다.")
@@ -95,8 +110,12 @@ class ScheduleServiceTest {
 
         scheduleService.create(meeting.getUuid(), attendee.getId(), request);
         long scheduleCount = scheduleRepository.count();
+        String scheduleCacheData = scheduleCache.get(CacheType.SCHEDULES_STORE, meeting.getUuid(), String.class);
 
-        assertThat(scheduleCount).isEqualTo(4);
+        assertAll(
+                () -> assertThat(scheduleCount).isEqualTo(4),
+                () -> assertThat(scheduleCacheData).isEqualTo("invalid")
+        );
     }
 
     @DisplayName("days only 약속의 스케줄 생성 시 하루에 하나의 스케줄을 저장한다.")
@@ -165,20 +184,26 @@ class ScheduleServiceTest {
         scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3, schedule4));
 
         SchedulesResponse response = scheduleService.findAllSchedules(meeting.getUuid());
+        SchedulesResponse cacheData = scheduleCache.get(
+                CacheType.SCHEDULES_STORE, meeting.getUuid(), SchedulesResponse.class
+        );
 
-        assertThat(response.schedules()).containsExactlyInAnyOrder(
-                new AttendeesScheduleResponse(
-                        today.getDate(),
-                        Timeslot.TIME_0100.startTime(),
-                        List.of(attendee.name(), attendee2.name())),
-                new AttendeesScheduleResponse(
-                        today.getDate(),
-                        Timeslot.TIME_0130.startTime(),
-                        List.of(attendee2.name())),
-                new AttendeesScheduleResponse(
-                        tomorrow.getDate(),
-                        Timeslot.TIME_0100.startTime(),
-                        List.of(attendee.name()))
+        assertAll(
+                () -> assertThat(response.schedules()).containsExactlyInAnyOrder(
+                        new AttendeesScheduleResponse(
+                                today.getDate(),
+                                Timeslot.TIME_0100.startTime(),
+                                List.of(attendee.name(), attendee2.name())),
+                        new AttendeesScheduleResponse(
+                                today.getDate(),
+                                Timeslot.TIME_0130.startTime(),
+                                List.of(attendee2.name())),
+                        new AttendeesScheduleResponse(
+                                tomorrow.getDate(),
+                                Timeslot.TIME_0100.startTime(),
+                                List.of(attendee.name()))
+                ),
+                () -> assertThat(cacheData).isEqualTo(response)
         );
     }
 
@@ -264,26 +289,34 @@ class ScheduleServiceTest {
         RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
                 movieMeeting.getUuid(), LONG_TERM_ORDER.getType(), List.of(jazz.name(), daon.name()), 0
         );
+        RecommendedSchedulesResponse cacheData = scheduleCache.get(
+                CacheType.RECOMMEND_STORE,
+                LONG_TERM_ORDER.getType() + movieMeeting.getUuid(),
+                RecommendedSchedulesResponse.class
+        );
 
-        assertThat(responses.recommendedSchedules()).containsExactly(
-                RecommendedScheduleResponse.of(
-                        1,
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
+        assertAll(
+                () -> assertThat(responses.recommendedSchedules()).containsExactly(
+                        RecommendedScheduleResponse.of(
+                                1,
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        ),
+                        RecommendedScheduleResponse.of(
+                                2,
+                                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        ),
+                        RecommendedScheduleResponse.of(
+                                3,
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        )
                 ),
-                RecommendedScheduleResponse.of(
-                        2,
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
-                ),
-                RecommendedScheduleResponse.of(
-                        3,
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
-                )
+                () -> assertThat(cacheData).isEqualTo(responses)
         );
     }
 
@@ -304,26 +337,34 @@ class ScheduleServiceTest {
         RecommendedSchedulesResponse responses = scheduleService.recommendSchedules(
                 movieMeeting.getUuid(), EARLIEST_ORDER.getType(), List.of(jazz.name(), daon.name()), 0
         );
+        RecommendedSchedulesResponse cacheData = scheduleCache.get(
+                CacheType.RECOMMEND_STORE,
+                EARLIEST_ORDER.getType() + movieMeeting.getUuid(),
+                RecommendedSchedulesResponse.class
+        );
 
-        assertThat(responses.recommendedSchedules()).containsExactly(
-                RecommendedScheduleResponse.of(
-                        1,
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
+        assertAll(
+                () -> assertThat(responses.recommendedSchedules()).containsExactly(
+                        RecommendedScheduleResponse.of(
+                                1,
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0330.startTime()),
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0400.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        ),
+                        RecommendedScheduleResponse.of(
+                                2,
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
+                                LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        ),
+                        RecommendedScheduleResponse.of(
+                                3,
+                                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
+                                LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.endTime()),
+                                new AttendeeGroup(List.of(jazz, daon))
+                        )
                 ),
-                RecommendedScheduleResponse.of(
-                        2,
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0500.startTime()),
-                        LocalDateTime.of(today.getDate(), Timeslot.TIME_0630.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
-                ),
-                RecommendedScheduleResponse.of(
-                        3,
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0130.startTime()),
-                        LocalDateTime.of(tomorrow.getDate(), Timeslot.TIME_0230.endTime()),
-                        new AttendeeGroup(List.of(jazz, daon))
-                )
+                () -> assertThat(cacheData).isEqualTo(responses)
         );
     }
 
@@ -482,3 +523,4 @@ class ScheduleServiceTest {
         return schedules;
     }
 }
+
