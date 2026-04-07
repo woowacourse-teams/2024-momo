@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 import ContentLayout from '@layouts/ContentLayout';
@@ -9,21 +8,14 @@ import BackButton from '@components/_common/Buttons/BackButton';
 import Header from '@components/_common/Header';
 import Text from '@components/_common/Text';
 
-import { getMeetingAttendees } from '@apis/meetings/recommends';
-
-import { QUERY_KEY } from '@constants/queryKeys';
+import { useGetMeetingAttendeesQuery } from '@stores/servers/meeting/queries';
 
 import { s_container, s_pageHeader } from './MeetingRecommendPage.styles';
 import MeetingTimeRecommends from './components/MeetingTimeRecommends';
 
 export default function MeetingRecommendPage() {
   const { uuid } = useContext(UuidContext);
-
-  const { data: attendeeNames } = useQuery({
-    queryKey: [QUERY_KEY.meetingAttendees],
-    queryFn: () => getMeetingAttendees({ uuid }),
-    retry: 0,
-  });
+  const { attendeeNames } = useGetMeetingAttendeesQuery(uuid);
 
   return (
     <>

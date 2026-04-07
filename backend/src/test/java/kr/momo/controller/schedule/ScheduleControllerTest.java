@@ -154,11 +154,40 @@ class ScheduleControllerTest {
     void recommendSchedules() {
         RestAssured.given().log().all()
                 .pathParam("uuid", meeting.getUuid())
-                .queryParams("recommendType", EARLIEST_ORDER.getType(), "attendeeNames", attendee.name())
+                .queryParam("recommendType", EARLIEST_ORDER.getType())
+                .queryParams("attendeeNames", List.of(attendee.name()))
+                .queryParam("minTime", 0)
                 .contentType(ContentType.JSON)
                 .when().get("/api/v1/meetings/{uuid}/recommended-schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("추천 약속을 조회시 최소 시간을 입력받지 않아도 동작한다.")
+    @Test
+    void recommendSchedulesWithoutMinTime() {
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .queryParam("recommendType", EARLIEST_ORDER.getType())
+                .queryParams("attendeeNames", List.of(attendee.name()))
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/recommended-schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("추천 약속 조회시 최소 시간이 0보다 작으면 예외가 발생한다.")
+    @Test
+    void recommendSchedulesIfSmallerThanZero() {
+        RestAssured.given().log().all()
+                .pathParam("uuid", meeting.getUuid())
+                .queryParam("recommendType", EARLIEST_ORDER.getType())
+                .queryParams("attendeeNames", List.of(attendee.name()))
+                .queryParam("minTime", -1)
+                .contentType(ContentType.JSON)
+                .when().get("/api/v1/meetings/{uuid}/recommended-schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     private void createAttendeeSchedule(Attendee attendee) {

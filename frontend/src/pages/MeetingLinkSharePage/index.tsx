@@ -39,7 +39,7 @@ export default function MeetingLinkSharePage() {
     state: { meetingInfo },
   } = useLocation() as RouteState;
 
-  const LINK = `${window.location.protocol}/${window.location.host}/meeting/${uuid}`;
+  const LINK = `${window.location.origin}/meeting/${uuid}`;
 
   const { handleKakaoTalkShare } = useKakaoTalkShare();
 

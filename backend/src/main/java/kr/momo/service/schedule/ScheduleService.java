@@ -31,6 +31,7 @@ import kr.momo.service.schedule.recommend.ScheduleRecommender;
 import kr.momo.service.schedule.recommend.ScheduleRecommenderFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -44,7 +45,7 @@ public class ScheduleService {
     private final ScheduleBatchRepository scheduleBatchRepository;
     private final ScheduleRecommenderFactory scheduleRecommenderFactory;
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void create(String uuid, long attendeeId, ScheduleCreateRequest request) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.INVALID_UUID));
@@ -122,7 +123,9 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public RecommendedSchedulesResponse recommendSchedules(String uuid, String recommendType, List<String> names) {
+    public RecommendedSchedulesResponse recommendSchedules(
+            String uuid, String recommendType, List<String> names, int minimumTime
+    ) {
         Meeting meeting = meetingRepository.findByUuid(uuid)
                 .orElseThrow(() -> new MomoException(MeetingErrorCode.NOT_FOUND_MEETING));
         AttendeeGroup attendeeGroup = new AttendeeGroup(attendeeRepository.findAllByMeeting(meeting));
@@ -131,11 +134,13 @@ public class ScheduleService {
         ScheduleRecommender recommender = scheduleRecommenderFactory.getRecommenderOf(
                 attendeeGroup, filteredGroup
         );
-        List<CandidateSchedule> recommendedResult = recommender.recommend(filteredGroup, recommendType,
-                meeting.getType());
+        List<CandidateSchedule> recommendedResult = recommender.recommend(
+                filteredGroup, recommendType, meeting.getType(), minimumTime
+        );
 
         List<RecommendedScheduleResponse> scheduleResponses = RecommendedScheduleResponse.fromCandidateSchedules(
-                recommendedResult);
+                recommendedResult
+        );
         return RecommendedSchedulesResponse.of(meeting.getType(), scheduleResponses);
     }
 }

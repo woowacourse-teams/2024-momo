@@ -1,5 +1,4 @@
-import MeetingTimeRecommendCard from '@components/MeetingTimeCard/MeetingTimeRecommendCard';
-import MeetingTimeRecommendCardDaysOnly from '@components/MeetingTimeCard/MeetingTimeRecommendCardDaysOnly';
+import MeetingRecommendCard from '@components/MeetingRecommendCard/MeetingRecommendCard';
 import TabButton from '@components/_common/Buttons/TabButton';
 import Dropdown from '@components/_common/Dropdown';
 
@@ -25,6 +24,8 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
 
   return (
     <div css={s_container}>
+      {/* 만약 TabButton의 로직이 변경되면 MeetingConfirmPage에 있는 로직도 함께 변경되어야 함 (@낙타) */}
+      <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
       <section css={s_attendeesContainer}>
         <TabButton
           tabButtonVariants="outlinedFloating"
@@ -44,7 +45,7 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
           </TabButton>
         ))}
       </section>
-      <span css={s_tipInfo}>원하는 참여인원을 선택해 보세요 :)</span>
+
       {meetingRecommendResponse && meetingRecommendResponse.type === 'DATETIME' && (
         <Dropdown
           value={recommendType}
@@ -56,21 +57,14 @@ export default function MeetingTimeRecommends({ uuid, attendeeNames }: MeetingRe
         />
       )}
       {meetingRecommendResponse &&
-        meetingRecommendResponse.recommendedSchedules.map((recommendInfo, index) =>
-          meetingRecommendResponse.type === 'DATETIME' ? (
-            <MeetingTimeRecommendCard
-              key={recommendInfo.startDate + index}
-              attendeeCount={attendeeNames.length}
-              schedule={recommendInfo}
-            />
-          ) : (
-            <MeetingTimeRecommendCardDaysOnly
-              key={recommendInfo.startDate + index}
-              attendeeCount={attendeeNames.length}
-              schedule={recommendInfo}
-            />
-          ),
-        )}
+        meetingRecommendResponse.recommendedSchedules.map((recommendInfo) => (
+          <MeetingRecommendCard
+            key={recommendInfo.rank}
+            totalAttendees={attendeeNames}
+            type={meetingRecommendResponse.type}
+            schedule={recommendInfo}
+          />
+        ))}
     </div>
   );
 }

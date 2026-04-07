@@ -50,8 +50,6 @@ export const Playground: Story = {
     const s_td = css`
       position: relative;
 
-      overflow: hidden;
-
       width: 10rem;
       max-width: 10rem;
       height: 4rem;
